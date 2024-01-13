@@ -7,7 +7,7 @@ from dotenv import dotenv_values
 config = dotenv_values(".env")
 
 # Web scraping
-from scrapers.index import councils
+from scrapers import councils
 
 def processor(council: dict):
   council_name, regex_list = council['council'], council['regex_list']
