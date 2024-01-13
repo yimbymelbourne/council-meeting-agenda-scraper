@@ -18,7 +18,6 @@ def processor(council: dict):
   
   print('PDF downloaded! Reading PDF...')
   text = read_pdf(council_name)
-  regex_list = ['dwellings', 'heritage']
   
   print('PDF read! Parsing PDF...')
   matches = parse_pdf(regex_list, text)  
