@@ -5,10 +5,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from bs4 import BeautifulSoup
-import requests
 
+from type_module import Council
 
-def scraper():
+def scraper() -> str|None:
   base_url = 'https://www.maribyrnong.vic.gov.au/'
   agenda_url = 'https://www.maribyrnong.vic.gov.au/About-us/Council-and-committee-meetings/Agendas-and-minutes'
 
@@ -53,8 +53,8 @@ def scraper():
   return download_link
 
 
-maribyrnong = {
+maribyrnong: Council = {
   'council': 'Maribyrnong',
   'regex_list': ['dwellings', 'heritage'],
-  'scraper': scraper(),
+  'scraper': scraper,
 }
