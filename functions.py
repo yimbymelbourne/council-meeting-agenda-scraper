@@ -25,9 +25,15 @@ def parse_pdf(regex_list, text):
     return {regex: len(re.findall(regex, text)) for regex in regex_list}
 
 
-# Sending emails
+def write_email(council_name: str, download_link: str, matches: dict):
+    email_body = f"Hello,\n\nThe agenda for {council_name} is now available for download.\n\nPlease click on the link below to download the agenda:\n{download_link}\n\nHere are the matches found in the agenda:\n"
+    
+    for regex, count in matches.items():
+        email_body += f"- {regex}: {count} matches\n"
+    
+    
 def send_email(to, subject, body):
-  if config['GMAIL_FUNCTIONALITY'] == 1: 
+  if int(config['GMAIL_FUNCTIONALITY']) == 1: 
     msg = MIMEMultipart()
     msg['From'] = 'your_email@gmail.com'
     msg['To'] = to
@@ -39,6 +45,7 @@ def send_email(to, subject, body):
     text = msg.as_string()
     server.sendmail(config['GMAIL_ACCOUNT_SEND'], to, text)
     server.quit()
+    print(f'Email sent to {to} with subject {subject} and body {body}.')
   else:
     print(f"Email functionality is disabled. Would have sent email to {to} with subject {subject} and body {body}.")
     
