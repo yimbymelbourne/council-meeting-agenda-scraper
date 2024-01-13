@@ -5,6 +5,12 @@
 # files
 files/*
 
+# database
+agendas.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+
+# macos
+.DS_Store

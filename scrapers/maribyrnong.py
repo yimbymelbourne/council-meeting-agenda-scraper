@@ -15,7 +15,7 @@ def scraper():
   chrome_options = Options()
   chrome_options.add_argument("--headless")
   driver = webdriver.Chrome(options=chrome_options)
-  wait = WebDriverWait(driver, 3)
+  wait = WebDriverWait(driver, 5)
 
   driver.get(agenda_url)
   
@@ -28,9 +28,9 @@ def scraper():
 
   # Wait for the accordion content to load
   try:
-    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".accordion-list-item-container:nth-child(1) .accordion-item-body")))
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".meeting-document:nth-child(3) .extension")))
   except Exception as e:
-    print(f"Failed to wait for the accordion content: {e}")
+    print(f"Failed to get accordion content: {e}")
 
   output = driver.page_source
 
@@ -47,8 +47,11 @@ def scraper():
         link = h3.find_next('a', class_='document ext-pdf')
         if link:
             download_link = base_url + link['href']
+  else: 
+    print('No div found.')
   
   return download_link
+
 
 maribyrnong = {
   'council': 'Maribyrnong',
