@@ -13,7 +13,7 @@ config = dotenv_values(".env")
 from scrapers import councils
 
 def processor(council: Council):
-  council_name, regex_list = council['name'], council['regex_list']
+  council_name, custom_regexes = council['name'], council['custom_regexes']
   
   print(f'Running {council_name} scraper...')
   download_link = council['scraper']()
@@ -32,7 +32,7 @@ def processor(council: Council):
   text = read_pdf(council_name)
   
   print('PDF read! Parsing PDF...')
-  matches = parse_pdf(regex_list, text)  
+  matches = parse_pdf(custom_regexes, text)  
   
   print('PDF parsed! Inserting into database...')
   db.insert(council_name, download_link, matches)

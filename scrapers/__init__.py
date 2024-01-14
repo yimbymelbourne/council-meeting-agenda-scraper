@@ -1,4 +1,4 @@
-from maribyrnong import maribyrnong
+from .maribyrnong import maribyrnong
 
 councils = [
   maribyrnong,
