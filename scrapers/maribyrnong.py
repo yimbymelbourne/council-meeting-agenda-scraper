@@ -55,6 +55,8 @@ def scraper() -> str|None:
 
 maribyrnong: Council = {
   'council': 'Maribyrnong',
-  'regex_list': ['dwellings', 'heritage'],
+  'regex_dict': {
+    'count_matches': ['dwellings', 'heritage']
+  },
   'scraper': scraper,
 }

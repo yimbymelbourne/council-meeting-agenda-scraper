@@ -5,6 +5,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import regex
+
 from dotenv import dotenv_values
 config = dotenv_values(".env")
 
@@ -21,8 +23,14 @@ def read_pdf(council_name: str):
     return text
 
 
-def parse_pdf(regex_list, text):
-    return {regex: len(re.findall(regex, text)) for regex in regex_list}
+def parse_pdf(regex_dict, text):
+  regexes = {key: regex_dict[key] + regex.defaults[key] for key in regex_dict.keys()}
+  results = {}
+  
+  if regexes['count_matches']:
+    results['count_matches'] = {regex: len(re.findall(regex, text)) for regex in regexes['matches']}
+  
+  return results
 
 
 def write_email(council_name: str, download_link: str, matches: dict):
