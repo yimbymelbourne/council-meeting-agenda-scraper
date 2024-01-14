@@ -1,16 +1,19 @@
 import os.path
 
+from custom_types import Council
+
 from functions import download_pdf, read_pdf, parse_pdf, write_email, send_email
 import database as db
 
 from dotenv import dotenv_values
+
 config = dotenv_values(".env")
 
 # Web scraping
 from scrapers import councils
 
-def processor(council: dict):
-  council_name, regex_list = council['council'], council['regex_list']
+def processor(council: Council):
+  council_name, regex_list = council['name'], council['regex_list']
   
   print(f'Running {council_name} scraper...')
   download_link = council['scraper']()

@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from bs4 import BeautifulSoup
 
-from type_module import Council
+from custom_types import Council
 
 def scraper() -> str|None:
   base_url = 'https://www.maribyrnong.vic.gov.au/'
@@ -54,7 +54,7 @@ def scraper() -> str|None:
 
 
 maribyrnong: Council = {
-  'council': 'Maribyrnong',
+  'name': 'Maribyrnong',
   'scraper': scraper,
   'regex_dict': {
     'count_matches': ['dwellings', 'heritage']
