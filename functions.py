@@ -5,7 +5,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from regexes import defaults as default_regexes
+from regexes import RegexResults, defaults as default_regexes
 
 from dotenv import dotenv_values
 config = dotenv_values(".env")
@@ -23,21 +23,27 @@ def read_pdf(council_name: str):
     return text
 
 
-def parse_pdf(custom_regexes, text):
+def parse_pdf(custom_regexes, text) -> RegexResults:
   regexes = {key: custom_regexes[key] + default_regexes[key] for key in custom_regexes.keys()}
-  results = {}
+  results = RegexResults()
   
-  if regexes['count_matches']:
-    results['count_matches'] = {regex: len(re.findall(regex, text)) for regex in regexes['matches']}
+  if regexes['keyword_matches']:
+    results['keyword_matches'] = {regex: len(re.findall(regex, text)) for regex in regexes['keyword_matches']}
   
   return results
 
 
-def write_email(council_name: str, download_link: str, matches: dict):
+def write_email(council_name: str, download_link: str, parser_results: RegexResults) -> str:
     email_body = f"Hello,\n\nThe agenda for {council_name} is now available for download.\n\nPlease click on the link below to download the agenda:\n{download_link}\n\nHere are the matches found in the agenda:\n"
     
-    for regex, count in matches.items():
-        email_body += f"- {regex}: {count} matches\n"
+    if parser_results['keyword_matches']:
+      email_body += "\nKeyword matches:\n"
+      for regex, count in parser_results['keyword_matches'].items():
+          email_body += f"- {regex}: {count} matches\n"
+    
+    email_body += "\n\nThank you,\nYour friendly neighborhood agenda scraper"
+    
+    return email_body
     
     
 def send_email(to, subject, body):

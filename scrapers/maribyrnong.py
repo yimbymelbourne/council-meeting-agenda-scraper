@@ -52,11 +52,11 @@ def scraper() -> str|None:
   
   return download_link
 
-
-maribyrnong: Council = {
-  'name': 'Maribyrnong',
-  'scraper': scraper,
-  'custom_regexes': {
-    'count_matches': ['dwellings', 'heritage']
+maribyrnong = Council(
+  'Maribyrnong',
+  scraper,
+  {
+    'keyword_matches': ['dwellings', 'heritage']
   },
-}
+)
+
