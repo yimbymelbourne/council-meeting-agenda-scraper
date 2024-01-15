@@ -1,8 +1,8 @@
-from typing import TypedDict, Callable
+from typing import Callable
+from regexes import Regexes
 
-class Council(TypedDict):
-  name: str # Name of council (e.g. Maribyrnong; Merri-bek)
-  scraper: Callable # Function that returns a link to the agenda
-  custom_regexes: dict # Dictionary of regex types and regexes
-  
-  
+class Council:
+    def __init__(self, name: str, scraper: Callable[[],str|None], regexes: Regexes):
+        self.name = name
+        self.scraper = scraper
+        self.regexes = regexes
