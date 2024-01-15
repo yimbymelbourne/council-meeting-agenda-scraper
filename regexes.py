@@ -1,8 +1,16 @@
-import re 
+import re
+from typing import List, TypedDict 
 
-defaults = {
-  'count_matches': [
+# Add keys here as needed
+class Regexes(TypedDict):
+    keyword_matches: List[str]
+
+class RegexResults(TypedDict):
+    keyword_matches: dict[str, int]
+
+defaults = Regexes({
+  'keyword_matches': [
     'dwellings', 
     'heritage',
   ]
-}
+})
