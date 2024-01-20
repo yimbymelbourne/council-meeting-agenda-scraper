@@ -1,14 +1,18 @@
 import requests
 import re
+import os.path
+
 from pypdf import PdfReader
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from regexes import RegexResults, defaults as default_regexes
+from _dataclasses import Council, ScraperReturn
+
+from regexes import Regexes, RegexResults, defaults as default_regexes
 
 from dotenv import dotenv_values
-config = dotenv_values(".env")
+config = dotenv_values(".env") if os.path.exists(".env") else {}
 
 def download_pdf(link: str, council_name: str):
   response = requests.get(link)
@@ -23,8 +27,12 @@ def read_pdf(council_name: str):
     return text
 
 
-def parse_pdf(custom_regexes, text) -> RegexResults:
-  regexes = {key: custom_regexes[key] + default_regexes[key] for key in custom_regexes.keys()}
+def parse_pdf(custom_regexes: Regexes|None, text) -> RegexResults:
+  regexes = default_regexes
+  
+  if custom_regexes is not None:
+    regexes = {key: custom_regexes[key] + default_regexes[key] for key in custom_regexes.keys()}
+  
   results = RegexResults()
   
   if regexes['keyword_matches']:
@@ -33,8 +41,8 @@ def parse_pdf(custom_regexes, text) -> RegexResults:
   return results
 
 
-def write_email(council_name: str, download_link: str, parser_results: RegexResults) -> str:
-    email_body = f"Hello,\n\nThe agenda for {council_name} is now available for download.\n\nPlease click on the link below to download the agenda:\n{download_link}\n\nHere are the matches found in the agenda:\n"
+def write_email(council: Council, scraper_result: ScraperReturn, parser_results: RegexResults) -> str:
+    email_body = f"Hello,\n\nThe agenda for {council.name} is now available for download.\n\nPlease click on the link below to download the agenda:\n{scraper_result.download_url}\n\nHere are the matches found in the agenda:\n"
     
     if parser_results['keyword_matches']:
       email_body += "\nKeyword matches:\n"

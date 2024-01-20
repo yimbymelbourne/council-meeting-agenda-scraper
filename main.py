@@ -40,10 +40,10 @@ def processor(council: Council):
   
   print('Sending email...')
   
-  email_body = write_email(council.name, scraper_results.download_url, parser_results)
+  email_body = write_email(council, scraper_results, parser_results)
 
   send_email(config['GMAIL_ACCOUNT_RECEIVE'], 
-              f'New agenda: {council.name}', 
+              f'New agenda: {council.name} {scraper_results.date} meeting', 
               email_body)
   
   print(f'Finished with {council.name}.')  
