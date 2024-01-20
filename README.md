@@ -1,6 +1,14 @@
-# agenda_getter
+# Melbourne Council Meeting Agenda Scraper
 
-A method of getting and scraping council agendas to streamline housing abundance advocacy.
+Check, download, and parse local council agendas for relevant housing and planning matters.
+
+Users can easily set up notification functionality to be alerted by email (or: to-be-implemented, Discord) when new agendas are released.
+
+This enables YIMBY Melbourne and other organisations to keep easy track of relevant Council activities.
+
+## List of functioning scrapers
+
+- Maribyrnong
 
 # Setup
 
@@ -14,28 +22,111 @@ A method of getting and scraping council agendas to streamline housing abundance
 
 4. Run `poetry install` to install dependencies.
 
+# Running the application
+
+Within your environment, run: `python3 main.py > "output/scrapers_output_$(date +%Y-%m-%d).txt"`
+
+This will generate the scraper results within a text file for your convenience, as well as writing key results to `agendas.db`.
+
 ## .env & Email client (optional)
 
-In the `.env.example` file, there is the basic variable GMAIL_FUNCTIONALITY. It is set to 0 by default. If you want to use the email sending features here, then you'll need to include your Gmail authentication details in a `.env` file.
+In the `.env.example` file, there is the basic variable GMAIL_FUNCTIONALITY.
+
+This functionality is turned off by default. If you want to use the email sending features here, then you'll need to include your Gmail authentication details in a `.env` file.
 
 This may require setting up an App-specific password, for which [you can find setup instructions here](https://support.google.com/accounts/answer/185833?visit_id=638406540644584172-3254681882&p=InvalidSecondFactor&rd=1).
 
 This functionality is optional, and the app should work fine without this setup.
 
-# Running the application
-
-`python3 main.py`
-
 # Writing a scraper
 
-Currently, each council in the `scrapers/` directory should export a dict of this shape:
+Melbourne has many councils! As such, we need many scrapers! You can head over to the Issues tab to check the progress on other scrapers, and create one if it needs to be worked on.
+
+## How scrapers work
+
+Scrapers are contained within the `scrapers/` folder.
+
+A scraper should be able to reliably find the most recent agenda on a Council's website. Once that link is found, it is checked against an existing database—if the link is new, then the agenda is downloaded, scanned, and a notification is sent.
+
+In addition to the link, the scraper function should return an object of the following shape, outlined in `_dataclasses.py`:
 
 ```py
-council_name = {
-  'council': 'Council Name',
-  'regex_list': ['a list of regex', 'statements for matching'],
-  'scraper': scraper_function(),
-}
+@dataclass
+class ScraperReturn:
+    name: str # council name
+    date: str # meeting date
+    time: str # meeting time
+    webpage_url: str # url of scraped page
+    download_url: str # url of PDF agenda download
 ```
 
-This data is then accessed by the `processor()` function which takes the above dict as an input.
+**It is not always possible to scrape the date and time of meetings from Council websites. In these cases, these values should be returned as empty strings.**
+
+The scraper function is then included within a Council object at the bottom of the file. At time of open-sourcing, `scrapers/maribyrnong.py`, exported the following object:
+
+```py
+maribyrnong = Council(
+  name='Maribyrnong', # council name
+  scraper=scraper, # custom scraper function, called during iterative loop
+)
+```
+
+Working Councils should then be imported into `scrapers/__init__.py`.
+
+The `main.py` script then iterates through these councils using the `processor()` function. For each new agenda found, the results will be logged.
+
+## Easy scraping
+
+This repository is not prescriptive with how scrapers should be written.
+
+That said, it's always nice to limit project dependencies, so we recommend the following technologies:
+
+- [Selenium](https://www.selenium.dev/documentation/), for headless web navigation; and
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/), for parsing static html
+
+The pipeline is this: you use Selenium to get the right html, and then use BeautifulSoup to find the agenda link within it.
+
+### Selenium
+
+The best thing about Selenium is that it has its own [Integrated Development Environment](https://www.selenium.dev/selenium-ide/) for Chromium & Firefox browsers.
+
+The IDE lets you just use a website, and records all your actions. You can then export those actions straight into Python.
+
+This means that if you need to, for instance, expand an accordion in order for your agenda to appear, Selenium can record those actions and then perform them every time the scraper runs.
+
+Just remember to run your exported Selenium code in headless mode. To do so, configure your driver like this:
+
+```py
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+#...
+
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+driver = webdriver.Chrome(options=chrome_options)
+```
+
+When navigation is complete, return the HTML from your selenium driver:
+
+```py
+output = driver.page_source
+```
+
+### BeautifulSoup
+
+Load the HTML into BeautifulSoup like this:
+
+```py
+soup = BeautifulSoup(output, 'html.parser')
+```
+
+And then use the BeautifulSoup documentation to navigate the HTML and grab the relevant elements and information.
+
+You may also need to use regular expressions (regexes) to parse dates etc.
+
+Luckily, ChatGPT is quite good at both BeautifulSoup and regexes. So it's recommended that you'll save a great deal of time feeding your HTML into ChatGPT, Github Copilot, or the shockingly reliable [Phind.com](https://www.phind.com) and iterating like that.
+
+Finally, ensure your `scraper()` function returns a `ScraperReturn` dataclass.
+
+Then, once you're confident your scraper works, add it to the `scrapers/__init__.py`, file a pull request, and it'll be merged upon review.
