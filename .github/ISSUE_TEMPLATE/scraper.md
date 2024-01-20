@@ -1,4 +1,4 @@
-s---
+---
 name: New Scraper
 about: Request a new scraper be added to the application
 title: "[New Scraper] "
