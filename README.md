@@ -8,7 +8,11 @@ This enables YIMBY Melbourne and other organisations to keep easy track of relev
 
 ## List of functioning scrapers
 
+[Write a Scraper!](#writing-a-scraper)
+
 - Maribyrnong
+
+A list of most Melbourne councils, including links to their agenda webpages, can be found on the [YIMBY Melbourne website](https://www.yimbymelbourne.org.au/local-action).
 
 # Setup
 
@@ -40,7 +44,11 @@ This functionality is optional, and the app should work fine without this setup.
 
 # Writing a scraper
 
-Melbourne has many councils! As such, we need many scrapers! You can head over to the Issues tab to check the progress on other scrapers, and create one if it needs to be worked on.
+Melbourne has many councils! As such, we need many scrapers!
+
+A list of most Melbourne councils, including links to their agenda webpages, can be found on the [YIMBY Melbourne website](https://www.yimbymelbourne.org.au/local-action).
+
+Check the current issue list, or create your own. Then, build a scraper and contribute to YIMBY Melbourne's mission to create housing abundance for all Melburnians!
 
 ## How scrapers work
 
