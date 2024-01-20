@@ -8,11 +8,11 @@ This enables YIMBY Melbourne and other organisations to keep easy track of relev
 
 ## List of functioning scrapers
 
-[Write a Scraper!](#writing-a-scraper)
-
 - Maribyrnong
 
 A list of most Melbourne councils, including links to their agenda webpages, can be found on the [YIMBY Melbourne website](https://www.yimbymelbourne.org.au/local-action).
+
+[Write a Scraper!](#writing-a-scraper)
 
 # Setup
 
