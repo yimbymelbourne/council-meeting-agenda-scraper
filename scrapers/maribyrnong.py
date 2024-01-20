@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from bs4 import BeautifulSoup
 
-from custom_types import Council, ScraperReturn
+from _dataclasses import Council, ScraperReturn
 
 import re
 date_pattern = r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"

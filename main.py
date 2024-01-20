@@ -2,7 +2,7 @@ import os.path
 
 from functions import download_pdf, read_pdf, parse_pdf, write_email, send_email
 import database as db
-from custom_types import Council
+from _dataclasses import Council
 from regexes import RegexResults
 
 # Web scraping
@@ -19,7 +19,7 @@ def processor(council: Council):
   if not scraper_results.download_url:
     print(f'No link found for {council.name}.')
     return
-  if db.check_link(scraper_results.download_url):
+  if db.check_url(scraper_results.download_url):
     print(f'Link already scraped for {council.name}.')
     return
   
@@ -28,12 +28,14 @@ def processor(council: Council):
   
   print('PDF downloaded! Reading PDF into memory...')
   text = read_pdf(council.name)
+  with open(f'{council.name}_latest.txt', 'w') as f:
+    f.write(text)
   
   print('PDF read! Parsing PDF...')
   parser_results = parse_pdf(council.regexes, text)  
   
   print('PDF parsed! Inserting into database...')
-  db.insert(council.name, scraper_results.download_url, parser_results)
+  db.insert(council, scraper_results, parser_results)
   print('Database updated!')
   
   print('Sending email...')
