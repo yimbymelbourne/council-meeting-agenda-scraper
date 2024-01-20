@@ -91,10 +91,7 @@ def scraper() -> ScraperReturn|None:
   return scraper_return
 
 maribyrnong = Council(
-  'Maribyrnong',
-  scraper,
-  {
-    'keyword_matches': ['dwellings', 'heritage']
-  },
+  name='Maribyrnong',
+  scraper=scraper,
 )
 

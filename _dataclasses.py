@@ -22,7 +22,7 @@ class Council:
     """
     name: str
     scraper: Callable[[], Optional[ScraperReturn]]
-    regexes: Regexes
+    regexes: Optional[Regexes] = None
     results: Optional[ScraperReturn] = None
 
     def run_scraper(self):
