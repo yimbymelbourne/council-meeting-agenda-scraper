@@ -137,4 +137,8 @@ Luckily, ChatGPT is quite good at both BeautifulSoup and regexes. So it's recomm
 
 Finally, ensure your `scraper()` function returns a `ScraperReturn` dataclass.
 
-Then, once you're confident your scraper works, add it to the `scrapers/__init__.py`, file a pull request, and it'll be merged upon review.
+### Adding to the app
+
+Finally, once you're confident your scraper works, ensure it is imported into `scrapers/__init__.py`.
+
+Then, file a pull request, and it'll be merged upon successful review.
