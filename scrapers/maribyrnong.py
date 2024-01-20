@@ -36,10 +36,12 @@ def scraper() -> ScraperReturn|None:
   except Exception as e:
     print(f"Failed to get accordion content: {e}")
 
+  # Get the HTML
   output = driver.page_source
 
   driver.quit()
 
+  # Feed the HTML to BeautifulSoup
   soup = BeautifulSoup(output, 'html.parser')
   
   name = None
