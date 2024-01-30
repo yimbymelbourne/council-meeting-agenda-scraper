@@ -1,4 +1,4 @@
-# Melbourne Council Meeting Agenda Scraper
+# Council Meeting Agenda Scraper
 
 Check, download, and parse local council agendas for relevant housing and planning matters.
 
