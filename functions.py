@@ -3,6 +3,7 @@ import re
 import os.path
 
 from pypdf import PdfReader
+import fitz
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -18,15 +19,16 @@ config = dotenv_values(".env") if os.path.exists(".env") else {}
 
 def download_pdf(link: str, council_name: str):
     response = requests.get(link)
-    with open(f"files/{council_name}_agenda.pdf", "wb") as f:
+    with open(f"files/{council_name}_latest.pdf", "wb") as f:
         f.write(response.content)
 
 
 def read_pdf(council_name: str):
-    with open(f"files/{council_name}_agenda.pdf", "rb") as f:
-        reader = PdfReader(f)
-        text = " ".join(page.extract_text() for page in reader.pages)
-        return text
+    doc = fitz.open(f"files/{council_name}_latest.pdf")
+    text = ""
+    for page in doc:
+        text += page.getText()
+    return text
 
 
 def parse_pdf(custom_regexes: Regexes | None, text) -> RegexResults:
@@ -49,11 +51,19 @@ def parse_pdf(custom_regexes: Regexes | None, text) -> RegexResults:
 
 
 def write_email(
-    council: Council, scraper_result: ScraperReturn, parser_results: RegexResults
+    council: Council,
+    scraper_result: ScraperReturn,
+    parser_results: RegexResults = None,
+    AI_results: str = None,
 ) -> str:
-    email_body = f"Hello,\n\nThe agenda for {council.name} is now available for download.\n\nPlease click on the link below to download the agenda:\n{scraper_result.download_url}\n\nHere are the matches found in the agenda:\n"
+    email_body = f"Hello,\n\nThe agenda for the {scraper_result.date} {council.name} meeting is now available for download.\n\nPlease click on the link below to download the agenda:\n{scraper_result.download_url}\n\n"
 
-    if parser_results["keyword_matches"]:
+    if int(config["OPENAI_FUNCTIONALITY"]) == 1:
+        email_body += "Here is the meeting summary as prepared by YIMBY_AI:\n\n"
+        email_body += AI_results
+        pass
+    elif parser_results["keyword_matches"]:
+        email_body += "Here are the matches found in the agenda:\n"
         email_body += "\nKeyword matches:\n"
         for regex, count in parser_results["keyword_matches"].items():
             email_body += f"- {regex}: {count} matches\n"
