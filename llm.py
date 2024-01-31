@@ -5,6 +5,8 @@ from langchain.vectorstores.chroma import Chroma
 
 from openai import OpenAI
 
+from _dataclasses import Council
+
 import os.path
 from dotenv import dotenv_values
 
@@ -19,10 +21,12 @@ POLICY_CHANGES = [
     "Neighbourhood character overlays",
 ]
 
-CHAT_MODEL = "gpt-4-turbo-preview"  # "gpt-3.5-turbo-1106"  #
+CHAT_MODEL = (
+    "gpt-4"  # "gpt-4-turbo-preview"  # "gpt-3.5-turbo-1106" BEST: "gpt-4-turbo-preview"
+)
 
-EMBEDDINGS_MODEL = "text-embedding-3-small"
-EMBEDDINGS_RETRIEVAL_COUNT = 10
+EMBEDDINGS_MODEL = "text-embedding-3-small"  # BEST: "text-embedding-3-small"
+EMBEDDINGS_RETRIEVAL_COUNT = 7  # BEST: 10
 
 DEFAULT_MESSAGE = {
     "role": "system",
@@ -35,7 +39,7 @@ def load_pdf(agenda_name: str):
     return pages
 
 
-def embed_pdf(pages) -> Chroma:
+def embed_pdf(pdf, council) -> Chroma:
     # Create an embedding function
     embeddings = OpenAIEmbeddings(
         model=EMBEDDINGS_MODEL,
@@ -44,7 +48,7 @@ def embed_pdf(pages) -> Chroma:
     )
 
     # Create a vector database
-    vectordb = Chroma.from_documents(pages, embeddings, collection_name=agenda_name)
+    vectordb = Chroma.from_documents(pdf, embeddings, collection_name=council)
     return vectordb
 
 
@@ -90,6 +94,8 @@ def development_getter(db: Chroma, llm: OpenAI) -> list[str]:
     Please return only a list containing each development on a new line in this format:
     - Address, permit number, page number
     
+    If there are no planning permit applications in this document, please return "No planning permit applications in this document."
+    
     Context begins:
         
     {context}
@@ -102,6 +108,9 @@ def development_getter(db: Chroma, llm: OpenAI) -> list[str]:
     )
 
     response = response.choices[0].message.content
+
+    if response == "No planning permit applications in this document.":
+        return []
 
     development_list = response.split("\n")
     development_list = [
@@ -160,11 +169,13 @@ def llm_responses(db):
 
     development_list = development_getter(db, llm)
     print(development_list)
-
-    for development in development_list:
-        response = development_summariser(db, llm, development)
-        print(response)
-        responses[development] = response
+    if len(development_list) > 0:
+        for development in development_list:
+            response = development_summariser(db, llm, development)
+            print(response)
+            responses[development] = response
+    else:
+        responses["No developments"] = "No developments identified in this agenda."
 
     return responses
 
@@ -193,6 +204,33 @@ def llm(agenda_name: str):
             print(f"# {response}\n{responses[response]}\n\n")
             f.write(f"# {response}\n{responses[response]}\n\n")
     return
+
+
+def llm_processor(council: Council):
+    print("Loading PDF...")
+    pdf = PyMuPDFLoader(f"files/{council.name}_latest.pdf").load()
+    print("PDF loaded!")
+
+    print("Embedding PDF...")
+    db = embed_pdf(pdf, council.name)
+    print("PDF embedded!")
+
+    print("Sending PDF to LLM...")
+    responses = llm_responses(db)
+    print("Done!")
+
+    result = ""
+    with open(
+        f"logs/{council.name}_{CHAT_MODEL}_embeddings-{EMBEDDINGS_RETRIEVAL_COUNT}_{datetime.now()}.md",
+        "w",
+    ) as f:
+        for response in responses:
+            string = f"# {response}\n{responses[response]}\n\n"
+            print(string)
+            f.write(string)
+            result += string
+
+    return result
 
 
 if __name__ == "__main__":
