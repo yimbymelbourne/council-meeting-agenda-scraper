@@ -5,6 +5,8 @@ import database as db
 from _dataclasses import Council
 from regexes import RegexResults
 
+from llm import llm_processor
+
 # Web scraping
 from scrapers import councils
 
@@ -26,28 +28,42 @@ def processor(council: Council):
 
     print("Link scraped! Downloading PDF...")
     download_pdf(scraper_results.download_url, council.name)
+    print("PDF downloaded!")
 
-    print("PDF downloaded! Reading PDF into memory...")
-    text = read_pdf(council.name)
-    with open(f"{council.name}_latest.txt", "w") as f:
-        f.write(text)
+    parser_results = None
+    AI_results = None
 
-    print("PDF read! Parsing PDF...")
-    parser_results = parse_pdf(council.regexes, text)
+    if int(config["OPENAI_FUNCTIONALITY"]) == 1:
+        print("Running OpenAI functionality...")
+        AI_results = llm_processor(council)
+        print("OpenAI parsing complete!")
 
-    print("PDF parsed! Inserting into database...")
-    db.insert(council, scraper_results, parser_results)
-    print("Database updated!")
+    else:
+        print("Skipping OpenAI functionality.")
+        print("Reading PDF into memory...")
+        text = read_pdf(council.name)
+        with open(f"files/{council.name}_latest.txt", "w") as f:
+            f.write(text)
+        print("PDF read! Parsing PDF...")
+        AI_results = parse_pdf(council.regexes, text)
 
     print("Sending email...")
 
-    email_body = write_email(council, scraper_results, parser_results)
+    email_body = write_email(council, scraper_results, parser_results, AI_results)
 
     send_email(
         config["GMAIL_ACCOUNT_RECEIVE"],
         f"New agenda: {council.name} {scraper_results.date} meeting",
         email_body,
     )
+
+    print("PDF parsed! Inserting into database...")
+    db.insert(council, scraper_results, parser_results)
+    print("Database updated!")
+
+    if not config["SAVE_PDFS"] == "1":
+        os.remove(f"files/{council.name}_latest.pdf")
+        os.remove(f"files/{council.name}_latest.txt")
 
     print(f"Finished with {council.name}.")
 
