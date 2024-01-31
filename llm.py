@@ -18,7 +18,7 @@ POLICY_CHANGES = [
     "Neighbourhood character overlays",
 ]
 
-MODEL = "gpt-3.5-turbo"  # "gpt-4-turbo-preview"
+MODEL = "gpt-3.5-turbo-1106"  # "gpt-4-turbo-preview"
 
 EMBEDDINGS_RETRIEVAL_COUNT = 5
 
