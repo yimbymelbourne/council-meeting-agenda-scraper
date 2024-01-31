@@ -19,22 +19,35 @@ def init():
                 meeting_time TEXT,
                 webpage_url TEXT, 
                 download_url TEXT,
-                result BLOB)"""
+                result BLOB,
+                AI_result TEXT)"""
     )
     conn.commit()
     conn.close()
 
 
-def insert(council: Council, scraper_return: ScraperReturn, result: dict):
+def insert(
+    council: Council,
+    scraper_return: ScraperReturn,
+    result: dict | None,
+    AI_result: str | None,
+):
     date = datetime.datetime.now().strftime("%Y-%m-%d")
-    binary_result = json.dumps(result).encode()
+    if result:
+        binary_result = json.dumps(result).encode()
+    else:
+        binary_result = ""
+
+    if not AI_result:
+        AI_result = ""
+
     conn = sqlite3.connect("agendas.db")
     c = conn.cursor()
     c.execute(
         """INSERT INTO agendas (
                 date_scraped, council, meeting_date,
-                meeting_time, webpage_url, download_url, result) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                meeting_time, webpage_url, download_url, result, AI_result) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
         (
             date,
             council.name,
@@ -43,6 +56,7 @@ def insert(council: Council, scraper_return: ScraperReturn, result: dict):
             scraper_return.webpage_url,
             scraper_return.download_url,
             binary_result,
+            AI_result,
         ),
     )
     conn.commit()

@@ -58,12 +58,16 @@ def processor(council: Council):
     )
 
     print("PDF parsed! Inserting into database...")
-    db.insert(council, scraper_results, parser_results)
+    db.insert(council, scraper_results, parser_results, AI_results)
     print("Database updated!")
 
     if not config["SAVE_PDFS"] == "1":
-        os.remove(f"files/{council.name}_latest.pdf")
-        os.remove(f"files/{council.name}_latest.txt")
+        os.remove(f"files/{council.name}_latest.pdf") if os.path.exists(
+            f"files/{council.name}_latest.pdf"
+        ) else None
+        os.remove(f"files/{council.name}_latest.txt") if os.path.exists(
+            f"files/{council.name}_latest.txt"
+        ) else None
 
     print(f"Finished with {council.name}.")
 
