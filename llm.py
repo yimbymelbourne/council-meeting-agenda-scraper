@@ -1,3 +1,4 @@
+from datetime import datetime
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain.vectorstores.chroma import Chroma
@@ -18,25 +19,26 @@ POLICY_CHANGES = [
     "Neighbourhood character overlays",
 ]
 
-MODEL = "gpt-3.5-turbo-1106"  # "gpt-4-turbo-preview"
+CHAT_MODEL = "gpt-4-turbo-preview"  # "gpt-3.5-turbo-1106"  #
 
-EMBEDDINGS_RETRIEVAL_COUNT = 5
+EMBEDDINGS_MODEL = "text-embedding-3-small"
+EMBEDDINGS_RETRIEVAL_COUNT = 10
 
 DEFAULT_MESSAGE = {
     "role": "system",
-    "content": "You are a passionate urbanist who does important summarisation work to make your city better. You are smart, succinct, and direct, and you use dot points where possible.",
+    "content": "You are a passionate urbanist who does important summarisation work to make your city better. You are smart, succinct, and direct, and you use markdown formatting and dot points where possible.",
 }
 
 
 def load_pdf(agenda_name: str):
-    pages = PyMuPDFLoader(agenda_name).load()
+    pages = PyMuPDFLoader(f"files/{agenda_name}").load()
     return pages
 
 
 def embed_pdf(pages) -> Chroma:
     # Create an embedding function
     embeddings = OpenAIEmbeddings(
-        model="text-embedding-3-small",
+        model=EMBEDDINGS_MODEL,
         openai_api_key=config["OPENAI_API_KEY"],
         dimensions=768,
     )
@@ -58,15 +60,16 @@ def policy_checker(db: Chroma, llm: OpenAI, policy: str):
 
     prompt = f"""
     Q: What changes if any are there to the Council's {policy} policy in this meeting?
-    Consider the following context and if there are no changes then answer succinctly:
+    If there are no changes to the policy then answer simply "No changes."
+    Consider the following context:
     
     {context}
     """
 
     response = llm.chat.completions.create(
-        model=MODEL,
+        model=CHAT_MODEL,
         messages=[DEFAULT_MESSAGE, {"role": "user", "content": prompt}],
-        max_tokens=200,
+        max_tokens=300,
     )
 
     response = response.choices[0].message.content
@@ -74,7 +77,7 @@ def policy_checker(db: Chroma, llm: OpenAI, policy: str):
 
 
 def development_getter(db: Chroma, llm: OpenAI) -> list[str]:
-    query = f"Table of contents, planning permit application, council reports, officer reports"
+    query = f"Table of contents, repeated addresses, planning permit application, council reports, officer reports"
     results = db.similarity_search(query, k=EMBEDDINGS_RETRIEVAL_COUNT)
     print(f"Found {len(results)} results")
 
@@ -83,9 +86,9 @@ def development_getter(db: Chroma, llm: OpenAI) -> list[str]:
         context += result.page_content + "\n\n"
 
     prompt = f"""
-    Q: From the following context, can you please list the new planning permit applications in this document?
+    Q: From the following context, can you please list the planning permit applications in this document?
     Please return only a list containing each development on a new line in this format:
-    - Page number, permit number, address
+    - Address, permit number, page number
     
     Context begins:
         
@@ -93,7 +96,7 @@ def development_getter(db: Chroma, llm: OpenAI) -> list[str]:
     """
 
     response = llm.chat.completions.create(
-        model=MODEL,
+        model=CHAT_MODEL,
         messages=[DEFAULT_MESSAGE, {"role": "user", "content": prompt}],
         max_tokens=200,
     )
@@ -135,7 +138,7 @@ def development_summariser(db: Chroma, llm: OpenAI, development: str) -> str:
     """
 
     response = llm.chat.completions.create(
-        model=MODEL,
+        model=CHAT_MODEL,
         messages=[DEFAULT_MESSAGE, {"role": "user", "content": prompt}],
         max_tokens=500,
     )
@@ -157,6 +160,7 @@ def llm_responses(db):
 
     development_list = development_getter(db, llm)
     print(development_list)
+
     for development in development_list:
         response = development_summariser(db, llm, development)
         print(response)
@@ -181,8 +185,13 @@ def llm(agenda_name: str):
     responses = llm_responses(db)
     print("Done!")
 
-    for response in responses:
-        print(f"{response}\n{responses[response]}\n\n")
+    with open(
+        f"logs/{agenda_name}_{CHAT_MODEL}_embeddings-{EMBEDDINGS_RETRIEVAL_COUNT}_{datetime.now()}.md",
+        "w",
+    ) as f:
+        for response in responses:
+            print(f"# {response}\n{responses[response]}\n\n")
+            f.write(f"# {response}\n{responses[response]}\n\n")
     return
 
 
