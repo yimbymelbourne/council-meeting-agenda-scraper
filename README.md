@@ -1,4 +1,4 @@
-# Melbourne Council Meeting Agenda Scraper
+# Council Meeting Agenda Scraper
 
 Check, download, and parse local council agendas for relevant housing and planning matters.
 
@@ -10,7 +10,7 @@ This enables YIMBY Melbourne and other organisations to keep easy track of relev
 
 - Maribyrnong
 
-A list of most Melbourne councils, including links to their agenda webpages, can be found on the [YIMBY Melbourne website](https://www.yimbymelbourne.org.au/local-action).
+A table of scraper details, including links and current status, can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/councils.md) (`docs/councils.md`)
 
 [Write a Scraper!](#writing-a-scraper)
 
