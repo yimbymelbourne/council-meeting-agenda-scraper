@@ -5,9 +5,13 @@ from bs4 import BeautifulSoup
 
 from _dataclasses import Council, ScraperReturn
 
+import re
+date_pattern = r"\b(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{4})\b"
+time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
+
 
 def scraper() -> ScraperReturn | None:
-    webpage_url = 'https://whitehorse.infocouncil.biz/'
+    webpage_url = 'https://portphillip.infocouncil.biz/'
 
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -27,16 +31,23 @@ def scraper() -> ScraperReturn | None:
     td_name = soup.find('td', class_='bpsGridCommittee')
     if td_name:
         name = td_name.get_text()
+        name = name.rstrip('St Kilda Town Hall')
     else:
         print('td_name not found')
 
-    td_date = soup.find('td', class_='bpsGridDate')
-    if td_date:
-        date = td_date.get_text()
+    td_date_time = soup.find('td', class_='bpsGridDate')
+    if td_date_time:
+        date_time = td_date_time.get_text()
+        # splits council-provided "dd mm yytime" into "dd mm yy" + "time"
+        split_dt = re.split(r"\s", date_time)
+        day = split_dt[0]
+        month = split_dt[1]
+        year = split_dt[2][:4]
+        time = split_dt[2][4:]
+        date = day + ' ' + month + ' ' + year
     else:
-        print('td_date not found')
+        print('td_date_time not found')
 
-    # gets download url
     td_download_url = soup.find('td', class_='bpsGridAgenda')
     if td_download_url:
         download_url_line = soup.find('a', class_='bpsGridPDFLink')
@@ -59,8 +70,8 @@ def scraper() -> ScraperReturn | None:
     return scraper_return
 
 
-whitehorse = Council(
-    name='Whitehorse',
+port_phillip = Council(
+    name='Port Phillip',
     scraper=scraper,
 )
 
