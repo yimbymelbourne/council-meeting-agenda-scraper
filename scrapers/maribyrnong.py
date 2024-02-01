@@ -74,7 +74,6 @@ def scraper() -> ScraperReturn|None:
     print('meeting-time not found;\ntime not extracted.')
 
   
-  
   accordion_header = soup.find('div', class_='accordion-list-item-container')
   if accordion_header:
     h2 = accordion_header.find('h2', class_='item-text')
