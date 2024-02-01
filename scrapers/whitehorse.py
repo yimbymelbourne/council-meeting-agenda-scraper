@@ -66,5 +66,3 @@ whitehorse = Council(
     scraper=scraper,
 )
 
-
-scraper()
