@@ -28,7 +28,8 @@ def processor(council: Council):
   
   print('PDF downloaded! Reading PDF into memory...')
   text = read_pdf(council.name)
-  with open(f'{council.name}_latest.txt', 'w') as f:
+  #writing pdf contents to text file
+  with open(f'{council.name}_latest.txt', 'w', encoding="utf-8") as f:
     f.write(text)
   
   print('PDF read! Parsing PDF...')
@@ -40,11 +41,11 @@ def processor(council: Council):
   
   print('Sending email...')
   
-  email_body = write_email(council, scraper_results, parser_results)
+  #email_body = write_email(council, scraper_results, parser_results)
 
-  send_email(config['GMAIL_ACCOUNT_RECEIVE'], 
-              f'New agenda: {council.name} {scraper_results.date} meeting', 
-              email_body)
+  #send_email(config['GMAIL_ACCOUNT_RECEIVE'], 
+              #f'New agenda: {council.name} {scraper_results.date} meeting', 
+              #email_body)
   
   print(f'Finished with {council.name}.')  
   
