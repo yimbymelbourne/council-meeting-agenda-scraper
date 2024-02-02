@@ -26,12 +26,13 @@ def processor(council: Council):
 
     print("Link scraped! Downloading PDF...")
     download_pdf(scraper_results.download_url, council.name)
-    print("PDF downloaded!")
 
+    print("PDF downloaded!")
     print("Reading PDF into memory...")
     text = read_pdf(council.name)
     with open(f"files/{council.name}_latest.txt", "w") as f:
         f.write(text)
+
     print("PDF read! Parsing PDF...")
     parser_results = parse_pdf(council.regexes, text)
 
@@ -61,16 +62,6 @@ def processor(council: Council):
 
 
 def main():
-    if not os.path.exists("./agendas.db"):
-        db.init()
-
-    for council in councils:
-        processor(council)
-
-
-if __name__ == "__main__":
-    main()
-
     if not os.path.exists("./agendas.db"):
         db.init()
 

@@ -2,7 +2,6 @@ import requests
 import re
 import os.path
 
-from pypdf import PdfReader
 import fitz
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -27,7 +26,7 @@ def read_pdf(council_name: str):
     doc = fitz.open(f"files/{council_name}_latest.pdf")
     text = ""
     for page in doc:
-        text += page.getText()
+        text += page.get_text()
     return text
 
 
@@ -58,11 +57,7 @@ def write_email(
 ) -> str:
     email_body = f"Hello,\n\nThe agenda for the {scraper_result.date} {council.name} meeting is now available for download.\n\nPlease click on the link below to download the agenda:\n{scraper_result.download_url}\n\n"
 
-    if int(config["OPENAI_FUNCTIONALITY"]) == 1:
-        email_body += "Here is the meeting summary as prepared by YIMBY_AI:\n\n"
-        email_body += AI_results
-        pass
-    elif parser_results["keyword_matches"]:
+    if parser_results["keyword_matches"]:
         email_body += "Here are the matches found in the agenda:\n"
         email_body += "\nKeyword matches:\n"
         for regex, count in parser_results["keyword_matches"].items():
