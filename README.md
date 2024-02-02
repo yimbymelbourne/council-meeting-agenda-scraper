@@ -17,9 +17,11 @@ This enables YIMBY Melbourne and other organisations to keep easy track of relev
 - port_phillip
 - whitehorse
 
-A table of scraper details, including links and current status, can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/councils.md) (`docs/councils.md`)
+A table of Melbourne-based scraper details, including links and current status, can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/councils.md) (`docs/councils.md`)
 
-[Write a Scraper!](#writing-a-scraper)
+A text dump of National scrapers can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/national_councils_dump.txt) (`docs/national_councils_dump.txt`)
+
+[Write a Scraper! (Instructions)](#writing-a-scraper)
 
 # Setup
 
