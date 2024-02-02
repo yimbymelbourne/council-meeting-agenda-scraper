@@ -49,7 +49,6 @@ def scraper() -> ScraperReturn | None:
         set = True
         for child in table.find_all("tr"):
             agenda_text = child.find("td", class_="column-2").text
-            print(agenda_text)
 
             if not agenda_text and set:
                 last_meeting = counter
@@ -58,13 +57,10 @@ def scraper() -> ScraperReturn | None:
                 counter = counter + 1
         if set:
             last_meeting = counter
-        print(last_meeting)
 
         last_meeting = table.find_all("tr")[last_meeting - 1]
 
         datetime = last_meeting.find("td", class_="column-1").text
-
-        print
 
         match = date_pattern.search(datetime)
         timematch = time_pattern.search(datetime)
@@ -101,7 +97,7 @@ def scraper() -> ScraperReturn | None:
     return scraper_return
 
 
-mooneevalley = Council(
+moonee_valley = Council(
     name="moonee_valley",
     scraper=scraper,
 )
