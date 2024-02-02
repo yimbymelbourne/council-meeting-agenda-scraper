@@ -30,7 +30,7 @@ def insert(
     council: Council,
     scraper_return: ScraperReturn,
     result: dict | None,
-    AI_result: str | None,
+    AI_result: str | None = None,
 ):
     date = datetime.datetime.now().strftime("%Y-%m-%d")
     if result:
