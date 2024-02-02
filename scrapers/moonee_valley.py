@@ -88,37 +88,6 @@ def scraper() -> ScraperReturn | None:
             print(agenda_link)
             download_url = agenda_link
 
-        # if(last_meeting == 0):
-        #   print('no meetings found. this will break')
-        #   print('looking through previous year.')
-
-        #   table_old = soup.find_all('table')[1].find('tbody')
-
-        #   if(table):
-
-        #     counter_old = 0
-        #     last_meeting_old = 0
-        #     set_ = True
-        #     for child in table_old.find_all('tr'):
-        #       agenda_text_ = (child.find('td', class_='column-2').text)
-        #       #print(agenda_text_)
-        #       if not agenda_text_ and set:
-        #         last_meeting_old = counter_old
-        #         set_ = False
-        #       counter_old = counter_old + 1
-        #     if(set_):
-        #       last_meeting_old = counter_old
-        #     print(last_meeting_old)
-
-        #     row = 'row-'+ str(last_meeting_old + 1)
-        #     print(row)
-        #     #now getting details once we've found the last meeting
-        #     datetime = table_old.find('tr', class_ = row).find('td', class_='column-1').text
-        #     link = table_old.find('tr', class_ = row).find('td', class_='column-2').find('a', role='link').get('href')
-        #     print(datetime)
-        #     if link:
-        #       download_url = link
-
     scraper_return = ScraperReturn(name, date, time, webpage_url, download_url)
 
     print(
