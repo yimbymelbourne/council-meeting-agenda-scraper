@@ -4,13 +4,17 @@ from .darebin import darebin
 from .boroondara import boroondara
 from .moonee_valley import moonee_valley
 from .melbourne import melbourne
+from .port_phillip import port_phillip
+from .whitehorse import whitehorse
 
 
 councils = [
-    maribyrnong,
-    merribek,
-    darebin,
     boroondara,
-    moonee_valley,
+    darebin,
+    maribyrnong,
     melbourne,
+    merribek,
+    moonee_valley,
+    port_phillip,
+    whitehorse,
 ]
