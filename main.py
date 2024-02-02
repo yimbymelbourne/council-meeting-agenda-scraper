@@ -12,7 +12,13 @@ from scrapers import councils
 
 from dotenv import dotenv_values
 
+
 config = dotenv_values(".env")
+
+
+def processor(council: Council):
+    print(f"Running {council.name} scraper...")
+    scraper_results = council.scraper()
 
 
 def processor(council: Council):
@@ -61,7 +67,7 @@ def processor(council: Council):
     db.insert(council, scraper_results, parser_results, AI_results)
     print("Database updated!")
 
-    if not config["SAVE_PDFS"] == "1":
+    if not config["SAVE_FILES"] == "1":
         os.remove(f"files/{council.name}_latest.pdf") if os.path.exists(
             f"files/{council.name}_latest.pdf"
         ) else None
@@ -73,6 +79,16 @@ def processor(council: Council):
 
 
 def main():
+    if not os.path.exists("./agendas.db"):
+        db.init()
+
+    for council in councils:
+        processor(council)
+
+
+if __name__ == "__main__":
+    main()
+
     if not os.path.exists("./agendas.db"):
         db.init()
 
