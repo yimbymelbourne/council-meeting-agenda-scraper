@@ -8,7 +8,14 @@ This enables YIMBY Melbourne and other organisations to keep easy track of relev
 
 ## List of functioning scrapers
 
-- Maribyrnong
+- boroondara
+- darebin
+- maribyrnong
+- melbourne
+- merribek
+- moonee_valley
+- port_phillip
+- whitehorse
 
 A table of scraper details, including links and current status, can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/councils.md) (`docs/councils.md`)
 
