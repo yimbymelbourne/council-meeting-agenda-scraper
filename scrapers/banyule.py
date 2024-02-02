@@ -51,7 +51,7 @@ def scraper() -> ScraperReturn | None:
         driver.quit()
 
     # Feed the HTML to BeautifulSoup
-    soup = BeautifulSoup(output, "html.parser")
+    soup = BeautifulSoup(page_content, "html.parser")
 
     name = None
     date = None
