@@ -36,21 +36,23 @@ def processor(council: Council):
     print("PDF read! Parsing PDF...")
     parser_results = parse_pdf(council.regexes, text)
 
-    print("Sending email...")
+    email_to = config.get("GMAIL_ACCOUNT_RECEIVE", None)
 
-    email_body = write_email(council, scraper_results, parser_results)
+    if email_to:
+        print("Sending email...")
+        email_body = write_email(council, scraper_results, parser_results)
 
-    send_email(
-        config["GMAIL_ACCOUNT_RECEIVE"],
-        f"New agenda: {council.name} {scraper_results.date} meeting",
-        email_body,
-    )
+        send_email(
+            email_to,
+            f"New agenda: {council.name} {scraper_results.date} meeting",
+            email_body,
+        )
 
     print("PDF parsed! Inserting into database...")
     db.insert(council, scraper_results, parser_results)
     print("Database updated!")
 
-    if not config["SAVE_FILES"] == "1":
+    if not config.get("SAVE_FILES", "0") == "1":
         os.remove(f"files/{council.name}_latest.pdf") if os.path.exists(
             f"files/{council.name}_latest.pdf"
         ) else None
