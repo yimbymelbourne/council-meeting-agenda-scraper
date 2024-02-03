@@ -1,3 +1,4 @@
+from .banyule import banyule
 from .maribyrnong import maribyrnong
 from .merribek import merribek
 from .darebin import darebin
@@ -9,6 +10,7 @@ from .whitehorse import whitehorse
 
 
 councils = [
+    banyule,
     boroondara,
     darebin,
     maribyrnong,
