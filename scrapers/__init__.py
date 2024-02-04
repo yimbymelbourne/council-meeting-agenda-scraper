@@ -1,3 +1,4 @@
+from .bayside_nsw import bayside_nsw
 from .maribyrnong import maribyrnong
 from .merribek import merribek
 from .darebin import darebin
@@ -17,4 +18,5 @@ councils = [
     moonee_valley,
     port_phillip,
     whitehorse,
+    bayside_nsw
 ]

@@ -18,6 +18,7 @@ config = dotenv_values(".env") if os.path.exists(".env") else {}
 
 def download_pdf(link: str, council_name: str):
     response = requests.get(link)
+    os.makedirs("files", exist_ok=True)
     with open(f"files/{council_name}_latest.pdf", "wb") as f:
         f.write(response.content)
 

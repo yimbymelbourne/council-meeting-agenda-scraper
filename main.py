@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+import argparse
 import os.path
 
 from functions import download_pdf, read_pdf, parse_pdf, write_email, send_email
@@ -17,6 +19,9 @@ def processor(council: Council):
     print(f"Running {council.name} scraper...")
     scraper_results = council.scraper()
 
+    if scraper_results is None:
+        print(f"No meeting found for {council.name}.")
+        return
     if not scraper_results.download_url:
         print(f"No link found for {council.name}.")
         return
@@ -62,11 +67,15 @@ def processor(council: Council):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--council", help="Scrap only this council")
+    args = parser.parse_args()
     if not os.path.exists("./agendas.db"):
         db.init()
 
     for council in councils:
-        processor(council)
+        if args.council is None or args.council == council.name:
+            processor(council)
 
 
 if __name__ == "__main__":
