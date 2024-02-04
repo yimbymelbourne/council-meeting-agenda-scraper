@@ -1,72 +1,65 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import sys
+from pathlib import Path
 
+parent_dir = str(Path(__file__).resolve().parent.parent.parent)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir) 
+
+from base_scraper import BaseScraper, register_scraper
+from logging.config import dictConfig
+from _dataclasses import ScraperReturn
 from bs4 import BeautifulSoup
-
-from _dataclasses import Council, ScraperReturn
-
-import requests
 import re
 
-_BUSINESS_PAPER_URL = "https://businesspapers.parracity.nsw.gov.au"
-_BUSINESS_PAPER_ROW_SELECTOR = "#grdMenu tbody > tr"
-_date_re = re.compile(r"\b(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{4})")
-_time_re = re.compile(r"\b(\d{1,2}.\d{2})(am|pm)\b")
 
-def _get_soup(url: str):
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(options=chrome_options)
-    wait = WebDriverWait(driver, 5)
+@register_scraper
+class ParramattaScraper(BaseScraper):
+    BUSINESS_PAPER_ROW_SELECTOR = "#grdMenu tbody > tr"
+    date_re = re.compile(r"\b(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{4})")
+    time_re = re.compile(r"\b(\d{1,2}:\d{2})(am|pm)\b")
 
-    driver.get(url)
-    output = driver.page_source
-    driver.quit()
-    return BeautifulSoup(output, "html.parser")
+    def __init__(self):
+        council = "parramatta" 
+        state = "nsw"
+        base_url = "https://businesspapers.parracity.nsw.gov.au"
+        super().__init__( council, state, base_url)
+    
+    def scraper(self) -> ScraperReturn | None:
+        self.logger.info(f"Starting {self.council_name} scraper")
+        output = self.fetch_with_selenium(self.base_url)
+        self.close()
+        soup = BeautifulSoup(output, "html.parser")
+        first_row = soup.select_one(self.BUSINESS_PAPER_ROW_SELECTOR)
+        if not first_row:
+            self.logger.error("No Business paper rows found")
+            return ScraperReturn("", "", "", self.base_url, "")
+        else:
+            name = first_row.select_one(".bpsGridCommittee").text.strip()
+
+            date_match = self.date_re.search(first_row.text)
+            date = date_match.group(0) if date_match else ""
+
+            time_match = self.time_re.search(first_row.text)
+            time = time_match.group(0) if time_match else ""
+
+            pdf_link_element = first_row.select_one("a.bpsGridPDFLink")
+            pdf_url = pdf_link_element['href'] if pdf_link_element else "PDF link not found"
+            download_url = f"{self.base_url}/{pdf_url}" if pdf_url != "PDF link not found" else pdf_url
+            self.logger.info(f"Scraped: {name}, Date: {date}, Time: {time}, PDF URL: {download_url}")
+            scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
+            self.logger.info(f"{self.council_name} scraper finished successfully")
 
 
-def _get_agenda(row) -> ScraperReturn:
-    def get_col(n):
-        return row.css.select("td:nth-of-type(%s)" % n)[0]
+        self.logger.info(f"""
+            {scraper_return.name} 
+            {scraper_return.date} 
+            {scraper_return.time} 
+            {scraper_return.webpage_url} 
+            {scraper_return.download_url}""" 
+        )
+        return scraper_return
 
-    def get_re(soup, r):
-        m = r.search(soup.text)
-        if not m:
-            return None
-        return m.group()
 
-    def get_url(n):
-        path = get_col(3).find_all('a')[n].get("href")
-        redirect = "%s/%s" % (_BUSINESS_PAPER_URL, path)
-        return requests.get(redirect).url
-
-    name = get_col(2).text
-    date = get_re(get_col(1), _date_re)
-    time = get_re(get_col(1).find("span"), _time_re)
-    time = time and time.replace('.', ':')
-
-    # The URLs here are redirects so we use
-    # requests to get the canonical url.
-    web_url = get_url(0)
-    pdf_url = get_url(1)
-
-    return ScraperReturn(
-        name=name,
-        date=date,
-        time=time,
-        webpage_url=web_url,
-        download_url=pdf_url,
-    )
-
-def scraper() -> ScraperReturn | None:
-    soup = _get_soup(_BUSINESS_PAPER_URL)
-    rows = soup.css.select(_BUSINESS_PAPER_ROW_SELECTOR)
-    return _get_agenda(rows[0])
-
-parramatta = Council(
-    name="parramatta",
-    scraper=scraper,
-)
+if __name__ == "__main__":
+    scraper = ParramattaScraper()
+    scraper.scraper()
