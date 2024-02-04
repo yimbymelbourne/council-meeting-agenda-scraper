@@ -3,7 +3,7 @@ from pathlib import Path
 
 parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
-    sys.path.append(parent_dir) 
+    sys.path.append(parent_dir)
 
 from base_scraper import BaseScraper, register_scraper
 from logging.config import dictConfig
@@ -29,14 +29,14 @@ class GlenEiraScraper(BaseScraper):
         output = self.fetch_with_selenium(initial_webpage_url)
         initial_soup = BeautifulSoup(output, "html.parser")
 
-        listing_div = initial_soup.find('div', class_='listing__list')
+        listing_div = initial_soup.find("div", class_="listing__list")
         if listing_div:
-            first_meeting_link = listing_div.find('a', class_='listing')
+            first_meeting_link = listing_div.find("a", class_="listing")
             if first_meeting_link:
-                link_to_agenda = first_meeting_link.get('href')
+                link_to_agenda = first_meeting_link.get("href")
                 self.logger.info(f"Found link to agenda: {link_to_agenda}")
                 new_url = self.base_url + link_to_agenda
-                
+
                 # Fetch and process the agenda page
                 output_new = self.fetch_with_selenium(new_url)
                 soup = BeautifulSoup(output_new, "html.parser")
@@ -44,34 +44,45 @@ class GlenEiraScraper(BaseScraper):
 
                 # Extract meeting details
                 name, date, time, download_url = self.extract_meeting_details(soup)
-                
-                self.logger.info(f"Scraped: {name}, Date: {date}, Time: {time}, PDF URL: {download_url}")
+
+                self.logger.info(
+                    f"Scraped: {name}, Date: {date}, Time: {time}, PDF URL: {download_url}"
+                )
                 return ScraperReturn(name, date, time, self.base_url, download_url)
         self.logger.error("Failed to find meeting details.")
         return None
 
     def extract_meeting_details(self, soup):
         name = date = time = download_url = None
-        header = soup.find('header')
+        header = soup.find("header")
         if header:
-            name = header.find('p', class_='h5').text.strip()
-            meeting_datetime = header.find('span', class_='page-title__text').text.strip()
-            date = self.date_pattern.search(meeting_datetime).group(0) if self.date_pattern.search(meeting_datetime) else "Date not found"
-        
-        introduction = soup.find('div', id = 'introduction') 
+            name = header.find("p", class_="h5").text.strip()
+            meeting_datetime = header.find(
+                "span", class_="page-title__text"
+            ).text.strip()
+            date = (
+                self.date_pattern.search(meeting_datetime).group(0)
+                if self.date_pattern.search(meeting_datetime)
+                else "Date not found"
+            )
+
+        introduction = soup.find("div", id="introduction")
         if introduction:
-            time_match = self.time_pattern.search(introduction.text)                      
+            time_match = self.time_pattern.search(introduction.text)
             if time_match:
                 extracted_time = time_match.group()
                 time = extracted_time
             else:
                 print("No time found in the input string.")
 
-        resource_link = soup.find('a', class_='resource__link')
+        resource_link = soup.find("a", class_="resource__link")
         if resource_link:
-            download_url = resource_link.get('href') if resource_link else "PDF link not found"
+            download_url = (
+                resource_link.get("href") if resource_link else "PDF link not found"
+            )
 
         return name, date, time, download_url
+
 
 if __name__ == "__main__":
     scraper = GlenEiraScraper()

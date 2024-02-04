@@ -1,8 +1,9 @@
 from pathlib import Path
 import sys
+
 parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
-    sys.path.append(parent_dir) 
+    sys.path.append(parent_dir)
 
 from base_scraper import BaseScraper, register_scraper
 from logging.config import dictConfig
@@ -10,19 +11,19 @@ from _dataclasses import ScraperReturn
 from bs4 import BeautifulSoup
 import re
 
+
 @register_scraper
 class MelbourneScraper(BaseScraper):
     def __init__(self):
         base_url = "https://www.melbourne.vic.gov.au"
         super().__init__("melbourne", "VIC", base_url)
         self.date_pattern = re.compile(
-                            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
-                            )
+            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
+        )
         self.time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
 
-
     def scraper(self) -> ScraperReturn | None:
-        
+
         webpage_url = "https://www.melbourne.vic.gov.au/pages/meetings-finder.aspx?type=41&attach=False"
 
         # Get the HTML
@@ -60,7 +61,6 @@ class MelbourneScraper(BaseScraper):
         new_output = self.fetch_with_selenium(agenda_link)
         self.close()
         # Get the HTML
-
 
         newsoup = BeautifulSoup(new_output, "html.parser")
 

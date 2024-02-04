@@ -3,7 +3,7 @@ from pathlib import Path
 
 parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
-    sys.path.append(parent_dir) 
+    sys.path.append(parent_dir)
 
 from base_scraper import BaseScraper, register_scraper
 from logging.config import dictConfig
@@ -17,10 +17,9 @@ class DarebinScraper(BaseScraper):
     def __init__(self):
         super().__init__(f"darebin", "VIC", "https://www.darebin.vic.gov.au")
         self.date_pattern = re.compile(
-                            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
-                            )
+            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
+        )
         self.time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
-
 
     def scraper(self) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
@@ -47,7 +46,9 @@ class DarebinScraper(BaseScraper):
         if target_a_tag:
             self.logger.debug("a tag found")
         else:
-            self.logger.debug("No 'a' tag with 'agenda' in the href attribute found on the page.")
+            self.logger.debug(
+                "No 'a' tag with 'agenda' in the href attribute found on the page."
+            )
 
         href_value = target_a_tag.get("href")
         if href_value:
@@ -80,7 +81,8 @@ class DarebinScraper(BaseScraper):
 
         scraper_return = ScraperReturn(name, date, time, webpage_url, download_url)
 
-        self.logger.info(f"""
+        self.logger.info(
+            f"""
             {scraper_return.name}
             {scraper_return.date}
             {scraper_return.time}
@@ -90,6 +92,7 @@ class DarebinScraper(BaseScraper):
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
+
 
 if __name__ == "__main__":
     scraper = DarebinScraper()

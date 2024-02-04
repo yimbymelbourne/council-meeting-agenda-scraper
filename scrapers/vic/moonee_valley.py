@@ -3,7 +3,7 @@ from pathlib import Path
 
 parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
-    sys.path.append(parent_dir) 
+    sys.path.append(parent_dir)
 
 from base_scraper import BaseScraper, register_scraper
 from logging.config import dictConfig
@@ -11,26 +11,25 @@ from _dataclasses import ScraperReturn
 from bs4 import BeautifulSoup
 import re
 
+
 @register_scraper
 class MooneeValleyScraper(BaseScraper):
     def __init__(self):
-        council = "moonee_valley" 
+        council = "moonee_valley"
         state = "VIC"
         base_url = "https://mvcc.vic.gov.au"
-        super().__init__( council, state, base_url)
+        super().__init__(council, state, base_url)
         self.date_pattern = re.compile(
-                    r"\d{1,2}\s(January|February|March|April|May|June|July|August|September|October|November|December)"
-                )
+            r"\d{1,2}\s(January|February|March|April|May|June|July|August|September|October|November|December)"
+        )
         self.time_pattern = re.compile(r"\b\d{1,2}\.\d{2}(?:am|pm)\b")
 
-
     def scraper(self) -> ScraperReturn | None:
-       
+
         webpage_url = "https://mvcc.vic.gov.au/my-council/council-meetings/"
 
         output = self.fetch_with_selenium(webpage_url)
         self.close()
-
 
         # Feed the HTML to BeautifulSoup
         soup = BeautifulSoup(output, "html.parser")
@@ -79,7 +78,9 @@ class MooneeValleyScraper(BaseScraper):
             else:
                 print("no match found for time")
 
-            agenda_link = last_meeting.find("td", class_="column-2").find("a").get("href")
+            agenda_link = (
+                last_meeting.find("td", class_="column-2").find("a").get("href")
+            )
             if agenda_link:
                 print(agenda_link)
                 download_url = agenda_link
