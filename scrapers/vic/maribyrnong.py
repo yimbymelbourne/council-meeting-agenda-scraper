@@ -13,7 +13,7 @@ import re
 @register_scraper
 class MaribyrnongScraper(BaseScraper):
     def __init__(self):
-        council_name = "Maribyrnong"
+        council_name = "maribyrnong"
         state = "VIC"
         base_url = "https://www.maribyrnong.vic.gov.au/"
         super().__init__(council_name, state, base_url)

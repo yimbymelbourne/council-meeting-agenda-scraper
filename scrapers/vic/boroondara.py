@@ -16,7 +16,10 @@ import re
 @register_scraper
 class BoroondaraScraper(BaseScraper):
     def __init__(self):
-        super().__init__("Boroondara", "Vic", "https://www.boroondara.vic.gov.au")
+        council = "boroondara" 
+        state = "Vic"
+        base_url = "https://www.boroondara.vic.gov.au"
+        super().__init__( council, state, base_url)
         self.date_pattern = re.compile(
                         r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
                         )

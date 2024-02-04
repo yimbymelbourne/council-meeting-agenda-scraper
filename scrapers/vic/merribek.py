@@ -1,97 +1,92 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import sys
+from pathlib import Path
 
+parent_dir = str(Path(__file__).resolve().parent.parent.parent)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir) 
+
+from base_scraper import BaseScraper, register_scraper
+from logging.config import dictConfig
+from _dataclasses import ScraperReturn
 from bs4 import BeautifulSoup
-
-from _dataclasses import Council, ScraperReturn
-
 import re
 
-date_pattern = re.compile(
-    r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
-)
-time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
+
+@register_scraper
+class MerribekScraper(BaseScraper):
+    def __init__(self):
+        base_url = "https://www.merri-bek.vic.gov.au"
+        super().__init__("merri_bek", "Vic", base_url)
+        self.date_pattern = re.compile(
+            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
+        )
+        self.time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
 
 
-def scraper() -> ScraperReturn | None:
-    base_url = "https://www.merri-bek.vic.gov.au"
-    webpage_url = "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/council-meeting-minutes/"
+    def scraper(self) -> ScraperReturn | None:
+        webpage_url = "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/council-meeting-minutes/"
+        output = self.fetch_with_selenium(webpage_url)
+        self.close()
 
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(options=chrome_options)
-    wait = WebDriverWait(driver, 5)
+        # Feed the HTML to BeautifulSoup
+        soup = BeautifulSoup(output, "html.parser")
 
-    driver.get(webpage_url)
+        name = None
+        date = None
+        time = None
+        download_url = None
 
-    # Get the HTML
-    output = driver.page_source
+        target_a_tag = soup.find("a", href=lambda href: href and "agenda" in href)
 
-    driver.quit()
-
-    # Feed the HTML to BeautifulSoup
-    soup = BeautifulSoup(output, "html.parser")
-
-    name = None
-    date = None
-    time = None
-    download_url = None
-
-    target_a_tag = soup.find("a", href=lambda href: href and "agenda" in href)
-
-    # Print the result
-    if target_a_tag:
-        print("a tag found")
-    else:
-        print("No 'a' tag with 'agenda' in the href attribute found on the page.")
-
-    href_value = target_a_tag.get("href")
-    if href_value:
-        download_url = base_url + href_value
-        print("download url set")
-    else:
-        print("link not found.")
-
-    txt_value = target_a_tag.string
-    if txt_value:
-        match = date_pattern.search(txt_value)
-
-        # Extract the matched date
-        if match:
-            extracted_date = match.group()
-            print("Extracted Date:", extracted_date)
-            date = extracted_date
-
+        # Print the result
+        if target_a_tag:
+            print("a tag found")
         else:
-            print("No date found in the input string.")
+            print("No 'a' tag with 'agenda' in the href attribute found on the page.")
 
-    grandparent_el = target_a_tag.parent.parent.parent.h3
-    el_name = (grandparent_el).text
+        href_value = target_a_tag.get("href")
+        if href_value:
+            download_url = self.base_url + href_value
+            print("download url set")
+        else:
+            print("link not found.")
 
-    el_name = date_pattern.sub("", el_name)
-    name = el_name
+        txt_value = target_a_tag.string
+        if txt_value:
+            match = self.date_pattern.search(txt_value)
 
-    if name == "":
-        name = "Council Agenda"
+            # Extract the matched date
+            if match:
+                extracted_date = match.group()
+                print("Extracted Date:", extracted_date)
+                date = extracted_date
 
-    print("~~~")
-    scraper_return = ScraperReturn(name, date, time, webpage_url, download_url)
+            else:
+                print("No date found in the input string.")
 
-    print(
-        scraper_return.name,
-        scraper_return.date,
-        scraper_return.time,
-        scraper_return.webpage_url,
-        scraper_return.download_url,
-    )
+        grandparent_el = target_a_tag.parent.parent.parent.h3
+        el_name = (grandparent_el).text
 
-    return scraper_return
+        el_name = self.date_pattern.sub("", el_name)
+        name = el_name
+
+        if name == "":
+            name = "Council Agenda"
+
+        print("~~~")
+        scraper_return = ScraperReturn(name, date, time, webpage_url, download_url)
+
+        print(
+            scraper_return.name,
+            scraper_return.date,
+            scraper_return.time,
+            scraper_return.webpage_url,
+            scraper_return.download_url,
+        )
+
+        return scraper_return
 
 
-merribek = Council(
-    name="merribek",
-    scraper=scraper,
-)
+if __name__ == "__main__":
+    scraper = MerribekScraper()
+    scraper.scraper()
