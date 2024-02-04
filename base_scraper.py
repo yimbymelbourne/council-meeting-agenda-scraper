@@ -7,25 +7,27 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 scraper_registry = {}
 
+
 def register_scraper(cls):
     scraper_registry[cls.__name__] = cls()
     return cls
 
+
 class BaseScraper:
     DEFAULTHEADERS = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Referer': 'https://www.google.com/',
-        'Connection': 'keep-alive',
-        'Accept': 'application/json, text/html, application/xml, text/plain',
-    }    
-      
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://www.google.com/",
+        "Connection": "keep-alive",
+        "Accept": "application/json, text/html, application/xml, text/plain",
+    }
+
     def __init__(self, council_name, state, base_url):
         self.council_name = council_name
         self.state = state
-        self.base_url = base_url        
+        self.base_url = base_url
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.logger.info(f"{self.__class__.__name__} initialized")        
+        self.logger.info(f"{self.__class__.__name__} initialized")
         self.session = requests.Session()
         self.set_headers(self.DEFAULTHEADERS)
         self.driver = None
@@ -53,8 +55,8 @@ class BaseScraper:
             self.setup_selenium_driver()
         return self.driver
 
-    def fetch_with_requests(self, url, method='GET', **kwargs):     
-        if method.upper() == 'POST':
+    def fetch_with_requests(self, url, method="GET", **kwargs):
+        if method.upper() == "POST":
             response = self.session.post(url, **kwargs)
         else:
             response = self.session.get(url, **kwargs)

@@ -3,7 +3,7 @@ from pathlib import Path
 
 parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
-    sys.path.append(parent_dir) 
+    sys.path.append(parent_dir)
 
 from base_scraper import BaseScraper, register_scraper
 from logging.config import dictConfig
@@ -21,7 +21,6 @@ class MerribekScraper(BaseScraper):
             r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
         )
         self.time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
-
 
     def scraper(self) -> ScraperReturn | None:
         webpage_url = "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/council-meeting-minutes/"

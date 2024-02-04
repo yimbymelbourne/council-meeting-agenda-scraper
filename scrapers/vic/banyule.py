@@ -3,7 +3,7 @@ from pathlib import Path
 
 parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
-    sys.path.append(parent_dir) 
+    sys.path.append(parent_dir)
 
 from base_scraper import BaseScraper, register_scraper
 from selenium import webdriver
@@ -17,13 +17,14 @@ from _dataclasses import ScraperReturn
 from bs4 import BeautifulSoup
 import re
 
+
 @register_scraper
 class BanyuleScraper(BaseScraper):
     def __init__(self):
-        council = "banyule" 
+        council = "banyule"
         state = "VIC"
         base_url = "https://www.banyule.vic.gov.au"
-        super().__init__( council, state, base_url)
+        super().__init__(council, state, base_url)
         self.time_pattern = re.compile(r"\d+:\d+\s?[apmAPM]+")
 
     def scraper(self) -> ScraperReturn | None:
@@ -104,7 +105,6 @@ class BanyuleScraper(BaseScraper):
         # )
 
         # return scraper_return
-
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ from pathlib import Path
 
 parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
-    sys.path.append(parent_dir) 
+    sys.path.append(parent_dir)
 
 from base_scraper import BaseScraper, register_scraper
 from logging.config import dictConfig
@@ -12,23 +12,22 @@ from bs4 import BeautifulSoup
 import re
 
 
-
 @register_scraper
 class BoroondaraScraper(BaseScraper):
     def __init__(self):
-        council = "boroondara" 
+        council = "boroondara"
         state = "VIC"
         base_url = "https://www.boroondara.vic.gov.au"
-        super().__init__( council, state, base_url)
+        super().__init__(council, state, base_url)
         self.date_pattern = re.compile(
-                        r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
-                        )
+            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
+        )
         self.time_pattern = re.compile(r"\b\d{1,2}:\d{2} [apmAPM]+\b")
 
     def scraper(self) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = "https://www.boroondara.vic.gov.au/about-council/councillors-and-meetings/council-and-committee-meetings/past-meeting-minutes-agendas-and-video-recordings"
-        
+
         output = self.fetch_with_selenium(initial_webpage_url)
         # boroondara doesn't have the agenda pdfs on the same page as the list of meetings - need to first find the link to the newest agenda and then read source from that page
 
@@ -119,12 +118,13 @@ class BoroondaraScraper(BaseScraper):
         # print("~~~")
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
 
-        self.logger.info(f"""
+        self.logger.info(
+            f"""
             {scraper_return.name} 
             {scraper_return.date} 
             {scraper_return.time} 
             {scraper_return.webpage_url} 
-            {scraper_return.download_url}""" 
+            {scraper_return.download_url}"""
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
