@@ -1,30 +1,33 @@
+import sys
+from pathlib import Path
+
+parent_dir = str(Path(__file__).resolve().parent.parent.parent)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir) 
+
 from base_scraper import BaseScraper, register_scraper
 from logging.config import dictConfig
 from bs4 import BeautifulSoup
 from _dataclasses import Council, ScraperReturn
 import re
 
-date_pattern = re.compile(
-    r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
-)
-time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
 
 @register_scraper
 class DarebinScraper(BaseScraper):
     def __init__(self):
         super().__init__(f"Darebin", "Vic", "https://www.darebin.vic.gov.au")
+        self.date_pattern = re.compile(
+                            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
+                            )
+        self.time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
+
 
     def scraper(self) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
         webpage_url = "https://www.darebin.vic.gov.au/About-Council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2024-Council-meeting-agendas-and-minutes"
 
-        self.setup_selenium_driver()  # Ensure Selenium is ready for use
-        self.driver.get(webpage_url)
-        output = self.driver.page_source   
-
-        # Get the HTML
-        output = self.driver.page_source
-        self.driver.close()
+        output = self.fetch_with_selenium(webpage_url)
+        self.close()
 
         # Feed the HTML to BeautifulSoup
         soup = BeautifulSoup(output, "html.parser")
@@ -58,7 +61,7 @@ class DarebinScraper(BaseScraper):
         self.logger.debug(txt_value)
         if txt_value:
             # extract the date from txt_value
-            match = date_pattern.search(txt_value)
+            match = self.date_pattern.search(txt_value)
 
             # Extract the matched date
             if match:
@@ -69,7 +72,7 @@ class DarebinScraper(BaseScraper):
                 self.logger.debug("No date found in the input string.")
 
             # extract the name from text value
-        name_ = date_pattern.sub("", txt_value)
+        name_ = self.date_pattern.sub("", txt_value)
         name = name_
 
         if name == "":
@@ -85,6 +88,9 @@ class DarebinScraper(BaseScraper):
             {scraper_return.download_url}
             """
         )
-
+        self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
 
+if __name__ == "__main__":
+    scraper = DarebinScraper()
+    scraper.scraper()

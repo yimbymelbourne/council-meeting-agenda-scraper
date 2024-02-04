@@ -103,13 +103,13 @@ def processor(council_name, state, scraper_results, scraper_instance):
     db.insert(council, scraper_results, parser_results)
     logging.info("Database updated!")
 
-    # if not config["SAVE_FILES"] == "1":
-    #     os.remove(f"files/{council.name}_latest.pdf") if os.path.exists(
-    #         f"files/{council.name}_latest.pdf"
-    #     ) else None
-    #     os.remove(f"files/{council.name}_latest.txt") if os.path.exists(
-    #         f"files/{council.name}_latest.txt"
-    #     ) else None
+    if not config["SAVE_FILES"] == "1":
+        os.remove(f"files/{council.name}_latest.pdf") if os.path.exists(
+            f"files/{council.name}_latest.pdf"
+        ) else None
+        os.remove(f"files/{council.name}_latest.txt") if os.path.exists(
+            f"files/{council.name}_latest.txt"
+        ) else None
 
     logging.info(f"Finished with {council.name}.")
 

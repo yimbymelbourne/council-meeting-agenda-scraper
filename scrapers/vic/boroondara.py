@@ -1,3 +1,10 @@
+import sys
+from pathlib import Path
+
+parent_dir = str(Path(__file__).resolve().parent.parent.parent)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir) 
+
 from base_scraper import BaseScraper, register_scraper
 from logging.config import dictConfig
 from _dataclasses import ScraperReturn
@@ -19,11 +26,7 @@ class BoroondaraScraper(BaseScraper):
         self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = "https://www.boroondara.vic.gov.au/about-council/councillors-and-meetings/council-and-committee-meetings/past-meeting-minutes-agendas-and-video-recordings"
         
-        self.setup_selenium_driver()  # Ensure Selenium is ready for use
-
-        self.driver.get(initial_webpage_url)
-        output = self.driver.page_source
-
+        output = self.fetch_with_selenium(initial_webpage_url)
         # boroondara doesn't have the agenda pdfs on the same page as the list of meetings - need to first find the link to the newest agenda and then read source from that page
 
         name = None
@@ -73,10 +76,9 @@ class BoroondaraScraper(BaseScraper):
         new_url = self.base_url + link_to_agenda
         self.logger.info(new_url)
 
-        self.driver.get(new_url)
+        output_new = self.fetch_with_selenium(new_url)
 
         # Get the HTML
-        output_new = self.driver.page_source
         soup = BeautifulSoup(output_new, "html.parser")
         self.close()
         # first need to find the agenda h3 because the divs of interest are below it
@@ -121,7 +123,10 @@ class BoroondaraScraper(BaseScraper):
             {scraper_return.webpage_url} 
             {scraper_return.download_url}""" 
         )
-        self.logger.info("Boroondara scraper finished successfully")
+        self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
 
 
+if __name__ == "__main__":
+    scraper = BoroondaraScraper()
+    scraper.scraper()
