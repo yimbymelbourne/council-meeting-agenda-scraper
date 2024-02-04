@@ -16,7 +16,7 @@ import re
 class MerribekScraper(BaseScraper):
     def __init__(self):
         base_url = "https://www.merri-bek.vic.gov.au"
-        super().__init__("merri_bek", "Vic", base_url)
+        super().__init__("merri_bek", "VIC", base_url)
         self.date_pattern = re.compile(
             r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
         )

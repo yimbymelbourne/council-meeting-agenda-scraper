@@ -15,7 +15,7 @@ import re
 class MooneeValleyScraper(BaseScraper):
     def __init__(self):
         council = "moonee_valley" 
-        state = "Vic"
+        state = "VIC"
         base_url = "https://mvcc.vic.gov.au"
         super().__init__( council, state, base_url)
         self.date_pattern = re.compile(

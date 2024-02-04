@@ -15,7 +15,7 @@ import re
 @register_scraper
 class DarebinScraper(BaseScraper):
     def __init__(self):
-        super().__init__(f"darebin", "Vic", "https://www.darebin.vic.gov.au")
+        super().__init__(f"darebin", "VIC", "https://www.darebin.vic.gov.au")
         self.date_pattern = re.compile(
                             r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
                             )

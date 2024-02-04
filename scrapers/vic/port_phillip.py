@@ -16,7 +16,7 @@ import re
 class PortPhilipScraper(BaseScraper):
     def __init__(self):
         council = "port_philip" 
-        state = "Vic"
+        state = "VIC"
         base_url = "https://www.portphillip.vic.gov.au/"
         super().__init__( council, state, base_url)
         self.date_pattern = r"\b(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{4})\b"

@@ -15,7 +15,7 @@ import re
 class WhitehorseScraper(BaseScraper):
     def __init__(self):
         council = "whitehorse" 
-        state = "Vic"
+        state = "VIC"
         base_url = "https://www.whitehorse.vic.gov.au/"
         super().__init__( council, state, base_url)
 

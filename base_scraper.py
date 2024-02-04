@@ -17,7 +17,7 @@ class BaseScraper:
         'Accept-Language': 'en-US,en;q=0.9',
         'Referer': 'https://www.google.com/',
         'Connection': 'keep-alive',
-        'accept': 'application/json'
+        'Accept': 'application/json, text/html, application/xml, text/plain',
     }    
       
     def __init__(self, council_name, state, base_url):
@@ -47,6 +47,11 @@ class BaseScraper:
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         self.driver = webdriver.Chrome(options=chrome_options)
+
+    def get_selenium_driver(self):
+        if not self.driver:
+            self.setup_selenium_driver()
+        return self.driver
 
     def fetch_with_requests(self, url, method='GET', **kwargs):     
         if method.upper() == 'POST':

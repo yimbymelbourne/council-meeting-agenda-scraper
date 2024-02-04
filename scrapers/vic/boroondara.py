@@ -17,7 +17,7 @@ import re
 class BoroondaraScraper(BaseScraper):
     def __init__(self):
         council = "boroondara" 
-        state = "Vic"
+        state = "VIC"
         base_url = "https://www.boroondara.vic.gov.au"
         super().__init__( council, state, base_url)
         self.date_pattern = re.compile(

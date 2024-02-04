@@ -84,8 +84,12 @@ def run_scrapers():
         scraper_results = scraper_instance.scraper()
         council_name = scraper_instance.council_name
         state = scraper_instance.state
-        # Process the result    
-        processor(council_name, state, scraper_results, scraper_instance)
+        if scraper_results:
+            # Process the result 
+            processor(council_name, state, scraper_results, scraper_instance)
+        else:
+            logging.error(f"Something Broke, {council_name} scraper returned 'None'")   
+
 
 
 def main():
@@ -96,8 +100,8 @@ def main():
 
 
 if __name__ == "__main__":
-    setup_logging(level='INFO')
+    setup_logging(level='ERROR')
     logging.getLogger().name = 'YIMBY-Scraper'
-    logging.info("Application start")
+    logging.info("YIMBY SCRAPER Start")
     dynamic_import_scrapers()
     main()
