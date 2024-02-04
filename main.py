@@ -7,45 +7,13 @@ from functions import download_pdf, read_pdf, parse_pdf, write_email, send_email
 import database as db
 from _dataclasses import Council
 from base_scraper import scraper_registry
-
-
-# Web scraping
-# from scrapers import councils
+from logging_config import setup_logging
+import logging
 
 from dotenv import dotenv_values
 
 
 config = dotenv_values(".env")
-
-
-def setup_logging():
-    dictConfig({
-        'version': 1,
-        'formatters': {
-            'standard': {
-                'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
-            },
-        },
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'standard',
-                'level': 'DEBUG',
-                'stream': 'ext://sys.stdout',
-            },
-            'file': {
-                'class': 'logging.FileHandler',
-                'formatter': 'standard',
-                'level': 'DEBUG',
-                'filename': 'logs/application.log',
-                'mode': 'a',
-            },
-        },
-        'root': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-        },
-    })
 
 
 def dynamic_import_scrapers():
@@ -93,11 +61,11 @@ def processor(council_name, state, scraper_results, scraper_instance):
 
     email_body = write_email(council, scraper_results, parser_results)
 
-    # send_email(
-    #     config["GMAIL_ACCOUNT_RECEIVE"],
-    #     f"New agenda: {council.name} {scraper_results.date} meeting",
-    #     email_body,
-    # )
+    send_email(
+        config["GMAIL_ACCOUNT_RECEIVE"],
+        f"New agenda: {council.name} {scraper_results.date} meeting",
+        email_body,
+    )
 
     logging.info("PDF parsed! Inserting into database...")
     db.insert(council, scraper_results, parser_results)
@@ -130,7 +98,8 @@ def main():
 
 
 if __name__ == "__main__":
-    setup_logging()
-    dynamic_import_scrapers()
+    setup_logging(level='INFO')
+    logging.getLogger().name = 'YIMBY-Scraper'
     logging.info("Application start")
+    dynamic_import_scrapers()
     main()

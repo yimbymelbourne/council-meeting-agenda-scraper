@@ -30,7 +30,7 @@ class MaribyrnongScraper(BaseScraper):
 
         soup = BeautifulSoup(response.content, 'html.parser')
         latest_meeting_link = soup.find('a', class_='accordion-trigger minutes-trigger ajax-trigger')['href']
-        print(f"Latest meeting link: {latest_meeting_link}")
+        self.logger.debug(f"Latest meeting link: {latest_meeting_link}")
 
         meeting_response = self.fetch_with_requests(latest_meeting_link)
         if meeting_response.status_code != 200:
