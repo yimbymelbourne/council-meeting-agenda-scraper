@@ -18,17 +18,19 @@ config = dotenv_values(".env")
 
 def dynamic_import_scrapers():
     # Define the root directory for your scrapers relative to this script
-    scrapers_root = Path(__file__).parent / 'scrapers'
-    
+    scrapers_root = Path(__file__).parent / "scrapers"
+
     # Iterate over all .py files in the scrapers directory and subdirectories
-    for path in scrapers_root.rglob('*.py'):
+    for path in scrapers_root.rglob("*.py"):
         # Skip __init__.py files
-        if path.name == '__init__.py':
+        if path.name == "__init__.py":
             continue
-        
+
         # Convert the file path to a Python module path
-        module_path = path.relative_to(Path(__file__).parent).with_suffix('')  # Remove the .py suffix
-        module_name = '.'.join(module_path.parts)
+        module_path = path.relative_to(Path(__file__).parent).with_suffix(
+            ""
+        )  # Remove the .py suffix
+        module_name = ".".join(module_path.parts)
         logging.info(f"Loading {module_name}")
         # Import the module
         importlib.import_module(module_name)
@@ -70,26 +72,31 @@ def processor(council_name, state, scraper_results, scraper_instance):
     db.insert(council, scraper_results, parser_results)
     logging.info("Database updated!")
     if not config["SAVE_FILES"] == "1":
-        os.remove(f"files/{council.name}_latest.pdf") if os.path.exists(
-            f"files/{council.name}_latest.pdf"
-        ) else None
-        os.remove(f"files/{council.name}_latest.txt") if os.path.exists(
-            f"files/{council.name}_latest.txt"
-        ) else None
+        (
+            os.remove(f"files/{council.name}_latest.pdf")
+            if os.path.exists(f"files/{council.name}_latest.pdf")
+            else None
+        )
+        (
+            os.remove(f"files/{council.name}_latest.txt")
+            if os.path.exists(f"files/{council.name}_latest.txt")
+            else None
+        )
 
     logging.info(f"Finished with {council.name}.")
 
+
 def run_scrapers():
     for scraper_name, scraper_instance in scraper_registry.items():
+        logging.error(f"Running {scraper_instance.council_name} scraper")
         scraper_results = scraper_instance.scraper()
         council_name = scraper_instance.council_name
         state = scraper_instance.state
         if scraper_results:
-            # Process the result 
+            # Process the result
             processor(council_name, state, scraper_results, scraper_instance)
         else:
-            logging.error(f"Something Broke, {council_name} scraper returned 'None'")   
-
+            logging.error(f"Something broke, {council_name} scraper returned 'None'")
 
 
 def main():
@@ -100,8 +107,8 @@ def main():
 
 
 if __name__ == "__main__":
-    setup_logging(level='ERROR')
-    logging.getLogger().name = 'YIMBY-Scraper'
+    setup_logging(level="ERROR")
+    logging.getLogger().name = "YIMBY-Scraper"
     logging.info("YIMBY SCRAPER Start")
     dynamic_import_scrapers()
     main()
