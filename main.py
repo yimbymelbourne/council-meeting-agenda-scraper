@@ -37,7 +37,7 @@ def dynamic_import_scrapers():
 def processor(council_name, state, scraper_results, scraper_instance):
     # Assuming council_name matches with your council names, adjust as necessary
     council = Council(name=council_name, scraper=scraper_instance)
-
+    print(scraper_results)
     if not scraper_results.download_url:
         logging.error(f"No link found for {council.name}.")
         return
