@@ -37,9 +37,8 @@ A text dump of National scrapers can be found [in the docs](https://github.com/y
 
 # Running the application
 
-Within your environment, run: `python3 main.py > "output/scrapers_output_$(date +%Y-%m-%d).txt"`
-
-This will generate the scraper results within a text file for your convenience, as well as writing key results to `agendas.db`.
+Within your environment, run: `python main.py`
+Logs will print to your terminal and also get saved into /logs/ as well as writing key results to `agendas.db`.
 
 ## .env & Email client (optional)
 
