@@ -45,7 +45,6 @@ def processor(council_name, state, scraper_results, scraper_instance):
     if db.check_url(scraper_results.download_url):
         logging.warning(f"Link already scraped for {council.name}.")
         return
-
     logging.info("Link scraped! Downloading PDF...")
     download_pdf(scraper_results.download_url, council.name)
 

@@ -23,8 +23,8 @@ class InnerWestScraper(BaseScraper):
     def __init__(self):
         council = "inner_west"
         state = "NSW"
-        base_url = "https://www.innerwest.nsw.gov.au/"
-        super().__init__(council, state, base_url)
+        base_url = "https://innerwest.infocouncil.biz"
+        super().__init__( council, state, base_url)
 
     def scraper(self) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
