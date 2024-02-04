@@ -33,7 +33,7 @@ def setup_logging(level='INFO'):
                 'class': 'logging.FileHandler',
                 'formatter': 'standard',
                 'level': 'DEBUG',
-                'filename': 'logs/application.log',
+                'filename': log_file_path,
                 'mode': 'a',
             },
         },

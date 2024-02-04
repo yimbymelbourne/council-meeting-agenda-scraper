@@ -1,127 +1,79 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import sys
+from pathlib import Path
 
+parent_dir = str(Path(__file__).resolve().parent.parent.parent)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir) 
+
+from base_scraper import BaseScraper, register_scraper
+from logging.config import dictConfig
+from _dataclasses import ScraperReturn
 from bs4 import BeautifulSoup
-
-from _dataclasses import Council, ScraperReturn
-
-# fix revised agendas.
-
 import re
 
-date_pattern = re.compile(
-    r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
-)
-time_pattern = re.compile(r"\b\d{1,2}\.\d{2}(?:am|pm)\b")
 
+@register_scraper
+class GlenEiraScraper(BaseScraper):
+    def __init__(self):
+        # Initialize with specific council information
+        super().__init__("glen_eira", "VIC", "https://www.gleneira.vic.gov.au")
+        # Define patterns to extract date and time from text
+        self.date_pattern = re.compile(
+            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
+        )
+        self.time_pattern = re.compile(r"\b\d{1,2}\.\d{2}(?:am|pm)\b")
 
+    def scraper(self) -> ScraperReturn | None:
+        self.logger.info(f"Starting {self.council_name} scraper")
+        initial_webpage_url = f"{self.base_url}/about-council/meetings-and-agendas/council-agendas-and-minutes"
+        output = self.fetch_with_selenium(initial_webpage_url)
+        initial_soup = BeautifulSoup(output, "html.parser")
 
-def scraper() -> ScraperReturn | None:
-    base_url = "https://www.gleneira.vic.gov.au"
-    initial_webpage_url = "https://www.gleneira.vic.gov.au/about-council/meetings-and-agendas/council-agendas-and-minutes"
+        listing_div = initial_soup.find('div', class_='listing__list')
+        if listing_div:
+            first_meeting_link = listing_div.find('a', class_='listing')
+            if first_meeting_link:
+                link_to_agenda = first_meeting_link.get('href')
+                self.logger.info(f"Found link to agenda: {link_to_agenda}")
+                new_url = self.base_url + link_to_agenda
+                
+                # Fetch and process the agenda page
+                output_new = self.fetch_with_selenium(new_url)
+                soup = BeautifulSoup(output_new, "html.parser")
+                self.close()
 
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(options=chrome_options)
-    wait = WebDriverWait(driver, 5)
+                # Extract meeting details
+                name, date, time, download_url = self.extract_meeting_details(soup)
+                
+                self.logger.info(f"Scraped: {name}, Date: {date}, Time: {time}, PDF URL: {download_url}")
+                return ScraperReturn(name, date, time, self.base_url, download_url)
+        self.logger.error("Failed to find meeting details.")
+        return None
 
-    # boroondara doesn't have the agenda pdfs on the same page as the list of meetings - need to first find the link to the newest agenda and then read source from that page
-
-    name = None
-    date = None
-    time = None
-    download_url = None
-
-    driver.get(initial_webpage_url)
-    # Get the HTML
-    output = driver.page_source
-    driver.quit()
-
-    # Feed the HTML to BeautifulSoup
-    initial_soup = BeautifulSoup(output, "html.parser")
-
-    listing_div = initial_soup.find('div', class_ = 'listing__list')
-    if listing_div:
-        print('found div')
-        first_meeting = listing_div.find('a', class_ = 'listing')
-        if first_meeting:
-            print(first_meeting.get('href'))
-            link_to_agenda = first_meeting.get('href')
-
-    new_url = base_url + link_to_agenda
-    print(new_url)
-
-    driver_newpage = webdriver.Chrome(options=chrome_options)
-    wait = WebDriverWait(driver_newpage, 5)
-    driver_newpage.get(new_url)
-
-    # Get the HTML
-    output_new = driver_newpage.page_source
-    driver_newpage.quit()
-
-    soup = BeautifulSoup(output_new, "html.parser")
-
-    header = soup.find('header')
-    if header:
-        meeting_title = header.find('p', class_='h5').text
-        if meeting_title:
-            name = meeting_title
-        meeting_datetime = header.find('span', class_= 'page-title__text' ).text
-        if meeting_datetime:
-            date_match = date_pattern.search(meeting_datetime)
-            # Extract the matched date
-            if date_match:
-                extracted_date = date_match.group()
-                print("Extracted Date:", extracted_date)
-                date = extracted_date
-            else:
-                print("No date found in the input string.")
-
-        introduction = soup.find('div', id = 'introduction')
+    def extract_meeting_details(self, soup):
+        name = date = time = download_url = None
+        header = soup.find('header')
+        if header:
+            name = header.find('p', class_='h5').text.strip()
+            meeting_datetime = header.find('span', class_='page-title__text').text.strip()
+            date = self.date_pattern.search(meeting_datetime).group(0) if self.date_pattern.search(meeting_datetime) else "Date not found"
+        
+        introduction = soup.find('div', id = 'introduction') 
         if introduction:
-            print(introduction.text)
-            time_match = time_pattern.search(introduction.text)
-            
-            # Extract the matched time
+            time_match = self.time_pattern.search(introduction.text)                      
             if time_match:
                 extracted_time = time_match.group()
-                print("Extracted Date:", extracted_time)
                 time = extracted_time
             else:
                 print("No time found in the input string.")
-        else:
-            print('no introduction div found')
-    resource_div = soup.find('div', class_='layout__main-content')
-    if resource_div:
-        mb_5 = soup.find('section', class_ = 'mb-5')
-        if mb_5:
-            resource_link = mb_5.find('a', class_ = 'resource__link')
-            if resource_link:
-                download_url = resource_link.get('href')
-            else:
-                print('couldnt find link')
-        else:
-            print('cant find section')
-    else:
-        print('couldnt locate resource div')
 
-    scraper_return = ScraperReturn(name, date, time, base_url, download_url)
+        resource_link = soup.find('a', class_='resource__link')
+        if resource_link:
+            download_url = resource_link.get('href') if resource_link else "PDF link not found"
 
-    print(
-        scraper_return.name,
-        scraper_return.date,
-        scraper_return.time,
-        scraper_return.webpage_url,
-        scraper_return.download_url,
-    )
+        return name, date, time, download_url
 
-    return scraper_return
-
-
-glen_eira = Council(
-    name= "glen_eira",
-    scraper=scraper,
-)
+if __name__ == "__main__":
+    scraper = GlenEiraScraper()
+    result = scraper.scraper()
+    print(result)

@@ -37,7 +37,6 @@ def dynamic_import_scrapers():
 def processor(council_name, state, scraper_results, scraper_instance):
     # Assuming council_name matches with your council names, adjust as necessary
     council = Council(name=council_name, scraper=scraper_instance)
-    print(scraper_results)
     if not scraper_results.download_url:
         logging.error(f"No link found for {council.name}.")
         return
@@ -70,7 +69,6 @@ def processor(council_name, state, scraper_results, scraper_instance):
     logging.info("PDF parsed! Inserting into database...")
     db.insert(council, scraper_results, parser_results)
     logging.info("Database updated!")
-
     if not config["SAVE_FILES"] == "1":
         os.remove(f"files/{council.name}_latest.pdf") if os.path.exists(
             f"files/{council.name}_latest.pdf"
