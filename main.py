@@ -36,15 +36,16 @@ def processor(council: Council):
     print("PDF read! Parsing PDF...")
     parser_results = parse_pdf(council.regexes, text)
 
-    print("Sending email...")
+    if config["GMAIL_FUNCTIONALITY"] == "1":
+        print("Sending email...")
 
-    email_body = write_email(council, scraper_results, parser_results)
+        email_body = write_email(council, scraper_results, parser_results)
 
-    send_email(
-        config["GMAIL_ACCOUNT_RECEIVE"],
-        f"New agenda: {council.name} {scraper_results.date} meeting",
-        email_body,
-    )
+        send_email(
+            config["GMAIL_ACCOUNT_RECEIVE"],
+            f"New agenda: {council.name} {scraper_results.date} meeting",
+            email_body,
+        )
 
     print("PDF parsed! Inserting into database...")
     db.insert(council, scraper_results, parser_results)
@@ -64,6 +65,9 @@ def processor(council: Council):
 def main():
     if not os.path.exists("./agendas.db"):
         db.init()
+
+    if not os.path.isdir("./files"):
+        os.mkdir("./files")
 
     for council in councils:
         processor(council)
