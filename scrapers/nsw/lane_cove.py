@@ -5,20 +5,20 @@ parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
-from base_scraper import register_scraper
 from infocouncil_scraper import InfoCouncilScraper
+from base_scraper import register_scraper
 
 
 @register_scraper
-class InnerWestScraper(InfoCouncilScraper):
+class LaneCoveScraper(InfoCouncilScraper):
     def __init__(self):
-        council = "inner_west"
+        council = "lane_cove"
         state = "NSW"
-        base_url = "https://innerwest.infocouncil.biz"
-        infocouncil_url = "https://innerwest.infocouncil.biz/Default.aspx"
+        base_url = "https://lanecove.infocouncil.biz"
+        infocouncil_url = "https://lanecove.infocouncil.biz"
         super().__init__(council, state, base_url, infocouncil_url)
 
 
 if __name__ == "__main__":
-    scraper = InnerWestScraper()
+    scraper = LaneCoveScraper()
     scraper.scraper()
