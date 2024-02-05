@@ -51,7 +51,7 @@ def processor(council_name, state, scraper_results, scraper_instance):
     logging.info("PDF downloaded!")
     logging.info("Reading PDF into memory...")
     text = read_pdf(council.name)
-    with open(f"files/{council.name}_latest.txt", "w") as f:
+    with open(f"files/{council.name}_latest.txt", "w", encoding="utf-8") as f:
         f.write(text)
 
     logging.info("PDF read! Parsing PDF...")
@@ -109,7 +109,7 @@ def main():
 
 
 if __name__ == "__main__":
-    setup_logging(level="ERROR")
+    setup_logging(level="INFO")
     logging.getLogger().name = "YIMBY-Scraper"
     logging.info("YIMBY SCRAPER Start")
     dynamic_import_scrapers()
