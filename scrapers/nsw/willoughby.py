@@ -35,7 +35,7 @@ class WilloughbyNSWScraper(BaseScraper):
 
         meeting_date = soup.find('h1', class_='oc-page-title').text
         meeting_info['date'] = meeting_date
-        # Reformat their date and nonsense into proper things
+        # Normalise dates
         date_obj = datetime.strptime(meeting_date, '%d %B %Y')
         current_date = datetime.now()
         # if it's in the past BYE BYE
@@ -56,7 +56,6 @@ class WilloughbyNSWScraper(BaseScraper):
                 meeting_info['time'] = time_obj.strftime('%H:%M')
 
         # Extract agenda link
-
         agenda_link_tag = div.find('a', class_='document', href=True)
         if agenda_link_tag:
             link = agenda_link_tag['href']
@@ -82,17 +81,15 @@ class WilloughbyNSWScraper(BaseScraper):
 
         soup = BeautifulSoup(output.content, "html.parser")
 
-        ## find all articles div.accordion-list-item-container:nth-child(1) > article:nth-child(1)
+        # meetings are articles yay semantic web
         articles = soup.find_all('article')
-        # articles is now a list of all article elements
         for article in articles:
-            # Find the <a> tag within this article
             link = article.find('a', class_='accordion-trigger minutes-trigger ajax-trigger')
-            
+        
             # Check if the link exists
             if link:
-                # Extract the URL from the 'href' attribute
-                href = link.get('href')  # Using .get() is safer in case 'href' doesn't exist
+                href = link.get('href')  
+                # you can never have enough functions
                 result = self.council_minutes_scraper(href)
                 if result:
                     return result
