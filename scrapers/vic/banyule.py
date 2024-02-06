@@ -28,83 +28,75 @@ class BanyuleScraper(BaseScraper):
         self.time_pattern = re.compile(r"\d+:\d+\s?[apmAPM]+")
 
     def scraper(self) -> ScraperReturn | None:
-        return None
+        base_url = "https://www.banyule.vic.gov.au"
+        webpage_url = "https://www.banyule.vic.gov.au/About-us/Councillors-and-Council-meetings/Council-meetings/Council-meeting-agendas-and-minutes"
 
-        """
-        Needs a bit of refinement, doesn't seem to work in headless mode, and inconsistent in display mode
-        """
-        # base_url = "https://www.banyule.vic.gov.au"
-        # webpage_url = "https://www.banyule.vic.gov.au/About-us/Councillors-and-Council-meetings/Council-meetings/Council-meeting-agendas-and-minutes"
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        driver = webdriver.Chrome(options=chrome_options)
 
-        # chrome_options = Options()
-        # chrome_options.add_argument("--headless")
-        # driver = webdriver.Chrome(options=chrome_options)
+        name = None
+        date = None
+        time = None
+        page_url = None
+        download_url = None
 
-        # name = None
-        # date = None
-        # time = None
-        # download_url = None
+        # Get the index page to find all available meeting pages
+        driver.get(webpage_url)
+        main_output = driver.page_source
 
-        # driver.get(webpage_url)
+        main_soup = BeautifulSoup(main_output, "html.parser")
+        links = main_soup.find_all("a", class_="accordion-trigger")
 
-        # # Reload the page, as the first time we visit javascript does not get loaded
-        # # for some reason
-        # driver.refresh()
+        for link in links:
+            # Navigate to each linked page and look an agenda to download
+            page_url = link.get("href")
 
-        # # Open all the accordions
-        # WebDriverWait(driver, 5)
-        # driver.execute_script("Array.from(document.getElementsByClassName('accordion-trigger')).forEach(e => e.click())")
-        # WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".accordion-list-item-container .initialised")))
-        # wait = WebDriverWait(driver, 5)
-        # wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".accordion-list-item-container .initialised")))
+            driver.get(page_url)
+            page_output = driver.page_source
+            page_soup = BeautifulSoup(page_output, "html.parser")
 
-        # # Give a little time for all accordions to load, just in case. may not be necessary
-        # driver.implicitly_wait(10)
+            # Find meeting details
+            name_element = page_soup.select("ul.minutes-details-list li:nth-of-type(2) .field-value")[0]
+            name = name_element and name_element.text
+            date_element = page_soup.find("span", class_="minutes-date")
+            date = date_element and date_element.text
+            time_element = page_soup.find("div", class_="meeting-time")
 
-        # # Get the HTML
-        # output = driver.page_source
-        # driver.quit()
+            if time_element:
+                time_match = self.time_pattern.search(time_element.text)
+                if time_match:
+                    time = time_match.group()
 
-        # # Feed the HTML to BeautifulSoup
-        # initial_soup = BeautifulSoup(output, "html.parser")
+            # Find the link to the document
+            document_link = page_soup.find("a", class_="document")
+            if not document_link:
+                self.logger.info(f"No agenda for {date}, continuing...")
+                continue
 
-        # sections = initial_soup.find_all("div", class_="accordion-list-item-container")
+            self.logger.info(f"Found agenda for {date}")
 
-        # for section in sections:
-        #     document_link = section.find("a", class_="document")
-        #     if not document_link:
-        #         continue
+            download_url = base_url + document_link.get("href")
+            break
 
-        #     name_element = section.find("span", class_="meeting-type")
-        #     name = name_element and name_element.text
-        #     date_element = section.find("span", class_="minutes-date")
-        #     date = date_element and date_element.text
-        #     time_element = section.find("div", class_="meeting-time")
+        # Close the browser
+        driver.quit()
 
-        #     if time_element:
-        #         time_match = self.time_pattern.search(time_element.text)
-        #         if time_match:
-        #             time = time_match.group()
+        if not download_url:
+            self.logger.info("Failed to find any meeting agendas")
+            return None
 
-        #     download_url = base_url + document_link.get("href")
-        #     break
-
-        # if not download_url:
-        #     print("Failed to find any meeting agendas")
-        #     return None
-
-        # print("~~~")
-        # scraper_return = ScraperReturn(name, date, time, base_url, download_url)
-
-        # print(
-        #     scraper_return.name,
-        #     scraper_return.date,
-        #     scraper_return.time,
-        #     scraper_return.webpage_url,
-        #     scraper_return.download_url,
-        # )
-
-        # return scraper_return
+        scraper_return = ScraperReturn(name, date, time, page_url, download_url)
+        self.logger.info(
+            f"""
+            {scraper_return.name} 
+            {scraper_return.date} 
+            {scraper_return.time} 
+            {scraper_return.webpage_url} 
+            {scraper_return.download_url}"""
+        )
+        self.logger.info(f"{self.council_name} scraper finished successfully")
+        return scraper_return
 
 
 if __name__ == "__main__":
