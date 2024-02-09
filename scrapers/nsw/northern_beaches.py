@@ -12,7 +12,7 @@ from base_scraper import register_scraper
 @register_scraper
 class NorthernBeachesScraper(InfoCouncilScraper):
     def __init__(self):
-        council = "northernbeaches"
+        council = "northern_beaches"
         state = "NSW"
         base_url = "https://www.northernbeaches.nsw.gov.au/"
         infocouncil_url = "https://northernbeaches.infocouncil.biz/"
