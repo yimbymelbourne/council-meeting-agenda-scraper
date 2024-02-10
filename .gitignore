@@ -1,6 +1,7 @@
 # environment
 .env
 .venv
+.vscode
 
 # files
 files/*
