@@ -8,8 +8,9 @@ This enables YIMBY Melbourne and other organisations to keep easy track of relev
 
 ## List of functioning scrapers
 
-### Melbourne: 9/18
-### Sydney: 6/30
+### Melbourne: 10/18
+
+### Sydney: 16/30
 
 Scraper details, including links and current status, can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/councils.md) (`docs/councils.md`)
 
@@ -33,6 +34,8 @@ Preferred code formatter is [Black](https://github.com/psf/black).
 
 Within your environment, run: `python main.py`
 Logs will print to your terminal and also get saved into /logs/ as well as writing key results to `agendas.db`.
+
+You can run an individual scraper by running `python dir/to/scraper.py`.
 
 ## .env & Email client (optional)
 
