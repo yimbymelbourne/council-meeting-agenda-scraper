@@ -26,11 +26,6 @@ class CanadaBayScraper(BaseScraper):
     def scraper(self) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
 
-        # self.logger.error(f"{self.council_name} is without a Scraper, can you help?")
-        # return None
-        """
-        YOUR CODE HERE
-        """
         webpage_url = (
             "https://www.canadabay.nsw.gov.au/council/about-council/council-meetings"
         )
