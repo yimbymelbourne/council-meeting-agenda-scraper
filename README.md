@@ -8,9 +8,9 @@ This enables YIMBY Melbourne and other organisations to keep easy track of relev
 
 ## List of functioning scrapers
 
-### Melbourne: 9/18
+### Melbourne: 10/18
 
-### Sydney: 6/30
+### Sydney: 16/30
 
 Scraper details, including links and current status, can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/councils.md) (`docs/councils.md`)
 
