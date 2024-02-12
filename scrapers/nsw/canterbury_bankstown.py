@@ -24,7 +24,7 @@ class CanterburyBankstownScraper(BaseScraper):
 
         name = None
         date = None
-        time = None
+        time = "18:30"
         webpage_url = "https://www.cbcity.nsw.gov.au/council/Councilmeetings-reports-committees/council-meeting-agendas-minutes"
         download_url = None
 
