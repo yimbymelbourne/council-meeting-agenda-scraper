@@ -59,7 +59,6 @@ class YarraScraper(BaseScraper):
         download_url = self.base_url + download_url
 
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
-        print(scraper_return)
 
         self.logger.info(
             f"""
