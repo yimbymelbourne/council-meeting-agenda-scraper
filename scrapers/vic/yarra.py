@@ -9,9 +9,10 @@ from base_scraper import BaseScraper, register_scraper
 from logging.config import dictConfig
 from _dataclasses import ScraperReturn
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
 import re
 
+time_pattern = r'\d{1,2}\.\d{2}(?:am|pm)'
+date_pattern = r'\d{1,2}\s(?:January|February|March|April|May|June|July|August|September|October|November|December)\s\d{4}'
 
 @register_scraper
 class YarraScraper(BaseScraper):
@@ -46,12 +47,19 @@ class YarraScraper(BaseScraper):
         soup = BeautifulSoup(agenda_output, "html.parser")
 
         name = soup.find('h1', class_='heading').text
-        date = soup.find('p', class_='lead').text
-        date = date.strip()
+
+        date_time_p = soup.find('strong', string='Date and time:').find_parent('p')
+        date_time = date_time_p.get_text(strip=True)
+        time_match = re.search(time_pattern, date_time)
+        date_match = re.search(date_pattern, date_time)
+        time = time_match.group().replace('.', ':')
+        date = date_match.group()
+
         download_url = soup.find('a', class_='download-link')['href']
         download_url = self.base_url + download_url
 
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
+        print(scraper_return)
 
         self.logger.info(
             f"""
