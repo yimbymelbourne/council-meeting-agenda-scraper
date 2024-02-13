@@ -27,7 +27,6 @@ class YarraScraper(BaseScraper):
 
         output = self.fetch_with_requests(initial_webpage_url)
         output = output.content
-        print(output)
 
 
         name = None
