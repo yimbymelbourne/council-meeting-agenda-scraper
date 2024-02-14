@@ -27,12 +27,11 @@ onnxruntime = "^1.17.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
 flake8 = "^7.0.0"
+pytest-xdist = "^3.5.0"
 
 [tool.pytest.ini_options]
-pythonpath = [
-  "."
-]
-
+pythonpath = ["."]
+addopts = "-n auto"
 
 [build-system]
 requires = ["poetry-core"]
