@@ -8,7 +8,7 @@ This enables YIMBY Melbourne and other organisations to keep easy track of relev
 
 ## List of functioning scrapers
 
-### Melbourne: 10/18
+### Melbourne: 11/18
 
 ### Sydney: 16/30
 
