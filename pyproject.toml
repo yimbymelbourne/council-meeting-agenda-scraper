@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "council-meeting-agenda-scraper"
+name = "council_scrapers"
 version = "0.1.0"
 description = ""
 authors = ["Jonathan O'Brien <jonathan@jonobri.com>"]
