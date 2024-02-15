@@ -2,7 +2,7 @@ import sqlite3
 import datetime
 import json
 
-from base import Council, ScraperReturn
+from council_scrapers.base import Council, ScraperReturn
 
 # TODO: rewrite this with the ScraperReturn and Council dataclasses
 
