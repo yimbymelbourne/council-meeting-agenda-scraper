@@ -1,0 +1,21 @@
+from council_scrapers.scrapers.nsw.bayside_nsw import BaysideNSWScraper
+from council_scrapers.scrapers.nsw.canada_bay import CanadaBayScraper
+from council_scrapers.scrapers.nsw.canterbury_bankstown import CanterburyBankstownScraper
+from council_scrapers.scrapers.nsw.cumberland import CumberlandScraper
+from council_scrapers.scrapers.nsw.hornsby import HornsbyScraper
+from council_scrapers.scrapers.nsw.hunters_hill import HuntersHillScraper
+from council_scrapers.scrapers.nsw.innerwest import InnerWestScraper
+from council_scrapers.scrapers.nsw.kuringgai import KuRingGaiScraper
+from council_scrapers.scrapers.nsw.lane_cove import LaneCoveScraper
+from council_scrapers.scrapers.nsw.liverpool import LiverpoolScraper
+from council_scrapers.scrapers.nsw.north_sydney import NorthSydneyScraper
+from council_scrapers.scrapers.nsw.northern_beaches import NorthernBeachesScraper
+from council_scrapers.scrapers.nsw.parramatta import ParramattaScraper
+from council_scrapers.scrapers.nsw.penrith_city import PenrithCityScraper
+from council_scrapers.scrapers.nsw.randwick import RandwickScraper
+from council_scrapers.scrapers.nsw.ryde import RydeScraper
+from council_scrapers.scrapers.nsw.waverley import WaverleyScraper
+from council_scrapers.scrapers.nsw.willoughby import WilloughbyNSWScraper
+from council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
+
+
