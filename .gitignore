@@ -12,6 +12,7 @@ agendas.db
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+.pytest_cache
 
 # macos
 .DS_Store
