@@ -6,7 +6,7 @@ if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
 from council_scrapers.base import register_scraper
-from infocouncil_scraper import InfoCouncilScraper
+from council_scrapers.base import InfoCouncilScraper
 
 
 @register_scraper
