@@ -1,6 +1,3 @@
-import sys
-from pathlib import Path
-
 from council_scrapers.base import register_scraper, InfoCouncilScraper
 
 
@@ -12,8 +9,3 @@ class RandwickScraper(InfoCouncilScraper):
         base_url = "https://www.randwick.nsw.gov.au/"
         infocouncil_url = "https://randwick.infocouncil.biz/"
         super().__init__(council, state, base_url, infocouncil_url)
-
-
-if __name__ == "__main__":
-    scraper = RandwickScraper()
-    scraper.scraper()

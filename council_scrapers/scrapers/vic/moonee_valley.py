@@ -1,4 +1,4 @@
-from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper 
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from bs4 import BeautifulSoup
 import re
 
@@ -10,10 +10,6 @@ class MooneeValleyScraper(BaseScraper):
         state = "VIC"
         base_url = "https://mvcc.vic.gov.au"
         super().__init__(council, state, base_url)
-        self.date_pattern = re.compile(
-            r"\d{1,2}\s(January|February|March|April|May|June|July|August|September|October|November|December)"
-        )
-        self.time_pattern = re.compile(r"\b\d{1,2}\.\d{2}(?:am|pm)\b")
 
     def scraper(self) -> ScraperReturn | None:
 
@@ -52,8 +48,8 @@ class MooneeValleyScraper(BaseScraper):
 
             datetime = last_meeting.find("td", class_="column-1").text
 
-            match = self.date_pattern.search(datetime)
-            timematch = self.time_pattern.search(datetime)
+            match = self.date_regex.search(datetime)
+            timematch = self.time_regex.search(datetime)
 
             if match:
                 extracted_date = match.group()
@@ -87,8 +83,3 @@ class MooneeValleyScraper(BaseScraper):
         )
 
         return scraper_return
-
-
-if __name__ == "__main__":
-    scraper = MooneeValleyScraper()
-    scraper.scraper()

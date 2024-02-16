@@ -119,8 +119,3 @@ class BoroondaraScraper(BaseScraper):
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
-
-
-if __name__ == "__main__":
-    scraper = BoroondaraScraper()
-    scraper.scraper()

@@ -8,10 +8,6 @@ class MerribekScraper(BaseScraper):
     def __init__(self):
         base_url = "https://www.merri-bek.vic.gov.au"
         super().__init__("merri_bek", "VIC", base_url)
-        self.date_pattern = re.compile(
-            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
-        )
-        self.time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
 
     def scraper(self) -> ScraperReturn | None:
         webpage_url = "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/council-meeting-minutes/"
@@ -43,7 +39,7 @@ class MerribekScraper(BaseScraper):
 
         txt_value = target_a_tag.string
         if txt_value:
-            match = self.date_pattern.search(txt_value)
+            match = self.date_regex.search(txt_value)
 
             # Extract the matched date
             if match:
@@ -57,7 +53,7 @@ class MerribekScraper(BaseScraper):
         grandparent_el = target_a_tag.parent.parent.parent.h3
         el_name = (grandparent_el).text
 
-        el_name = self.date_pattern.sub("", el_name)
+        el_name = self.date_regex.sub("", el_name)
         name = el_name
 
         if name == "":
@@ -75,8 +71,3 @@ class MerribekScraper(BaseScraper):
         )
 
         return scraper_return
-
-
-if __name__ == "__main__":
-    scraper = MerribekScraper()
-    scraper.scraper()

@@ -13,7 +13,7 @@ class RydeScraper(BaseScraper):
 
     def scraper(self) -> ScraperReturn:
         self.logger.info(f"Starting {self.council_name} scraper")
-                
+
         name = None
         date = None
         time = None
@@ -28,20 +28,21 @@ class RydeScraper(BaseScraper):
         soup = BeautifulSoup(meeting_page.content, "html.parser")
 
         # name and date
-        name_date = soup.find("h1", class_ = "oc-page-title").text
+        name_date = soup.find("h1", class_="oc-page-title").text
         pattern = r"([a-zA-Z\s]+)-\s+(\d{1,2}\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})"
         match = re.match(pattern, name_date)
         if match:
             name = match.group(1)
             date = match.group(2)
-        
+
         # link
-        link = soup.find("a", {"title" : "Agenda"})["href"]
+        link = soup.find("a", {"title": "Agenda"})["href"]
         download_url = f"{self.base_url}{link}"
 
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
 
-        self.logger.info(f"""
+        self.logger.info(
+            f"""
             {scraper_return.name}
             {scraper_return.date}
             {scraper_return.time}
@@ -50,8 +51,3 @@ class RydeScraper(BaseScraper):
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
-
-
-if __name__ == "__main__":
-    scraper = RydeScraper()
-    scraper.scraper()

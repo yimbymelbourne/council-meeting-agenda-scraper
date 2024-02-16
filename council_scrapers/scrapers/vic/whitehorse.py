@@ -1,5 +1,6 @@
 from council_scrapers.base import InfoCouncilScraper, register_scraper
 
+
 @register_scraper
 class WhitehorseScraper(InfoCouncilScraper):
     def __init__(self):

@@ -1,5 +1,4 @@
-from council_scrapers.base import BaseScraper, Council, ScraperReturn, register_scraper
-from logging.config import dictConfig
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from bs4 import BeautifulSoup
 import re
 
@@ -11,7 +10,6 @@ class DarebinScraper(BaseScraper):
         self.date_pattern = re.compile(
             r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
         )
-        self.time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
 
     def scraper(self) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")

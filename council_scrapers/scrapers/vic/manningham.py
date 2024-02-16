@@ -1,6 +1,5 @@
-import sys
-from pathlib import Path
 from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+
 
 @register_scraper
 class ManninghamScraper(BaseScraper):

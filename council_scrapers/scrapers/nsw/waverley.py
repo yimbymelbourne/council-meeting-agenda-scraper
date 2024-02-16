@@ -9,8 +9,3 @@ class WaverleyScraper(InfoCouncilScraper):
         base_url = "https://www.waverley.nsw.gov.au/"
         infocouncil_url = "https://waverley.infocouncil.biz/"
         super().__init__(council, state, base_url, infocouncil_url)
-
-
-if __name__ == "__main__":
-    scraper = WaverleyScraper()
-    scraper.scraper()

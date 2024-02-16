@@ -1,12 +1,4 @@
-import sys
-from pathlib import Path
-
-parent_dir = str(Path(__file__).resolve().parent.parent.parent)
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
-
 from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
-from logging.config import dictConfig
 from bs4 import BeautifulSoup
 import re
 
@@ -99,8 +91,3 @@ class CanadaBayScraper(BaseScraper):
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
-
-
-if __name__ == "__main__":
-    scraper = CanadaBayScraper()  # Replace Council with the name of the councilScraper
-    scraper.scraper()

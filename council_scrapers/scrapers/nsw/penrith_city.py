@@ -9,8 +9,3 @@ class PenrithCityScraper(InfoCouncilScraper):
         base_url = "https://www.penrithcity.nsw.gov.au/"
         infocouncil_url = "https://penrith.infocouncil.biz/"
         super().__init__(council, state, base_url, infocouncil_url)
-
-
-if __name__ == "__main__":
-    scraper = PenrithCityScraper()
-    scraper.scraper()

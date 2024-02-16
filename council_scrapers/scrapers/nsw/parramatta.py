@@ -1,6 +1,3 @@
-import sys
-from pathlib import Path
-
 from council_scrapers.base import register_scraper, InfoCouncilScraper
 
 
@@ -12,8 +9,3 @@ class ParramattaScraper(InfoCouncilScraper):
         base_url = "https://businesspapers.parracity.nsw.gov.au"
         infocouncil_url = "https://businesspapers.parracity.nsw.gov.au"
         super().__init__(council, state, base_url, infocouncil_url)
-
-
-if __name__ == "__main__":
-    scraper = ParramattaScraper()
-    scraper.scraper()

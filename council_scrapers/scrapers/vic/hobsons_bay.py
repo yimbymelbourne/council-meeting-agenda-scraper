@@ -1,6 +1,4 @@
 from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
-from logging.config import dictConfig
-from _dataclasses import 
 from bs4 import BeautifulSoup
 import re
 

@@ -2,7 +2,7 @@ import sqlite3
 import datetime
 import json
 
-from council_scrapers.base import Council, ScraperReturn
+from council_scrapers.base import ScraperReturn
 
 # TODO: rewrite this with the ScraperReturn and Council dataclasses
 
@@ -27,7 +27,7 @@ def init():
 
 
 def insert(
-    council: Council,
+    council_name: str,
     scraper_return: ScraperReturn,
     result: dict | None,
     AI_result: str | None = None,
@@ -50,7 +50,7 @@ def insert(
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
         (
             date,
-            council.name,
+            council_name,
             scraper_return.date,
             scraper_return.time,
             scraper_return.webpage_url,

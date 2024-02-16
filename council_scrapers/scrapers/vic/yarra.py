@@ -1,10 +1,7 @@
 from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
-from logging.config import dictConfig
 from bs4 import BeautifulSoup
 import re
 
-time_pattern = r'\d{1,2}\.\d{2}(?:am|pm)'
-date_pattern = r'\d{1,2}\s(?:January|February|March|April|May|June|July|August|September|October|November|December)\s\d{4}'
 
 @register_scraper
 class YarraScraper(BaseScraper):
@@ -21,7 +18,6 @@ class YarraScraper(BaseScraper):
         output = self.fetch_with_requests(initial_webpage_url)
         output = output.content
 
-
         name = None
         date = None
         time = None
@@ -30,24 +26,24 @@ class YarraScraper(BaseScraper):
 
         # finds agenda link
         initial_soup = BeautifulSoup(output, "html.parser")
-        agenda_list = initial_soup.find('div', class_='show-for-medium-up')
-        agenda_link = agenda_list.find('a')['href']
+        agenda_list = initial_soup.find("div", class_="show-for-medium-up")
+        agenda_link = agenda_list.find("a")["href"]
         agenda_output = self.fetch_with_requests(agenda_link)
         agenda_output = agenda_output.content
 
         # takes name, date, download url from agenda link
         soup = BeautifulSoup(agenda_output, "html.parser")
 
-        name = soup.find('h1', class_='heading').text
+        name = soup.find("h1", class_="heading").text
 
-        date_time_p = soup.find('strong', string='Date and time:').find_parent('p')
+        date_time_p = soup.find("strong", string="Date and time:").find_parent("p")
         date_time = date_time_p.get_text(strip=True)
-        time_match = re.search(time_pattern, date_time)
-        date_match = re.search(date_pattern, date_time)
-        time = time_match.group().replace('.', ':')
+        time_match = re.search(self.time_regex, date_time)
+        date_match = re.search(self.date_regex, date_time)
+        time = time_match.group().replace(".", ":")
         date = date_match.group()
 
-        download_url = soup.find('a', class_='download-link')['href']
+        download_url = soup.find("a", class_="download-link")["href"]
         download_url = self.base_url + download_url
 
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)

@@ -21,6 +21,7 @@ class BanyuleScraper(BaseScraper):
         super().__init__(council, state, base_url)
         self.time_pattern = re.compile(r"\d+:\d+\s?[apmAPM]+")
 
+
 def scraper(self) -> ScraperReturn | None:
 
     chrome_options = Options()
@@ -39,10 +40,16 @@ def scraper(self) -> ScraperReturn | None:
     driver.refresh()
 
     # Open all the accordions
-    driver.execute_script("Array.from(document.getElementsByClassName('accordion-trigger')).forEach(e => e.click())")
+    driver.execute_script(
+        "Array.from(document.getElementsByClassName('accordion-trigger')).forEach(e => e.click())"
+    )
 
     wait = WebDriverWait(driver, 5)
-    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".accordion-list-item-container .initialised")))
+    wait.until(
+        EC.presence_of_element_located(
+            (By.CSS_SELECTOR, ".accordion-list-item-container .initialised")
+        )
+    )
 
     # Give a little time for all accordions to load, just in case. may not be necessary
     driver.implicitly_wait(2)
@@ -68,9 +75,11 @@ def scraper(self) -> ScraperReturn | None:
         time_element = section.find("div", class_="meeting-time")
 
         if time_element:
-            time_match = self.time_pattern.search(time_element.text)
-            if time_match:
-                time = time_match.group()
+            for pattern in self.time_regexes:
+                time_match = pattern.search(time_element.text)
+                if time_match:
+                    time = time_match.group()
+                    break
 
         download_url = self.base_url + document_link.get("href")
         break

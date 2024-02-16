@@ -61,7 +61,7 @@ Scrapers for each council are contained within the `scrapers/[state]/` directory
 
 A scraper should be able to reliably find the most recent agenda on a Council's website. Once that link is found, it is checked against an existing database—if the link is new, then the agenda is downloaded, scanned, and a notification can be sent.
 
-In addition to the link, the scraper function should return an object of the following shape, outlined in `_dataclasses.py`:
+In addition to the link, the scraper function should return an object of the following shape, outlined in `base.py`:
 
 ```py
 @dataclass
@@ -106,3 +106,13 @@ You may also need to use regular expressions (regexes) to parse dates etc.
 Luckily, ChatGPT is quite good at both BeautifulSoup and regexes. So it's recommended that you'll save a great deal of time feeding your HTML into ChatGPT, Github Copilot, or the shockingly reliable [Phind.com](https://www.phind.com) and iterating like that.
 
 Once you have got the agenda download link and all other available, scrapeable information, return a ScraperReturn object.
+
+### 4. Add the scraper class to the folder's `__init__.py` file
+
+To register the Scraper, import the scraper in the relevant folder's `__init__.py` file. 
+
+As an example, to add the scraper for the Yarra council, open `council_scrapers/scrapers/vic/__init__.py`, and add:
+
+```py
+from council_scrapers.scrapers.vic.yarra import YarraScraper
+```

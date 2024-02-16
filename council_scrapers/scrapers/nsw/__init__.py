@@ -1,5 +1,7 @@
 from council_scrapers.scrapers.nsw.canada_bay import CanadaBayScraper
-from council_scrapers.scrapers.nsw.canterbury_bankstown import CanterburyBankstownScraper
+from council_scrapers.scrapers.nsw.canterbury_bankstown import (
+    CanterburyBankstownScraper,
+)
 from council_scrapers.scrapers.nsw.cumberland import CumberlandScraper
 from council_scrapers.scrapers.nsw.hornsby import HornsbyScraper
 from council_scrapers.scrapers.nsw.hunters_hill import HuntersHillScraper
