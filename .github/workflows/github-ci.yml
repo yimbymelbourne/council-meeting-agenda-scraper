@@ -27,6 +27,7 @@ jobs:
         with:
           chrome-version: stable
       - name: Install dependencies
+        # ! NOTE: we may want to add a cache here if possible
         run: |
           python -m pip install --upgrade pip
           python -m pip install poetry==1.7.1 
@@ -40,4 +41,4 @@ jobs:
       # - name: Lint with flake8
       - name: Test with pytest
         run: |
-          poetry run pytest --timeOut=60
+          poetry run pytest --timeout=60
