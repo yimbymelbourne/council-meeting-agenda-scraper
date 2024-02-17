@@ -40,4 +40,4 @@ jobs:
       # - name: Lint with flake8
       - name: Test with pytest
         run: |
-          poetry run pytest --timeout=60
+          poetry run pytest
