@@ -40,7 +40,7 @@ class YarraScraper(BaseScraper):
         date_time = date_time_p.get_text(strip=True)
         time_match = re.search(self.time_regex, date_time)
         date_match = re.search(self.date_regex, date_time)
-        time = time_match.group().replace(".", ":")
+        time = time_match.group().replace(".", ":") if time_match else None
         date = date_match.group()
 
         download_url = soup.find("a", class_="download-link")["href"]
@@ -56,6 +56,7 @@ class YarraScraper(BaseScraper):
                     {scraper_return.webpage_url} 
                     {scraper_return.download_url}"""
         )
+
         self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
 
