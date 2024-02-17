@@ -73,12 +73,20 @@ def processor(council_name, state, scraper_results, scraper_instance):
         )
 
     discord_token = config.get("DISCORD_TOKEN", None)
-    if discord_token:
-        discord = DiscordNotifier(discord_token)
-        discord.send_message(1208272651865563160,
-                             f"New agenda for {council.name} {scraper_results.date} {scraper_results.download_url}")
-        discord.flush()
+    channel_id = config.get("DISCORD_CHANNEL_ID", None)
+    if discord_token and channel_id:
 
+        print("Discord notifier initialising...")
+        discord = DiscordNotifier(discord_token)
+
+        group_tag = "<@&1111808815097196585>"
+        message = f"{group_tag}: New agenda for {council.name} {scraper_results.date} {scraper_results.download_url}"
+
+        discord.send_message(
+            channel_id,
+            message,
+        )
+        discord.flush()
 
     logging.info("PDF parsed! Inserting into database...")
     db.insert(council, scraper_results, parser_results)
@@ -110,7 +118,9 @@ def run_scrapers(args):
                 # Process the result
                 processor(council_name, state, scraper_results, scraper_instance)
             else:
-                logging.error(f"Something broke, {council_name} scraper returned 'None'")
+                logging.error(
+                    f"Something broke, {council_name} scraper returned 'None'"
+                )
 
 
 def main():
