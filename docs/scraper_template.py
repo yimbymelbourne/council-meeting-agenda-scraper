@@ -5,9 +5,8 @@ parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
-from base_scraper import BaseScraper, register_scraper
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from logging.config import dictConfig
-from _dataclasses import ScraperReturn
 from bs4 import BeautifulSoup
 import re
 
@@ -15,10 +14,10 @@ import re
 @register_scraper
 class CouncilScraper(BaseScraper):
     def __init__(self):
-        council = "council_name"
+        council_name = "council_name"
         state = "VIC"
         base_url = ""
-        super().__init__(council, state, base_url)
+        super().__init__(council_name, state, base_url)
 
     def scraper(self) -> ScraperReturn | None:
         # self.logger.info(f"Starting {self.council_name} scraper")
