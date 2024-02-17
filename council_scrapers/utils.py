@@ -7,11 +7,12 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from _dataclasses import Council, ScraperReturn
+from council_scrapers.base import Council, ScraperReturn
 
-from regexes import Regexes, RegexResults, defaults as default_regexes
+from council_scrapers.constants import DEFAULT_REGEXES
 
 from dotenv import dotenv_values
+
 
 config = dotenv_values(".env") if os.path.exists(".env") else {}
 
@@ -30,13 +31,14 @@ def read_pdf(council_name: str):
         text += page.get_text()
     return text
 
+# TODO: refactor parse_pdf without special regexes types
 
 def parse_pdf(custom_regexes: Regexes | None, text) -> RegexResults:
-    regexes = default_regexes
+    regexes = DEFAULT_REGEXES
 
     if custom_regexes is not None:
         regexes = {
-            key: custom_regexes[key] + default_regexes[key]
+            key: custom_regexes[key] + DEFAULT_REGEXES[key]
             for key in custom_regexes.keys()
         }
 
