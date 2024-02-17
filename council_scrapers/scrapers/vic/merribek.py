@@ -15,7 +15,7 @@ class MerribekScraper(BaseScraper):
         self.close()
 
         # Feed the HTML to BeautifulSoup
-        soup = BeautifulSoup(output, "html.parser")
+        soup = BeautifulSoup(output.content, "html.parser")
 
         name = None
         date = None

@@ -29,7 +29,7 @@ class BoroondaraScraper(BaseScraper):
         link_to_agenda = None
 
         # Feed the HTML to BeautifulSoup
-        initial_soup = BeautifulSoup(output, "html.parser")
+        initial_soup = BeautifulSoup(output.content, "html.parser")
 
         node_content = initial_soup.find("div", class_="node__content")
         if node_content:
