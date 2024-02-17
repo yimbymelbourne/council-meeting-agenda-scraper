@@ -34,6 +34,92 @@ class ScraperReturn:
     webpage_url: str
     download_url: str
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "date": self.date,
+            "time": self.time,
+            "webpage_url": self.webpage_url,
+            "download_url": self.download_url
+        }
+
+    @staticmethod
+    def from_dict(d):
+        return ScraperReturn(
+            name=d["name"],
+            date=d["date"],
+            time=d["time"],
+            webpage_url=d["webpage_url"],
+            download_url=d["download_url"]
+        )
+
+
+class Fetcher(ABC):
+    @abstractmethod
+    def get_selenium_driver(self):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def fetch_with_requests(self, url, method="GET") -> str:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def fetch_with_selenium(self, url):
+        raise NotImplementedError()
+
+    def close(self) -> None:
+        pass
+
+
+class DefaultFetcher(Fetcher):
+    def __init__(self):
+        self.__session = requests.Session()
+        self.__set_headers(self.DEFAULTHEADERS)
+        self.__driver = None
+
+    DEFAULTHEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://www.google.com/",
+        "Connection": "keep-alive",
+        "Accept": "application/json, text/html, application/xml, text/plain",
+    }
+
+    def __set_headers(self, headers):
+        # Directly replace the session's headers dictionary
+        self.__session.headers.clear()
+        self.__session.headers.update(headers)
+
+    def __setup_selenium_driver(self):
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        self.__driver = webdriver.Chrome(options=chrome_options)
+
+    def get_selenium_driver(self):
+        if not self.__driver:
+            self.__setup_selenium_driver()
+        return self.__driver
+
+    def fetch_with_requests(self, url, method="GET", **kwargs):
+        if method.upper() == "POST":
+            response = self.__session.post(url, **kwargs)
+        else:
+            response = self.__session.get(url, **kwargs)
+        response.raise_for_status()
+        return response.text
+
+    def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
+        if not self.__driver:
+            self.__setup_selenium_driver()
+        self.__driver.get(url)
+        if wait_condition:
+            WebDriverWait(self.__driver, wait_time).until(wait_condition)
+        return self.__driver.page_source
+
+    def close(self) -> None:
+        if self.__driver:
+            self.__driver.quit()
+
 
 class BaseScraper(ABC):
     """
@@ -60,24 +146,12 @@ class BaseScraper(ABC):
         `scraper()`: Abstract method for scraping the council's website. Must be implemented by subclasses.
         `close()`: Closes the Selenium WebDriver instance if it exists.
     """
-
-    DEFAULTHEADERS = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Referer": "https://www.google.com/",
-        "Connection": "keep-alive",
-        "Accept": "application/json, text/html, application/xml, text/plain",
-    }
-
-    def __init__(self, council_name: str, state: str, base_url: str):
+    def __init__(self, council_name: str, state: str, base_url: str,):
         self.council_name = council_name
         self.state = state
         self.base_url = base_url
         self.logger = logging.getLogger(self.__class__.__name__)
         self.logger.info(f"{self.__class__.__name__} initialized")
-        self.session = requests.Session()
-        self.set_headers(self.DEFAULTHEADERS)
-        self.driver = None
         self.time_regex: re.Pattern = TIME_REGEX
         self.date_regex: re.Pattern = DATE_REGEX
 
@@ -89,43 +163,10 @@ class BaseScraper(ABC):
         # Log the message with the provided level
         logger.log(level, full_message, *args)
 
-    def set_headers(self, headers):
-        # Directly replace the session's headers dictionary
-        self.session.headers.clear()
-        self.session.headers.update(headers)
-
-    def setup_selenium_driver(self):
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        self.driver = webdriver.Chrome(options=chrome_options)
-
-    def get_selenium_driver(self):
-        if not self.driver:
-            self.setup_selenium_driver()
-        return self.driver
-
-    def fetch_with_requests(self, url, method="GET", **kwargs):
-        if method.upper() == "POST":
-            response = self.session.post(url, **kwargs)
-        else:
-            response = self.session.get(url, **kwargs)
-        return response
-
-    def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
-        if not self.driver:
-            self.setup_selenium_driver()
-        self.driver.get(url)
-        if wait_condition:
-            WebDriverWait(self.driver, wait_time).until(wait_condition)
-        return self.driver.page_source
 
     @abstractmethod
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self, fetcher: Fetcher) -> ScraperReturn | None:
         raise NotImplementedError("Scrape method must be implemented by the subclass.")
-
-    def close(self) -> None:
-        if self.driver:
-            self.driver.quit()
 
 
 class InfoCouncilScraper(BaseScraper):
@@ -133,10 +174,10 @@ class InfoCouncilScraper(BaseScraper):
         self.infocouncil_url = infocouncil_url
         super().__init__(council, state, base_url)
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self, fetcher: Fetcher) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
-        output = self.fetch_with_requests(self.infocouncil_url)
-        soup = BeautifulSoup(output.content, "html.parser")
+        output = fetcher.fetch_with_requests(self.infocouncil_url)
+        soup = BeautifulSoup(output, "html.parser")
         meeting_table = soup.find("table", id="grdMenu", recursive=True)
         if meeting_table is None:
             self.logger.info(f"{self.council_name} scraper found no meetings")

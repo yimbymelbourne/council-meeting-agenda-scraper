@@ -1,4 +1,4 @@
-from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
 from bs4 import BeautifulSoup
 import re
 
@@ -14,10 +14,10 @@ class GlenEiraScraper(BaseScraper):
         )
         self.time_pattern = re.compile(r"\b\d{1,2}\.\d{2}(?:am|pm)\b")
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self, fetcher: Fetcher) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = f"{self.base_url}/about-council/meetings-and-agendas/council-agendas-and-minutes"
-        output = self.fetch_with_selenium(initial_webpage_url)
+        output = fetcher.fetch_with_selenium(initial_webpage_url)
         initial_soup = BeautifulSoup(output, "html.parser")
 
         listing_div = initial_soup.find("div", class_="listing__list")
@@ -29,9 +29,8 @@ class GlenEiraScraper(BaseScraper):
                 new_url = self.base_url + link_to_agenda
 
                 # Fetch and process the agenda page
-                output_new = self.fetch_with_selenium(new_url)
+                output_new = fetcher.fetch_with_selenium(new_url)
                 soup = BeautifulSoup(output_new, "html.parser")
-                self.close()
 
                 # Extract meeting details
                 name, date, time, download_url = self.extract_meeting_details(soup)

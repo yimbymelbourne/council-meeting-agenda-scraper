@@ -15,11 +15,11 @@ class BoroondaraScraper(BaseScraper):
         )
         self.time_pattern = re.compile(r"\b\d{1,2}:\d{2} [apmAPM]+\b")
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self, fetcher) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = "https://www.boroondara.vic.gov.au/about-council/councillors-and-meetings/council-and-committee-meetings/past-meeting-minutes-agendas-and-video-recordings"
 
-        output = self.fetch_with_selenium(initial_webpage_url)
+        output = fetcher.fetch_with_selenium(initial_webpage_url)
         # boroondara doesn't have the agenda pdfs on the same page as the list of meetings - need to first find the link to the newest agenda and then read source from that page
 
         name = None
@@ -69,11 +69,10 @@ class BoroondaraScraper(BaseScraper):
         new_url = self.base_url + link_to_agenda
         self.logger.info(new_url)
 
-        output_new = self.fetch_with_selenium(new_url)
+        output_new = fetcher.fetch_with_selenium(new_url)
 
         # Get the HTML
         soup = BeautifulSoup(output_new, "html.parser")
-        self.close()
         # first need to find the agenda h3 because the divs of interest are below it
 
         div = soup.find("div", class_="main")

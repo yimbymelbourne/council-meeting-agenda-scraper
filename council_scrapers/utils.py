@@ -7,7 +7,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from _dataclasses import Council, ScraperReturn
+from base import ScraperReturn
 
 from regexes import Regexes, RegexResults, defaults as default_regexes
 

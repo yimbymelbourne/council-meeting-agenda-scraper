@@ -14,20 +14,16 @@ class CanadaBayScraper(BaseScraper):
             r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
         )
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self, fetcher) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         webpage_url = (
             "https://www.canadabay.nsw.gov.au/council/about-council/council-meetings"
         )
 
-        response = self.fetch_with_requests(webpage_url)
+        response = fetcher.fetch_with_requests(webpage_url)
 
-        if response.status_code != 200:
-            self.logger.error("Failed to fetch the main page.")
-            return None
-
-        soup = BeautifulSoup(response.content, "html.parser")
+        soup = BeautifulSoup(response, "html.parser")
 
         name = None
         date = None

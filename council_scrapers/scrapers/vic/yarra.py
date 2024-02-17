@@ -11,12 +11,12 @@ class YarraScraper(BaseScraper):
         base_url = "https://www.yarracity.vic.gov.au"
         super().__init__(council, state, base_url)
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self, fetcher) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = "https://www.yarracity.vic.gov.au/about-us/council-and-committee-meetings/upcoming-council-and-committee-meetings"
 
-        output = self.fetch_with_requests(initial_webpage_url)
-        output = output.content
+        output = fetcher.fetch_with_requests(initial_webpage_url)
+        output = output
 
         name = None
         date = None
@@ -28,8 +28,7 @@ class YarraScraper(BaseScraper):
         initial_soup = BeautifulSoup(output, "html.parser")
         agenda_list = initial_soup.find("div", class_="show-for-medium-up")
         agenda_link = agenda_list.find("a")["href"]
-        agenda_output = self.fetch_with_requests(agenda_link)
-        agenda_output = agenda_output.content
+        agenda_output = fetcher.fetch_with_requests(agenda_link)
 
         # takes name, date, download url from agenda link
         soup = BeautifulSoup(agenda_output, "html.parser")

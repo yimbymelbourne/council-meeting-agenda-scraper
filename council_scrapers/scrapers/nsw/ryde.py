@@ -1,4 +1,4 @@
-from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
 from bs4 import BeautifulSoup
 import re
 
@@ -11,7 +11,7 @@ class RydeScraper(BaseScraper):
         base_url = "https://www.ryde.nsw.gov.au"
         super().__init__(council, state, base_url)
 
-    def scraper(self) -> ScraperReturn:
+    def scraper(self, fetcher: Fetcher) -> ScraperReturn:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         name = None
@@ -20,12 +20,12 @@ class RydeScraper(BaseScraper):
         webpage_url = "https://www.ryde.nsw.gov.au/Council/Council-Meetings/Council-Meeting-agendas-and-minutes"
         download_url = None
 
-        output = self.fetch_with_requests(webpage_url)
-        soup = BeautifulSoup(output.content, "html.parser")
+        output = fetcher.fetch_with_requests(webpage_url)
+        soup = BeautifulSoup(output, "html.parser")
         next_url = soup.find("article").find("a")["href"]
 
-        meeting_page = self.fetch_with_requests(next_url)
-        soup = BeautifulSoup(meeting_page.content, "html.parser")
+        meeting_page = fetcher.fetch_with_requests(next_url)
+        soup = BeautifulSoup(meeting_page, "html.parser")
 
         # name and date
         name_date = soup.find("h1", class_="oc-page-title").text

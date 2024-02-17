@@ -1,4 +1,4 @@
-from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
 from bs4 import BeautifulSoup
 import re
 
@@ -11,12 +11,11 @@ class DarebinScraper(BaseScraper):
             r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
         )
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self, fetcher: Fetcher) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
         webpage_url = "https://www.darebin.vic.gov.au/About-Council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2024-Council-meeting-agendas-and-minutes"
 
-        output = self.fetch_with_selenium(webpage_url)
-        self.close()
+        output = fetcher.fetch_with_selenium(webpage_url)
 
         # Feed the HTML to BeautifulSoup
         soup = BeautifulSoup(output, "html.parser")

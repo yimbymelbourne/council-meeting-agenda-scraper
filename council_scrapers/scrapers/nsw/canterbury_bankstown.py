@@ -1,4 +1,4 @@
-from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
 from bs4 import BeautifulSoup
 
 
@@ -10,7 +10,7 @@ class CanterburyBankstownScraper(BaseScraper):
         base_url = "https://www.cbcity.nsw.gov.au/"
         super().__init__(council, state, base_url)
 
-    def scraper(self) -> ScraperReturn:
+    def scraper(self, fetcher: Fetcher) -> ScraperReturn:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         name = None
@@ -19,8 +19,8 @@ class CanterburyBankstownScraper(BaseScraper):
         webpage_url = "https://www.cbcity.nsw.gov.au/council/Councilmeetings-reports-committees/council-meeting-agendas-minutes"
         download_url = None
 
-        output = self.fetch_with_requests(webpage_url)
-        soup = BeautifulSoup(output.content, "html.parser")
+        output = fetcher.fetch_with_requests(webpage_url)
+        soup = BeautifulSoup(output, "html.parser")
 
         latest_meet = soup.find("tr", class_="ms-rteTableOddRow-4")
         date = latest_meet.find_next("td").contents[0]

@@ -13,12 +13,12 @@ class MelbourneScraper(BaseScraper):
         )
         self.time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self, fetcher) -> ScraperReturn | None:
 
         webpage_url = "https://www.melbourne.vic.gov.au/pages/meetings-finder.aspx?type=41&attach=False"
 
         # Get the HTML
-        output = self.fetch_with_selenium(webpage_url)
+        output = fetcher.fetch_with_selenium(webpage_url)
         # Feed the HTML to BeautifulSoup
         soup = BeautifulSoup(output, "html.parser")
 
@@ -49,8 +49,7 @@ class MelbourneScraper(BaseScraper):
                     if name_string:
                         name = name_string
 
-        new_output = self.fetch_with_selenium(agenda_link)
-        self.close()
+        new_output = fetcher.fetch_with_selenium(agenda_link)
         # Get the HTML
 
         newsoup = BeautifulSoup(new_output, "html.parser")

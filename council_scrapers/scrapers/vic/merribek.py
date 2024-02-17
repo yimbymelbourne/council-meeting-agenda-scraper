@@ -1,4 +1,4 @@
-from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
 from bs4 import BeautifulSoup
 import re
 
@@ -9,10 +9,9 @@ class MerribekScraper(BaseScraper):
         base_url = "https://www.merri-bek.vic.gov.au"
         super().__init__("merri_bek", "VIC", base_url)
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self, fetcher: Fetcher) -> ScraperReturn | None:
         webpage_url = "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/council-meeting-minutes/"
-        output = self.fetch_with_selenium(webpage_url)
-        self.close()
+        output = fetcher.fetch_with_selenium(webpage_url)
 
         # Feed the HTML to BeautifulSoup
         soup = BeautifulSoup(output, "html.parser")
