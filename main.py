@@ -1,8 +1,11 @@
+import argparse
 import os.path
 import importlib
 from pathlib import Path
 import logging
 from logging.config import dictConfig
+
+from discord_bot import DiscordNotifier
 from functions import download_pdf, read_pdf, parse_pdf, write_email, send_email
 import database as db
 from _dataclasses import Council
@@ -69,6 +72,14 @@ def processor(council_name, state, scraper_results, scraper_instance):
             email_body,
         )
 
+    discord_token = config.get("DISCORD_TOKEN", None)
+    if discord_token:
+        discord = DiscordNotifier(discord_token)
+        discord.send_message(1208272651865563160,
+                             f"New agenda for {council.name} {scraper_results.date} {scraper_results.download_url}")
+        discord.flush()
+
+
     logging.info("PDF parsed! Inserting into database...")
     db.insert(council, scraper_results, parser_results)
     print("Database updated!")
@@ -88,24 +99,29 @@ def processor(council_name, state, scraper_results, scraper_instance):
     logging.info(f"Finished with {council.name}.")
 
 
-def run_scrapers():
+def run_scrapers(args):
     for scraper_name, scraper_instance in scraper_registry.items():
-        logging.error(f"Running {scraper_instance.council_name} scraper")
-        scraper_results = scraper_instance.scraper()
-        council_name = scraper_instance.council_name
-        state = scraper_instance.state
-        if scraper_results:
-            # Process the result
-            processor(council_name, state, scraper_results, scraper_instance)
-        else:
-            logging.error(f"Something broke, {council_name} scraper returned 'None'")
+        if args.council is None or scraper_instance.council_name == args.council:
+            logging.error(f"Running {scraper_instance.council_name} scraper")
+            scraper_results = scraper_instance.scraper()
+            council_name = scraper_instance.council_name
+            state = scraper_instance.state
+            if scraper_results:
+                # Process the result
+                processor(council_name, state, scraper_results, scraper_instance)
+            else:
+                logging.error(f"Something broke, {council_name} scraper returned 'None'")
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--council", help="Scan only this council")
+    args = parser.parse_args()
+
     if not os.path.exists("./agendas.db"):
         db.init()
 
-    run_scrapers()
+    run_scrapers(args)
 
 
 if __name__ == "__main__":

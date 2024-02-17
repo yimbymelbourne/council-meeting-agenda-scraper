@@ -22,6 +22,7 @@ langchain-openai = "^0.0.5"
 chromadb = "^0.4.22"
 pymupdf = "^1.23.20"
 black = "^24.1.1"
+"discord.py" = "^2.3.2"
 
 
 [build-system]
