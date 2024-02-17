@@ -57,8 +57,10 @@ def test_scraper(scraper_instance: BaseScraper):
     test_replay_data = os.path.join(
         "tests/test-cases", scraper_instance.council_name + "-replay_data.json"
     )
-    if scraper_instance.council_name in ["bayside_vic", "melbourne"]:
-        pytest.skip("Seems broken before..")
+    if scraper_instance.council_name in ["PUT_BROKEN_SCRAPERS_HERE"]:
+        pytest.skip(
+            f"Known issue with {scraper_instance.council_name} scraper. Skipping for now."
+        )
     if os.path.exists(test_result) and os.path.exists(test_replay_data):
         with open(test_result, "r") as f:
             expected_result = ScraperReturn.from_dict(json.load(f))
