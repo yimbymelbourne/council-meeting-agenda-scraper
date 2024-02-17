@@ -69,10 +69,10 @@ class BoroondaraScraper(BaseScraper):
         new_url = self.base_url + link_to_agenda
         self.logger.info(new_url)
 
-        output_new = self.fetch_with_selenium(new_url)
+        output_new = self.fetch_with_requests(new_url)
 
         # Get the HTML
-        soup = BeautifulSoup(output_new, "html.parser")
+        soup = BeautifulSoup(output_new.content, "html.parser")
         self.close()
         # first need to find the agenda h3 because the divs of interest are below it
 
