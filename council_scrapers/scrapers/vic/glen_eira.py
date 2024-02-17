@@ -30,8 +30,8 @@ class GlenEiraScraper(BaseScraper):
                 new_url = self.base_url + link_to_agenda
 
                 # Fetch and process the agenda page
-                output_new = self.fetch_with_selenium(new_url)
-                soup = BeautifulSoup(output_new, "html.parser")
+                output_new = self.fetch_with_requests(new_url)
+                soup = BeautifulSoup(output_new.content, "html.parser")
                 self.close()
 
                 # Extract meeting details
