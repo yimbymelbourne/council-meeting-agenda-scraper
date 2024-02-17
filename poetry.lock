@@ -1808,7 +1808,6 @@ httpx = ">=0.25.2,<0.26.0"
 [[package]]
 name = "onnxruntime"
 version = "1.17.0"
-version = "1.17.0"
 description = "ONNX Runtime is a runtime accelerator for Machine Learning models"
 optional = false
 python-versions = "*"
