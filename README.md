@@ -35,9 +35,15 @@ Preferred code formatter is [Black](https://github.com/psf/black).
 Within your environment, run: `python main.py`
 Logs will print to your terminal and also get saved into /logs/ as well as writing key results to `agendas.db`.
 
-You can run an individual scraper by running `python dir/to/scraper.py`.
+You can run an individual scraper by running `python main.py --council council_string`. For instance: `python main.py --council yarra` will run the Yarra Council scraper.
 
-## .env & Email client (optional)
+A list of councils and their strings can be found in `docs/councils.md`.
+
+## .env
+
+Optional functionality you can configure to extend the application's utility.
+
+### Email config
 
 In the `.env.example` file, there is the basic variable GMAIL_FUNCTIONALITY.
 
@@ -46,6 +52,10 @@ This functionality is turned off by default. If you want to use the email sendin
 This may require setting up an App-specific password, for which [you can find setup instructions here](https://support.google.com/accounts/answer/185833?visit_id=638406540644584172-3254681882&p=InvalidSecondFactor&rd=1).
 
 This functionality is optional, and the app should work fine without this setup.
+
+### Discord config
+
+Instructions for setting up Discord can be found in `docs/discord.md`.
 
 # Writing a scraper
 
