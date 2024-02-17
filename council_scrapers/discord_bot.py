@@ -25,7 +25,7 @@ class DiscordNotifier:
         self.__message_queue: List[QueuedMessage] = []
         self.__token = token
 
-    async def __on_ready(self)
+    async def __on_ready(self):
         print("On ready")
         while len(self.__message_queue):
             message = self.__message_queue.pop()
@@ -38,4 +38,4 @@ class DiscordNotifier:
         self.__message_queue.append(QueuedMessage(channel_id, message))
 
     def flush(self):
-        asyncio.run(self.__client.run(token=self.__token))
+        self.__client.run(self.__token)
