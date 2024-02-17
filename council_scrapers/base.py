@@ -140,11 +140,11 @@ class BaseScraper(ABC):
 
     Methods:
         `log(level, message, *args)`: Logs a message with the provided level, including council name and state.
-        `set_headers(headers)`: Sets the headers for the session.
-        `setup_selenium_driver()`: Sets up a Selenium WebDriver instance.
-        `get_selenium_driver()`: Returns the Selenium WebDriver instance, setting it up if necessary.
-        `fetch_with_requests(url, method="GET", **kwargs)`: Fetches a URL with the requests module.
-        `fetch_with_selenium(url, wait_time=10, wait_condition=None)`: Fetches a URL with Selenium, optionally waiting for a condition.
+        `fetcher.set_headers(headers)`: Sets the headers for the session.
+        `fetcher.setup_selenium_driver()`: Sets up a Selenium WebDriver instance.
+        `fetcher.get_selenium_driver()`: Returns the Selenium WebDriver instance, setting it up if necessary.
+        `fetcher.fetch_with_requests(url, method="GET", **kwargs)`: Fetches a URL with the requests module.
+        `fetcher.fetch_with_selenium(url, wait_time=10, wait_condition=None)`: Fetches a URL with Selenium, optionally waiting for a condition.
         `scraper()`: Abstract method for scraping the council's website. Must be implemented by subclasses.
         `close()`: Closes the Selenium WebDriver instance if it exists.
     """
