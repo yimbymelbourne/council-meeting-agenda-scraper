@@ -19,7 +19,7 @@ class BoroondaraScraper(BaseScraper):
         self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = "https://www.boroondara.vic.gov.au/about-council/councillors-and-meetings/council-and-committee-meetings/past-meeting-minutes-agendas-and-video-recordings"
 
-        output = self.fetch_with_requests(initial_webpage_url)
+        output = self.fetcher.fetch_with_requests(initial_webpage_url)
         # boroondara doesn't have the agenda pdfs on the same page as the list of meetings - need to first find the link to the newest agenda and then read source from that page
 
         name = None
@@ -29,7 +29,7 @@ class BoroondaraScraper(BaseScraper):
         link_to_agenda = None
 
         # Feed the HTML to BeautifulSoup
-        initial_soup = BeautifulSoup(output.content, "html.parser")
+        initial_soup = BeautifulSoup(output, "html.parser")
 
         node_content = initial_soup.find("div", class_="node__content")
         if node_content:
@@ -69,13 +69,12 @@ class BoroondaraScraper(BaseScraper):
         new_url = self.base_url + link_to_agenda
         self.logger.info(new_url)
 
-        output_new = self.fetch_with_requests(new_url)
+        output_new = self.fetcher.fetch_with_requests(new_url)
 
         # Get the HTML
-        soup = BeautifulSoup(output_new.content, "html.parser")
-        self.close()
-        # first need to find the agenda h3 because the divs of interest are below it
+        soup = BeautifulSoup(output_new, "html.parser")
 
+        # first need to find the agenda h3 because the divs of interest are below it
         div = soup.find("div", class_="main")
         if div:
             agenda_h3 = div.find("h3")

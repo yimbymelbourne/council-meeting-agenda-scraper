@@ -18,7 +18,7 @@ class MelbourneScraper(BaseScraper):
         webpage_url = "https://www.melbourne.vic.gov.au/pages/meetings-finder.aspx?type=41&attach=False"
 
         # Get the HTML
-        output = self.fetch_with_selenium(webpage_url)
+        output = self.fetcher.fetch_with_selenium(webpage_url)
         # Feed the HTML to BeautifulSoup
         soup = BeautifulSoup(output, "html.parser")
 
@@ -49,15 +49,13 @@ class MelbourneScraper(BaseScraper):
                     if name_string:
                         name = name_string
 
-        new_output = self.fetch_with_selenium(agenda_link)
-        self.close()
+        new_output = self.fetcher.fetch_with_selenium(agenda_link)
         # Get the HTML
 
         newsoup = BeautifulSoup(new_output, "html.parser")
 
         agenda_div = newsoup.find_all("div", class_="download-container")[0]
         if agenda_div:
-            print(agenda_div)
             pdf_link = agenda_div.find("a", class_="download-link").get("href")
             if pdf_link:
                 download_url = self.base_url + pdf_link

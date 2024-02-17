@@ -21,13 +21,9 @@ class CanadaBayScraper(BaseScraper):
             "https://www.canadabay.nsw.gov.au/council/about-council/council-meetings"
         )
 
-        response = self.fetch_with_requests(webpage_url)
+        response = self.fetcher.fetch_with_requests(webpage_url)
 
-        if response.status_code != 200:
-            self.logger.error("Failed to fetch the main page.")
-            return None
-
-        soup = BeautifulSoup(response.content, "html.parser")
+        soup = BeautifulSoup(response, "html.parser")
 
         name = None
         date = None

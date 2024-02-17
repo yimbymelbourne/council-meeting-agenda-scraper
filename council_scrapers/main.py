@@ -11,7 +11,7 @@ from council_scrapers.utils import (
     send_email,
 )
 import council_scrapers.database as db
-from council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, Council
+from council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, Council, DefaultFetcher
 from council_scrapers.constants import COUNCIL_HOUSING_REGEX
 from council_scrapers.logging_config import setup_logging
 import logging

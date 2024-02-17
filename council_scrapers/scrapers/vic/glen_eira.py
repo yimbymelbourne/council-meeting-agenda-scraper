@@ -1,4 +1,4 @@
-from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
 from bs4 import BeautifulSoup
 import re
 
@@ -18,8 +18,8 @@ class GlenEiraScraper(BaseScraper):
         self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = f"{self.base_url}/about-council/meetings-and-agendas/council-agendas-and-minutes"
 
-        output = self.fetch_with_requests(initial_webpage_url)
-        initial_soup = BeautifulSoup(output.content, "html.parser")
+        output = self.fetcher.fetch_with_requests(initial_webpage_url)
+        initial_soup = BeautifulSoup(output, "html.parser")
 
         listing_div = initial_soup.find("div", class_="listing__list")
         if listing_div:
@@ -30,9 +30,8 @@ class GlenEiraScraper(BaseScraper):
                 new_url = self.base_url + link_to_agenda
 
                 # Fetch and process the agenda page
-                output_new = self.fetch_with_requests(new_url)
-                soup = BeautifulSoup(output_new.content, "html.parser")
-                self.close()
+                output_new = self.fetcher.fetch_with_requests(new_url)
+                soup = BeautifulSoup(output_new, "html.parser")
 
                 # Extract meeting details
                 name, date, time, download_url = self.extract_meeting_details(soup)
