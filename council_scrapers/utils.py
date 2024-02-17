@@ -33,12 +33,15 @@ def read_pdf(council_name: str):
     return text
 
 
+# TODO: refactor parse_pdf without special regexes types
+
+
 def parse_pdf(custom_regexes: Regexes | None, text) -> RegexResults:
-    regexes = default_regexes
+    regexes = DEFAULT_REGEXES
 
     if custom_regexes is not None:
         regexes = {
-            key: custom_regexes[key] + default_regexes[key]
+            key: custom_regexes[key] + DEFAULT_REGEXES[key]
             for key in custom_regexes.keys()
         }
 
