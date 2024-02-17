@@ -37,10 +37,6 @@ class CouncilScraper(BaseScraper):
         #     {scraper_return.webpage_url}
         #     {scraper_return.download_url}"""
         # )
+
         # self.logger.info(f"{self.council_name} scraper finished successfully")
         # return scraper_return
-
-
-if __name__ == "__main__":
-    scraper = CouncilScraper()  # Replace Council with the name of the councilScraper
-    scraper.scraper()
