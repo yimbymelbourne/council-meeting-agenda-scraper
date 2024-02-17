@@ -24,6 +24,7 @@ pymupdf = "^1.23.20"
 black = "^24.1.1"
 onnxruntime = "^1.17.0"
 "discord.py" = "^2.3.2"
+pytest-timeout = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
