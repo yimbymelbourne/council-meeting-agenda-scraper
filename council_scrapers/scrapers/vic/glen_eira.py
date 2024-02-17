@@ -17,8 +17,9 @@ class GlenEiraScraper(BaseScraper):
     def scraper(self) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = f"{self.base_url}/about-council/meetings-and-agendas/council-agendas-and-minutes"
-        output = self.fetch_with_selenium(initial_webpage_url)
-        initial_soup = BeautifulSoup(output, "html.parser")
+
+        output = self.fetch_with_requests(initial_webpage_url)
+        initial_soup = BeautifulSoup(output.content, "html.parser")
 
         listing_div = initial_soup.find("div", class_="listing__list")
         if listing_div:
