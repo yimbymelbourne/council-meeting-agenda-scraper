@@ -37,11 +37,11 @@ def read_pdf(council_name: str):
 
 
 def parse_pdf(custom_regexes: Regexes | None, text) -> RegexResults:
-    regexes = DEFAULT_REGEXES
+    regexes = default_regexes
 
     if custom_regexes is not None:
         regexes = {
-            key: custom_regexes[key] + DEFAULT_REGEXES[key]
+            key: custom_regexes[key] + default_regexes[key]
             for key in custom_regexes.keys()
         }
 
