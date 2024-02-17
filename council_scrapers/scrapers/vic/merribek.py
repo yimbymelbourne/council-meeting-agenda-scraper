@@ -11,7 +11,7 @@ class MerribekScraper(BaseScraper):
 
     def scraper(self) -> ScraperReturn | None:
         webpage_url = "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/council-meeting-minutes/"
-        output = self.fetch_with_selenium(webpage_url)
+        output = self.fetch_with_requests(webpage_url)
         self.close()
 
         # Feed the HTML to BeautifulSoup

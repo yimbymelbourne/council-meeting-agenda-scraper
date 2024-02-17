@@ -15,7 +15,7 @@ class DarebinScraper(BaseScraper):
         self.logger.info(f"Starting {self.council_name} scraper")
         webpage_url = "https://www.darebin.vic.gov.au/About-Council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2024-Council-meeting-agendas-and-minutes"
 
-        output = self.fetch_with_selenium(webpage_url)
+        output = self.fetch_with_requests(webpage_url)
         self.close()
 
         # Feed the HTML to BeautifulSoup

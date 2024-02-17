@@ -19,7 +19,7 @@ class BoroondaraScraper(BaseScraper):
         self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = "https://www.boroondara.vic.gov.au/about-council/councillors-and-meetings/council-and-committee-meetings/past-meeting-minutes-agendas-and-video-recordings"
 
-        output = self.fetch_with_selenium(initial_webpage_url)
+        output = self.fetch_with_requests(initial_webpage_url)
         # boroondara doesn't have the agenda pdfs on the same page as the list of meetings - need to first find the link to the newest agenda and then read source from that page
 
         name = None
