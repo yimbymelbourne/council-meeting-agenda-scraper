@@ -11,8 +11,7 @@ from council_scrapers.utils import (
     send_email,
 )
 import council_scrapers.database as db
-from council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, Council, DefaultFetcher
-from council_scrapers.constants import COUNCIL_HOUSING_REGEX
+from council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, ScraperReturn
 from council_scrapers.logging_config import setup_logging
 import logging
 
@@ -24,56 +23,36 @@ from dotenv import dotenv_values
 config = dotenv_values(".env")
 
 
-def dynamic_import_scrapers():
-    # Define the root directory for your scrapers relative to this script
-    scrapers_root = Path(__file__).parent / "scrapers"
-
-    # Iterate over all .py files in the scrapers directory and subdirectories
-    for path in scrapers_root.rglob("*.py"):
-        # Skip __init__.py files
-        if path.name == "__init__.py":
-            continue
-
-        # Convert the file path to a Python module path
-        module_path = path.relative_to(Path(__file__).parent).with_suffix(
-            ""
-        )  # Remove the .py suffix
-        module_name = ".".join(module_path.parts)
-        logging.info(f"Loading {module_name}")
-        # Import the module
-        importlib.import_module(module_name)
-
-
-def processor(council_name, state, scraper_results, scraper_instance):
+def processor(scraper_results: ScraperReturn, scraper: BaseScraper):
     # Assuming council_name matches with your council names, adjust as necessary
-    council = Council(name=council_name, scraper=scraper_instance)
+    council_name = scraper.council_name
     if not scraper_results.download_url:
-        logging.error(f"No link found for {council.name}.")
+        logging.error(f"No link found for {council_name}.")
         return
     if db.check_url(scraper_results.download_url):
-        logging.warning(f"Link already scraped for {council.name}.")
+        logging.warning(f"Link already scraped for {council_name}.")
         return
     logging.info("Link scraped! Downloading PDF...")
-    download_pdf(scraper_results.download_url, council.name)
+    download_pdf(scraper_results.download_url, council_name)
 
     logging.info("PDF downloaded!")
     logging.info("Reading PDF into memory...")
-    text = read_pdf(council.name)
-    with open(f"files/{council.name}_latest.txt", "w", encoding="utf-8") as f:
+    text = read_pdf(council_name)
+    with open(f"files/{council_name}_latest.txt", "w", encoding="utf-8") as f:
         f.write(text)
 
     logging.info("PDF read! Parsing PDF...")
-    parser_results = parse_pdf(council.regexes, text)
+    parser_results = parse_pdf(scraper.keyword_regexes, text)
 
     email_to = config.get("GMAIL_ACCOUNT_RECEIVE", None)
 
     if email_to:
         logging.info("Sending email...")
-        email_body = write_email(council, scraper_results, parser_results)
+        email_body = write_email(council_name, scraper_results, parser_results)
 
         send_email(
             email_to,
-            f"New agenda: {council.name} {scraper_results.date} meeting",
+            f"New agenda: {council_name} {scraper_results.date} meeting",
             email_body,
         )
 
@@ -85,7 +64,7 @@ def processor(council_name, state, scraper_results, scraper_instance):
         discord = DiscordNotifier(discord_token)
 
         group_tag = "<@&1111808815097196585>"
-        message = f"{group_tag}: New agenda for {council.name} {scraper_results.date} {scraper_results.download_url}"
+        message = f"{group_tag}: New agenda for {council_name} {scraper_results.date} {scraper_results.download_url}"
 
         discord.send_message(
             channel_id,
@@ -94,22 +73,22 @@ def processor(council_name, state, scraper_results, scraper_instance):
         discord.flush()
 
     logging.info("PDF parsed! Inserting into database...")
-    db.insert(council.name, scraper_results, parser_results)
+    db.insert(council_name, scraper_results, parser_results)
     print("Database updated!")
 
     if not config.get("SAVE_FILES", "0") == "1":
         (
-            os.remove(f"files/{council.name}_latest.pdf")
-            if os.path.exists(f"files/{council.name}_latest.pdf")
+            os.remove(f"files/{council_name}_latest.pdf")
+            if os.path.exists(f"files/{council_name}_latest.pdf")
             else None
         )
         (
-            os.remove(f"files/{council.name}_latest.txt")
-            if os.path.exists(f"files/{council.name}_latest.txt")
+            os.remove(f"files/{council_name}_latest.txt")
+            if os.path.exists(f"files/{council_name}_latest.txt")
             else None
         )
 
-    logging.info(f"Finished with {council.name}.")
+    logging.info(f"Finished with {council_name}.")
 
 
 def run_scrapers(args):
@@ -117,14 +96,13 @@ def run_scrapers(args):
         if args.council is None or scraper_instance.council_name == args.council:
             logging.error(f"Running {scraper_instance.council_name} scraper")
             scraper_results = scraper_instance.scraper()
-            council_name = scraper_instance.council_name
             state = scraper_instance.state
             if scraper_results:
                 # Process the result
-                processor(council_name, state, scraper_results, scraper_instance)
+                processor(scraper_results, scraper_instance)
             else:
                 logging.error(
-                    f"Something broke, {council_name} scraper returned 'None'"
+                    f"Something broke, {scraper_instance.council_name} scraper returned 'None'"
                 )
 
 
@@ -143,5 +121,4 @@ if __name__ == "__main__":
     setup_logging(level="INFO")
     logging.getLogger().name = "YIMBY-Scraper"
     logging.info("YIMBY SCRAPER Start")
-    dynamic_import_scrapers()
     main()
