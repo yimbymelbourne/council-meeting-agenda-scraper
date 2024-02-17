@@ -5,6 +5,7 @@
 
 # files
 files/*
+council_scrapers/files/*
 
 # database
 agendas.db
@@ -19,3 +20,4 @@ __pycache__/
 
 # logs
 logs/*
+council_scrapers/logs/*
