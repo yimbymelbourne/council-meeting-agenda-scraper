@@ -55,7 +55,7 @@ class MelbourneScraper(BaseScraper):
 
         newsoup = BeautifulSoup(new_output, "html.parser")
 
-        agenda_div = newsoup.find_all("div", class_="download-container")[1]
+        agenda_div = newsoup.find_all("div", class_="download-container")[0]
         if agenda_div:
             print(agenda_div)
             pdf_link = agenda_div.find("a", class_="download-link").get("href")
