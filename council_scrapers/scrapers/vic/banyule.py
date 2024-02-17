@@ -21,82 +21,81 @@ class BanyuleScraper(BaseScraper):
         super().__init__(council, state, base_url)
         self.time_pattern = re.compile(r"\d+:\d+\s?[apmAPM]+")
 
+    def scraper(self) -> ScraperReturn | None:
 
-def scraper(self) -> ScraperReturn | None:
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        driver = webdriver.Chrome(options=chrome_options)
 
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(options=chrome_options)
+        name = None
+        date = None
+        time = None
+        download_url = None
 
-    name = None
-    date = None
-    time = None
-    download_url = None
+        driver.get(self.webpage_url)
 
-    driver.get(self.webpage_url)
+        # Reload the page, as the first time we visit javascript does not get loaded
+        # for some reason
+        driver.refresh()
 
-    # Reload the page, as the first time we visit javascript does not get loaded
-    # for some reason
-    driver.refresh()
-
-    # Open all the accordions
-    driver.execute_script(
-        "Array.from(document.getElementsByClassName('accordion-trigger')).forEach(e => e.click())"
-    )
-
-    wait = WebDriverWait(driver, 5)
-    wait.until(
-        EC.presence_of_element_located(
-            (By.CSS_SELECTOR, ".accordion-list-item-container .initialised")
+        # Open all the accordions
+        driver.execute_script(
+            "Array.from(document.getElementsByClassName('accordion-trigger')).forEach(e => e.click())"
         )
-    )
 
-    # Give a little time for all accordions to load, just in case. may not be necessary
-    driver.implicitly_wait(2)
+        wait = WebDriverWait(driver, 5)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, ".accordion-list-item-container .initialised")
+            )
+        )
 
-    # Get the HTML
-    output = driver.page_source
-    driver.quit()
+        # Give a little time for all accordions to load, just in case. may not be necessary
+        driver.implicitly_wait(2)
 
-    # Feed the HTML to BeautifulSoup
-    initial_soup = BeautifulSoup(output, "html.parser")
+        # Get the HTML
+        output = driver.page_source
+        driver.quit()
 
-    sections = initial_soup.find_all("div", class_="accordion-list-item-container")
+        # Feed the HTML to BeautifulSoup
+        initial_soup = BeautifulSoup(output, "html.parser")
 
-    for section in sections:
-        document_link = section.find("a", class_="document")
-        if not document_link:
-            continue
+        sections = initial_soup.find_all("div", class_="accordion-list-item-container")
 
-        name_element = section.find("span", class_="meeting-type")
-        name = name_element and name_element.text
-        date_element = section.find("span", class_="minutes-date")
-        date = date_element and date_element.text
-        time_element = section.find("div", class_="meeting-time")
+        for section in sections:
+            document_link = section.find("a", class_="document")
+            if not document_link:
+                continue
 
-        if time_element:
-            for pattern in self.time_regexes:
-                time_match = pattern.search(time_element.text)
-                if time_match:
-                    time = time_match.group()
-                    break
+            name_element = section.find("span", class_="meeting-type")
+            name = name_element and name_element.text
+            date_element = section.find("span", class_="minutes-date")
+            date = date_element and date_element.text
+            time_element = section.find("div", class_="meeting-time")
 
-        download_url = self.base_url + document_link.get("href")
-        break
+            if time_element:
+                for pattern in self.time_regexes:
+                    time_match = pattern.search(time_element.text)
+                    if time_match:
+                        time = time_match.group()
+                        break
 
-    if not download_url:
-        print("Failed to find any meeting agendas")
-        return None
+            download_url = self.base_url + document_link.get("href")
+            break
 
-    print("~~~")
-    scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
+        if not download_url:
+            print("Failed to find any meeting agendas")
+            return None
 
-    print(
-        scraper_return.name,
-        scraper_return.date,
-        scraper_return.time,
-        scraper_return.webpage_url,
-        scraper_return.download_url,
-    )
+        print("~~~")
+        scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
 
-    return scraper_return
+        print(
+            scraper_return.name,
+            scraper_return.date,
+            scraper_return.time,
+            scraper_return.webpage_url,
+            scraper_return.download_url,
+        )
+
+        return scraper_return
