@@ -2,7 +2,13 @@ import pytest
 import os.path
 import json
 
-from council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, Fetcher, DefaultFetcher, ScraperReturn
+from council_scrapers.base import (
+    SCRAPER_REGISTRY,
+    BaseScraper,
+    Fetcher,
+    DefaultFetcher,
+    ScraperReturn,
+)
 
 
 class RecordingFetcher(Fetcher):
@@ -40,10 +46,17 @@ class PlaybackFetcher(Fetcher):
     def fetch_with_selenium(self, url):
         return self.__processed_replay_data[("selenium", url)]
 
-@pytest.mark.parametrize("scraper_instance", SCRAPER_REGISTRY.values(), ids=SCRAPER_REGISTRY.keys())
-def test_scrapper(scraper_instance: BaseScraper):
-    test_result = os.path.join("test-cases", scraper_instance.council_name + "-result.json")
-    test_replay_data = os.path.join("test-cases", scraper_instance.council_name + "-replay_data.json")
+
+@pytest.mark.parametrize(
+    "scraper_instance", SCRAPER_REGISTRY.values(), ids=SCRAPER_REGISTRY.keys()
+)
+def test_scraper(scraper_instance: BaseScraper):
+    test_result = os.path.join(
+        "test-cases", scraper_instance.council_name + "-result.json"
+    )
+    test_replay_data = os.path.join(
+        "test-cases", scraper_instance.council_name + "-replay_data.json"
+    )
     if scraper_instance.council_name in ["bayside_vic", "melbourne"]:
         pytest.skip("Seems broken before..")
     if os.path.exists(test_result):
@@ -65,6 +78,3 @@ def test_scrapper(scraper_instance: BaseScraper):
         with open(test_result, "w") as f:
             f.write(json_result)
         recorder.close()
-
-
-
