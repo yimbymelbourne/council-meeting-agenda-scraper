@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+from typing import Callable, List, Optional, TypedDict
 import requests
 import re
 import os.path
@@ -7,11 +9,11 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from _dataclasses import Council, ScraperReturn
-
-from regexes import Regexes, RegexResults, defaults as default_regexes
+from base import ScraperReturn, Council, Regexes, RegexResults
+from constants import COUNCIL_HOUSING_REGEX as default_regexes
 
 from dotenv import dotenv_values
+
 
 config = dotenv_values(".env") if os.path.exists(".env") else {}
 
@@ -42,9 +44,9 @@ def parse_pdf(custom_regexes: Regexes | None, text) -> RegexResults:
 
     results = RegexResults()
 
-    if regexes["keyword_matches"]:
+    if regexes:
         results["keyword_matches"] = {
-            regex: len(re.findall(regex, text)) for regex in regexes["keyword_matches"]
+            regex: len(re.findall(regex, text)) for regex in regexes
         }
 
     return results
