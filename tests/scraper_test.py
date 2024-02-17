@@ -52,10 +52,10 @@ class PlaybackFetcher(Fetcher):
 )
 def test_scraper(scraper_instance: BaseScraper):
     test_result = os.path.join(
-        "test-cases", scraper_instance.council_name + "-result.json"
+        "tests/test-cases", scraper_instance.council_name + "-result.json"
     )
     test_replay_data = os.path.join(
-        "test-cases", scraper_instance.council_name + "-replay_data.json"
+        "tests/test-cases", scraper_instance.council_name + "-replay_data.json"
     )
     if scraper_instance.council_name in ["bayside_vic", "melbourne"]:
         pytest.skip("Seems broken before..")
