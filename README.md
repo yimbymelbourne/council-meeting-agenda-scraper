@@ -116,3 +116,13 @@ You may also need to use regular expressions (regexes) to parse dates etc.
 Luckily, ChatGPT is quite good at both BeautifulSoup and regexes. So it's recommended that you'll save a great deal of time feeding your HTML into ChatGPT, Github Copilot, or the shockingly reliable [Phind.com](https://www.phind.com) and iterating like that.
 
 Once you have got the agenda download link and all other available, scrapeable information, return a ScraperReturn object.
+
+### 4. Add the scraper class to the folder's `__init__.py` file
+
+To register the Scraper, import the scraper in the relevant folder's `__init__.py` file.
+
+As an example, to add the scraper for the Yarra council, open `council_scrapers/scrapers/vic/__init__.py`, and add:
+
+```py
+from council_scrapers.scrapers.vic.yarra import YarraScraper
+```
