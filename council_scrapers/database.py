@@ -4,8 +4,6 @@ import json
 
 from council_scrapers.base import ScraperReturn
 
-# TODO: rewrite this with the ScraperReturn and Council dataclasses
-
 
 def init():
     conn = sqlite3.connect("agendas.db")
