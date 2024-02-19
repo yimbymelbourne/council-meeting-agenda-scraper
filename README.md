@@ -30,12 +30,17 @@ Scraper details, including links and current status, can be found [in the docs](
 
 Preferred code formatter is [Black](https://github.com/psf/black).
 
+## Testing
+
+`poetry pytest` will run all the tests, including on any new scrapers added to the `scrapers/` directory. These tests are also run through GitHub actions upon merge request.
+
 # Running the application
 
-Within your environment, run: `python main.py`
+Within your environment, run: `python council_scrapers/main.py`
+
 Logs will print to your terminal and also get saved into /logs/ as well as writing key results to `agendas.db`.
 
-You can run an individual scraper by running `python main.py --council council_string`. For instance: `python main.py --council yarra` will run the Yarra Council scraper.
+You can run an individual scraper by running `python council_scrapers/main.py --council council_string`. For instance: `python council_scrapers/main.py --council yarra` will run the Yarra Council scraper.
 
 A list of councils and their strings can be found in `docs/councils.md`.
 
@@ -61,9 +66,7 @@ Instructions for setting up Discord can be found in `docs/discord.md`.
 
 Australia has many, many councils! As such, we need many, many scrapers!
 
-A list of most Melbourne councils, including links to their agenda webpages, can be found on the [YIMBY Melbourne website](https://www.yimbymelbourne.org.au/local-action).
-
-Check the current issue list, or create your own. Then, build a scraper and contribute to YIMBY Melbourne's mission to create housing abundance for all Melburnians!
+You can find a full list of active scrapers at `docs/councils.md`. Additionally, you can find a starting file at `docs/scraper_template.py`.
 
 ## How scrapers work
 
@@ -71,7 +74,7 @@ Scrapers for each council are contained within the `scrapers/[state]/` directory
 
 A scraper should be able to reliably find the most recent agenda on a Council's website. Once that link is found, it is checked against an existing database—if the link is new, then the agenda is downloaded, scanned, and a notification can be sent.
 
-In addition to the link, the scraper function should return an object of the following shape, outlined in `_dataclasses.py`:
+In addition to the link, the scraper function should return an object of the following shape, outlined in `base.py`:
 
 ```py
 @dataclass
@@ -93,13 +96,15 @@ Thanks to the phenomenal work of @catatonicChimp, a lot of the scraping can now 
 
 ### 1. Duplicate the scraper template
 
-For writing a new scraper, you can refer to and duplicate the template: `docs/scraper_template.py`.
+For writing a new scraper, you can refer to and duplicate the template: `docs/scraper_template.py`. The Yarra scraper in `scrapers/vic/yarra.py` is a good functional straightforward example.
 
 ### 2. Get the agenda page HTML
 
-In the case of most councils, you will will be able to use the `self.fetch_with_requests(url)` method to return the agenda page html as output.
+In the case of most councils, you will will be able to use the `self.fetcher.fetch_with_requests(url)` method to return the agenda page html as output.
 
-For more complex pages, you may need to write a Selenium script using the driver returned by `self.get_selenium_driver()`.
+For more complex Javascript pages, you may need to use `self.fetcher.fetch_with_selenium(url)`.
+
+For pages requiring interactivity using a headless browser, you may need to write a Selenium script using the driver returned by `self.fetcher.get_selenium_driver()`, and then utilise the [Selenium library](https://www.selenium.dev/documentation/) to navigate the page effectively.
 
 ### 3. Use BeautifulSoup to get the agenda details
 
