@@ -24,9 +24,9 @@ class BaysideScraper(BaseScraper):
         latest_agenda = agenda_list.find("a")
 
         # Scrape the data
-        name = soup.find("meta", {"property": "og:site_name"}).get("content")
         date = re.search(self.date_regex, latest_agenda.text).group()
         time = None  # 6:30PM from past few agendas but only on PDF
+        name = latest_agenda.text.replace(date, "").strip()
         download_url = latest_agenda["href"]
 
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
