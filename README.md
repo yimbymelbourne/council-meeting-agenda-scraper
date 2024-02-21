@@ -32,7 +32,7 @@ Preferred code formatter is [Black](https://github.com/psf/black).
 
 ## Testing
 
-`poetry pytest` will run all the tests, including on any new scrapers added to the `scrapers/` directory. These tests are also run through GitHub actions upon merge request.
+`poetry run pytest` will run all the tests, including on any new scrapers added to the `scrapers/` directory. These tests are also run through GitHub actions upon merge request.
 
 # Running the application
 
