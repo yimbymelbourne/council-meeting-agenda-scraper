@@ -2,6 +2,7 @@ from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from logging.config import dictConfig
 from bs4 import BeautifulSoup
 import re
+from datetime import datetime
 
 
 @register_scraper
@@ -24,7 +25,8 @@ class BaysideVicScraper(BaseScraper):
         latest_agenda = agenda_list.find("a")
 
         # Scrape the data
-        date = re.search(self.date_regex, latest_agenda.text).group()
+        raw_date = re.search(self.date_regex, latest_agenda.text).group()
+        date = '-'.join([datetime.strptime(raw_date, '%d %B %Y').strftime('%Y-%m-%d')])
         time = None  # 6:30PM from past few agendas but only on PDF
         name = latest_agenda.text.replace(date, "").strip()
         download_url = latest_agenda["href"]
