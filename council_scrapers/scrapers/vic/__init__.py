@@ -1,4 +1,4 @@
-from council_scrapers.scrapers.vic.bayside import BaysideScraper
+from council_scrapers.scrapers.vic.bayside import BaysideVicScraper
 from council_scrapers.scrapers.vic.boroondara import BoroondaraScraper
 from council_scrapers.scrapers.vic.darebin import DarebinScraper
 from council_scrapers.scrapers.vic.glen_eira import GlenEiraScraper

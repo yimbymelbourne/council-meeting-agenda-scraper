@@ -5,7 +5,7 @@ import re
 
 
 @register_scraper
-class BaysideScraper(BaseScraper):
+class BaysideVicScraper(BaseScraper):
     def __init__(self):
         council_name = "bayside_vic"
         state = "VIC"
@@ -45,5 +45,5 @@ class BaysideScraper(BaseScraper):
 
 
 if __name__ == "__main__":
-    scraper = BaysideScraper()
+    scraper = BaysideVicScraper()
     scraper.scraper()
