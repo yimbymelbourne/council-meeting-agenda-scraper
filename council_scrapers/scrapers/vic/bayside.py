@@ -21,17 +21,18 @@ class BaysideScraper(BaseScraper):
         # Find latest agenda link
         soup = BeautifulSoup(raw_html, "html.parser")
         agenda_list = soup.find("div", class_="page__body")
-        latest_agenda = agenda_list.find('a')
-        
+        latest_agenda = agenda_list.find("a")
+
         # Scrape the data
-        name = soup.find('meta', {'property': 'og:site_name'}).get('content')
+        name = soup.find("meta", {"property": "og:site_name"}).get("content")
         date = re.search(self.date_regex, latest_agenda.text).group()
-        time = None # 6:30PM from past few agendas but only on PDF
+        time = None  # 6:30PM from past few agendas but only on PDF
         download_url = latest_agenda["href"]
 
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
 
-        self.logger.info(f"""
+        self.logger.info(
+            f"""
             {scraper_return.name}
             {scraper_return.date}
             {scraper_return.time}
