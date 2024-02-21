@@ -6,7 +6,7 @@ import re
 @register_scraper
 class YarraScraper(BaseScraper):
     def __init__(self):
-        council = "bayside_vic"
+        council = "yarra"
         state = "VIC"
         base_url = "https://www.yarracity.vic.gov.au"
         super().__init__(council, state, base_url)
