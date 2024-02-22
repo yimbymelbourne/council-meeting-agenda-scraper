@@ -25,7 +25,7 @@ class CampbelltownScraper(BaseScraper):
 
         name = None
         date = None
-        time = None
+        time = "18:30"
         webpage_url = "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes"
         download_url = None
 
@@ -39,7 +39,7 @@ class CampbelltownScraper(BaseScraper):
         match = re.match(pattern, latest_meet.text)
         if match:
             name = match.group(1)
-            date = match.group(2)
+            date = match.group(2) + f" {year}"
             
         link = latest_meet.find_next("a")['href']
         download_url = f"{self.base_url}{link}"
