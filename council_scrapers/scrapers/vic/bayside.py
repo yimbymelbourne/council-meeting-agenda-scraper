@@ -26,7 +26,7 @@ class BaysideVicScraper(BaseScraper):
         # Scrape the data
         raw_date = re.search(self.date_regex, latest_agenda.text).group()
         date = "-".join([datetime.strptime(raw_date, "%d %B %Y").strftime("%Y-%m-%d")])
-        time = None  # 6:30PM from past few agendas but only on PDF
+        time = "18:30"  # 6:30PM from past few agendas but only on PDF
         name = latest_agenda.text.replace(date, "").strip()
         download_url = latest_agenda["href"]
 
