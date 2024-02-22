@@ -1,12 +1,4 @@
-import sys
-from pathlib import Path
-
-parent_dir = str(Path(__file__).resolve().parent.parent.parent)
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
-
-from infocouncil_scraper import InfoCouncilScraper
-from base_scraper import register_scraper
+from council_scrapers.base import InfoCouncilScraper, register_scraper
 
 
 @register_scraper
