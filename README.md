@@ -79,11 +79,11 @@ In addition to the link, the scraper function should return an object of the fol
 ```py
 @dataclass
 class ScraperReturn:
-    name: str # council name
-    date: str # meeting date
-    time: str # meeting time
-    webpage_url: str # url of scraped page
-    download_url: str # url of PDF agenda download
+    name: str # The name of the meeting (e.g. City Development Delegated Committee).
+    date: str # The date of the meeting (e.g. 2021-08-01).
+    time: str # The time of the meeting (e.g. 18:00).
+    webpage_url: str # The URL of the webpage where the agenda is found.
+    download_url: str # The URL of the PDF of the agenda.
 ```
 
 **It is not always possible to scrape the date and time of meetings from Council websites. In these cases, these values should be returned as empty strings.**
