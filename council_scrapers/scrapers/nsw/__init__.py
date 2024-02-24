@@ -1,3 +1,4 @@
+from council_scrapers.scrapers.nsw.burwood import BurwoodNSWScraper
 from council_scrapers.scrapers.nsw.canada_bay import CanadaBayScraper
 from council_scrapers.scrapers.nsw.canterbury_bankstown import (
     CanterburyBankstownScraper,
