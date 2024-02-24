@@ -1,9 +1,11 @@
 # environment
 .env
 .venv
+.vscode
 
 # files
 files/*
+council_scrapers/files/*
 
 # database
 agendas.db
@@ -11,9 +13,11 @@ agendas.db
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+.pytest_cache
 
 # macos
 .DS_Store
 
 # logs
 logs/*
+council_scrapers/logs/*
