@@ -2,6 +2,7 @@ from council_scrapers.scrapers.vic.bayside import BaysideVicScraper
 from council_scrapers.scrapers.vic.boroondara import BoroondaraScraper
 from council_scrapers.scrapers.vic.darebin import DarebinScraper
 from council_scrapers.scrapers.vic.glen_eira import GlenEiraScraper
+from council_scrapers.scrapers.vic.manningham import ManninghamScraper
 from council_scrapers.scrapers.vic.melbourne import MelbourneScraper
 from council_scrapers.scrapers.vic.merribek import MerribekScraper
 
