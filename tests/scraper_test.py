@@ -19,9 +19,9 @@ class RecordingFetcher(Fetcher):
     def get_selenium_driver(self):
         pytest.skip("Uses selenium directly not supported")
 
-    def fetch_with_requests(self, url, method="GET", **kwargs):
-        result = self.__delegated_fetcher.fetch_with_requests(url, method, **kwargs)
-        self.replay_data.append([["requests", url, method, kwargs], result])
+    def fetch_with_requests(self, url, method="GET"):
+        result = self.__delegated_fetcher.fetch_with_requests(url, method)
+        self.replay_data.append([["requests", url, method], result])
         return result
 
     def fetch_with_selenium(self, url):
