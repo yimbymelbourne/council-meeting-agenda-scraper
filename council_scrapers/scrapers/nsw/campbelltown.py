@@ -1,13 +1,4 @@
-import sys
-from pathlib import Path
-
-parent_dir = str(Path(__file__).resolve().parent.parent.parent)
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
-
-from base_scraper import BaseScraper, register_scraper
-from logging.config import dictConfig
-from _dataclasses import ScraperReturn
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from bs4 import BeautifulSoup
 import re
 import datetime
@@ -31,14 +22,15 @@ class CampbelltownScraper(BaseScraper):
 
         year = datetime.date.today().year
         webpage_url += f"/{year}-Business-Papers#section-1"
-        output = self.fetch_with_requests(webpage_url)
-        soup = BeautifulSoup(output.content, "html.parser")
+        output = self.fetcher.fetch_with_requests(webpage_url)
+        soup = BeautifulSoup(output, "html.parser")
 
         latest_meet = soup.find("h2")
+        # Custom REGEX pattern as default date regex fails to matchS
         pattern = r"([a-zA-Z\s]+)(\d{1,2}\s+(January|February|March|April|May|June|July|August|September|October|November|December))"
         match = re.match(pattern, latest_meet.text)
         if match:
-            name = match.group(1)
+            name = match.group(1).strip()
             date = match.group(2) + f" {year}"
             
         link = latest_meet.find_next("a")['href']
