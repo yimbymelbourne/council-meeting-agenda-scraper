@@ -20,6 +20,7 @@ onnxruntime = "^1.17.0"
 pytest-timeout = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
+bump-my-version = "0.18.3"
 pytest = "^7.4.3"
 flake8 = "^7.0.0"
 pytest-xdist = "^3.5.0"
