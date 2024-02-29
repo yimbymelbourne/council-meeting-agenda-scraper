@@ -1,4 +1,5 @@
 from council_scrapers.scrapers.nsw.burwood import BurwoodNSWScraper
+from council_scrapers.scrapers.nsw.camden import CamdenScraper
 from council_scrapers.scrapers.nsw.campbelltown import CampbelltownScraper
 from council_scrapers.scrapers.nsw.canada_bay import CanadaBayScraper
 from council_scrapers.scrapers.nsw.canterbury_bankstown import CanterburyBankstownScraper
@@ -25,7 +26,6 @@ from council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
 
 # NOT IMPLEMENTED
 # from council_scrapers.scrapers.nsw.blacktown import BlacktownScraper
-# from council_scrapers.scrapers.nsw.camden import CamdenScraper
 # from council_scrapers.scrapers.nsw.fairfield_city import FairfieldCityScraper
 # from council_scrapers.scrapers.nsw.mosman import MosmanScraper
 # from council_scrapers.scrapers.nsw.strathfield import StrathfieldScraper
