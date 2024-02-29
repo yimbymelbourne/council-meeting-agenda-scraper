@@ -43,11 +43,11 @@ jobs:
         run: |
           poetry run pytest --timeout=30
   deploy:
-    # if: github.event_name == 'release'
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
         id-token: write
-        
+    needs: build
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
