@@ -131,3 +131,9 @@ As an example, to add the scraper for the Yarra council, open `council_scrapers/
 ```py
 from council_scrapers.scrapers.vic.yarra import YarraScraper
 ```
+
+### 5. Run tests and save the cached page
+
+Once you have your scraper working locally, run pytest in the root directory (`council-meeting-agenda-scraper/`) and add the cached results to the commit when successful.
+
+This is done to prevent spamming requests to council pages during the development of scrapers.
