@@ -1,13 +1,4 @@
-import sys
-from pathlib import Path
-
-parent_dir = str(Path(__file__).resolve().parent.parent.parent)
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
-
-from base_scraper import BaseScraper, register_scraper
-from logging.config import dictConfig
-from _dataclasses import ScraperReturn
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from bs4 import BeautifulSoup
 import re
 
@@ -28,16 +19,17 @@ class CamdenScraper(BaseScraper):
         webpage_url = "https://www.camden.nsw.gov.au/council/council-meetings"
         download_url = None
 
-        output = self.fetch_with_requests(webpage_url)
-        soup = BeautifulSoup(output.content, "html.parser")
+        output = self.fetcher.fetch_with_requests(webpage_url)
+        soup = BeautifulSoup(output, "html.parser")
         meets = soup.find("h4")
         link = meets.find_next("a")['href']
         latest_year = f"{self.base_url}/" + link
 
-        output = self.fetch_with_requests(latest_year)
-        soup = BeautifulSoup(output.content, "html.parser")
+        output = self.fetcher.fetch_with_requests(latest_year)
+        soup = BeautifulSoup(output, "html.parser")
 
         latest_meet = soup.find("h2")
+        # Custom pattern. TODO: Refactor to use constant regex.
         pattern = r"(\d{1,2}\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})(\s[a-zA-Z\(\)]+)?"
         match = re.match(pattern, latest_meet.text)
         if match:
