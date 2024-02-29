@@ -12,9 +12,13 @@ from council_scrapers.scrapers.vic.yarra import YarraScraper
 
 # BROKEN SCRAPERS
 # from council_scrapers.scrapers.vic.banyule import BanyuleScraper
+# from council_scrapers.scrapers.vic.maribyrnong import MaribyrnongScraper
 
 # UNIMPLEMENTED SCRAPERS
 # from council_scrapers.scrapers.vic.stonnington import StonningtonScraper
 # from council_scrapers.scrapers.vic.manningham import ManninghamScraper
 # from council_scrapers.scrapers.vic.monash import MonashScraper
 # from council_scrapers.scrapers.vic.kingston import KingstonScraper
+# from council_scrapers.scrapers.vic.hobsons_bay import HobsonsBayScraper
+# from council_scrapers.scrapers.vic.moonee_valley import MooneeValleyScraper
+# from council_scrapers.scrapers.vic.stonnington import StonningtonScraper
