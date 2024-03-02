@@ -26,6 +26,7 @@ class ScraperReturn:
     `name`: The name of the meeting (e.g. City Development Delegated Committee).\n
     `date`: The date of the meeting (e.g. 2021-08-01).\n
     `time`: The time of the meeting (e.g. 18:00).\n
+    `location`: The location of the meeting (e.g. Sydney Town Hall, 483 George St, Sydney NSW 2000)\n
     `webpage_url`: The URL of the webpage where the agenda is found.\n
     `download_url`: The URL of the PDF of the agenda.\n
     """
@@ -33,6 +34,7 @@ class ScraperReturn:
     name: str
     date: str
     time: str
+    location: str
     webpage_url: str
     download_url: str
 
@@ -41,6 +43,7 @@ class ScraperReturn:
             "name": self.name,
             "date": self.date,
             "time": self.time,
+            "location": self.location,
             "webpage_url": self.webpage_url,
             "download_url": self.download_url,
         }
@@ -51,6 +54,7 @@ class ScraperReturn:
             name=d["name"],
             date=d["date"],
             time=d["time"],
+            location=d["location"],
             webpage_url=d["webpage_url"],
             download_url=d["download_url"],
         )
