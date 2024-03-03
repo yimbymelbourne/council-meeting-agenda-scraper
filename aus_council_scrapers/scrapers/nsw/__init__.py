@@ -16,6 +16,7 @@ from aus_council_scrapers.scrapers.nsw.parramatta import ParramattaScraper
 from aus_council_scrapers.scrapers.nsw.penrith_city import PenrithCityScraper
 from aus_council_scrapers.scrapers.nsw.randwick import RandwickScraper
 from aus_council_scrapers.scrapers.nsw.ryde import RydeScraper
+from aus_council_scrapers.scrapers.nsw.strathfield import StrathfieldNSWScraper
 from aus_council_scrapers.scrapers.nsw.waverley import WaverleyScraper
 from aus_council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
 
@@ -28,7 +29,6 @@ from aus_council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
 # from council_scrapers.scrapers.nsw.blacktown import BlacktownScraper
 # from council_scrapers.scrapers.nsw.fairfield_city import FairfieldCityScraper
 # from council_scrapers.scrapers.nsw.mosman import MosmanScraper
-# from council_scrapers.scrapers.nsw.strathfield import StrathfieldScraper
 # from council_scrapers.scrapers.nsw.sutherland_shire import SutherlandShireScraper
 # from council_scrapers.scrapers.nsw.sydney import SydneyScraper
 # from council_scrapers.scrapers.nsw.the_hills import TheHillsScraper
