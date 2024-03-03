@@ -16,6 +16,7 @@ from council_scrapers.scrapers.nsw.parramatta import ParramattaScraper
 from council_scrapers.scrapers.nsw.penrith_city import PenrithCityScraper
 from council_scrapers.scrapers.nsw.randwick import RandwickScraper
 from council_scrapers.scrapers.nsw.ryde import RydeScraper
+from council_scrapers.scrapers.nsw.strathfield import StrathfieldNSWScraper
 from council_scrapers.scrapers.nsw.waverley import WaverleyScraper
 from council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
 
