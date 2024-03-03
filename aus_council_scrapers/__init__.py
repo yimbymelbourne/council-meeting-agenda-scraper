@@ -1,1 +1,1 @@
-from council_scrapers.scrapers import *
+from aus_council_scrapers.scrapers import *

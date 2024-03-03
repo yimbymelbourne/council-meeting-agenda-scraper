@@ -2,7 +2,7 @@ import pytest
 import os.path
 import json
 
-from council_scrapers.base import (
+from aus_council_scrapers.base import (
     SCRAPER_REGISTRY,
     BaseScraper,
     Fetcher,

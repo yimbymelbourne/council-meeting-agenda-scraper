@@ -3,19 +3,19 @@ import os.path
 import importlib
 from pathlib import Path
 import logging
-from council_scrapers.utils import (
+from aus_council_scrapers.utils import (
     download_pdf,
     read_pdf,
     parse_pdf,
     write_email,
     send_email,
 )
-import council_scrapers.database as db
-from council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, ScraperReturn
-from council_scrapers.logging_config import setup_logging
+import aus_council_scrapers.database as db
+from aus_council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, ScraperReturn
+from aus_council_scrapers.logging_config import setup_logging
 import logging
 
-from council_scrapers.discord_bot import DiscordNotifier
+from aus_council_scrapers.discord_bot import DiscordNotifier
 
 from dotenv import dotenv_values
 

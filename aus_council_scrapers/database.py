@@ -2,7 +2,7 @@ import sqlite3
 import datetime
 import json
 
-from council_scrapers.base import ScraperReturn
+from aus_council_scrapers.base import ScraperReturn
 
 
 def init():

@@ -2,7 +2,7 @@
 import logging
 import requests
 from abc import ABC, abstractmethod
-from council_scrapers.constants import COUNCIL_HOUSING_REGEX, TIME_REGEX, DATE_REGEX
+from aus_council_scrapers.constants import COUNCIL_HOUSING_REGEX, TIME_REGEX, DATE_REGEX
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait

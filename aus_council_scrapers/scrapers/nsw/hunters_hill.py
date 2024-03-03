@@ -1,5 +1,5 @@
-from council_scrapers.base import InfoCouncilScraper
-from council_scrapers.base import register_scraper
+from aus_council_scrapers.base import InfoCouncilScraper
+from aus_council_scrapers.base import register_scraper
 
 
 @register_scraper
