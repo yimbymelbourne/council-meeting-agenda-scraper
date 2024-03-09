@@ -1,0 +1,58 @@
+2024-02-17 20:41:03,469 [INFO] YIMBY-Scraper: YIMBY SCRAPER Start
+2024-02-17 20:41:03,481 [ERROR] YIMBY-Scraper: Running boroondara scraper
+2024-02-17 20:41:03,481 [INFO] BoroondaraScraper: Starting boroondara scraper
+2024-02-17 20:41:07,279 [INFO] BoroondaraScraper: /events/services-delegated-committee-meeting-12-february-2024
+2024-02-17 20:41:07,279 [INFO] BoroondaraScraper: Datetime: Mon 12 February 2024, 6:30 pm
+2024-02-17 20:41:07,279 [INFO] BoroondaraScraper: Extracted Date: 12 February 2024
+2024-02-17 20:41:07,279 [INFO] BoroondaraScraper: Extracted Date: 6:30 pm
+2024-02-17 20:41:07,279 [INFO] BoroondaraScraper: https://www.boroondara.vic.gov.au/events/services-delegated-committee-meeting-12-february-2024
+2024-02-17 20:41:08,943 [INFO] BoroondaraScraper: 
+            Agenda - SDC - 2024-02-12 
+            12 February 2024 
+            6:30 pm 
+            https://www.boroondara.vic.gov.au 
+            https://www.boroondara.vic.gov.au/media/95741/download?inline
+2024-02-17 20:41:08,943 [INFO] BoroondaraScraper: boroondara scraper finished successfully
+2024-02-17 20:41:47,962 [INFO] YIMBY-Scraper: YIMBY SCRAPER Start
+2024-02-17 20:41:47,963 [ERROR] YIMBY-Scraper: Running boroondara scraper
+2024-02-17 20:41:47,963 [INFO] BoroondaraScraper: Starting boroondara scraper
+2024-02-17 20:41:48,224 [INFO] BoroondaraScraper: /events/services-delegated-committee-meeting-12-february-2024
+2024-02-17 20:41:48,224 [INFO] BoroondaraScraper: Datetime: Mon 12 February 2024, 6:30 pm
+2024-02-17 20:41:48,224 [INFO] BoroondaraScraper: Extracted Date: 12 February 2024
+2024-02-17 20:41:48,224 [INFO] BoroondaraScraper: Extracted Date: 6:30 pm
+2024-02-17 20:41:48,224 [INFO] BoroondaraScraper: https://www.boroondara.vic.gov.au/events/services-delegated-committee-meeting-12-february-2024
+2024-02-17 20:41:48,321 [INFO] BoroondaraScraper: 
+            Agenda - SDC - 2024-02-12 
+            12 February 2024 
+            6:30 pm 
+            https://www.boroondara.vic.gov.au 
+            https://www.boroondara.vic.gov.au/media/95741/download?inline
+2024-02-17 20:41:48,321 [INFO] BoroondaraScraper: boroondara scraper finished successfully
+2024-02-17 20:41:48,322 [INFO] YIMBY-Scraper: Link scraped! Downloading PDF...
+2024-02-17 20:41:48,968 [INFO] YIMBY-Scraper: PDF downloaded!
+2024-02-17 20:41:48,968 [INFO] YIMBY-Scraper: Reading PDF into memory...
+2024-02-17 20:41:49,081 [INFO] YIMBY-Scraper: PDF read! Parsing PDF...
+2024-02-17 20:41:49,081 [INFO] YIMBY-Scraper: PDF parsed! Inserting into database...
+2024-02-17 20:41:49,092 [INFO] YIMBY-Scraper: Finished with boroondara.
+2024-02-17 20:41:49,092 [ERROR] YIMBY-Scraper: Running darebin scraper
+2024-02-17 20:41:49,092 [INFO] DarebinScraper: Starting darebin scraper
+2024-02-17 20:41:50,032 [INFO] DarebinScraper: Extracted Date: 19 February 2024
+2024-02-17 20:41:50,032 [INFO] DarebinScraper: 
+            Special Council Meeting Agenda - 
+            19 February 2024
+            None
+            https://www.darebin.vic.gov.au/About-Council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2024-Council-meeting-agendas-and-minutes
+            https://www.darebin.vic.gov.au/-/media/Council/Files/About-Council/Councillors-and-meetings/Council-and-Committee-Meetings/Council-meetings/Agendas-and-minutes/2024/19-Feb-2024/SpecialCouncilMeetingAgenda-19February2024.ashx
+            
+2024-02-17 20:41:50,032 [INFO] DarebinScraper: darebin scraper finished successfully
+2024-02-17 20:41:50,032 [INFO] YIMBY-Scraper: Link scraped! Downloading PDF...
+2024-02-17 20:41:50,624 [INFO] YIMBY-Scraper: PDF downloaded!
+2024-02-17 20:41:50,624 [INFO] YIMBY-Scraper: Reading PDF into memory...
+2024-02-17 20:41:50,647 [INFO] YIMBY-Scraper: PDF read! Parsing PDF...
+2024-02-17 20:41:50,647 [INFO] YIMBY-Scraper: PDF parsed! Inserting into database...
+2024-02-17 20:41:50,666 [INFO] YIMBY-Scraper: Finished with darebin.
+2024-02-17 20:41:50,667 [ERROR] YIMBY-Scraper: Running glen_eira scraper
+2024-02-17 20:41:50,667 [INFO] GlenEiraScraper: Starting glen_eira scraper
+2024-02-17 20:41:51,611 [INFO] GlenEiraScraper: Found link to agenda: /about-council/meetings-and-agendas/council-agendas-and-minutes/ordinary-council-meeting-tuesday-6-february-2024
+2024-02-17 20:41:52,105 [INFO] GlenEiraScraper: Scraped: Ordinary meeting, Date: 6 February 2024, Time: 7.30pm, PDF URL: https://www.gleneira.vic.gov.au/media/files/Agenda06022024.pdf
+2024-02-17 20:41:52,105 [INFO] YIMBY-Scraper: Link scraped! Downloading PDF...
