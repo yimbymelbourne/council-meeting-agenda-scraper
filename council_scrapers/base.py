@@ -6,7 +6,7 @@ from council_scrapers.constants import COUNCIL_HOUSING_REGEX, TIME_REGEX, DATE_R
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import urllib.parse
 from bs4 import BeautifulSoup
 import re
@@ -34,7 +34,7 @@ class ScraperReturn:
     name: str
     date: str
     time: str
-    location: str
+    location: str = field(default = "", kw_only = True)
     webpage_url: str
     download_url: str
 
@@ -43,9 +43,9 @@ class ScraperReturn:
             "name": self.name,
             "date": self.date,
             "time": self.time,
-            "location": self.location,
             "webpage_url": self.webpage_url,
             "download_url": self.download_url,
+            "location": self.location,
         }
 
     @staticmethod
@@ -54,9 +54,9 @@ class ScraperReturn:
             name=d["name"],
             date=d["date"],
             time=d["time"],
-            location=d["location"],
             webpage_url=d["webpage_url"],
             download_url=d["download_url"],
+            location=d["location"],
         )
 
 
