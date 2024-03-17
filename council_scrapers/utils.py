@@ -54,9 +54,11 @@ def write_email(
 
     return email_body
 
-def write_ical_event(council_name: str,
-                     scraper_result: ScraperReturn,
-                     ):
+
+def write_ical_event(
+    council_name: str,
+    scraper_result: ScraperReturn,
+):
     cal = Calendar()
     cal.add("prodid", "-//Agenda Scraper//morehomes.au//")
     cal.add("version", "2.0")
@@ -64,10 +66,18 @@ def write_ical_event(council_name: str,
     event = Event()
     event.add("summary", f"{council_name} Upcoming Meeting Agenda")
     eventdate = datetime.strptime(scraper_result.date)
-    event.add("dstart", datetime.combine(eventdate, datetime.strptime(scraper_result.time), pytz.timezone('Australia/Sydney')))
-    
+    event.add(
+        "dstart",
+        datetime.combine(
+            eventdate,
+            datetime.strptime(scraper_result.time),
+            pytz.timezone("Australia/Sydney"),
+        ),
+    )
+
     cal.add_component(event)
     return cal.to_ical()
+
 
 def send_email(to, subject, body):
     if int(config["GMAIL_FUNCTIONALITY"]) == 1:
