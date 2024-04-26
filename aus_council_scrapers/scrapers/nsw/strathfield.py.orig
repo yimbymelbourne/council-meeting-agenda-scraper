@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from datetime import datetime
 from urllib.parse import urljoin
 import re
@@ -7,7 +7,7 @@ import re
 _STRATHFIELD_BASE_URL = "https://www.strathfield.nsw.gov.au"
 _STRATHFIELD_MEETINGS_URL = urljoin(_STRATHFIELD_BASE_URL, "/council/council-meetings/")
 
-_DOWNLOADS_SELECTOR = ".w-tabs-section > div > div > div > div > p > a"
+_DOWNLOADS_SELECTOR = "#content-zed7 > div > div > div > p > a"
 
 _LINK_TEXT_REGEX = (
     r"(Council Meeting|Ordinary Council Meeting|Extraordinary Council Meeting)"
