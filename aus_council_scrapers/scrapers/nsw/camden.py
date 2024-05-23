@@ -2,6 +2,7 @@ from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scrap
 from bs4 import BeautifulSoup
 import re
 
+
 @register_scraper
 class CamdenScraper(BaseScraper):
     def __init__(self):
@@ -22,7 +23,7 @@ class CamdenScraper(BaseScraper):
         output = self.fetcher.fetch_with_requests(webpage_url)
         soup = BeautifulSoup(output, "html.parser")
         meets = soup.find("h4")
-        link = meets.find_next("a")['href']
+        link = meets.find_next("a")["href"]
         latest_year = f"{self.base_url}/" + link
 
         output = self.fetcher.fetch_with_requests(latest_year)
@@ -39,11 +40,12 @@ class CamdenScraper(BaseScraper):
                 name = "Council Meeting"
             date = match.group(1)
 
-        link = latest_meet.find_next("a")['href']
+        link = latest_meet.find_next("a")["href"]
         download_url = f"{self.base_url}{link}"
 
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
-        self.logger.info(f"""
+        self.logger.info(
+            f"""
             {scraper_return.name}
             {scraper_return.date}
             {scraper_return.time}
@@ -53,6 +55,7 @@ class CamdenScraper(BaseScraper):
         self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
 
+
 if __name__ == "__main__":
-    scraper = CamdenScraper()  
+    scraper = CamdenScraper()
     scraper.scraper()
