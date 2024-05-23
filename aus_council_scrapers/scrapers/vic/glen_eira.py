@@ -1,4 +1,9 @@
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
+from aus_council_scrapers.base import (
+    BaseScraper,
+    ScraperReturn,
+    register_scraper,
+    Fetcher,
+)
 from bs4 import BeautifulSoup
 import re
 
@@ -67,10 +72,14 @@ class GlenEiraScraper(BaseScraper):
                 print("No time found in the input string.")
 
         resource_link = soup.find("a", class_="resource__link")
+
         if resource_link:
-            download_url = (
-                resource_link.get("href") if resource_link else "PDF link not found"
-            )
+            # Get download url and add baseurl if the download url is relative
+            download_url = resource_link.get("href")
+            if not download_url.startswith("http"):
+                download_url = self.base_url + download_url
+        else:
+            download_url = "PDF link not found"
 
         return name, date, time, download_url
 

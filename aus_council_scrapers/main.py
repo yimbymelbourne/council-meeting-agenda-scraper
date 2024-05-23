@@ -37,7 +37,15 @@ def processor(scraper_results: ScraperReturn, scraper: BaseScraper):
 
     logging.info("PDF downloaded!")
     logging.info("Reading PDF into memory...")
-    text = read_pdf(council_name)
+
+    # Try to read pdf to memory
+    text = None
+    try:
+        text = read_pdf(council_name)
+    except Exception as e:
+        logging.error(f"Error reading PDF: {e}")
+        return
+
     with open(f"files/{council_name}_latest.txt", "w", encoding="utf-8") as f:
         f.write(text)
 
