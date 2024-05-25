@@ -2,7 +2,9 @@ from aus_council_scrapers.scrapers.nsw.burwood import BurwoodNSWScraper
 from aus_council_scrapers.scrapers.nsw.camden import CamdenScraper
 from aus_council_scrapers.scrapers.nsw.campbelltown import CampbelltownScraper
 from aus_council_scrapers.scrapers.nsw.canada_bay import CanadaBayScraper
-from aus_council_scrapers.scrapers.nsw.canterbury_bankstown import CanterburyBankstownScraper
+from aus_council_scrapers.scrapers.nsw.canterbury_bankstown import (
+    CanterburyBankstownScraper,
+)
 from aus_council_scrapers.scrapers.nsw.cumberland import CumberlandScraper
 from aus_council_scrapers.scrapers.nsw.georges_river import GeorgesRiverScraper
 from aus_council_scrapers.scrapers.nsw.hornsby import HornsbyScraper

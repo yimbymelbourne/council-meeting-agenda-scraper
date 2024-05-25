@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import datetime
 
+
 @register_scraper
 class CampbelltownScraper(BaseScraper):
     def __init__(self):
@@ -32,12 +33,13 @@ class CampbelltownScraper(BaseScraper):
         if match:
             name = match.group(1).strip()
             date = match.group(2) + f" {year}"
-            
-        link = latest_meet.find_next("a")['href']
+
+        link = latest_meet.find_next("a")["href"]
         download_url = f"{self.base_url}{link}"
 
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
-        self.logger.info(f"""
+        self.logger.info(
+            f"""
             {scraper_return.name}
             {scraper_return.date}
             {scraper_return.time}
@@ -47,6 +49,7 @@ class CampbelltownScraper(BaseScraper):
         self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
 
+
 if __name__ == "__main__":
-    scraper = CampbelltownScraper()  
+    scraper = CampbelltownScraper()
     scraper.scraper()

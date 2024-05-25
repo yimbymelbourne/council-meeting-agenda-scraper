@@ -1,4 +1,9 @@
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
+from aus_council_scrapers.base import (
+    BaseScraper,
+    ScraperReturn,
+    register_scraper,
+    Fetcher,
+)
 from bs4 import BeautifulSoup
 import re
 
@@ -51,12 +56,13 @@ class MerribekScraper(BaseScraper):
                 print("No date found in the input string.")
 
         grandparent_el = target_a_tag.parent.parent.parent.h3
-        el_name = (grandparent_el).text
 
-        el_name = self.date_regex.sub("", el_name)
-        name = el_name
+        if grandparent_el:
+            el_name = grandparent_el.text
+            el_name = self.date_regex.sub("", el_name)
+            name = el_name
 
-        if name == "":
+        if name == "" or name is None:
             name = "Council Agenda"
 
         print("~~~")

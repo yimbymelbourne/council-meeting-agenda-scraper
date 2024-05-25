@@ -1,4 +1,9 @@
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
+from aus_council_scrapers.base import (
+    BaseScraper,
+    ScraperReturn,
+    register_scraper,
+    Fetcher,
+)
 from bs4 import BeautifulSoup
 import re
 

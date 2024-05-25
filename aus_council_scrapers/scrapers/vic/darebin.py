@@ -1,10 +1,19 @@
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper, Fetcher
+from aus_council_scrapers.base import (
+    BaseScraper,
+    ScraperReturn,
+    register_scraper,
+    Fetcher,
+)
 from bs4 import BeautifulSoup
 import re
+
+# Match any agenda with a pdf extension
+AGENGA_HREF_REGEX = re.compile(r"(.*)Agenda(.*)\.pdf", re.IGNORECASE)
 
 
 @register_scraper
 class DarebinScraper(BaseScraper):
+
     def __init__(self):
         super().__init__(f"darebin", "VIC", "https://www.darebin.vic.gov.au")
         self.date_pattern = re.compile(
@@ -25,11 +34,12 @@ class DarebinScraper(BaseScraper):
         time = None
         download_url = None
 
-        # all content we are looking for is in the div rte-content
-        soup = soup.find("div", class_="rte-content")
+        # all content we are looking for is in the div main-content
+        soup = soup.find("div", attrs={"id": "main-content"})
 
         # look for the first a tag with the word agenda
-        target_a_tag = soup.find("a", href=lambda href: href and "Agenda" in href)
+        # target_a_tag = soup.find("a", href=lambda href: href and "Agenda" in href)
+        target_a_tag = soup.find("a", href=AGENGA_HREF_REGEX)
 
         # Print the result
         if target_a_tag:
@@ -47,7 +57,7 @@ class DarebinScraper(BaseScraper):
             self.logger.debug("link not found.")
 
         # get the text inside that first name tag - contains both the name of the meeting and the date
-        txt_value = target_a_tag.string
+        txt_value = target_a_tag.get_text()
         self.logger.debug(txt_value)
         if txt_value:
             # extract the date from txt_value

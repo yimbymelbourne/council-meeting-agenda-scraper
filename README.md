@@ -40,7 +40,7 @@ Within your environment, run: `python council_scrapers/main.py`
 
 Logs will print to your terminal and also get saved into /logs/ as well as writing key results to `agendas.db`.
 
-You can run an individual scraper by running `python council_scrapers/main.py --council council_string`. For instance: `python council_scrapers/main.py --council yarra` will run the Yarra Council scraper.
+You can run an individual scraper by running `python ./aus_council_scrapers/main.py --council council_string`. For instance: `python council_scrapers/main.py --council yarra` will run the Yarra Council scraper.
 
 A list of councils and their strings can be found in `docs/councils.md`.
 

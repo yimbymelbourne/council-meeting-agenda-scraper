@@ -1,5 +1,6 @@
 from aus_council_scrapers.base import InfoCouncilScraper, register_scraper
 
+
 @register_scraper
 class BurwoodNSWScraper(InfoCouncilScraper):
     def __init__(self):
