@@ -6,7 +6,7 @@ import re
 import urllib.parse
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, List, Optional, TypedDict
+from typing import Optional
 
 import requests
 from bs4 import BeautifulSoup
@@ -70,6 +70,9 @@ class ScraperReturn:
                 self._cleaned_date = parse_date(self.date, fuzzy=True).date()
         except Exception as e:
             raise ValueError(f"Could not parse date {self.date}")
+
+        if self._cleaned_date < datetime.date.today():
+            raise ValueError(f"Date {self.date} is in the past")
 
         return self._cleaned_date
 
@@ -256,17 +259,29 @@ class InfoCouncilScraper(BaseScraper):
         relative_pdf_url = current_meeting.find(
             "a", class_="bpsGridPDFLink", recursive=True
         ).attrs["href"]
-        date_element = current_meeting.find("td", class_="bpsGridDate")
-        if date_element.span is not None:
-            time = date_element.span.text
+
+        date_text = current_meeting.find("td", class_="bpsGridDate").get_text(
+            separator=" "
+        )
+        time_search = self.time_regex.search(date_text)
+        time = time_search.group() if time_search else None
+
+        date_search = self.date_regex.search(date_text)
+        date = date_search.group() if date_search else None
+
+        location = current_meeting.find("td", class_="bpsGridCommittee")
+        if location and location.span and location.span.text:
+            location_text = location.span.text
         else:
-            time = ""
+            location_text = None
+
         scraper_return = ScraperReturn(
             name=current_meeting.find("td", class_="bpsGridCommittee").text,
-            date=date_element.contents[0],
+            date=date,
             time=time,
             webpage_url=self.infocouncil_url,
             download_url=urllib.parse.urljoin(self.infocouncil_url, relative_pdf_url),
+            location=location_text,
         )
 
         self.logger.info(f"{self.council_name} scraper finished successfully")

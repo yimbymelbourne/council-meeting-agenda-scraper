@@ -13,7 +13,6 @@ class ManninghamScraper(BaseScraper):
         super().__init__(council_name, state, base_url)
 
     def scraper(self) -> ScraperReturn | None:
-        self.logger.info(f"Starting {self.council_name} scraper")
         initial_webpage_url = "https://www.manningham.vic.gov.au/about-council/how-council-works/council-meetings"
 
         # Find next meeting url
@@ -30,6 +29,9 @@ class ManninghamScraper(BaseScraper):
         name_from_title = meeting_soup.find("h1", class_="page-title").text
         raw_date = re.search(self.date_regex, name_from_title).group()
         name = name_from_title.replace(raw_date, "").strip()
+        location = (
+            meeting_soup.find("p", class_="address").text.strip().replace("\n", " ")
+        )
 
         datetime_str = meeting_soup.find("a", class_="js-ics-export")["data-ics-start"]
         datetime_dt = datetime.strptime(datetime_str, "%Y-%m-%d %I:%M %p")
@@ -38,19 +40,14 @@ class ManninghamScraper(BaseScraper):
 
         download_url = meeting_soup.find("a", class_="file-link")["href"]
 
-        scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
-
-        self.logger.info(
-            f"""
-            {scraper_return.name}
-            {scraper_return.date}
-            {scraper_return.time}
-            {scraper_return.webpage_url}
-            {scraper_return.download_url}"""
+        return ScraperReturn(
+            name=name,
+            date=date,
+            time=time,
+            webpage_url=self.base_url,
+            download_url=download_url,
+            location=location,
         )
-
-        self.logger.info(f"{self.council_name} scraper finished successfully")
-        return scraper_return
 
 
 if __name__ == "__main__":

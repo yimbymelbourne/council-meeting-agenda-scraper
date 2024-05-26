@@ -39,7 +39,7 @@ def main():
     args = parser.parse_args()
 
     # Setup logging
-    setup_logging(level=args.log_level)
+    setup_logging(level=args.log_level.upper())
     logging.info("YIMBY SCRAPER Started")
     start_time = time.time()
 
@@ -92,7 +92,7 @@ def run_scraper(scraper: BaseScraper, skip_keywords=False):
         scraper.logger.info(f"Scraper finished successfully")
     except Exception as e:
         # Save error to log
-        scraper.logger.error(f"Scraper failed: {e}")
+        scraper.logger.exception(f"Scraper failed: {e}")
 
 
 def get_agenda_info(scraper: BaseScraper) -> Optional[ScraperReturn]:
