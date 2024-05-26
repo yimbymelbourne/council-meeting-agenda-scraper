@@ -1,7 +1,10 @@
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
 import logging
+import logging.handlers
 import os.path
+import time
 from typing import Optional
 
 from dotenv import dotenv_values
@@ -28,16 +31,17 @@ def main():
     # Parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("--fresh", help="Force re-scrape", action="store_true")
+    parser.add_argument("--skip-keywords", help="Force re-scrape", action="store_true")
     parser.add_argument("--council", help="Scan only this council")
+    parser.add_argument("--state", help="Scan only this state")
     parser.add_argument("--log-level", help="Set the log level", default="INFO")
+    parser.add_argument("--workers", help="Number of workers", default=6, type=int)
     args = parser.parse_args()
 
     # Setup logging
-    if args.log_level:
-        setup_logging(level=args.log_level)
-        logging.getLogger().name = "YIMBY-Scraper"
-        logging.getLogger().setLevel(logging.INFO)
+    setup_logging(level=args.log_level)
     logging.info("YIMBY SCRAPER Started")
+    start_time = time.time()
 
     # Delete db if fresh
     if args.fresh:
@@ -48,14 +52,19 @@ def main():
         db.init()
 
     # Run scrapers
-    for scraper in SCRAPER_REGISTRY.values():
-        if args.council is None or scraper.council_name == args.council:
-            run_scraper(scraper)
+    with ThreadPoolExecutor(max_workers=args.workers) as executor:
+        for scraper in SCRAPER_REGISTRY.values():
+            # Filter by council and state
+            if args.state and args.state.lower() != scraper.state.lower():
+                continue
+            if args.council and args.council.lower() != scraper.council_name.lower():
+                continue
+            executor.submit(run_scraper, scraper, args.skip_keywords)
 
-    logging.info("YIMBY SCRAPER Finished")
+    logging.info(f"YIMBY SCRAPER Finished in {time.time() - start_time:.2f}s")
 
 
-def run_scraper(scraper: BaseScraper):
+def run_scraper(scraper: BaseScraper, skip_keywords=False):
     try:
         scraper.logger.info(f"Scraper started")
 
@@ -68,7 +77,9 @@ def run_scraper(scraper: BaseScraper):
             return
 
         # Extract data from PDF
-        extracted_data = process_pdf(scraper, result)
+        extracted_data = {}
+        if not skip_keywords:
+            extracted_data = process_pdf(scraper, result)
 
         # Insert into database
         db.insert(scraper.council_name, result, extracted_data)
