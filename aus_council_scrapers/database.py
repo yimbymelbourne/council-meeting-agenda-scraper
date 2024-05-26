@@ -12,7 +12,8 @@ def init():
         """CREATE TABLE IF NOT EXISTS agendas
                 (id INTEGER PRIMARY KEY, 
                 date_scraped TEXT, 
-                council TEXT, 
+                council TEXT,
+                location TEXT,
                 meeting_date TEXT,
                 meeting_time TEXT,
                 webpage_url TEXT, 
@@ -26,35 +27,54 @@ def init():
 
 def insert(
     council_name: str,
-    scraper_return: ScraperReturn,
-    result: dict | None,
-    AI_result: str | None = None,
+    scraper_result: ScraperReturn,
+    keywords: dict | None,
+    ai_result: str | None = None,
 ):
-    date = datetime.datetime.now().strftime("%Y-%m-%d")
-    if result:
-        binary_result = json.dumps(result).encode()
-    else:
-        binary_result = ""
+    now_date = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-    if not AI_result:
-        AI_result = ""
+    keywords_json = json.dumps(keywords).encode() if keywords else "{}"
+    meeting_time = (
+        scraper_result.cleaned_time.isoformat() if scraper_result.cleaned_time else None
+    )
+    meeting_date = scraper_result.cleaned_date.isoformat()
 
     conn = sqlite3.connect("agendas.db")
     c = conn.cursor()
     c.execute(
-        """INSERT INTO agendas (
-                date_scraped, council, meeting_date,
-                meeting_time, webpage_url, download_url, result, AI_result) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+        """
+        INSERT INTO agendas (
+                date_scraped,
+                council,
+                meeting_date,
+                meeting_time,
+                location,
+                webpage_url,
+                download_url,
+                result,
+                AI_result
+            ) 
+            VALUES (
+                ?, -- date_scraped
+                ?, -- council
+                ?, -- meeting_date
+                ?, -- meeting_time
+                ?, -- location
+                ?, -- webpage_url
+                ?, -- download_url
+                ?, -- result (keywords)
+                ? -- AI_result
+            )""",
         (
-            date,
+            now_date,
             council_name,
-            scraper_return.date,
-            scraper_return.time,
-            scraper_return.webpage_url,
-            scraper_return.download_url,
-            binary_result,
-            AI_result,
+            meeting_date,
+            meeting_time,
+            scraper_result.location,
+            scraper_result.webpage_url,
+            scraper_result.download_url,
+            keywords_json,
+            ai_result,
         ),
     )
     conn.commit()

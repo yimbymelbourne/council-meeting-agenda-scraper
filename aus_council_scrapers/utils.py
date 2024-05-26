@@ -1,3 +1,4 @@
+import datetime
 import requests
 import re
 import os.path
@@ -30,7 +31,10 @@ def read_pdf(council_name: str):
     return text
 
 
-def parse_pdf(regexes: list[re.Pattern], text) -> dict[str, int] | None:
+KeywordCounts = dict[str, int]
+
+
+def extract_keywords(regexes: list[re.Pattern], text) -> KeywordCounts:
     return {regex: len(re.findall(regex, text)) for regex in regexes}
 
 
@@ -70,3 +74,11 @@ def send_email(to, subject, body):
         print(
             f"Email functionality is disabled. Would have sent email to {to} with subject {subject} and body {body}."
         )
+
+
+def format_date_for_message(date: datetime.date):
+    current_year = datetime.date.today().year
+    if date.year == current_year:
+        return date.strftime("%d %b")
+
+    return date.strftime("%d %b %Y")
