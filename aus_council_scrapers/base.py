@@ -1,4 +1,3 @@
-# base_scraper.py
 import datetime
 import json
 import logging
@@ -8,6 +7,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional
 
+import pytz
 import requests
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
@@ -15,7 +15,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 
-from aus_council_scrapers.constants import COUNCIL_HOUSING_REGEX, DATE_REGEX, TIME_REGEX
+from aus_council_scrapers.constants import (
+    COUNCIL_HOUSING_REGEX,
+    DATE_REGEX,
+    TIME_REGEX,
+    TIMEZONES_BY_STATE,
+)
 
 
 def register_scraper(cls):
@@ -57,7 +62,6 @@ class ScraperReturn:
                 self._cleaned_time = parse_date(self.time, fuzzy=True).time()
             return self._cleaned_time
         except Exception as e:
-            print(e)
             return None
 
     @property
@@ -71,12 +75,25 @@ class ScraperReturn:
         except Exception as e:
             raise ValueError(f"Could not parse date {self.date}")
 
-        if self._cleaned_date < datetime.date.today():
-            raise ValueError(f"Date {self.date} is in the past")
-
         return self._cleaned_date
 
-    def check_required_properties(self) -> bool:
+    @property
+    def cleaned_location(self) -> Optional[str]:
+        if not self.location or self.location.isspace():
+            return None
+
+        cleaned = self.location.replace(r"\w", " ").strip().lower()
+
+        # Remove council chambers string from location
+        council_chamber_regex = re.compile(r"^council\s?chambers?,?", re.IGNORECASE)
+        cleaned = council_chamber_regex.sub("", cleaned)
+
+        if cleaned == "":
+            return None
+
+        return " ".join((word.capitalize() for word in cleaned.split()))
+
+    def check_required_properties(self, state: str) -> None:
         if not self.name or self.name.isspace():
             raise ValueError(f"No name found")
         if not self.download_url or self.download_url.isspace():
@@ -87,13 +104,23 @@ class ScraperReturn:
         # cleaned date check happens in the property getter
         _ = self.cleaned_date
 
+        # Check if date is in the past
+        # TODO: Do we want to add this check to make sure we're not scraping meetings that happened in the past?
+        # if self.is_date_in_past(state):
+        #     raise ValueError(f"Meeting date is in the past")
+
     def add_default_values(self, default_name, default_time, default_location):
         if not self.name and default_name:
             self.name = default_name
         if not self.time and default_time:
             self.time = default_time
-        if not self.location and default_location:
+        if not self.cleaned_location and default_location:
             self.location = default_location
+
+    def is_date_in_past(self, state: str) -> bool:
+        timezone = pytz.timezone(TIMEZONES_BY_STATE[state.upper()])
+        today = datetime.datetime.now(timezone).date()
+        return self.cleaned_date < today
 
     def __str__(self):
         return json.dumps(self.to_dict(), indent=2)
@@ -244,7 +271,7 @@ class InfoCouncilScraper(BaseScraper):
         super().__init__(council, state, base_url)
 
     def scraper(self) -> ScraperReturn | None:
-        self.logger.info(f"Starting {self.council_name} scraper")
+
         output = self.fetcher.fetch_with_requests(self.infocouncil_url)
         soup = BeautifulSoup(output, "html.parser")
         meeting_table = soup.find("table", id="grdMenu", recursive=True)
@@ -270,13 +297,18 @@ class InfoCouncilScraper(BaseScraper):
         date = date_search.group() if date_search else None
 
         location = current_meeting.find("td", class_="bpsGridCommittee")
-        if location and location.span and location.span.text:
-            location_text = location.span.text
-        else:
-            location_text = None
+        location_text = None
+        location_spans = [location_span for location_span in location.find_all("span")]
+        for span_el in reversed(location_spans):
+            maybe_address = span_el.get_text(separator=" ", strip=True)
+            if maybe_address and maybe_address != "":
+                location_text = maybe_address
+                break
+
+        name = location.text if location else None
 
         scraper_return = ScraperReturn(
-            name=current_meeting.find("td", class_="bpsGridCommittee").text,
+            name=name,
             date=date,
             time=time,
             webpage_url=self.infocouncil_url,
@@ -284,7 +316,6 @@ class InfoCouncilScraper(BaseScraper):
             location=location_text,
         )
 
-        self.logger.info(f"{self.council_name} scraper finished successfully")
         return scraper_return
 
 

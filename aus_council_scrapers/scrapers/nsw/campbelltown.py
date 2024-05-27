@@ -11,6 +11,9 @@ class CampbelltownScraper(BaseScraper):
         state = "NSW"
         base_url = "https://www.campbelltown.nsw.gov.au"
         super().__init__(council, state, base_url)
+        self.default_location = (
+            "Corner Queen and Broughton Streets, Campbelltown NSW 2560"
+        )
 
     def scraper(self) -> ScraperReturn:
         self.logger.info(f"Starting {self.council_name} scraper")

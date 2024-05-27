@@ -4,6 +4,7 @@ import json
 import logging
 import logging.handlers
 import os.path
+import sys
 import time
 from typing import Optional
 
@@ -77,22 +78,44 @@ def run_scraper(scraper: BaseScraper, skip_keywords=False):
             return
 
         # Extract data from PDF
-        extracted_data = {}
+        extracted_keywords = {}
+        agenda_wordcount = None
         if not skip_keywords:
-            extracted_data = process_pdf(scraper, result)
+            extracted_keywords, agenda_wordcount = process_pdf(scraper, result)
 
         # Insert into database
-        db.insert(scraper.council_name, result, extracted_data)
+        db.insert_result(
+            council_name=scraper.council_name,
+            state=scraper.state,
+            scraper_result=result,
+            keywords=extracted_keywords,
+            agenda_wordcount=agenda_wordcount,
+        )
         scraper.logger.info(f"Saved meeting details to db")
 
-        # Send to email and/or discord
-        notify_email(scraper, result, extracted_data)
-        notify_discord(scraper, result)
+        if not result.is_date_in_past(scraper.state):
+            # Send to email and/or discord
+            notify_email(scraper, result, extracted_keywords)
+            notify_discord(scraper, result)
+        else:
+            scraper.logger.warn(f"Skipping notification because date is in the past")
 
         scraper.logger.info(f"Scraper finished successfully")
     except Exception as e:
-        # Save error to log
-        scraper.logger.exception(f"Scraper failed: {e}")
+        try:
+            # Save error to log
+            scraper.logger.exception(f"Scraper failed: {e}")
+
+            # Insert error into database
+            db.insert_error(
+                council_name=scraper.council_name,
+                state=scraper.state,
+                exception=e,
+            )
+        except Exception as e:
+            # If an error occurs while trying to recover from the scraper error, kill the program
+            logging.exception(f"YIMBY SCRAPER Fatal Error {e}")
+            os._exit(1)
 
 
 def get_agenda_info(scraper: BaseScraper) -> Optional[ScraperReturn]:
@@ -109,16 +132,23 @@ def get_agenda_info(scraper: BaseScraper) -> Optional[ScraperReturn]:
     )
 
     # Check result properties
-    result.check_required_properties()
+    result.check_required_properties(scraper.state)
 
     # Log warning if time found but not parsed
     if not result.cleaned_time and result.time:
         scraper.logger.warning(f"Time found but could not be parsed: {result.time}")
 
+    # Log warning if date is in the past
+    if result.is_date_in_past(scraper.state):
+        scraper.logger.warning(f"Date is in the past: {result.cleaned_date}")
+
     return result
 
 
-def process_pdf(scraper: BaseScraper, result: ScraperReturn) -> KeywordCounts:
+def process_pdf(
+    scraper: BaseScraper,
+    result: ScraperReturn,
+) -> tuple[KeywordCounts, int]:
     # Download PDF
     scraper.logger.info(f"Downloading PDF...")
     download_pdf(result.download_url, scraper.council_name)
@@ -131,10 +161,8 @@ def process_pdf(scraper: BaseScraper, result: ScraperReturn) -> KeywordCounts:
         f.write(text)
 
     # Extract info from text
-    extracted_data = extract_keywords(scraper.keyword_regexes, text)
-    scraper.logger.debug(
-        f"Extracted PDF keywords: {json.dumps(extracted_data, indent=2)}"
-    )
+    keywords, wordcount = extract_keywords(scraper.keyword_regexes, text)
+    scraper.logger.debug(f"Extracted PDF keywords: {json.dumps(keywords, indent=2)}")
 
     # Cleanup files if not saving
     if not config.get("SAVE_FILES", "0") == "1":
@@ -149,7 +177,7 @@ def process_pdf(scraper: BaseScraper, result: ScraperReturn) -> KeywordCounts:
             else None
         )
 
-    return extracted_data
+    return keywords, wordcount
 
 
 def notify_email(
@@ -158,8 +186,9 @@ def notify_email(
     extracted_data: KeywordCounts,
 ):
     email_to = config.get("GMAIL_ACCOUNT_RECEIVE", None)
+    email_enabled = config.get("GMAIL_FUNCTIONALITY", "0") == "1"
 
-    if email_to:
+    if email_to and email_enabled:
         scraper.logger.info(f"Sending email...")
 
         formatted_date = format_date_for_message(result.cleaned_date)

@@ -10,3 +10,6 @@ class LaneCoveScraper(InfoCouncilScraper):
         base_url = "https://lanecove.infocouncil.biz"
         infocouncil_url = "https://lanecove.infocouncil.biz"
         super().__init__(council, state, base_url, infocouncil_url)
+        self.default_location = (
+            "Lane Cove Council Civic Centre at 48 Longueville Road, Lane Cove"
+        )

@@ -9,3 +9,6 @@ class PenrithCityScraper(InfoCouncilScraper):
         base_url = "https://www.penrithcity.nsw.gov.au/"
         infocouncil_url = "https://penrith.infocouncil.biz/"
         super().__init__(council, state, base_url, infocouncil_url)
+        self.default_location = (
+            "Civic Centre, 601 High Street, Penrith on Monday 27 May 2024"
+        )

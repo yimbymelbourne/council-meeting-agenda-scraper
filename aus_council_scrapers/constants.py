@@ -1,8 +1,30 @@
 import re
 
 COUNCIL_HOUSING_REGEX = [
-    "dwellings",
-    "heritage",
+    # Zones
+    r"zoning|zone",
+    # Dwellings
+    r"dwelling|house|home|apartment|unit|townhouse|residential|housing|accommodation|room|studio|flat",
+    # Heritage
+    r"heritage|historical|cultural",
+    # Density
+    r"dense|densification|densities|density|densify",
+    # Setbacks
+    r"setback",
+    # Height
+    r"height",
+    # Character
+    r"character",
+    # Yimby
+    "yimby",
+    # Nimby
+    "nimby",
+    # Legal
+    r"vcat",
+    # Planning and development
+    r"plan|develop",
+    # Housing affordability
+    r"affordable\s+housing|social\s+housing|affordibility|public\s+housing",
 ]
 
 # Time regex - should handle messy time strings like these:
@@ -29,3 +51,14 @@ DATE_REGEX = re.compile(
     r"\b(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\w*,?\s*)?\d{1,2}(?:st|nd|rd|th)?\s+(?:of\s+)?(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{4}\b|\b(?:\d{1,2}\s*[\\-]\s*\d{1,2}\s*[\\-]\s*(?:\d{4}|\d{2}))\b",
     re.IGNORECASE,
 )
+
+TIMEZONES_BY_STATE = {
+    "NSW": "Australia/Sydney",
+    "VIC": "Australia/Melbourne",
+    "QLD": "Australia/Brisbane",
+    "SA": "Australia/Adelaide",
+    "WA": "Australia/Perth",
+    "TAS": "Australia/Hobart",
+    "NT": "Australia/Darwin",
+    "ACT": "Australia/Sydney",
+}

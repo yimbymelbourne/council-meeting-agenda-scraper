@@ -14,6 +14,7 @@ class CanterburyBankstownScraper(BaseScraper):
         state = "NSW"
         base_url = "https://www.cbcity.nsw.gov.au/"
         super().__init__(council, state, base_url)
+        self.default_location = "Cnr of The Mall and Chapel Road, Bankstown"
 
     def scraper(self) -> ScraperReturn:
         self.logger.info(f"Starting {self.council_name} scraper")

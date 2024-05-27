@@ -15,6 +15,8 @@ class RydeScraper(BaseScraper):
         state = "NSW"
         base_url = "https://www.ryde.nsw.gov.au"
         super().__init__(council, state, base_url)
+        self.default_location = "Level 1A, 1 Pope Street, Ryde"
+        self.default_time = "6:00 PM"
 
     def scraper(self) -> ScraperReturn:
         self.logger.info(f"Starting {self.council_name} scraper")

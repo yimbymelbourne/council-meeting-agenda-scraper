@@ -10,6 +10,7 @@ class CamdenScraper(BaseScraper):
         state = "NSW"
         base_url = "https://www.camden.nsw.gov.au"
         super().__init__(council, state, base_url)
+        self.default_location = "70 Central Ave, Oran Park NSW 2570"
 
     def scraper(self) -> ScraperReturn:
         self.logger.info(f"Starting {self.council_name} scraper")
