@@ -9,3 +9,7 @@ class WoollahraScraper(InfoCouncilScraper):
         base_url = "https://www.woollahra.nsw.gov.au/"
         infocouncil_url = "https://woollahra.infocouncil.biz/"
         super().__init__(council, state, base_url, infocouncil_url)
+        self.default_time = "6:30pm"
+        self.default_location = (
+            "Woollahra Municipal Council 536 New South Head Road, Double Bay NSW 2028"
+        )

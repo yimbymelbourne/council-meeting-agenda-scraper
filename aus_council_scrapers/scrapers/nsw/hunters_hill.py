@@ -10,3 +10,5 @@ class HuntersHillScraper(InfoCouncilScraper):
         base_url = "https://www.huntershill.nsw.gov.au/"
         infocouncil_url = "https://huntershill.infocouncil.biz/"
         super().__init__(council, state, base_url, infocouncil_url)
+        self.default_location = "Town Hall, 22 Alexandra Street, Hunters Hill NSW 2110"
+        self.default_time = "6pm"

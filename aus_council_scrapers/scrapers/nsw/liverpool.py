@@ -10,3 +10,4 @@ class LiverpoolScraper(InfoCouncilScraper):
         base_url = "https://www.liverpool.nsw.gov.au/"
         infocouncil_url = "https://liverpool.infocouncil.biz/"
         super().__init__(council, state, base_url, infocouncil_url)
+        self.default_time = "2pm"
