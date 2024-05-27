@@ -143,6 +143,7 @@ class ScraperReturn:
             time=d["time"],
             webpage_url=d["webpage_url"],
             download_url=d["download_url"],
+            location=d.get("location"),
         )
 
 
