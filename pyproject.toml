@@ -18,6 +18,8 @@ black = "^24.1.1"
 onnxruntime = "^1.17.0"
 "discord.py" = "^2.3.2"
 pytest-timeout = "^2.2.0"
+pytz = "^2024.1"
+dateutils = "^0.6.12"
 
 [tool.poetry.group.dev.dependencies]
 bump-my-version = "0.18.3"

@@ -13,6 +13,10 @@ class CanadaBayScraper(BaseScraper):
         self.date_pattern = re.compile(
             r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
         )
+        self.default_location = (
+            "Canada Bay Civic Centre, 1A Marlborough Street, Drummoyne"
+        )
+        self.default_time = "6 pm"
 
     def scraper(self) -> ScraperReturn | None:
         self.logger.info(f"Starting {self.council_name} scraper")

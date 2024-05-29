@@ -9,3 +9,5 @@ class WaverleyScraper(InfoCouncilScraper):
         base_url = "https://www.waverley.nsw.gov.au/"
         infocouncil_url = "https://waverley.infocouncil.biz/"
         super().__init__(council, state, base_url, infocouncil_url)
+        self.default_location = "Cnr Paul Street and Bondi Road, Bondi Junction"
+        self.default_time = "7 PM"

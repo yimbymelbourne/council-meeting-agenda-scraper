@@ -36,7 +36,7 @@ Preferred code formatter is [Black](https://github.com/psf/black).
 
 # Running the application
 
-Within your environment, run: `python council_scrapers/main.py`
+Within your environment, run: `python ./aus_council_scrapers/main.py`
 
 Logs will print to your terminal and also get saved into /logs/ as well as writing key results to `agendas.db`.
 
