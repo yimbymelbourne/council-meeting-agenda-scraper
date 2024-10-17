@@ -1,3 +1,11 @@
+[[tool.mypy.overrides]]
+module = "fitz"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "bs4" # type exist for this but they are worse than useless
+ignore_missing_imports = true
+
 [tool.poetry]
 name = "aus_council_scrapers"
 version = "0.1.0"
@@ -26,6 +34,9 @@ bump-my-version = "0.18.3"
 pytest = "^7.4.3"
 flake8 = "^7.0.0"
 pytest-xdist = "^3.5.0"
+types-python-dateutil = "^2.9.0.20241003"
+types-requests = "^2.32.0.20241016"
+types-pytz = "^2024.2.0.20241003"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

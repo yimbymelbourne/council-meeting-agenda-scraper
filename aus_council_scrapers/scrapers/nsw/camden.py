@@ -1,4 +1,5 @@
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from aus_council_scrapers.data import *
+from aus_council_scrapers.base import BaseScraper, register_scraper
 from bs4 import BeautifulSoup
 import re
 
@@ -12,7 +13,7 @@ class CamdenScraper(BaseScraper):
         super().__init__(council, state, base_url)
         self.default_location = "70 Central Ave, Oran Park NSW 2570"
 
-    def scraper(self) -> ScraperReturn:
+    def scraper(self) -> Results:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         name = None
@@ -44,17 +45,13 @@ class CamdenScraper(BaseScraper):
         link = latest_meet.find_next("a")["href"]
         download_url = f"{self.base_url}{link}"
 
-        scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
-        self.logger.info(
-            f"""
-            {scraper_return.name}
-            {scraper_return.date}
-            {scraper_return.time}
-            {scraper_return.webpage_url}
-            {scraper_return.download_url}"""
+        yield ScraperResult.CouncilMeetingNotice(
+            name,
+            datetime=NoticeDate.FuzzyRaw(date, time),
+            location=None,
+            webpage_url=self.base_url,
+            download_url=download_url,
         )
-        self.logger.info(f"{self.council_name} scraper finished successfully")
-        return scraper_return
 
 
 if __name__ == "__main__":

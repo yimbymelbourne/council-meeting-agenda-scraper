@@ -1,7 +1,7 @@
 import os.path
 import re
 import smtplib
-from datetime import datetime
+import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Optional
@@ -9,10 +9,10 @@ from typing import Optional
 import fitz
 import pytz
 import requests
-from base import ScraperReturn
 from dotenv import dotenv_values
 
 from aus_council_scrapers.constants import TIMEZONES_BY_STATE
+from aus_council_scrapers.data import ScraperResult
 
 config = dotenv_values(".env") if os.path.exists(".env") else {}
 
@@ -35,7 +35,7 @@ def read_pdf(council_name: str):
 KeywordCounts = dict[str, int]
 
 
-def extract_keywords(regexes: list[re.Pattern], text) -> tuple[KeywordCounts, int]:
+def extract_keywords(regexes: list[str], text) -> tuple[KeywordCounts, int]:
     cleaned = re.sub(r"\s+", " ", text)
     cleaned = re.sub(r"\t", " ", cleaned)
     cleaned = re.sub(r"[^\w\s]", "", cleaned)
@@ -47,10 +47,13 @@ def extract_keywords(regexes: list[re.Pattern], text) -> tuple[KeywordCounts, in
 
 def write_email(
     council_name: str,
-    scraper_result: ScraperReturn,
+    scraper_result: ScraperResult.CouncilMeetingNotice,
     parser_results: Optional[dict[str, int]] = None,
 ) -> str:
-    email_body = f"Hello,\n\nThe agenda for the {scraper_result.date} {council_name} meeting is now available for download.\n\nPlease click on the link below to download the agenda:\n{scraper_result.download_url}\n\n"
+    email_body = f"Hello,\n\nThe agenda for the {scraper_result.datetime.date} " \
+                 f"{council_name} meeting is now available for download.\n\n" \
+                 f"Please click on the link below to download the agenda:\n" \
+                 f"{scraper_result.download_url}\n\n"
 
     if parser_results and len(parser_results) > 0:
         email_body += "Here are the matches found in the agenda:\n"
@@ -80,7 +83,7 @@ def send_email(to, subject, body):
 
 
 def format_date_for_message(date: datetime.date):
-    current_year = datetime.today().year
+    current_year = datetime.datetime.today().year
     if date.year == current_year:
         return date.strftime("%d %b")
 

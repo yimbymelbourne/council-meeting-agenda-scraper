@@ -1,7 +1,9 @@
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from aus_council_scrapers.base import BaseScraper, register_scraper
+from aus_council_scrapers.data import *
 from bs4 import BeautifulSoup
 import re
 
+COUNCIL_MEETING_TIME = "6 pm"
 
 @register_scraper
 class CanadaBayScraper(BaseScraper):
@@ -16,9 +18,8 @@ class CanadaBayScraper(BaseScraper):
         self.default_location = (
             "Canada Bay Civic Centre, 1A Marlborough Street, Drummoyne"
         )
-        self.default_time = "6 pm"
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> Results:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         webpage_url = (
@@ -31,7 +32,6 @@ class CanadaBayScraper(BaseScraper):
 
         name = None
         date = None
-        time = ""
         download_url = None
 
         # all links are in the accordian list div
@@ -79,15 +79,10 @@ class CanadaBayScraper(BaseScraper):
         if name == "":
             name = "Council Agenda"
 
-        scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
-
-        self.logger.info(
-            f"""
-            {scraper_return.name}
-            {scraper_return.date}
-            {scraper_return.time}
-            {scraper_return.webpage_url}
-            {scraper_return.download_url}"""
+        yield ScraperResult.CouncilMeetingNotice(
+            name,
+            datetime=NoticeDate.FuzzyRaw(date, COUNCIL_MEETING_TIME),
+            location=None,
+            webpage_url=self.base_url,
+            download_url=download_url,
         )
-        self.logger.info(f"{self.council_name} scraper finished successfully")
-        return scraper_return

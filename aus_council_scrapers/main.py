@@ -11,7 +11,8 @@ from typing import Optional
 from dotenv import dotenv_values
 
 import aus_council_scrapers.database as db
-from aus_council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, ScraperReturn
+from aus_council_scrapers.data import ScraperResult
+from aus_council_scrapers.base import SCRAPER_REGISTRY, BaseScraper
 from aus_council_scrapers.discord_bot import DiscordNotifier
 from aus_council_scrapers.logging_config import setup_logging
 from aus_council_scrapers.utils import (
@@ -27,8 +28,7 @@ from aus_council_scrapers.utils import (
 config = dotenv_values(".env")
 
 
-def main():
-
+def main() -> None:
     # Parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument("--fresh", help="Force re-scrape", action="store_true")
@@ -72,16 +72,19 @@ def run_scraper(scraper: BaseScraper, skip_keywords=False):
         # Get agenda info
         result = get_agenda_info(scraper)
 
+        if result is None:
+            return
+
         # Skip if already scraped
         if db.check_url(result.download_url):
             scraper.logger.info(f"Skipping scraper, URL already scraped.")
             return
 
         # Extract data from PDF
-        extracted_keywords = {}
-        agenda_wordcount = None
         if not skip_keywords:
             extracted_keywords, agenda_wordcount = process_pdf(scraper, result)
+        else:
+            extracted_keywords, agenda_wordcount = {}, None
 
         # Insert into database
         db.insert_result(
@@ -93,7 +96,7 @@ def run_scraper(scraper: BaseScraper, skip_keywords=False):
         )
         scraper.logger.info(f"Saved meeting details to db")
 
-        if not result.is_date_in_past(scraper.state):
+        if not result.datetime.has_transpired(scraper.state):
             # Send to email and/or discord
             notify_email(scraper, result, extracted_keywords)
             notify_discord(scraper, result)
@@ -118,36 +121,30 @@ def run_scraper(scraper: BaseScraper, skip_keywords=False):
             os._exit(1)
 
 
-def get_agenda_info(scraper: BaseScraper) -> Optional[ScraperReturn]:
+def get_agenda_info(scraper: BaseScraper) -> Optional[ScraperResult.CouncilMeetingNotice]:
     # Run the scraper
     scraper.logger.info(f"Finding agenda...")
-    result = scraper.scraper()
-    scraper.logger.debug(f"Found agenda: {result}")
+    for result in scraper.scraper():
+        scraper.logger.debug(f"Found agenda: {result}")
+        if not isinstance(result, ScraperResult.CouncilMeetingNotice):
+            continue
 
-    # Get result values with defaults
-    result.add_default_values(
-        default_name=scraper.default_name,
-        default_time=scraper.default_time,
-        default_location=scraper.default_location,
-    )
+        # Get result values with defaults
+        result.hydrate(scraper.hydration_options())
 
-    # Check result properties
-    result.check_required_properties(scraper.state)
+        # Check result properties
+        result.check_required_properties(scraper.state)
 
-    # Log warning if time found but not parsed
-    if not result.cleaned_time and result.time:
-        scraper.logger.warning(f"Time found but could not be parsed: {result.time}")
-
-    # Log warning if date is in the past
-    if result.is_date_in_past(scraper.state):
-        scraper.logger.warning(f"Date is in the past: {result.cleaned_date}")
-
-    return result
+        # Log warning if date is in the past
+        if result.datetime.has_transpired(scraper.state):
+            scraper.logger.warning(f"Date is in the past: {result.datetime.date}")
+        return result
+    return None
 
 
 def process_pdf(
     scraper: BaseScraper,
-    result: ScraperReturn,
+    result: ScraperResult.CouncilMeetingNotice,
 ) -> tuple[KeywordCounts, int]:
     # Download PDF
     scraper.logger.info(f"Downloading PDF...")
@@ -182,7 +179,7 @@ def process_pdf(
 
 def notify_email(
     scraper: BaseScraper,
-    result: ScraperReturn,
+    result: ScraperResult.CouncilMeetingNotice,
     extracted_data: KeywordCounts,
 ):
     email_to = config.get("GMAIL_ACCOUNT_RECEIVE", None)
@@ -191,7 +188,7 @@ def notify_email(
     if email_to and email_enabled:
         scraper.logger.info(f"Sending email...")
 
-        formatted_date = format_date_for_message(result.cleaned_date)
+        formatted_date = format_date_for_message(result.datetime.date)
         subject = f"New agenda: {scraper.council_name} {formatted_date} meeting"
         body = write_email(scraper.council_name, result, extracted_data)
         send_email(email_to, subject, body)
@@ -199,7 +196,7 @@ def notify_email(
         scraper.logger.info(f"Sent email")
 
 
-def notify_discord(scraper: BaseScraper, result: ScraperReturn):
+def notify_discord(scraper: BaseScraper, result: ScraperResult.CouncilMeetingNotice):
 
     # Get env vars
     discord_token = config.get("DISCORD_TOKEN", None)
@@ -212,7 +209,7 @@ def notify_discord(scraper: BaseScraper, result: ScraperReturn):
 
         discord = DiscordNotifier(discord_token)
 
-        formatted_date = format_date_for_message(result.cleaned_date)
+        formatted_date = format_date_for_message(result.datetime.date)
         message = f"{discord_group_tag}: New agenda for {scraper.council_name} {formatted_date} {result.download_url}"
         discord.send_message(channel_id, message)
         discord.flush()

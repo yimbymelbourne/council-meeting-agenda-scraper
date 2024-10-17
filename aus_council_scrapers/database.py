@@ -3,23 +3,26 @@ import datetime
 import json
 import traceback
 
-from aus_council_scrapers.base import ScraperReturn
+import pytz
+
+from .constants import TIMEZONES_BY_STATE
+from .data import ScraperResult
 
 
-def init():
+def init() -> None:
     conn = sqlite3.connect("agendas.db")
     c = conn.cursor()
     c.execute(
         """CREATE TABLE IF NOT EXISTS agendas
-                (id INTEGER PRIMARY KEY, 
-                date_scraped TEXT, 
+                (id INTEGER PRIMARY KEY,
+                date_scraped TEXT,
                 council TEXT,
                 state TEXT,
                 location TEXT,
                 meeting_date TEXT,
                 meeting_time TEXT,
                 is_meeting_in_past BOOL,
-                webpage_url TEXT, 
+                webpage_url TEXT,
                 download_url TEXT,
                 agenda_wordcount INT,
                 result BLOB,
@@ -51,7 +54,7 @@ def insert_error(council_name: str, state: str, exception: Exception):
                 state,
                 error_message,
                 error_traceback
-            ) 
+            )
             VALUES (
                 ?, -- date_scraped
                 ?, -- council
@@ -74,7 +77,7 @@ def insert_error(council_name: str, state: str, exception: Exception):
 def insert_result(
     council_name: str,
     state: str,
-    scraper_result: ScraperReturn,
+    scraper_result: ScraperResult.CouncilMeetingNotice,
     keywords: dict | None,
     ai_result: str | None = None,
     agenda_wordcount: int | None = None,
@@ -82,12 +85,14 @@ def insert_result(
     now_date = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     keywords_json = json.dumps(keywords).encode() if keywords else "{}"
-    meeting_time = (
-        scraper_result.cleaned_time.isoformat() if scraper_result.cleaned_time else None
-    )
-    meeting_date = scraper_result.cleaned_date.isoformat()
+    dt = scraper_result.datetime
+    meeting_time = dt.time.isoformat() if dt.time else None
+    meeting_date = dt.date.isoformat()
+    is_meeting_in_past = dt.has_transpired(state)
 
-    is_meeting_in_past = scraper_result.is_date_in_past(state)
+
+    location = scraper_result.location
+    location_string = location.location_string if location else None
 
     conn = sqlite3.connect("agendas.db")
     c = conn.cursor()
@@ -106,7 +111,7 @@ def insert_result(
                 agenda_wordcount,
                 result,
                 AI_result
-            ) 
+            )
             VALUES (
                 ?, -- date_scraped
                 ?, -- council
@@ -128,7 +133,7 @@ def insert_result(
             meeting_date,  # meeting_date
             meeting_time,  # meeting_time
             is_meeting_in_past,  # is_meeting_in_past
-            scraper_result.cleaned_location,  # location
+            location_string,  # location
             scraper_result.webpage_url,  # webpage_url
             scraper_result.download_url,  # download_url
             agenda_wordcount,  # agenda_length

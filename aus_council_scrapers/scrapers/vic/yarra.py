@@ -1,6 +1,8 @@
 import datetime
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from aus_council_scrapers.data import ScraperResult
+from aus_council_scrapers.base import BaseScraper, register_scraper
 from bs4 import BeautifulSoup
+from typing import Generator
 import re
 from dateutil.parser import parse as parse_date
 
@@ -23,7 +25,7 @@ class YarraScraper(BaseScraper):
         if parsed_date >= datetime.datetime.now().date():
             return True
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> Generator[ScraperResult, None]:
 
         initial_webpage_url = "https://www.yarracity.vic.gov.au/about-us/council-and-committee-meetings/upcoming-council-and-committee-meetings"
 
@@ -69,7 +71,7 @@ class YarraScraper(BaseScraper):
         download_url = soup.find("a", class_="download-link")["href"]
         download_url = self.base_url + download_url
 
-        return ScraperReturn(
+        yield ScraperReturn(
             name=name,
             date=date,
             time=time,

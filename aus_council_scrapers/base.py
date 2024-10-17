@@ -5,7 +5,7 @@ import re
 import urllib.parse
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
+from typing import Generator, Self, Optional
 
 import pytz
 import requests
@@ -21,130 +21,12 @@ from aus_council_scrapers.constants import (
     TIME_REGEX,
     TIMEZONES_BY_STATE,
 )
+from .data import ScraperResult, NoticeDate, NoticeLocation, NoticeHydrationInputs
 
 
 def register_scraper(cls):
     SCRAPER_REGISTRY[cls.__name__] = cls()
     return cls
-
-
-@dataclass
-class ScraperReturn:
-    """Designates what a scraper should return.\n
-    If a given item in the scraper is None, it will be skipped.\n
-    `name`: The name of the meeting (e.g. City Development Delegated Committee).\n
-    `date`: The date of the meeting (e.g. 2021-08-01).\n
-    `time`: The time of the meeting (e.g. 18:00).\n
-    `webpage_url`: The URL of the webpage where the agenda is found.\n
-    `download_url`: The URL of the PDF of the agenda.\n
-    `location`: The location of the meeting (e.g. Council Chambers).\n
-    `cleaned_time`: The time of the meeting as a time object.\n
-    `cleaned_date`: The date of the meeting as a date object.\n
-    """
-
-    name: Optional[str]
-    date: str
-    time: Optional[str]
-    webpage_url: str
-    download_url: str
-    location: Optional[str] = None
-
-    # Cached properties
-    _cleaned_time: Optional[datetime.time] = None
-    _cleaned_date: Optional[datetime.date] = None
-
-    @property
-    def cleaned_time(self) -> Optional[datetime.time]:
-        try:
-            if not self.time:
-                return None
-            if not self._cleaned_time:
-                self._cleaned_time = parse_date(self.time, fuzzy=True).time()
-            return self._cleaned_time
-        except Exception as e:
-            return None
-
-    @property
-    def cleaned_date(self) -> datetime.date:
-        if not self.date:
-            raise ValueError("Date is required")
-
-        try:
-            if not self._cleaned_date:
-                self._cleaned_date = parse_date(self.date, fuzzy=True).date()
-        except Exception as e:
-            raise ValueError(f"Could not parse date {self.date}")
-
-        return self._cleaned_date
-
-    @property
-    def cleaned_location(self) -> Optional[str]:
-        if not self.location or self.location.isspace():
-            return None
-
-        cleaned = self.location.replace(r"\w", " ").strip().lower()
-
-        # Remove council chambers string from location
-        council_chamber_regex = re.compile(r"^council\s?chambers?,?", re.IGNORECASE)
-        cleaned = council_chamber_regex.sub("", cleaned)
-
-        if cleaned == "":
-            return None
-
-        return " ".join((word.capitalize() for word in cleaned.split()))
-
-    def check_required_properties(self, state: str) -> None:
-        if not self.name or self.name.isspace():
-            raise ValueError(f"No name found")
-        if not self.download_url or self.download_url.isspace():
-            raise ValueError(f"No download URL found")
-        if not self.webpage_url or self.webpage_url.isspace():
-            raise ValueError(f"No webpage URL found")
-
-        # cleaned date check happens in the property getter
-        _ = self.cleaned_date
-
-        # Check if date is in the past
-        # TODO: Do we want to add this check to make sure we're not scraping meetings that happened in the past?
-        # if self.is_date_in_past(state):
-        #     raise ValueError(f"Meeting date is in the past")
-
-    def add_default_values(self, default_name, default_time, default_location):
-        if not self.name and default_name:
-            self.name = default_name
-        if not self.time and default_time:
-            self.time = default_time
-        if not self.cleaned_location and default_location:
-            self.location = default_location
-
-    def is_date_in_past(self, state: str) -> bool:
-        timezone = pytz.timezone(TIMEZONES_BY_STATE[state.upper()])
-        today = datetime.datetime.now(timezone).date()
-        return self.cleaned_date < today
-
-    def __str__(self):
-        return json.dumps(self.to_dict(), indent=2)
-
-    def to_dict(self):
-        return {
-            "name": self.name,
-            "date": self.date,
-            "time": self.time,
-            "location": self.location,
-            "webpage_url": self.webpage_url,
-            "download_url": self.download_url,
-        }
-
-    @staticmethod
-    def from_dict(d):
-        return ScraperReturn(
-            name=d["name"],
-            date=d["date"],
-            time=d["time"],
-            webpage_url=d["webpage_url"],
-            download_url=d["download_url"],
-            location=d.get("location"),
-        )
 
 
 class Fetcher(ABC):
@@ -254,15 +136,17 @@ class BaseScraper(ABC):
 
         self.time_regex: re.Pattern = TIME_REGEX
         self.date_regex: re.Pattern = DATE_REGEX
-        self.keyword_regexes: list[re.Pattern] = COUNCIL_HOUSING_REGEX
+        self.keyword_regexes: list[str] = COUNCIL_HOUSING_REGEX
         self.fetcher = DefaultFetcher()
 
         self.default_name: str = f"{self.council_name.capitalize()} Council Meeting"
-        self.default_time: Optional[str] = None
         self.default_location: Optional[str] = None
 
+    def hydration_options(self: Self) -> NoticeHydrationInputs:
+        return NoticeHydrationInputs(self.default_name, self.default_location)
+
     @abstractmethod
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self: Self) -> Generator[ScraperResult.Notice, None]:
         raise NotImplementedError("Scrape method must be implemented by the subclass.")
 
 
@@ -271,18 +155,16 @@ class InfoCouncilScraper(BaseScraper):
         self.infocouncil_url = infocouncil_url
         super().__init__(council, state, base_url)
 
-    def scraper(self) -> ScraperReturn | None:
-
+    def scraper(self: Self) -> Generator[ScraperResult.Notice, None]:
         output = self.fetcher.fetch_with_requests(self.infocouncil_url)
         soup = BeautifulSoup(output, "html.parser")
         meeting_table = soup.find("table", id="grdMenu", recursive=True)
+
         if meeting_table is None:
             self.logger.info(f"{self.council_name} scraper found no meetings")
-            scraper_return = ScraperReturn(
-                name=None, date=None, time=None, webpage_url=None, download_url=None
-            )
-            return scraper_return
-        current_meeting = meeting_table.find("tbody").find_all("tr")[0]
+            return
+
+        current_meeting = meeting_table.find("tbody").find_all("tr")[0] # type: ignore
 
         relative_pdf_url = current_meeting.find(
             "a", class_="bpsGridPDFLink", recursive=True
@@ -292,10 +174,12 @@ class InfoCouncilScraper(BaseScraper):
             separator=" "
         )
         time_search = self.time_regex.search(date_text)
-        time = time_search.group() if time_search else None
+        time: str | None = time_search.group() if time_search else None
 
         date_search = self.date_regex.search(date_text)
-        date = date_search.group() if date_search else None
+        date: str | None = date_search.group() if date_search else None
+        if date is None:
+            return
 
         location = current_meeting.find("td", class_="bpsGridCommittee")
         location_text = None
@@ -308,16 +192,13 @@ class InfoCouncilScraper(BaseScraper):
 
         name = location.text if location else None
 
-        scraper_return = ScraperReturn(
+        yield ScraperResult.CouncilMeetingNotice(
             name=name,
-            date=date,
-            time=time,
+            datetime=NoticeDate.FuzzyRaw(raw_date=date, raw_time=time),
             webpage_url=self.infocouncil_url,
             download_url=urllib.parse.urljoin(self.infocouncil_url, relative_pdf_url),
-            location=location_text,
+            location=NoticeLocation.Raw(location_text),
         )
-
-        return scraper_return
 
 
 SCRAPER_REGISTRY: dict[str, BaseScraper] = {}
