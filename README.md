@@ -6,11 +6,43 @@ Users can easily set up notification functionality to be alerted by email (or: t
 
 This enables YIMBY Melbourne and other organisations to keep easy track of relevant Council activities.
 
-## List of functioning scrapers
+# Future development plans: councilalerts.org.au
 
-### Melbourne: 10/31
+The Council Agenda Scraper should be developed as a standalone application.
 
-### Sydney: 18/30
+It should be able to be run on a server with automated updates, and have a web interface for users to sign up for notifications.
+
+The application should be able to send notifications via email, Discord, and other platforms.
+
+## Summary of proposed functionality
+
+### Backend
+
+#### Core functionality
+
+1. Automated scraping of council websites for agendas via cron job on a server
+2. Save the agenda to AWS S3, and link to the S3 object in the database
+3. Write the agenda plaintext to database
+4. Run AI summarisation on agenda text, and write the summary to the database
+5. When the database write is complete, send email notifications to users based on their preferences
+
+#### Additional functionality
+
+- API for interfacing with frontend
+- Discord bot for sending notifications to orgs that sign up (e.g. YIMBY Melbourne, Sydney YIMBY)
+- User accounts and preferences for council selection
+
+### Frontend
+
+- Web interface for users to view current and past agendas
+- User account-creation
+- User preferences for notification frequency and council selection
+
+# List of functioning scrapers
+
+## Melbourne: 10/31
+
+## Sydney: 18/30
 
 Scraper details, including links and current status, can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/councils.md) (`docs/councils.md`)
 
