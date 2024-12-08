@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "council_scrapers"
+name = "aus_council_scrapers"
 version = "0.1.0"
 description = ""
 authors = ["Jonathan O'Brien <jonathan@jonobri.com>"]
@@ -18,8 +18,11 @@ black = "^24.1.1"
 onnxruntime = "^1.17.0"
 "discord.py" = "^2.3.2"
 pytest-timeout = "^2.2.0"
+pytz = "^2024.1"
+dateutils = "^0.6.12"
 
 [tool.poetry.group.dev.dependencies]
+bump-my-version = "0.18.3"
 pytest = "^7.4.3"
 flake8 = "^7.0.0"
 pytest-xdist = "^3.5.0"

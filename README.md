@@ -40,7 +40,7 @@ The application should be able to send notifications via email, Discord, and oth
 
 # List of functioning scrapers
 
-## Melbourne: 10/31
+## Melbourne: 13/31
 
 ## Sydney: 18/30
 
@@ -68,11 +68,11 @@ Preferred code formatter is [Black](https://github.com/psf/black).
 
 # Running the application
 
-Within your environment, run: `python council_scrapers/main.py`
+Within your environment, run: `python ./aus_council_scrapers/main.py`
 
 Logs will print to your terminal and also get saved into /logs/ as well as writing key results to `agendas.db`.
 
-You can run an individual scraper by running `python council_scrapers/main.py --council council_string`. For instance: `python council_scrapers/main.py --council yarra` will run the Yarra Council scraper.
+You can run an individual scraper by running `python ./aus_council_scrapers/main.py --council council_string`. For instance: `python council_scrapers/main.py --council yarra` will run the Yarra Council scraper.
 
 A list of councils and their strings can be found in `docs/councils.md`.
 
@@ -163,3 +163,9 @@ As an example, to add the scraper for the Yarra council, open `council_scrapers/
 ```py
 from council_scrapers.scrapers.vic.yarra import YarraScraper
 ```
+
+### 5. Run tests and save the cached page
+
+Once you have your scraper working locally, run pytest in the root directory (`council-meeting-agenda-scraper/`) and add the cached results to the commit when successful.
+
+This is done to prevent spamming requests to council pages during the development of scrapers.

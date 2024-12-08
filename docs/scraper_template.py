@@ -1,12 +1,4 @@
-import sys
-from pathlib import Path
-
-parent_dir = str(Path(__file__).resolve().parent.parent.parent)
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
-
-from council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
-from logging.config import dictConfig
+from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from bs4 import BeautifulSoup
 import re
 
