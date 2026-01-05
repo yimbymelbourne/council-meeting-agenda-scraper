@@ -30,13 +30,19 @@ _CVID_RE = re.compile(r'data-cvid="([^"]+)"', re.IGNORECASE)
 # These spans appear in the same accordion item:
 # <span class="minutes-date">16 December 2025</span>
 # <span class="meeting-type">Extraordinary Meeting</span>
-_DATE_RE = re.compile(r'<span class="minutes-date">\s*([^<]+?)\s*</span>', re.IGNORECASE)
-_TYPE_RE = re.compile(r'<span class="meeting-type">\s*([^<]+?)\s*</span>', re.IGNORECASE)
+_DATE_RE = re.compile(
+    r'<span class="minutes-date">\s*([^<]+?)\s*</span>', re.IGNORECASE
+)
+_TYPE_RE = re.compile(
+    r'<span class="meeting-type">\s*([^<]+?)\s*</span>', re.IGNORECASE
+)
 
 # In the rendered HTML snippet, anchors include "Agenda" in text.
 _AGENDA_TEXT_RE = re.compile(r"\bagenda\b", re.IGNORECASE)
 
-_PDF_URL_RE = re.compile(r'(https?://[^"\s]+\.pdf[^"\s]*|/[^"\s]+\.pdf[^"\s]*)', re.IGNORECASE)
+_PDF_URL_RE = re.compile(
+    r'(https?://[^"\s]+\.pdf[^"\s]*|/[^"\s]+\.pdf[^"\s]*)', re.IGNORECASE
+)
 
 
 @dataclass(frozen=True)
@@ -53,7 +59,9 @@ class _MeetingStub:
 @register_scraper
 class StrathfieldNSWScraper(BaseScraper):
     def __init__(self):
-        super().__init__(council_name="strathfield", state="nsw", base_url=_STRATHFIELD_BASE_URL)
+        super().__init__(
+            council_name="strathfield", state="nsw", base_url=_STRATHFIELD_BASE_URL
+        )
 
     def _fetch_index_html(self) -> str:
         """
@@ -88,7 +96,6 @@ class StrathfieldNSWScraper(BaseScraper):
     def _cachebuster(self) -> str:
         return "1970-01-01T00:00:00.000Z"
 
-
     def _fetch_meeting_details_html(self, cvid: str) -> str:
         """
         Calls the same endpoint your browser calls when expanding an accordion row.
@@ -119,18 +126,24 @@ class StrathfieldNSWScraper(BaseScraper):
 
         # 1) Try requests (fast)
         try:
-            r = requests.get(_OC_SERVICE_HANDLER_URL, params=params, headers=headers, timeout=30)
+            r = requests.get(
+                _OC_SERVICE_HANDLER_URL, params=params, headers=headers, timeout=30
+            )
             r.raise_for_status()
             return r.text
         except requests.exceptions.HTTPError as e:
             status = getattr(e.response, "status_code", None)
             if status != 403:
                 raise
-            self.logger.warning(f"403 from requests for OCServiceHandler; falling back to selenium: {details_url}")
+            self.logger.warning(
+                f"403 from requests for OCServiceHandler; falling back to selenium: {details_url}"
+            )
 
         # 2) Selenium fallback (reliable)
         if not hasattr(self.fetcher, "fetch_with_selenium"):
-            raise RuntimeError("OCServiceHandler blocked (403) and no selenium fetcher available")
+            raise RuntimeError(
+                "OCServiceHandler blocked (403) and no selenium fetcher available"
+            )
 
         return self.fetcher.fetch_with_selenium(details_url)
 
@@ -227,11 +240,15 @@ class StrathfieldNSWScraper(BaseScraper):
         return urljoin(_STRATHFIELD_BASE_URL, best)
 
     def scraper(self) -> ScraperReturn:
-        self.logger.info(f"Starting {self.council_name} scraper (OpenCities Minutes & Agendas)")
+        self.logger.info(
+            f"Starting {self.council_name} scraper (OpenCities Minutes & Agendas)"
+        )
 
         index_html = self._fetch_index_html()
         meeting = self._extract_latest_meeting_stub(index_html)
-        self.logger.info(f"Latest meeting (from index): {meeting.name} (cvid={meeting.cvid})")
+        self.logger.info(
+            f"Latest meeting (from index): {meeting.name} (cvid={meeting.cvid})"
+        )
 
         details_html = self._fetch_meeting_details_html(meeting.cvid)
         agenda_url = self._extract_agenda_url_from_details(details_html)
@@ -239,4 +256,6 @@ class StrathfieldNSWScraper(BaseScraper):
         self.logger.info(f"Found agenda: {agenda_url}")
 
         # time isn't reliably included in this flow; keep None
-        return ScraperReturn(meeting.name, meeting.date, None, _STRATHFIELD_INDEX_URL, agenda_url)
+        return ScraperReturn(
+            meeting.name, meeting.date, None, _STRATHFIELD_INDEX_URL, agenda_url
+        )
