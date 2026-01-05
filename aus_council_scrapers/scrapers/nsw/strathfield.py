@@ -86,14 +86,8 @@ class StrathfieldNSWScraper(BaseScraper):
         )
 
     def _cachebuster(self) -> str:
-        """
-        Match DevTools behaviour: ISO timestamp with milliseconds and 'Z'.
-        Example: 2026-01-05T04:36:43.087Z
-        """
-        now = datetime.now(timezone.utc)
-        # milliseconds (3 dp)
-        ms = int(now.microsecond / 1000)
-        return now.strftime(f"%Y-%m-%dT%H:%M:%S.{ms:03d}Z")
+        return "1970-01-01T00:00:00.000Z"
+
 
     def _fetch_meeting_details_html(self, cvid: str) -> str:
         """
@@ -245,4 +239,4 @@ class StrathfieldNSWScraper(BaseScraper):
         self.logger.info(f"Found agenda: {agenda_url}")
 
         # time isn't reliably included in this flow; keep None
-        return ScraperReturn(meeting.name, meeting.date, None, self.base_url, agenda_url)
+        return ScraperReturn(meeting.name, meeting.date, None, _STRATHFIELD_INDEX_URL, agenda_url)
