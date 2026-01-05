@@ -213,13 +213,8 @@ class StrathfieldNSWScraper(BaseScraper):
             pdf_links = [m.group(0) for m in _PDF_URL_RE.finditer(combined)]
 
         if not pdf_links:
-            # Debugging aid: write out the response so you can inspect it quickly
-            # (optional; remove if you don’t want files written)
-            with open("strathfield_details_debug.txt", "w", encoding="utf-8") as f:
-                f.write(combined[:200000])
             raise ValueError(
-                "Could not find any PDF links in OpenCities details response. "
-                "Wrote strathfield_details_debug.txt"
+                "Could not find any PDF links in OpenCities details response."
             )
 
         # 5) Prefer agenda-looking PDFs
