@@ -1,8 +1,10 @@
-import datetime
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
-from bs4 import BeautifulSoup
 import re
+from urllib.parse import urljoin
+
+from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
+
+from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 
 
 @register_scraper
@@ -13,72 +15,158 @@ class YarraScraper(BaseScraper):
         base_url = "https://www.yarracity.vic.gov.au"
         super().__init__(council, state, base_url)
 
-    def is_future_meeting(self, element):
-        text = element.get_text(separator=" ")
-        date = re.search(self.date_regex, text)
-        grouped_date = date.group() if date else None
-        if not grouped_date:
-            return False
-        parsed_date = parse_date(grouped_date).date()
-        if parsed_date >= datetime.datetime.now().date():
-            return True
+    def _abs(self, href: str) -> str:
+        return urljoin(self.base_url, href)
+
+    def _parse_date_from_text(self, text: str):
+        m = re.search(self.date_regex, text)
+        if not m:
+            return None
+        try:
+            return parse_date(m.group(), dayfirst=True).date()
+        except Exception:
+            return None
+
+    def _parse_time_from_text(self, text: str) -> str | None:
+        m = re.search(self.time_regex, text)
+        if not m:
+            return None
+        return m.group().replace(".", ":")
+
+    def _extract_meeting_links(
+        self, index_soup: BeautifulSoup
+    ) -> list[tuple[object, str, str]]:
+        """
+        Returns list of (meeting_date, meeting_text, meeting_url)
+        Only includes /about-us/committees-meetings-and-minutes/council-meeting-... pages.
+        """
+        out: list[tuple[object, str, str]] = []
+        for a in index_soup.find_all("a", href=True):
+            href = a["href"].strip()
+            if not href:
+                continue
+
+            abs_href = self._abs(href)
+            if (
+                "/about-us/committees-meetings-and-minutes/council-meeting-"
+                not in abs_href
+            ):
+                continue
+
+            text = a.get_text(" ", strip=True)
+            dt = self._parse_date_from_text(text)
+            if not dt:
+                continue
+
+            out.append((dt, text, abs_href))
+
+        # de-dupe by url, keep first occurrence
+        seen = set()
+        deduped = []
+        for dt, text, url in out:
+            if url in seen:
+                continue
+            seen.add(url)
+            deduped.append((dt, text, url))
+        return deduped
+
+    def _find_agenda_in_documents_section(
+        self, meeting_soup: BeautifulSoup
+    ) -> str | None:
+        """
+        On Yarra meeting pages, the agenda is under a 'Documents' heading.
+        Example: '## Documents' then links: Agenda / Minutes / Recording. :contentReference[oaicite:3]{index=3}
+        """
+        docs_h = meeting_soup.find(
+            ["h2", "h3"], string=re.compile(r"^\s*Documents\s*$", re.I)
+        )
+        if not docs_h:
+            return None
+
+        # Usually the links appear right after the heading, within the same parent container.
+        scope = docs_h.parent or meeting_soup
+        # If the CMS puts them in the next sibling, include that too.
+        scopes = [scope]
+        sib = docs_h.find_next_sibling()
+        if sib:
+            scopes.append(sib)
+
+        for sc in scopes:
+            for a in sc.find_all("a", href=True):
+                label = a.get_text(" ", strip=True).lower()
+                if not label.startswith("agenda"):
+                    continue
+                href = a["href"].strip()
+                if not href:
+                    continue
+                return self._abs(href)
+
+        return None
+
+    def _extract_location(self, meeting_soup: BeautifulSoup) -> str | None:
+        # Best-effort: the "Where" section includes address lines like:
+        # "201 Napier Street, Fitzroy 3065" :contentReference[oaicite:4]{index=4}
+        text = meeting_soup.get_text("\n", strip=True)
+        for line in text.splitlines():
+            # crude but effective for AU addresses with postcode
+            if re.search(r"\bVIC\b\s*\d{4}\b", line) or re.search(r"\b\d{4}\b", line):
+                if "," in line and any(ch.isdigit() for ch in line):
+                    return line.strip()
+        return None
 
     def scraper(self) -> ScraperReturn | None:
+        index_url = "https://www.yarracity.vic.gov.au/about-us/council-and-committee-meetings/council-meetings"
+        index_html = self.fetcher.fetch_with_requests(index_url)
+        index_soup = BeautifulSoup(index_html, "html.parser")
 
-        initial_webpage_url = "https://www.yarracity.vic.gov.au/about-us/council-and-committee-meetings/upcoming-council-and-committee-meetings"
+        meetings = self._extract_meeting_links(index_soup)
+        if not meetings:
+            return None
 
-        output = self.fetcher.fetch_with_requests(initial_webpage_url)
-        output = output
+        # Sort newest-first and only check the most recent N to keep it fast.
+        # This still picks up future agendas once published because those meetings are near the top. :contentReference[oaicite:5]{index=5}
+        meetings.sort(key=lambda x: x[0], reverse=True)
+        meetings_to_check = meetings[:30]
 
-        name = None
-        date = None
-        time = None
-        download_url = None
-        agenda_link = None
+        best = None  # (meeting_date, meeting_url, agenda_url, meeting_soup)
+        for meeting_date, meeting_text, meeting_url in meetings_to_check:
+            meeting_html = self.fetcher.fetch_with_requests(meeting_url)
+            meeting_soup = BeautifulSoup(meeting_html, "html.parser")
 
-        # finds agenda link
-        initial_soup = BeautifulSoup(output, "html.parser")
-        agenda_list = initial_soup.find("div", class_="show-for-medium-up")
-        agenda_link = [
-            element["href"]
-            for element in agenda_list.find_all("a")
-            if self.is_future_meeting(element)
-        ][0]
+            agenda_url = self._find_agenda_in_documents_section(meeting_soup)
+            if not agenda_url:
+                # Future meeting before agenda publish, or page missing docs section. :contentReference[oaicite:6]{index=6}
+                continue
 
-        agenda_output = self.fetcher.fetch_with_requests(agenda_link)
+            # pick the latest dated meeting that actually has an agenda
+            if best is None or meeting_date > best[0]:
+                best = (meeting_date, meeting_url, agenda_url, meeting_soup)
 
-        # takes name, date, download url from agenda link
-        soup = BeautifulSoup(agenda_output, "html.parser")
+        if not best:
+            # No agenda published on any recent meeting page
+            return None
 
-        name = soup.find("h1", class_="heading").text
+        meeting_date, meeting_url, agenda_url, meeting_soup = best
 
-        date_time_p = soup.find("strong", string="Date and time:").find_parent("p")
-        date_time = date_time_p.get_text(strip=True, separator=" ")
-        time_match = re.search(self.time_regex, date_time)
-        date_match = re.search(self.date_regex, date_time)
-        time = time_match.group().replace(".", ":") if time_match else None
-        date = date_match.group()
+        h1 = meeting_soup.find("h1")
+        name = h1.get_text(strip=True) if h1 else "Council meeting"
 
-        location = (
-            soup.find("strong", string="Address:")
-            .find_parent("p")
-            .text.replace("Address:", "")
-            .strip()
-        )
+        page_text = meeting_soup.get_text(" ", strip=True)
+        date_str = None
+        m = re.search(self.date_regex, page_text)
+        if m:
+            date_str = m.group()
+        else:
+            date_str = str(meeting_date)
 
-        download_url = soup.find("a", class_="download-link")["href"]
-        download_url = self.base_url + download_url
+        time = self._parse_time_from_text(page_text)
+        location = self._extract_location(meeting_soup)
 
         return ScraperReturn(
             name=name,
-            date=date,
+            date=date_str,
             time=time,
-            webpage_url=self.base_url,
-            download_url=download_url,
+            webpage_url=meeting_url,
+            download_url=agenda_url,
             location=location,
         )
-
-
-if __name__ == "__main__":
-    scraper = YarraScraper()
-    scraper.scraper()
