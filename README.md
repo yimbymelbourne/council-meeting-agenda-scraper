@@ -128,7 +128,7 @@ Thanks to the phenomenal work of @catatonicChimp, a lot of the scraping can now 
 
 ### 1. Duplicate the scraper template
 
-For writing a new scraper, you can refer to and duplicate the template: `docs/scraper_template.py`. The Yarra scraper in `scrapers/vic/yarra.py` is a good functional straightforward example.
+For writing a new scraper, you can refer to and duplicate the template: `docs/scraper_template.py`.
 
 ### 2. Get the agenda page HTML
 
