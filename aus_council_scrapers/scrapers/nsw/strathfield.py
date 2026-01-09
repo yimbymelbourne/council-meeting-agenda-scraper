@@ -22,7 +22,7 @@ class StrathfieldNSWScraper(BaseScraper):
 
     def __init__(self):
         super().__init__(
-            council_name="strathfield", state="nsw", base_url=_STRATHFIELD_BASE_URL
+            council_name="strathfield", state="NSW", base_url=_STRATHFIELD_BASE_URL
         )
 
     def scraper(self) -> ScraperReturn:
