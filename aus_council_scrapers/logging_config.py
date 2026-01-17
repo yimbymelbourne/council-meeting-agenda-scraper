@@ -8,9 +8,6 @@ APP_NAME = "YIMBY-Scraper"
 
 def setup_logging(level="INFO"):
 
-    logger = logging.getLogger()
-    logger.name = "YIMBY-Scraper"
-
     # Ensure the log directory exists
     log_directory = os.path.join("logs", APP_NAME)
     if not os.path.exists(log_directory):
@@ -32,7 +29,7 @@ def setup_logging(level="INFO"):
                     "class": "logging.StreamHandler",
                     "formatter": "standard",
                     "level": "DEBUG",
-                    "stream": "ext://sys.stdout",
+                    "stream": "ext://sys.stderr",
                 },
                 "file": {
                     "class": "logging.FileHandler",
