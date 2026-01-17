@@ -1,42 +1,69 @@
 # Council Meeting Agenda Scraper
 
-Check, download, and parse local council agendas for relevant housing and planning matters.
+Scrapes Australian council websites to extract meeting agenda information, including meeting dates, times, locations, and PDF download links.
 
-Users can easily set up notification functionality to be alerted by email (or: to-be-implemented, Discord) when new agendas are released.
+## Usage Modes
 
-This enables YIMBY Melbourne and other organisations to keep easy track of relevant Council activities.
+### Adapter Mode (Recommended)
 
-# Future development plans: councilalerts.org.au
+The **new recommended way** to use this scraper is in **adapter mode** with JSON output:
 
-The Council Agenda Scraper should be developed as a standalone application.
+```bash
+python ./aus_council_scrapers/main.py --adapter --format json
+```
 
-It should be able to be run on a server with automated updates, and have a web interface for users to sign up for notifications.
+This mode:
 
-The application should be able to send notifications via email, Discord, and other platforms.
+- Returns structured JSON output to stdout
+- Performs read-only scraping (no database writes, no file downloads, no notifications)
+- Designed to be ingested by external applications (e.g., a TypeScript backend that owns the database, frontend, and notification system)
+- Safe for programmatic consumption and integration into larger systems
 
-## Summary of proposed functionality
+Example JSON output:
 
-### Backend
+```json
+{
+  "format_version": 1,
+  "adapter_mode": true,
+  "results": [
+    {
+      "ok": true,
+      "council": "yarra",
+      "state": "VIC",
+      "meeting": {
+        "name": "Council Meeting",
+        "date": "2026-01-20",
+        "time": "19:00:00",
+        "webpage_url": "https://...",
+        "download_url": "https://...pdf"
+      },
+      "location": "Council Chambers"
+    }
+  ]
+}
+```
 
-#### Core functionality
+### Legacy Mode
 
-1. Automated scraping of council websites for agendas via cron job on a server
-2. Save the agenda to AWS S3, and link to the S3 object in the database
-3. Write the agenda plaintext to database
-4. Run AI summarisation on agenda text, and write the summary to the database
-5. When the database write is complete, send email notifications to users based on their preferences
+The scraper can still run in **legacy standalone mode** without the adapter flags:
 
-#### Additional functionality
+```bash
+python ./aus_council_scrapers/main.py
+```
 
-- API for interfacing with frontend
-- Discord bot for sending notifications to orgs that sign up (e.g. YIMBY Melbourne, Sydney YIMBY)
-- User accounts and preferences for council selection
+This mode provides the original functionality:
 
-### Frontend
+- Downloads PDFs and extracts keywords
+- Maintains its own SQLite database (`agendas.db`)
+- Can send email and Discord notifications (if configured via `.env`)
+- Suitable for standalone deployments
 
-- Web interface for users to view current and past agendas
-- User account-creation
-- User preferences for notification frequency and council selection
+## Architecture
+
+This repository is designed to be a **scraping engine** that can be used in two ways:
+
+1. **As a data source** (adapter mode) - Outputs clean JSON for consumption by other systems
+2. **As a standalone application** (legacy mode) - Handles the full pipeline including storage and notifications
 
 # List of functioning scrapers
 
@@ -66,33 +93,91 @@ Preferred code formatter is [Black](https://github.com/psf/black).
 
 `poetry run pytest` will run all the tests, including on any new scrapers added to the `scrapers/` directory. These tests are also run through GitHub actions upon merge request.
 
-# Running the application
+# Running the Application
 
-Within your environment, run: `python ./aus_council_scrapers/main.py`
+## Command Line Options
 
-Logs will print to your terminal and also get saved into /logs/ as well as writing key results to `agendas.db`.
+```bash
+python ./aus_council_scrapers/main.py [OPTIONS]
+```
 
-You can run an individual scraper by running `python ./aus_council_scrapers/main.py --council council_string`. For instance: `python council_scrapers/main.py --council yarra` will run the Yarra Council scraper.
+### Core Flags
+
+- `--adapter` - Enable adapter mode (read-only, no side effects)
+- `--format {text|json}` - Output format (default: `text`)
+  - `text`: Human-readable output with logging
+  - `json`: Machine-readable JSON to stdout
+- `--council <name>` - Run only the specified council scraper
+- `--state <state>` - Run only scrapers for the specified state
+- `--workers <N>` - Number of concurrent workers (default: 6)
+
+### Scraping Behavior
+
+- `--fresh` - Delete existing database and force re-scrape (legacy mode only)
+- `--skip-keywords` - Skip keyword extraction from PDFs
+- `--skip-pdf` - Skip PDF download entirely
+- `--log-level <LEVEL>` - Set logging verbosity (default: `INFO`)
+
+### Examples
+
+**Adapter mode for external consumption:**
+
+```bash
+python ./aus_council_scrapers/main.py --adapter --format json
+```
+
+**Single council in adapter mode:**
+
+```bash
+python ./aus_council_scrapers/main.py --adapter --format json --council yarra
+```
+
+**Legacy standalone mode (all features):**
+
+```bash
+python ./aus_council_scrapers/main.py
+```
+
+**Legacy mode for a specific state:**
+
+```bash
+python ./aus_council_scrapers/main.py --state vic
+```
+
+**Quick test without PDF processing:**
+
+```bash
+python ./aus_council_scrapers/main.py --skip-pdf --council melbourne
+```
 
 A list of councils and their strings can be found in `docs/councils.md`.
 
-## .env
+## Configuration (.env) - Legacy Mode Only
 
-Optional functionality you can configure to extend the application's utility.
+Environment configuration is only required when running in **legacy standalone mode**. Adapter mode does not use these settings.
 
-### Email config
+### Email Notifications (Legacy)
 
-In the `.env.example` file, there is the basic variable GMAIL_FUNCTIONALITY.
+To enable email notifications in legacy mode:
 
-This functionality is turned off by default. If you want to use the email sending features here, then you'll need to include your Gmail authentication details in a `.env` file.
+1. Copy `.env.example` to `.env`
+2. Set `GMAIL_FUNCTIONALITY=1`
+3. Add your Gmail credentials (may require an [App-specific password](https://support.google.com/accounts/answer/185833))
+4. Set `GMAIL_ACCOUNT_RECEIVE` to the recipient email address
 
-This may require setting up an App-specific password, for which [you can find setup instructions here](https://support.google.com/accounts/answer/185833?visit_id=638406540644584172-3254681882&p=InvalidSecondFactor&rd=1).
+### Discord Notifications (Legacy)
 
-This functionality is optional, and the app should work fine without this setup.
+To enable Discord notifications in legacy mode, configure:
 
-### Discord config
+- `DISCORD_TOKEN` - Your Discord bot token
+- `DISCORD_CHANNEL_ID` - Target channel ID
+- `DISCORD_GROUP_TAG` - Optional group mention tag
 
-Instructions for setting up Discord can be found in `docs/discord.md`.
+Full Discord setup instructions: `docs/discord.md`
+
+### File Persistence (Legacy)
+
+- `SAVE_FILES=1` - Keep downloaded PDFs and extracted text files (default: delete after processing)
 
 # Writing a scraper
 
