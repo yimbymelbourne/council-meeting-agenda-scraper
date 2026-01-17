@@ -168,14 +168,35 @@ def run_scraper(
         result = get_agenda_info(scraper)
 
         # Skip if already scraped (legacy mode only)
-        if not adapter_mode and db.check_url(result.download_url):
-            scraper.logger.info("Skipping scraper, URL already scraped.")
-            return None
+        # Only skip if BOTH agenda and minutes URLs match a previous scrape
+        # This allows re-scraping when minutes are added later
+        if not adapter_mode:
+            # Determine the agenda URL to check
+            agenda_url = result.agenda_url or result.download_url
+            minutes_url = result.minutes_url
 
-        extracted_keywords = {}
+            if db.check_meeting_fully_scraped(agenda_url, minutes_url):
+                scraper.logger.info(
+                    "Skipping scraper, meeting already fully scraped "
+                    f"(agenda: {bool(agenda_url)}, minutes: {bool(minutes_url)})"
+                )
+                return None
+            else:
+                scraper.logger.info(
+                    f"Processing meeting (agenda: {bool(agenda_url)}, minutes: {bool(minutes_url)})"
+                )
+
+        agenda_keywords = {}
+        minutes_keywords = {}
         agenda_wordcount = None
+        minutes_wordcount = None
         if (not skip_keywords) and (not skip_pdf) and (not adapter_mode):
-            extracted_keywords, agenda_wordcount = process_pdf(scraper, result)
+            agenda_keywords, minutes_keywords, agenda_wordcount, minutes_wordcount = (
+                process_pdfs(scraper, result)
+            )
+
+        # Combine keywords from both documents
+        extracted_keywords = combine_keywords(agenda_keywords, minutes_keywords)
 
         if not adapter_mode:
             db.insert_result(
@@ -184,6 +205,7 @@ def run_scraper(
                 scraper_result=result,
                 keywords=extracted_keywords,
                 agenda_wordcount=agenda_wordcount,
+                minutes_wordcount=minutes_wordcount,
             )
             scraper.logger.info("Saved meeting details to db")
 
@@ -211,7 +233,9 @@ def run_scraper(
                 "date": date_value,
                 "time": time_value,
                 "webpage_url": result.webpage_url,
-                "download_url": result.download_url,
+                "agenda_url": result.agenda_url,
+                "minutes_url": result.minutes_url,
+                "download_url": result.download_url,  # Kept for backward compatibility
             },
             "location": getattr(result, "location", None)
             or getattr(result, "cleaned_location", None),
@@ -289,6 +313,110 @@ def process_pdf(
     return keywords, wordcount
 
 
+def process_pdfs(
+    scraper: BaseScraper, result: ScraperReturn
+) -> tuple[KeywordCounts, KeywordCounts, int, int]:
+    """Process both agenda and minutes PDFs if available.
+
+    Returns:
+        tuple: (agenda_keywords, minutes_keywords, agenda_wordcount, minutes_wordcount)
+    """
+    agenda_keywords = {}
+    minutes_keywords = {}
+    agenda_wordcount = None
+    minutes_wordcount = None
+
+    # For backward compatibility, check download_url first
+    if result.download_url:
+        scraper.logger.info("Processing legacy download_url as agenda...")
+        agenda_keywords, agenda_wordcount = process_single_pdf(
+            scraper, result.download_url, "agenda"
+        )
+
+    # Process agenda_url if specified
+    if result.agenda_url and result.agenda_url != result.download_url:
+        scraper.logger.info("Processing agenda PDF...")
+        agenda_keywords, agenda_wordcount = process_single_pdf(
+            scraper, result.agenda_url, "agenda"
+        )
+
+    # Process minutes_url if specified
+    if result.minutes_url:
+        scraper.logger.info("Processing minutes PDF...")
+        minutes_keywords, minutes_wordcount = process_single_pdf(
+            scraper, result.minutes_url, "minutes"
+        )
+
+    return agenda_keywords, minutes_keywords, agenda_wordcount, minutes_wordcount
+
+
+def process_single_pdf(
+    scraper: BaseScraper, pdf_url: str, doc_type: str
+) -> tuple[KeywordCounts, int]:
+    """Process a single PDF (agenda or minutes).
+
+    Args:
+        scraper: The scraper instance
+        pdf_url: URL of the PDF to download
+        doc_type: Type of document ('agenda' or 'minutes')
+
+    Returns:
+        tuple: (keywords, wordcount)
+    """
+    council_name = scraper.council_name
+    filename = f"{council_name}_{doc_type}"
+
+    scraper.logger.info(f"Downloading {doc_type} PDF...")
+    download_pdf(pdf_url, filename)
+
+    scraper.logger.info(f"Reading {doc_type} PDF...")
+    text = read_pdf(filename)
+
+    with open(f"files/{filename}.txt", "w", encoding="utf-8") as f:
+        f.write(text)
+
+    keywords, wordcount = extract_keywords(scraper.keyword_regexes, text)
+    scraper.logger.debug(
+        f"Extracted {doc_type} keywords: {json.dumps(keywords, indent=2)}"
+    )
+
+    if not config.get("SAVE_FILES", "0") == "1":
+        if os.path.exists(f"files/{filename}.pdf"):
+            os.remove(f"files/{filename}.pdf")
+        if os.path.exists(f"files/{filename}.txt"):
+            os.remove(f"files/{filename}.txt")
+
+    return keywords, wordcount
+
+
+def combine_keywords(
+    agenda_keywords: KeywordCounts, minutes_keywords: KeywordCounts
+) -> KeywordCounts:
+    """Combine keyword counts from agenda and minutes.
+
+    Args:
+        agenda_keywords: Keywords extracted from agenda
+        minutes_keywords: Keywords extracted from minutes
+
+    Returns:
+        Combined keyword counts
+    """
+    combined = {}
+
+    # Add all agenda keywords
+    for key, value in agenda_keywords.items():
+        combined[key] = value
+
+    # Add minutes keywords, summing counts if key exists
+    for key, value in minutes_keywords.items():
+        if key in combined:
+            combined[key] += value
+        else:
+            combined[key] = value
+
+    return combined
+
+
 def notify_email(
     scraper: BaseScraper, result: ScraperReturn, extracted_data: KeywordCounts
 ):
@@ -316,7 +444,20 @@ def notify_discord(scraper: BaseScraper, result: ScraperReturn):
 
         discord = DiscordNotifier(discord_token)
         formatted_date = format_date_for_message(result.cleaned_date)
-        message = f"{discord_group_tag}: New agenda for {scraper.council_name} {formatted_date} {result.download_url}"
+
+        # Build message with available documents
+        message = f"{discord_group_tag}: New documents for {scraper.council_name} {formatted_date}"
+
+        if result.agenda_url:
+            message += f"\nAgenda: {result.agenda_url}"
+
+        if result.minutes_url:
+            message += f"\nMinutes: {result.minutes_url}"
+
+        # Fallback to download_url for backward compatibility
+        if not result.agenda_url and not result.minutes_url and result.download_url:
+            message += f"\n{result.download_url}"
+
         discord.send_message(channel_id, message)
         discord.flush()
 
