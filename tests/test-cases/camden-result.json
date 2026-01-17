@@ -1,1 +1,10 @@
-{"name": "Council Meeting", "date": "14 May 2024", "time": "18:30", "location": null, "webpage_url": "https://www.camden.nsw.gov.au", "download_url": "https://www.camden.nsw.gov.au/assets/Uploads/Ordinary-Council-Meeting-Agenda-14052024-public2.PDF"}
+{
+  "name": "Council Meeting",
+  "date": "14 May 2024",
+  "time": "18:30",
+  "location": null,
+  "webpage_url": "https://www.camden.nsw.gov.au",
+  "agenda_url": "https://www.camden.nsw.gov.au/assets/Uploads/Ordinary-Council-Meeting-Agenda-14052024-public2.PDF",
+  "minutes_url": "https://www.camden.nsw.gov.au/assets/Uploads/Ordinary-Council-Meeting-Draft-Minutes-14052024.pdf",
+  "download_url": "https://www.camden.nsw.gov.au/assets/Uploads/Ordinary-Council-Meeting-Agenda-14052024-public2.PDF"
+}
