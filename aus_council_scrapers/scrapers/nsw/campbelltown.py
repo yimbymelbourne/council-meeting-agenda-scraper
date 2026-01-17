@@ -120,6 +120,28 @@ class CampbelltownScraper(BaseScraper):
 
         # unreachable
 
+    def _find_minutes_link_within_section(self, header) -> str | None:
+        """
+        Scan from this header until the next <h2>, pick the first PDF link that looks like minutes.
+        """
+        node = header
+        while True:
+            node = node.find_next_sibling()
+            if node is None:
+                return None
+            if getattr(node, "name", None) == "h2":
+                return None
+
+            for a in node.select("a[href]"):
+                href = (a.get("href") or "").strip()
+                if not href or ".pdf" not in href.lower():
+                    continue
+                txt = (a.get_text(" ", strip=True) or "").lower()
+                if "minute" in txt:
+                    return urljoin(self.base_url, href)
+
+        # unreachable
+
     def scraper(self) -> ScraperReturn:
         self.logger.info(f"Starting {self.council_name} scraper")
 
@@ -181,6 +203,9 @@ class CampbelltownScraper(BaseScraper):
                 raise ValueError("Could not find any PDF links for the latest meeting")
             download_url = urljoin(self.base_url, a["href"])
 
+        # Minutes link: look within the same section
+        minutes_url = self._find_minutes_link_within_section(header)
+
         # Time: not provided on page
         time = None
 
@@ -189,6 +214,8 @@ class CampbelltownScraper(BaseScraper):
             date=date,
             time=time,
             webpage_url=webpage_url,
-            download_url=download_url,
+            agenda_url=download_url,
+            minutes_url=minutes_url,
+            download_url=download_url,  # For backward compatibility
             location=self.default_location,
         )
