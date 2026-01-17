@@ -1,1 +1,10 @@
-{"name": "Council Agenda", "date": null, "time": null, "location": null, "webpage_url": "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/council-meeting-minutes/", "download_url": "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/nextcouncilmeetingagenda/"}
+{
+  "name": "Council Agenda",
+  "date": null,
+  "time": null,
+  "location": null,
+  "webpage_url": "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/council-meeting-minutes/",
+  "agenda_url": "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/nextcouncilmeetingagenda/",
+  "minutes_url": "https://www.merri-bek.vic.gov.au/link/7b9888bbf8c74c2098a60378e6d78a0b.aspx",
+  "download_url": "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/nextcouncilmeetingagenda/"
+}
