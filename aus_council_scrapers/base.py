@@ -381,14 +381,24 @@ class InfoCouncilScraper(BaseScraper):
             "a", class_="bpsGridMinutesLink", recursive=True
         )
         if not minutes_link:
-            # Try finding by text content
-            for link in current_meeting.find_all("a"):
-                if "minutes" in link.get_text().lower() and "href" in link.attrs:
-                    minutes_url = urllib.parse.urljoin(
-                        self.infocouncil_url, link["href"]
-                    )
-                    break
-        elif "href" in minutes_link.attrs:
+            # Try finding in the minutes column specifically
+            minutes_cell = current_meeting.find("td", class_="bpsGridMinutes")
+            if minutes_cell:
+                # Look for PDF link first
+                pdf_link = minutes_cell.find("a", class_="bpsGridPDFLink")
+                if pdf_link and "href" in pdf_link.attrs:
+                    minutes_link = pdf_link
+                else:
+                    # Fall back to any link with "minutes" in the text
+                    for link in minutes_cell.find_all("a"):
+                        if (
+                            "minutes" in link.get_text().lower()
+                            and "href" in link.attrs
+                        ):
+                            minutes_link = link
+                            break
+
+        if minutes_link and "href" in minutes_link.attrs:
             minutes_url = urllib.parse.urljoin(
                 self.infocouncil_url, minutes_link["href"]
             )
