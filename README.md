@@ -65,11 +65,13 @@ This repository is designed to be a **scraping engine** that can be used in two 
 1. **As a data source** (adapter mode) - Outputs clean JSON for consumption by other systems
 2. **As a standalone application** (legacy mode) - Handles the full pipeline including storage and notifications
 
-# List of functioning scrapers
+# List of functioning agenda scrapers
 
-## Melbourne: 13/31
+## Victoria 5/30
 
-## Sydney: 18/30
+## NSW 17/30
+
+## QLD 0/1
 
 Scraper details, including links and current status, can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/councils.md) (`docs/councils.md`)
 
