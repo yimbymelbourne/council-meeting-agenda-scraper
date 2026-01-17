@@ -50,10 +50,28 @@ def write_email(
     scraper_result: ScraperReturn,
     parser_results: Optional[dict[str, int]] = None,
 ) -> str:
-    email_body = f"Hello,\n\nThe agenda for the {scraper_result.date} {council_name} meeting is now available for download.\n\nPlease click on the link below to download the agenda:\n{scraper_result.download_url}\n\n"
+    email_body = f"Hello,\n\nThe {council_name} meeting documents for {scraper_result.date} are now available.\n\n"
+
+    # Add agenda link if available
+    if scraper_result.agenda_url:
+        email_body += f"Agenda: {scraper_result.agenda_url}\n"
+
+    # Add minutes link if available
+    if scraper_result.minutes_url:
+        email_body += f"Minutes: {scraper_result.minutes_url}\n"
+
+    # Fallback to download_url for backward compatibility
+    if (
+        not scraper_result.agenda_url
+        and not scraper_result.minutes_url
+        and scraper_result.download_url
+    ):
+        email_body += f"Download: {scraper_result.download_url}\n"
+
+    email_body += "\n"
 
     if parser_results and len(parser_results) > 0:
-        email_body += "Here are the matches found in the agenda:\n"
+        email_body += "Here are the matches found in the documents:\n"
         email_body += "\nKeyword matches:\n"
         for regex, count in parser_results.items():
             email_body += f"- {regex}: {count} matches\n"

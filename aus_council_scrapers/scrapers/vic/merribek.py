@@ -65,14 +65,69 @@ class MerribekScraper(BaseScraper):
         if name == "" or name is None:
             name = "Council Agenda"
 
+        # Look for minutes link (the scraper is on the minutes page, so look for both)
+        minutes_url = None
+        agenda_url = download_url  # The first link found is typically the agenda
+
+        # Try to find minutes link by looking in the parent list or nearby section
+        if target_a_tag:
+            # First try to find the parent ul/ol element
+            list_parent = target_a_tag.find_parent(["ul", "ol"])
+            if list_parent:
+                # Search all links in the same list
+                for link in list_parent.find_all("a"):
+                    link_text = link.get_text().lower()
+                    link_href = link.get("href")
+                    # Look for "minute" in text and ensure it's a file link (not a navigation link)
+                    if (
+                        "minute" in link_text
+                        and link_href
+                        and not link_href.endswith("/")
+                    ):
+                        # Handle both relative and absolute URLs
+                        if link_href.startswith("http"):
+                            minutes_url = link_href
+                        else:
+                            minutes_url = self.base_url + link_href
+                        break
+
+            # If not found in list, try broader search in the parent section
+            if not minutes_url and target_a_tag.parent:
+                section_parent = target_a_tag.find_parent(["div", "section"])
+                if section_parent:
+                    for link in section_parent.find_all("a"):
+                        link_text = link.get_text().lower()
+                        link_href = link.get("href")
+                        # Look for "minute" in text and ensure it's a file link
+                        if (
+                            "minute" in link_text
+                            and link_href
+                            and not link_href.endswith("/")
+                        ):
+                            if link_href.startswith("http"):
+                                minutes_url = link_href
+                            else:
+                                minutes_url = self.base_url + link_href
+                            break
+
         print("~~~")
-        scraper_return = ScraperReturn(name, date, time, webpage_url, download_url)
+        scraper_return = ScraperReturn(
+            name=name,
+            date=date,
+            time=time,
+            webpage_url=webpage_url,
+            agenda_url=agenda_url,
+            minutes_url=minutes_url,
+            download_url=download_url,
+        )
 
         print(
             scraper_return.name,
             scraper_return.date,
             scraper_return.time,
             scraper_return.webpage_url,
+            scraper_return.agenda_url,
+            scraper_return.minutes_url,
             scraper_return.download_url,
         )
 
