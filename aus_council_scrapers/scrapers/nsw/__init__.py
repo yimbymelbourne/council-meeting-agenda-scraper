@@ -21,6 +21,7 @@ from aus_council_scrapers.scrapers.nsw.ryde import RydeScraper
 from aus_council_scrapers.scrapers.nsw.strathfield import StrathfieldNSWScraper
 from aus_council_scrapers.scrapers.nsw.waverley import WaverleyScraper
 from aus_council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
+from aus_council_scrapers.scrapers.nsw.wollongong import WollongongScraper
 
 # BROKEN
 # from council_scrapers.scrapers.nsw.bayside_nsw import BaysideNSWScraper
