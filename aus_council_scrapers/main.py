@@ -85,6 +85,18 @@ def main():
     )
     args = parser.parse_args()
 
+    # Validate years argument
+    if args.years:
+        current_year = datetime.now().year
+        min_year = 2020
+        max_year = current_year + 2
+        for year in args.years:
+            if year < min_year or year > max_year:
+                parser.error(
+                    f"Year {year} is outside valid range {min_year}-{max_year}. "
+                    f"Scrapers only fetch data from {min_year} to {max_year} (current year + 2)."
+                )
+
     # Adapter defaults (safe, non-side-effecting)
     if args.adapter:
         args.skip_keywords = True

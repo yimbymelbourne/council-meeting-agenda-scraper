@@ -358,9 +358,10 @@ class InfoCouncilScraper(BaseScraper):
         """
         results = []
         
-        # Try current year and previous years (2020-2026)
+        # Try from 2020 to current year + 2 (meetings published up to 2 years in advance)
         # InfoCouncil sites may support ?year=YYYY parameter
-        years_to_try = range(2020, 2027)
+        current_year = datetime.datetime.now().year
+        years_to_try = range(2020, current_year + 3)
         
         for year in years_to_try:
             year_url = f"{self.infocouncil_url}?year={year}"
