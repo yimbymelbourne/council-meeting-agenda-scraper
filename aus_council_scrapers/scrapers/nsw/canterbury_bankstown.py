@@ -16,7 +16,7 @@ class CanterburyBankstownScraper(BaseScraper):
         super().__init__(council, state, base_url)
         self.default_location = "Cnr of The Mall and Chapel Road, Bankstown"
 
-    def scraper(self) -> ScraperReturn:
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         name = None
@@ -44,4 +44,4 @@ class CanterburyBankstownScraper(BaseScraper):
             {scraper_return.download_url}"""
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
-        return scraper_return
+        return [scraper_return]

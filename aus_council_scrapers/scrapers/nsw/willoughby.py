@@ -57,7 +57,7 @@ class WilloughbyNSWScraper(BaseScraper):
 
         return meeting_info
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
         webpage_url = "https://www.willoughby.nsw.gov.au/Council/Council-meetings/General-Council-Meetings"
 
@@ -78,5 +78,5 @@ class WilloughbyNSWScraper(BaseScraper):
                 # you can never have enough functions
                 result = self.council_minutes_scraper(href)
                 if result:
-                    return result
-        return None
+                    return [result]
+        return []

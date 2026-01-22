@@ -21,7 +21,7 @@ class BanyuleScraper(BaseScraper):
         super().__init__(council, state, base_url)
         self.time_pattern = re.compile(r"\d+:\d+\s?[apmAPM]+")
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
 
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -85,7 +85,7 @@ class BanyuleScraper(BaseScraper):
 
         if not download_url:
             print("Failed to find any meeting agendas")
-            return None
+            return []
 
         print("~~~")
         scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
@@ -98,4 +98,4 @@ class BanyuleScraper(BaseScraper):
             scraper_return.download_url,
         )
 
-        return scraper_return
+        return [scraper_return]

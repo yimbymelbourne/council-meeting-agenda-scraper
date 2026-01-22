@@ -14,7 +14,7 @@ class BaysideVicScraper(BaseScraper):
         self.default_location = "Civic Centre Precinct Boxshall Street, Brighton"
         self.default_time = "18:30"
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         initial_webpage_url = "https://www.bayside.vic.gov.au/council/meetings-agendas-and-minutes/council-meeting-agendas"
         minutes_page_url = "https://www.bayside.vic.gov.au/council/meetings-agendas-and-minutes/council-minutes"
 
@@ -49,7 +49,7 @@ class BaysideVicScraper(BaseScraper):
         except Exception as e:
             print(f"Error fetching minutes: {e}")
 
-        return ScraperReturn(
+        return [ScraperReturn(
             name=name,
             date=date,
             time=None,
@@ -57,7 +57,7 @@ class BaysideVicScraper(BaseScraper):
             agenda_url=download_url,
             minutes_url=minutes_url,
             download_url=download_url,
-        )
+        )]
 
 
 if __name__ == "__main__":

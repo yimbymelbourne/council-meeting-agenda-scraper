@@ -18,7 +18,7 @@ class RydeScraper(BaseScraper):
         self.default_location = "Level 1A, 1 Pope Street, Ryde"
         self.default_time = "6:00 PM"
 
-    def scraper(self) -> ScraperReturn:
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         name = None
@@ -57,4 +57,4 @@ class RydeScraper(BaseScraper):
             {scraper_return.download_url}"""
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
-        return scraper_return
+        return [scraper_return]

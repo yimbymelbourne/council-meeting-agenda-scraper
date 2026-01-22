@@ -14,7 +14,7 @@ class MerribekScraper(BaseScraper):
         base_url = "https://www.merri-bek.vic.gov.au"
         super().__init__("merri_bek", "VIC", base_url)
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         print(f"Starting {self.council_name} scraper")
         webpage_url = "https://www.merri-bek.vic.gov.au/my-council/council-and-committee-meetings/council-meetings/council-meeting-minutes/"
         output = self.fetcher.fetch_with_requests(webpage_url)
@@ -131,4 +131,4 @@ class MerribekScraper(BaseScraper):
             scraper_return.download_url,
         )
 
-        return scraper_return
+        return [scraper_return]

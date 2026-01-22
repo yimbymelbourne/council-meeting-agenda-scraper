@@ -17,7 +17,7 @@ class BoroondaraScraper(BaseScraper):
         )
         self.time_pattern = re.compile(r"\b\d{1,2}:\d{2} [apmAPM]+\b")
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         initial_webpage_url = "https://www.boroondara.vic.gov.au/your-council/councillors-and-meetings/council-and-committee-meetings"
 
         # Find next meeting url
@@ -41,11 +41,11 @@ class BoroondaraScraper(BaseScraper):
         download_soup = meeting_soup.find("a", attrs={"data-filetype": "PDF"})
         download_url = self.base_url + download_soup["href"]
 
-        return ScraperReturn(
+        return [ScraperReturn(
             name=None,
             date=date,
             time=time,
             webpage_url=self.base_url,
             download_url=download_url,
             location=location,
-        )
+        )]

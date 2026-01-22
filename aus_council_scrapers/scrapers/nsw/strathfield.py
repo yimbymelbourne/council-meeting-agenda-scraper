@@ -234,7 +234,7 @@ class StrathfieldNSWScraper(BaseScraper):
         best = pdf_links[0]
         return urljoin(_STRATHFIELD_BASE_URL, best)
 
-    def scraper(self) -> ScraperReturn:
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(
             f"Starting {self.council_name} scraper (OpenCities Minutes & Agendas)"
         )
@@ -251,6 +251,6 @@ class StrathfieldNSWScraper(BaseScraper):
         self.logger.info(f"Found agenda: {agenda_url}")
 
         # time isn't reliably included in this flow; keep None
-        return ScraperReturn(
+        return [ScraperReturn(
             meeting.name, meeting.date, None, _STRATHFIELD_INDEX_URL, agenda_url
-        )
+        )]

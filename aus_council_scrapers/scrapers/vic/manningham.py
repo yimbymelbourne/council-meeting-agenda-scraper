@@ -12,7 +12,7 @@ class ManninghamScraper(BaseScraper):
         base_url = "https://www.manningham.vic.gov.au"
         super().__init__(council_name, state, base_url)
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         initial_webpage_url = "https://www.manningham.vic.gov.au/about-council/how-council-works/council-meetings"
 
         # Find next meeting url
@@ -40,14 +40,14 @@ class ManninghamScraper(BaseScraper):
 
         download_url = meeting_soup.find("a", class_="file-link")["href"]
 
-        return ScraperReturn(
+        return [ScraperReturn(
             name=name,
             date=date,
             time=time,
             webpage_url=self.base_url,
             download_url=download_url,
             location=location,
-        )
+        )]
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ class MelbourneScraper(BaseScraper):
         super().__init__("melbourne", "VIC", base_url)
         self.default_location = "Melbourne Town Hall Administration Building, 120 Swanston Street, Melbourne"
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
 
         webpage_url = "https://www.melbourne.vic.gov.au/pages/meetings-finder.aspx?type=41&attach=False"
 
@@ -41,11 +41,11 @@ class MelbourneScraper(BaseScraper):
         )
         download_url = self.base_url + download_soup["href"]
 
-        return ScraperReturn(
+        return [ScraperReturn(
             name=meeting_name,
             date=date,
             time=time,
             webpage_url=self.base_url,
             download_url=download_url,
             location=None,
-        )
+        )]

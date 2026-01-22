@@ -11,7 +11,7 @@ class MooneeValleyScraper(BaseScraper):
         base_url = "https://mvcc.vic.gov.au"
         super().__init__(council, state, base_url)
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
 
         webpage_url = "https://mvcc.vic.gov.au/my-council/council-meetings/"
 
@@ -82,4 +82,4 @@ class MooneeValleyScraper(BaseScraper):
             scraper_return.download_url,
         )
 
-        return scraper_return
+        return [scraper_return]

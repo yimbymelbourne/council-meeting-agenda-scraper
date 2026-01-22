@@ -12,7 +12,7 @@ class CamdenScraper(BaseScraper):
         super().__init__(council, state, base_url)
         self.default_location = "70 Central Ave, Oran Park NSW 2570"
 
-    def scraper(self) -> ScraperReturn:
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         name = None
@@ -76,7 +76,7 @@ class CamdenScraper(BaseScraper):
             Minutes: {scraper_return.minutes_url}"""
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
-        return scraper_return
+        return [scraper_return]
 
 
 if __name__ == "__main__":

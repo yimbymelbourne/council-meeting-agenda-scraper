@@ -11,11 +11,11 @@ class HobsonsBayScraper(BaseScraper):
         base_url = ""
         super().__init__(council, state, base_url)
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         # self.logger.info(f"Starting {self.council_name} scraper")
 
         self.logger.error(f"{self.council_name} is without a Scraper, Can you Help!")
-        return None
+        return []
         """
         YOUR CODE HERE
         """

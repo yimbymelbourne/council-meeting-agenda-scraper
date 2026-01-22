@@ -114,14 +114,14 @@ class YarraScraper(BaseScraper):
                     return line.strip()
         return None
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         index_url = "https://www.yarracity.vic.gov.au/about-us/council-and-committee-meetings/council-meetings"
         index_html = self.fetcher.fetch_with_requests(index_url)
         index_soup = BeautifulSoup(index_html, "html.parser")
 
         meetings = self._extract_meeting_links(index_soup)
         if not meetings:
-            return None
+            return []
 
         # Sort newest-first and only check the most recent N to keep it fast.
         # This still picks up future agendas once published because those meetings are near the top. :contentReference[oaicite:5]{index=5}
@@ -144,7 +144,7 @@ class YarraScraper(BaseScraper):
 
         if not best:
             # No agenda published on any recent meeting page
-            return None
+            return []
 
         meeting_date, meeting_url, agenda_url, meeting_soup = best
 
@@ -162,11 +162,11 @@ class YarraScraper(BaseScraper):
         time = self._parse_time_from_text(page_text)
         location = self._extract_location(meeting_soup)
 
-        return ScraperReturn(
+        return [ScraperReturn(
             name=name,
             date=date_str,
             time=time,
             webpage_url=meeting_url,
             download_url=agenda_url,
             location=location,
-        )
+        )]

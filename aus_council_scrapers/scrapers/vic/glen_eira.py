@@ -17,7 +17,7 @@ class GlenEiraScraper(BaseScraper):
         super().__init__("glen_eira", "VIC", "https://www.gleneira.vic.gov.au")
         self.default_location = "420 Glen Eira Road, Caulfield"
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         initial_webpage_url = f"https://www.gleneira.vic.gov.au/about-council/meetings-and-agendas/council-agendas-and-minutes"
 
         # Find next meeting url
@@ -42,14 +42,14 @@ class GlenEiraScraper(BaseScraper):
         )
         download_url = self.base_url + download_soup["href"]
 
-        return ScraperReturn(
+        return [ScraperReturn(
             name=None,
             date=date,
             time=time,
             webpage_url=self.base_url,
             download_url=download_url,
             location=None,
-        )
+        )]
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ class NorthSydneyScraper(BaseScraper):
         base_url = "https://www.northsydney.nsw.gov.au"
         super().__init__(council, state, base_url)
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
         webpage_url = "https://www.northsydney.nsw.gov.au/council-meetings"
 
@@ -60,4 +60,4 @@ class NorthSydneyScraper(BaseScraper):
             {scraper_return.webpage_url} 
             {scraper_return.download_url}"""
         )
-        return scraper_return
+        return [scraper_return]

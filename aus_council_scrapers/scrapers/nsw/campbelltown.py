@@ -142,7 +142,7 @@ class CampbelltownScraper(BaseScraper):
 
         # unreachable
 
-    def scraper(self) -> ScraperReturn:
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         meetings_url = urljoin(
@@ -209,7 +209,7 @@ class CampbelltownScraper(BaseScraper):
         # Time: not provided on page
         time = None
 
-        return ScraperReturn(
+        return [ScraperReturn(
             name=name,
             date=date,
             time=time,
@@ -218,4 +218,4 @@ class CampbelltownScraper(BaseScraper):
             minutes_url=minutes_url,
             download_url=download_url,  # For backward compatibility
             location=self.default_location,
-        )
+        )]
