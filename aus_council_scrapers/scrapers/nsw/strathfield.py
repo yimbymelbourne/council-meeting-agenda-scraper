@@ -12,14 +12,12 @@ import requests
 from bs4 import BeautifulSoup
 
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from aus_council_scrapers.constants import EARLIEST_YEAR
 
 from urllib.parse import urlencode
 
 _STRATHFIELD_BASE_URL = "https://www.strathfield.nsw.gov.au"
 _STRATHFIELD_INDEX_URL = urljoin(_STRATHFIELD_BASE_URL, "/Council/Council-Meetings")
-
-# Earliest year to scrape (stop pagination if we hit meetings before this)
-_EARLIEST_YEAR = 2020
 
 # OpenCities XHR endpoint (from DevTools)
 _OC_SERVICE_HANDLER_URL = urljoin(_STRATHFIELD_BASE_URL, "/OCServiceHandler.axd")
@@ -292,9 +290,9 @@ class StrathfieldNSWScraper(BaseScraper):
                         # Parse the date to get the year
                         # Expected format: "16 December 2025"
                         meeting_date = datetime.strptime(meeting.date, "%d %B %Y")
-                        if meeting_date.year < _EARLIEST_YEAR:
+                        if meeting_date.year < EARLIEST_YEAR:
                             self.logger.info(
-                                f"Meeting {meeting.name} is before {_EARLIEST_YEAR}, stopping pagination"
+                                f"Meeting {meeting.name} is before {EARLIEST_YEAR}, stopping pagination"
                             )
                             should_continue = False
                             break

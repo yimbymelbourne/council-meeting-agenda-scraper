@@ -87,8 +87,10 @@ def main():
 
     # Validate years argument
     if args.years:
+        from aus_council_scrapers.constants import EARLIEST_YEAR
+
         current_year = datetime.now().year
-        min_year = 2020
+        min_year = EARLIEST_YEAR
         max_year = current_year + 2
         for year in args.years:
             if year < min_year or year > max_year:

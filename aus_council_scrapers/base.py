@@ -18,6 +18,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from aus_council_scrapers.constants import (
     COUNCIL_HOUSING_REGEX,
     DATE_REGEX,
+    EARLIEST_YEAR,
     TIME_REGEX,
     TIMEZONES_BY_STATE,
 )
@@ -358,10 +359,10 @@ class InfoCouncilScraper(BaseScraper):
         """
         results = []
 
-        # Try from 2020 to current year + 2 (meetings published up to 2 years in advance)
+        # Try from EARLIEST_YEAR to current year + 2 (meetings published up to 2 years in advance)
         # InfoCouncil sites may support ?year=YYYY parameter
         current_year = datetime.datetime.now().year
-        years_to_try = range(2020, current_year + 3)
+        years_to_try = range(EARLIEST_YEAR, current_year + 3)
 
         for year in years_to_try:
             year_url = f"{self.infocouncil_url}?year={year}"
