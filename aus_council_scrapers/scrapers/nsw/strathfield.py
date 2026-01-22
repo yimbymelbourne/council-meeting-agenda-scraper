@@ -18,6 +18,9 @@ from urllib.parse import urlencode
 _STRATHFIELD_BASE_URL = "https://www.strathfield.nsw.gov.au"
 _STRATHFIELD_INDEX_URL = urljoin(_STRATHFIELD_BASE_URL, "/Council/Council-Meetings")
 
+# Earliest year to scrape (stop pagination if we hit meetings before this)
+_EARLIEST_YEAR = 2020
+
 # OpenCities XHR endpoint (from DevTools)
 _OC_SERVICE_HANDLER_URL = urljoin(_STRATHFIELD_BASE_URL, "/OCServiceHandler.axd")
 _OC_DOCUMENTRENDERER_URL = "ocsvc/Public/meetings/documentrenderer"
@@ -63,35 +66,60 @@ class StrathfieldNSWScraper(BaseScraper):
             council_name="strathfield", state="NSW", base_url=_STRATHFIELD_BASE_URL
         )
 
-    def _fetch_index_html(self) -> str:
+    def _fetch_index_html(self, page: int = 1) -> str:
         """
         Strathfield blocks requests to /Council/Council-Meetings (403), so use selenium.
+        Page numbering starts at 1 for the first page, and uses ?dlv_OC%20CL%20Public%20Meetings=(pageindex=N) for others.
         """
         if not hasattr(self.fetcher, "fetch_with_selenium"):
             raise RuntimeError(
                 "Strathfield requires selenium fetcher for the index page (requests returns 403)."
             )
-        return self.fetcher.fetch_with_selenium(_STRATHFIELD_INDEX_URL)
 
-    def _extract_latest_meeting_stub(self, index_html: str) -> _MeetingStub:
+        if page == 1:
+            url = _STRATHFIELD_INDEX_URL
+        else:
+            url = f"{_STRATHFIELD_INDEX_URL}?dlv_OC%20CL%20Public%20Meetings=(pageindex={page})"
+
+        return self.fetcher.fetch_with_selenium(url)
+
+    def _extract_meeting_stubs(self, index_html: str) -> list[_MeetingStub]:
         """
-        Pull the first meeting’s cvid/date/type from the index HTML.
+        Extract all meetings from a page of the index HTML.
+        Returns a list of _MeetingStub objects.
         """
-        cvid_match = _CVID_RE.search(index_html)
-        if not cvid_match:
-            raise ValueError("Could not find any data-cvid in index HTML")
+        stubs = []
 
-        date_match = _DATE_RE.search(index_html)
-        type_match = _TYPE_RE.search(index_html)
+        # Find all data-cvid attributes
+        cvid_matches = list(_CVID_RE.finditer(index_html))
+        if not cvid_matches:
+            return stubs
 
-        if not date_match or not type_match:
-            raise ValueError("Could not find meeting date/type in index HTML")
+        # For each cvid, find the corresponding date and type
+        # We need to search for date/type patterns near each cvid
+        for cvid_match in cvid_matches:
+            cvid = cvid_match.group(1).strip()
 
-        return _MeetingStub(
-            cvid=cvid_match.group(1).strip(),
-            date=date_match.group(1).strip(),
-            meeting_type=type_match.group(1).strip(),
-        )
+            # Search for date and type after the cvid position
+            pos = cvid_match.end()
+            remaining_html = index_html[pos:]
+
+            # Look ahead up to 1000 characters for the date/type (should be nearby)
+            search_window = remaining_html[:1000]
+
+            date_match = _DATE_RE.search(search_window)
+            type_match = _TYPE_RE.search(search_window)
+
+            if date_match and type_match:
+                stubs.append(
+                    _MeetingStub(
+                        cvid=cvid,
+                        date=date_match.group(1).strip(),
+                        meeting_type=type_match.group(1).strip(),
+                    )
+                )
+
+        return stubs
 
     def _cachebuster(self) -> str:
         return "1970-01-01T00:00:00.000Z"
@@ -239,20 +267,70 @@ class StrathfieldNSWScraper(BaseScraper):
             f"Starting {self.council_name} scraper (OpenCities Minutes & Agendas)"
         )
 
-        index_html = self._fetch_index_html()
-        meeting = self._extract_latest_meeting_stub(index_html)
-        self.logger.info(
-            f"Latest meeting (from index): {meeting.name} (cvid={meeting.cvid})"
-        )
+        all_results = []
+        page = 1
+        should_continue = True
 
-        details_html = self._fetch_meeting_details_html(meeting.cvid)
-        agenda_url = self._extract_agenda_url_from_details(details_html)
+        while should_continue:
+            self.logger.info(f"Fetching page {page}")
 
-        self.logger.info(f"Found agenda: {agenda_url}")
+            try:
+                index_html = self._fetch_index_html(page)
+                meetings = self._extract_meeting_stubs(index_html)
 
-        # time isn't reliably included in this flow; keep None
-        return [
-            ScraperReturn(
-                meeting.name, meeting.date, None, _STRATHFIELD_INDEX_URL, agenda_url
-            )
-        ]
+                if not meetings:
+                    self.logger.info(
+                        f"No meetings found on page {page}, stopping pagination"
+                    )
+                    break
+
+                self.logger.info(f"Found {len(meetings)} meetings on page {page}")
+
+                for meeting in meetings:
+                    # Check if meeting is before earliest year
+                    try:
+                        # Parse the date to get the year
+                        # Expected format: "16 December 2025"
+                        meeting_date = datetime.strptime(meeting.date, "%d %B %Y")
+                        if meeting_date.year < _EARLIEST_YEAR:
+                            self.logger.info(
+                                f"Meeting {meeting.name} is before {_EARLIEST_YEAR}, stopping pagination"
+                            )
+                            should_continue = False
+                            break
+                    except ValueError:
+                        # If we can't parse the date, log and continue
+                        self.logger.warning(f"Could not parse date: {meeting.date}")
+
+                    # Fetch details for this meeting
+                    try:
+                        details_html = self._fetch_meeting_details_html(meeting.cvid)
+                        agenda_url = self._extract_agenda_url_from_details(details_html)
+
+                        self.logger.info(
+                            f"Found agenda for {meeting.name}: {agenda_url}"
+                        )
+
+                        all_results.append(
+                            ScraperReturn(
+                                meeting.name,
+                                meeting.date,
+                                None,  # time isn't reliably included
+                                _STRATHFIELD_INDEX_URL,
+                                agenda_url,
+                            )
+                        )
+                    except Exception as e:
+                        self.logger.error(
+                            f"Failed to get agenda for {meeting.name}: {e}"
+                        )
+                        continue
+
+                page += 1
+
+            except Exception as e:
+                self.logger.error(f"Error fetching page {page}: {e}")
+                break
+
+        self.logger.info(f"Scraped {len(all_results)} meetings total")
+        return all_results
