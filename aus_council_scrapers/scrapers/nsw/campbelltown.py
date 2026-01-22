@@ -81,7 +81,10 @@ class CampbelltownScraper(BaseScraper):
                 f"/Council-and-Councillors/Meetings-and-Minutes/{year}-Business-Papers#section-1",
             )
             try:
-                _ = self._fetch_html(candidate)
+                html = self._fetch_html(candidate)
+                # Check if we got actual content (not empty HTML from test playback)
+                if len(html) < 100 or "<body></body>" in html:
+                    continue
                 return year, candidate
             except Exception:
                 continue

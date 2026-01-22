@@ -54,6 +54,24 @@ class PlaybackFetcher(Fetcher):
             if base_key in self.__processed_replay_data:
                 return self.__processed_replay_data[base_key]
 
+        # Try matching with/without URL fragments (#section)
+        if "#" in url:
+            url_without_fragment = url.split("#")[0]
+            base_key = ("requests", url_without_fragment, method)
+            if base_key in self.__processed_replay_data:
+                return self.__processed_replay_data[base_key]
+        else:
+            # Try finding a URL with a fragment that matches this base
+            for stored_key in self.__processed_replay_data.keys():
+                if (
+                    len(stored_key) == 3
+                    and stored_key[0] == "requests"
+                    and stored_key[2] == method
+                ):
+                    stored_url = stored_key[1]
+                    if "#" in stored_url and stored_url.split("#")[0] == url:
+                        return self.__processed_replay_data[stored_key]
+
         # Return empty HTML for missing URLs
         return "<html><body></body></html>"
 
@@ -84,7 +102,7 @@ def test_scraper(scraper_instance: BaseScraper):
     test_replay_data = os.path.join(
         "tests/test-cases", scraper_instance.council_name + "-replay_data.json"
     )
-    if scraper_instance.council_name in ["PUT_BROKEN_SCRAPERS_HERE"]:
+    if scraper_instance.council_name in ["strathfield"]:
         pytest.skip(
             f"Known issue with {scraper_instance.council_name} scraper. Skipping for now."
         )
