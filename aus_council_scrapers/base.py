@@ -357,32 +357,36 @@ class InfoCouncilScraper(BaseScraper):
         Attempts to fetch meetings from multiple years by trying year query parameters.
         """
         results = []
-        
+
         # Try from 2020 to current year + 2 (meetings published up to 2 years in advance)
         # InfoCouncil sites may support ?year=YYYY parameter
         current_year = datetime.datetime.now().year
         years_to_try = range(2020, current_year + 3)
-        
+
         for year in years_to_try:
             year_url = f"{self.infocouncil_url}?year={year}"
             try:
                 output = self.fetcher.fetch_with_requests(year_url)
                 soup = BeautifulSoup(output, "html.parser")
                 meeting_table = soup.find("table", id="grdMenu", recursive=True)
-                
+
                 if meeting_table is None:
                     continue
-                
+
                 # Get all meeting rows
                 meeting_rows = meeting_table.find("tbody").find_all("tr")
-                
+
                 # Process each meeting row
                 for current_meeting in meeting_rows:
                     # Look for agenda PDF link
-                    agenda_link = current_meeting.find("a", class_="bpsGridPDFLink", recursive=True)
+                    agenda_link = current_meeting.find(
+                        "a", class_="bpsGridPDFLink", recursive=True
+                    )
                     agenda_url = None
                     if agenda_link and "href" in agenda_link.attrs:
-                        agenda_url = urllib.parse.urljoin(self.infocouncil_url, agenda_link["href"])
+                        agenda_url = urllib.parse.urljoin(
+                            self.infocouncil_url, agenda_link["href"]
+                        )
 
                     # Look for minutes PDF link - often has a different class or text
                     minutes_url = None
@@ -391,7 +395,9 @@ class InfoCouncilScraper(BaseScraper):
                     )
                     if not minutes_link:
                         # Try finding in the minutes column specifically
-                        minutes_cell = current_meeting.find("td", class_="bpsGridMinutes")
+                        minutes_cell = current_meeting.find(
+                            "td", class_="bpsGridMinutes"
+                        )
                         if minutes_cell:
                             # Look for PDF link first
                             pdf_link = minutes_cell.find("a", class_="bpsGridPDFLink")
@@ -412,9 +418,9 @@ class InfoCouncilScraper(BaseScraper):
                             self.infocouncil_url, minutes_link["href"]
                         )
 
-                    date_text = current_meeting.find("td", class_="bpsGridDate").get_text(
-                        separator=" "
-                    )
+                    date_text = current_meeting.find(
+                        "td", class_="bpsGridDate"
+                    ).get_text(separator=" ")
                     time_search = self.time_regex.search(date_text)
                     time = time_search.group() if time_search else None
 
@@ -423,7 +429,9 @@ class InfoCouncilScraper(BaseScraper):
 
                     location = current_meeting.find("td", class_="bpsGridCommittee")
                     location_text = None
-                    location_spans = [location_span for location_span in location.find_all("span")]
+                    location_spans = [
+                        location_span for location_span in location.find_all("span")
+                    ]
                     for span_el in reversed(location_spans):
                         maybe_address = span_el.get_text(separator=" ", strip=True)
                         if maybe_address and maybe_address != "":
@@ -443,17 +451,19 @@ class InfoCouncilScraper(BaseScraper):
                         location=location_text,
                     )
                     results.append(scraper_return)
-                    
+
             except Exception as e:
                 # Log but continue trying other years
                 self.logger.debug(f"Failed to fetch meetings for year {year}: {e}")
                 continue
-        
+
         if not results:
             self.logger.info(f"{self.council_name} scraper found no meetings")
         else:
-            self.logger.info(f"{self.council_name} scraper found {len(results)} meetings")
-        
+            self.logger.info(
+                f"{self.council_name} scraper found {len(results)} meetings"
+            )
+
         return results
 
 

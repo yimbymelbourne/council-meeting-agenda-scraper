@@ -186,46 +186,54 @@ def run_scraper(
         scraper.logger.info("Scraper started")
 
         results = get_agenda_info(scraper)
-        
+
         # Filter by years if specified
         if years:
             results = [
-                r for r in results
-                if r.cleaned_date and r.cleaned_date.year in years
+                r for r in results if r.cleaned_date and r.cleaned_date.year in years
             ]
             scraper.logger.info(f"Filtered to {len(results)} meetings in years {years}")
-        
+
         # In adapter mode, return all meetings in JSON format
         if adapter_mode:
             meetings = []
             for result in results:
-                date_value = result.cleaned_date.isoformat() if result.cleaned_date else None
-                time_value = result.cleaned_time.isoformat() if result.cleaned_time else None
-                
-                meetings.append({
-                    "name": result.name,
-                    "date": date_value,
-                    "time": time_value,
-                    "webpage_url": result.webpage_url,
-                    "agenda_url": result.agenda_url,
-                    "minutes_url": result.minutes_url,
-                    "download_url": result.download_url,
-                    "location": getattr(result, "location", None) or getattr(result, "cleaned_location", None),
-                })
-            
-            scraper.logger.info(f"Scraper finished successfully with {len(meetings)} meetings")
+                date_value = (
+                    result.cleaned_date.isoformat() if result.cleaned_date else None
+                )
+                time_value = (
+                    result.cleaned_time.isoformat() if result.cleaned_time else None
+                )
+
+                meetings.append(
+                    {
+                        "name": result.name,
+                        "date": date_value,
+                        "time": time_value,
+                        "webpage_url": result.webpage_url,
+                        "agenda_url": result.agenda_url,
+                        "minutes_url": result.minutes_url,
+                        "download_url": result.download_url,
+                        "location": getattr(result, "location", None)
+                        or getattr(result, "cleaned_location", None),
+                    }
+                )
+
+            scraper.logger.info(
+                f"Scraper finished successfully with {len(meetings)} meetings"
+            )
             return {
                 "ok": True,
                 "council": scraper.council_name,
                 "state": scraper.state.upper(),
                 "meetings": meetings,  # Changed from "meeting" to "meetings" (array)
             }
-        
+
         # Legacy mode: process only the first meeting (backward compatibility)
         if not results:
             scraper.logger.info("No meetings found")
             return None
-        
+
         result = results[0]  # Take first meeting for legacy mode
 
         # Skip if already scraped (legacy mode only)
@@ -348,7 +356,7 @@ def get_agenda_info(scraper: BaseScraper) -> list[ScraperReturn]:
 
         if result.is_date_in_past(scraper.state):
             scraper.logger.warning(f"Date is in the past: {result.cleaned_date}")
-        
+
         processed_results.append(result)
 
     return processed_results

@@ -251,6 +251,8 @@ class StrathfieldNSWScraper(BaseScraper):
         self.logger.info(f"Found agenda: {agenda_url}")
 
         # time isn't reliably included in this flow; keep None
-        return [ScraperReturn(
-            meeting.name, meeting.date, None, _STRATHFIELD_INDEX_URL, agenda_url
-        )]
+        return [
+            ScraperReturn(
+                meeting.name, meeting.date, None, _STRATHFIELD_INDEX_URL, agenda_url
+            )
+        ]

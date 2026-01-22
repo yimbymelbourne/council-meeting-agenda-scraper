@@ -40,14 +40,16 @@ class ManninghamScraper(BaseScraper):
 
         download_url = meeting_soup.find("a", class_="file-link")["href"]
 
-        return [ScraperReturn(
-            name=name,
-            date=date,
-            time=time,
-            webpage_url=self.base_url,
-            download_url=download_url,
-            location=location,
-        )]
+        return [
+            ScraperReturn(
+                name=name,
+                date=date,
+                time=time,
+                webpage_url=self.base_url,
+                download_url=download_url,
+                location=location,
+            )
+        ]
 
 
 if __name__ == "__main__":

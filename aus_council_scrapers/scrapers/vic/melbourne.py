@@ -41,11 +41,13 @@ class MelbourneScraper(BaseScraper):
         )
         download_url = self.base_url + download_soup["href"]
 
-        return [ScraperReturn(
-            name=meeting_name,
-            date=date,
-            time=time,
-            webpage_url=self.base_url,
-            download_url=download_url,
-            location=None,
-        )]
+        return [
+            ScraperReturn(
+                name=meeting_name,
+                date=date,
+                time=time,
+                webpage_url=self.base_url,
+                download_url=download_url,
+                location=None,
+            )
+        ]

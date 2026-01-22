@@ -52,13 +52,15 @@ class DarebinScraper(BaseScraper):
             date_str = self.date_pattern.search(txt_value).group()
             self.logger.debug(f"Date string: {date_str}")
 
-        return [ScraperReturn(
-            name=None,
-            date=date_str,
-            time=None,
-            webpage_url=webpage_url,
-            download_url=download_url,
-        )]
+        return [
+            ScraperReturn(
+                name=None,
+                date=date_str,
+                time=None,
+                webpage_url=webpage_url,
+                download_url=download_url,
+            )
+        ]
 
 
 if __name__ == "__main__":

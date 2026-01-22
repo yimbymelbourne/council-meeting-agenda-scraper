@@ -41,11 +41,13 @@ class BoroondaraScraper(BaseScraper):
         download_soup = meeting_soup.find("a", attrs={"data-filetype": "PDF"})
         download_url = self.base_url + download_soup["href"]
 
-        return [ScraperReturn(
-            name=None,
-            date=date,
-            time=time,
-            webpage_url=self.base_url,
-            download_url=download_url,
-            location=location,
-        )]
+        return [
+            ScraperReturn(
+                name=None,
+                date=date,
+                time=time,
+                webpage_url=self.base_url,
+                download_url=download_url,
+                location=location,
+            )
+        ]

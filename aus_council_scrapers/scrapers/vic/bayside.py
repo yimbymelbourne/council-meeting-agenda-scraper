@@ -49,15 +49,17 @@ class BaysideVicScraper(BaseScraper):
         except Exception as e:
             print(f"Error fetching minutes: {e}")
 
-        return [ScraperReturn(
-            name=name,
-            date=date,
-            time=None,
-            webpage_url=self.base_url,
-            agenda_url=download_url,
-            minutes_url=minutes_url,
-            download_url=download_url,
-        )]
+        return [
+            ScraperReturn(
+                name=name,
+                date=date,
+                time=None,
+                webpage_url=self.base_url,
+                agenda_url=download_url,
+                minutes_url=minutes_url,
+                download_url=download_url,
+            )
+        ]
 
 
 if __name__ == "__main__":

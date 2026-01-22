@@ -209,13 +209,15 @@ class CampbelltownScraper(BaseScraper):
         # Time: not provided on page
         time = None
 
-        return [ScraperReturn(
-            name=name,
-            date=date,
-            time=time,
-            webpage_url=webpage_url,
-            agenda_url=download_url,
-            minutes_url=minutes_url,
-            download_url=download_url,  # For backward compatibility
-            location=self.default_location,
-        )]
+        return [
+            ScraperReturn(
+                name=name,
+                date=date,
+                time=time,
+                webpage_url=webpage_url,
+                agenda_url=download_url,
+                minutes_url=minutes_url,
+                download_url=download_url,  # For backward compatibility
+                location=self.default_location,
+            )
+        ]

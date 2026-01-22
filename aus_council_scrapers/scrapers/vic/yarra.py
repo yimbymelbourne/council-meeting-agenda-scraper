@@ -162,11 +162,13 @@ class YarraScraper(BaseScraper):
         time = self._parse_time_from_text(page_text)
         location = self._extract_location(meeting_soup)
 
-        return [ScraperReturn(
-            name=name,
-            date=date_str,
-            time=time,
-            webpage_url=meeting_url,
-            download_url=agenda_url,
-            location=location,
-        )]
+        return [
+            ScraperReturn(
+                name=name,
+                date=date_str,
+                time=time,
+                webpage_url=meeting_url,
+                download_url=agenda_url,
+                location=location,
+            )
+        ]

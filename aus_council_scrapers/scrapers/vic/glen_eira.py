@@ -42,14 +42,16 @@ class GlenEiraScraper(BaseScraper):
         )
         download_url = self.base_url + download_soup["href"]
 
-        return [ScraperReturn(
-            name=None,
-            date=date,
-            time=time,
-            webpage_url=self.base_url,
-            download_url=download_url,
-            location=None,
-        )]
+        return [
+            ScraperReturn(
+                name=None,
+                date=date,
+                time=time,
+                webpage_url=self.base_url,
+                download_url=download_url,
+                location=None,
+            )
+        ]
 
 
 if __name__ == "__main__":
