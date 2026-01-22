@@ -18,6 +18,7 @@ This mode:
 - Performs read-only scraping (no database writes, no file downloads, no notifications)
 - Designed to be ingested by external applications (e.g., a TypeScript backend that owns the database, frontend, and notification system)
 - Safe for programmatic consumption and integration into larger systems
+- Returns **multiple meetings per council** spanning multiple years (2020 to current year + 2)
 
 Example JSON output:
 
@@ -30,18 +31,30 @@ Example JSON output:
       "ok": true,
       "council": "yarra",
       "state": "VIC",
-      "meeting": {
-        "name": "Council Meeting",
-        "date": "2026-01-20",
-        "time": "19:00:00",
-        "webpage_url": "https://...",
-        "download_url": "https://...pdf"
-      },
-      "location": "Council Chambers"
+      "meetings": [
+        {
+          "name": "Council Meeting",
+          "date": "2026-01-20",
+          "time": "19:00:00",
+          "webpage_url": "https://...",
+          "download_url": "https://...pdf",
+          "location": "Council Chambers"
+        },
+        {
+          "name": "Council Meeting",
+          "date": "2025-12-16",
+          "time": "19:00:00",
+          "webpage_url": "https://...",
+          "download_url": "https://...pdf",
+          "location": "Council Chambers"
+        }
+      ]
     }
   ]
 }
 ```
+
+**Note:** The scraper returns **multiple meetings per council**, not just the latest one. By default, it fetches meetings from 2020 to the current year + 2 years in the future.
 
 ### Legacy Mode
 
@@ -111,6 +124,7 @@ python ./aus_council_scrapers/main.py [OPTIONS]
   - `json`: Machine-readable JSON to stdout
 - `--council <name>` - Run only the specified council scraper
 - `--state <state>` - Run only scrapers for the specified state
+- `--years <year1> [year2 ...]` - Filter meetings by specific year(s). Valid range: 2020 to current year + 2
 - `--workers <N>` - Number of concurrent workers (default: 6)
 
 ### Scraping Behavior
@@ -132,6 +146,16 @@ python ./aus_council_scrapers/main.py --adapter --format json
 
 ```bash
 python ./aus_council_scrapers/main.py --adapter --format json --council yarra
+```
+
+**Filter meetings by specific year(s):**
+
+```bash
+# Get only 2025 meetings
+python ./aus_council_scrapers/main.py --adapter --format json --years 2025
+
+# Get meetings from 2024 and 2025
+python ./aus_council_scrapers/main.py --adapter --format json --years 2024 2025
 ```
 
 **Legacy standalone mode (all features):**
@@ -191,9 +215,11 @@ You can find a full list of active scrapers at `docs/councils.md`. Additionally,
 
 Scrapers for each council are contained within the `scrapers/[state]/` directory.
 
-A scraper should be able to reliably find the most recent agenda on a Council's website. Once that link is found, it is checked against an existing database—if the link is new, then the agenda is downloaded, scanned, and a notification can be sent.
+A scraper should be able to reliably find meeting agendas on a Council's website. **Scrapers now return multiple meetings**, not just the most recent one. By default, scrapers fetch meetings from **2020 to the current year + 2 years** (to capture future scheduled meetings).
 
-In addition to the link, the scraper function should return an object of the following shape, outlined in `base.py`:
+Once meeting links are found, they are checked against an existing database (in legacy mode)—if links are new, then agendas are downloaded, scanned, and notifications can be sent.
+
+In addition to the links, the scraper function should return a list of objects with the following shape, outlined in `base.py`:
 
 ```py
 @dataclass
@@ -208,6 +234,8 @@ class ScraperReturn:
 **It is not always possible to scrape the date and time of meetings from Council websites. In these cases, these values should be returned as empty strings.**
 
 The `scraper` function is then included within a Scraper class, which extends `BaseScraper.py`.
+
+**Important:** The `scraper()` method should return a `list[ScraperReturn]`, not a single object. Even if your scraper only finds one meeting, return it as a list with one element: `return [scraper_return]`.
 
 ## Easy scraping
 
