@@ -22,113 +22,116 @@ class MerribekScraper(BaseScraper):
         # Feed the HTML to BeautifulSoup
         soup = BeautifulSoup(output, "html.parser")
 
-        name = None
-        date = None
-        time = None
-        download_url = None
+        # Dictionary to store meetings by date
+        meetings = {}
 
-        target_a_tag = soup.find("a", href=lambda href: href and "agenda" in href)
+        # Find all agenda links on the page
+        agenda_links = soup.find_all(
+            "a",
+            href=lambda href: href
+            and "agenda" in href.lower()
+            and href.endswith(".pdf"),
+        )
 
-        # Print the result
-        if target_a_tag:
-            print("a tag found")
-        else:
-            print("No 'a' tag with 'agenda' in the href attribute found on the page.")
+        print(f"Found {len(agenda_links)} agenda links")
 
-        href_value = target_a_tag.get("href")
-        if href_value:
-            download_url = self.base_url + href_value
-            print("download url set")
-        else:
-            print("link not found.")
+        for link in agenda_links:
+            link_text = link.get_text().strip()
+            link_href = link.get("href")
 
-        txt_value = target_a_tag.string
-        if txt_value:
-            match = self.date_regex.search(txt_value)
+            # Skip if no href
+            if not link_href:
+                continue
 
-            # Extract the matched date
-            if match:
-                extracted_date = match.group()
-                print("Extracted Date:", extracted_date)
-                date = extracted_date
+            # Extract date from link text
+            match = self.date_regex.search(link_text)
+            if not match:
+                continue
 
+            date = match.group()
+
+            # Build full URL
+            if link_href.startswith("http"):
+                agenda_url = link_href
             else:
-                print("No date found in the input string.")
+                agenda_url = self.base_url + link_href
 
-        grandparent_el = target_a_tag.parent.parent.parent.h3
+            # Extract name - try to get from h3 parent or use link text
+            name = None
+            try:
+                grandparent_el = link.find_parent(["ul", "ol"])
+                if grandparent_el:
+                    h3_parent = grandparent_el.find_previous("h3")
+                    if h3_parent:
+                        name = h3_parent.get_text().strip()
+                        name = self.date_regex.sub("", name).strip()
+            except:
+                pass
 
-        if grandparent_el:
-            el_name = grandparent_el.text
-            el_name = self.date_regex.sub("", el_name)
-            name = el_name
+            if not name or name == "":
+                # Use the link text without the date
+                name = self.date_regex.sub("", link_text).strip()
 
-        if name == "" or name is None:
-            name = "Council Agenda"
+            if not name or name == "":
+                name = "Council Meeting"
 
-        # Look for minutes link (the scraper is on the minutes page, so look for both)
-        minutes_url = None
-        agenda_url = download_url  # The first link found is typically the agenda
+            # Store the meeting
+            meetings[date] = {
+                "name": name,
+                "date": date,
+                "agenda_url": agenda_url,
+                "minutes_url": None,
+            }
 
-        # Try to find minutes link by looking in the parent list or nearby section
-        if target_a_tag:
-            # First try to find the parent ul/ol element
-            list_parent = target_a_tag.find_parent(["ul", "ol"])
-            if list_parent:
-                # Search all links in the same list
-                for link in list_parent.find_all("a"):
-                    link_text = link.get_text().lower()
-                    link_href = link.get("href")
-                    # Look for "minute" in text and ensure it's a file link (not a navigation link)
-                    if (
-                        "minute" in link_text
-                        and link_href
-                        and not link_href.endswith("/")
-                    ):
-                        # Handle both relative and absolute URLs
-                        if link_href.startswith("http"):
-                            minutes_url = link_href
-                        else:
-                            minutes_url = self.base_url + link_href
-                        break
-
-            # If not found in list, try broader search in the parent section
-            if not minutes_url and target_a_tag.parent:
-                section_parent = target_a_tag.find_parent(["div", "section"])
-                if section_parent:
-                    for link in section_parent.find_all("a"):
-                        link_text = link.get_text().lower()
-                        link_href = link.get("href")
-                        # Look for "minute" in text and ensure it's a file link
-                        if (
-                            "minute" in link_text
-                            and link_href
-                            and not link_href.endswith("/")
-                        ):
-                            if link_href.startswith("http"):
-                                minutes_url = link_href
-                            else:
-                                minutes_url = self.base_url + link_href
-                            break
-
-        print("~~~")
-        scraper_return = ScraperReturn(
-            name=name,
-            date=date,
-            time=time,
-            webpage_url=webpage_url,
-            agenda_url=agenda_url,
-            minutes_url=minutes_url,
-            download_url=download_url,
+        # Now find all minutes links and match them to agendas by date
+        minutes_links = soup.find_all(
+            "a",
+            href=lambda href: href
+            and "minute" in href.lower()
+            and href.endswith(".pdf"),
         )
 
-        print(
-            scraper_return.name,
-            scraper_return.date,
-            scraper_return.time,
-            scraper_return.webpage_url,
-            scraper_return.agenda_url,
-            scraper_return.minutes_url,
-            scraper_return.download_url,
-        )
+        print(f"Found {len(minutes_links)} minutes links")
 
-        return [scraper_return]
+        for link in minutes_links:
+            link_text = link.get_text().strip()
+            link_href = link.get("href")
+
+            if not link_href:
+                continue
+
+            # Extract date from link text
+            match = self.date_regex.search(link_text)
+            if not match:
+                continue
+
+            date = match.group()
+
+            # Build full URL
+            if link_href.startswith("http"):
+                minutes_url = link_href
+            else:
+                minutes_url = self.base_url + link_href
+
+            # If we have an agenda for this date, add the minutes URL
+            if date in meetings:
+                meetings[date]["minutes_url"] = minutes_url
+
+        # Convert to list of ScraperReturn objects
+        results = []
+        for date, meeting_data in sorted(
+            meetings.items(), key=lambda x: x[0], reverse=True
+        ):
+            scraper_return = ScraperReturn(
+                name=meeting_data["name"],
+                date=meeting_data["date"],
+                time=None,
+                webpage_url=webpage_url,
+                agenda_url=meeting_data["agenda_url"],
+                minutes_url=meeting_data["minutes_url"],
+                download_url=meeting_data["agenda_url"],
+            )
+            results.append(scraper_return)
+
+        print(f"Returning {len(results)} meetings")
+        return results
