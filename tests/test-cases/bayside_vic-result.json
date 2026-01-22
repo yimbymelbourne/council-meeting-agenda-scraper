@@ -1,10 +1,1212 @@
-{
-  "name": "21 May 2024 Council Meeting Agenda",
-  "date": "2024-05-21",
-  "time": null,
-  "location": null,
-  "webpage_url": "https://www.bayside.vic.gov.au",
-  "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-05/21%20May%202024%20Council%20Meeting%20Agenda.pdf",
-  "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-05/21%20May%202024%20Council%20Meeting%20Minutes.pdf",
-  "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-05/21%20May%202024%20Council%20Meeting%20Agenda.pdf"
-}
+[
+  {
+    "name": "Council Meeting - Requests to be Heard",
+    "date": "2025-12-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-12/16_december_2025_council_meeting_-_requests_to_be_heard.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-12/16_december_2025_council_meeting_-_requests_to_be_heard.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-12/16_december_2025_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "Council Meeting - Requests to be Heard",
+    "date": "2025-11-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-11/requests_to_be_heard_-_18_november_2025_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-11/requests_to_be_heard_-_18_november_2025_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-11/18_november_2025_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "Annual Meeting of Council Agenda",
+    "date": "2025-11-05",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-10/5_november_2025_annual_meeting_of_council_agenda.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-10/5_november_2025_annual_meeting_of_council_agenda.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-11/5%20November%202025%20Annual%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-10-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-10/14_october_2025_-_requests_to_be_heard.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-10/14_october_2025_-_requests_to_be_heard.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-10/14_october_2025_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-09-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-09/16_september_2025_requests_to_be_heard.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-09/16_september_2025_requests_to_be_heard.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-09/16_september_2025_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-08-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-08/19%20August%202025%20-%20Requests%20to%20be%20Heard.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-08/19%20August%202025%20-%20Requests%20to%20be%20Heard.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-08/19%20August%202025%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-07-29",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-07/requests_to_be_heard_-_29_july_2025_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-07/requests_to_be_heard_-_29_july_2025_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-07/29_july_2025_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-06-17",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-06/requests_to_be_heard_-_17_june_2025_-_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-06/requests_to_be_heard_-_17_june_2025_-_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-06/17_june_2025_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-06-10",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-06/requests_to_be_heard_-_10_june_2025_planning_and_amenity_delegated_committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-06/requests_to_be_heard_-_10_june_2025_planning_and_amenity_delegated_committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-06/10_june_2025_special_council_meeting_minutes_public.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-05-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-05/requests_to_be_heard_-_20_may_2025_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-05/requests_to_be_heard_-_20_may_2025_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-05/minutes_-_20_may_2025_-_council_meeting.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-05-13",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-05/requests_to_be_heard_-_13_may_2025_planning_and_amenity_delegated_committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-05/requests_to_be_heard_-_13_may_2025_planning_and_amenity_delegated_committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-05/13_may_2025_planning_and_amenity_delegated_committee_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-04-29",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-04/Requests%20to%20be%20Heard%20-%2029%20April%202025%20-%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-04/Requests%20to%20be%20Heard%20-%2029%20April%202025%20-%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-05/Minutes%20-%2029%20April%202025%20-%20Council%20Meeting.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-03-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-03/requests_to_be_heard_-_18_march_2025_-_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-03/requests_to_be_heard_-_18_march_2025_-_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-03/minutes_-_18_march_2025_-_council_meeting.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-03-11",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-03/requests_to_be_heard_-_11_march_2025_planning_and_amenity_delegated_committee_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-03/requests_to_be_heard_-_11_march_2025_planning_and_amenity_delegated_committee_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-03/11_march_2025_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-02-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-12/requests_to_be_heard_-_18_february_2025_-_council_meeting%20updated.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-12/requests_to_be_heard_-_18_february_2025_-_council_meeting%20updated.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-02/18_february_2025_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2025-01-28",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-01/requests_to_be_heard_-_28_january_2025_planning_and_amenity_delegated_committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-01/requests_to_be_heard_-_28_january_2025_planning_and_amenity_delegated_committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2025-01/28_january_2025_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-12-17",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-12/Requests%20to%20be%20Heard%20-%2017%20December%202024%20-%20Council%20Meeting_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-12/Requests%20to%20be%20Heard%20-%2017%20December%202024%20-%20Council%20Meeting_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-12/minutes_-_17_december_2024_-_council.pdf"
+  },
+  {
+    "name": "Planning and Amenity Delegated Committee (Late) Agenda)",
+    "date": "2024-12-09",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-12/Late%20Agenda%20%28public%29%20-%2009%20December%202024%20-%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-12/Late%20Agenda%20%28public%29%20-%2009%20December%202024%20-%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-12/9_december_2024_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "Annual Meeting of Council Agenda",
+    "date": "2024-11-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-11/annual_meeting_of_council_agenda_19_november_2024.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-11/annual_meeting_of_council_agenda_19_november_2024.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-11/19%20November%202024%20Annual%20Meeting%20of%20Council%20Minutes_1.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-10-15",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/requests_to_be_heard_-_15_october_2024_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/requests_to_be_heard_-_15_october_2024_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/15_october_2024_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-10-08",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/requests_to_be_heard_-_8_october_2024_planning_and_amenity_delegated_committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/requests_to_be_heard_-_8_october_2024_planning_and_amenity_delegated_committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/8_october_2024_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-09-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/Requests%20to%20be%20Heard%20-%2016%20September%202024%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/Requests%20to%20be%20Heard%20-%2016%20September%202024%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/Minutes%20-%2016%20September%202024%20-%20Council_0.PDF"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-09-10",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-09/requests_to_be_heard_-_10_september_2024_planning_and_amenity_delegated_committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-09/requests_to_be_heard_-_10_september_2024_planning_and_amenity_delegated_committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-09/10_september_2024_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be  Heard",
+    "date": "2024-08-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-08/20_august_2024_council_meeting_-_request_to_be_heard.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-08/20_august_2024_council_meeting_-_request_to_be_heard.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-08/20_august_2024_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-08-13",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-08/13%20August%202024%20Planning%20and%20Amenity%20Delegated%20Committee%20-%20Request%20to%20be%20Heard.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-08/13%20August%202024%20Planning%20and%20Amenity%20Delegated%20Committee%20-%20Request%20to%20be%20Heard.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-08/13_august_2024_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-07-23",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/Requests%20to%20be%20Heard%20-%2023%20July%202024%20Council%20Meeting_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/Requests%20to%20be%20Heard%20-%2023%20July%202024%20Council%20Meeting_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/23_july_2024_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-07-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/16_july_2024_planning_and_amenity_delegated_committee_requests_to_be_heard.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/16_july_2024_planning_and_amenity_delegated_committee_requests_to_be_heard.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/minutes_-_16_july_2024_-_planning_and_amenity_delegated_committee.pdf"
+  },
+  {
+    "name": "Special Council Meeting Agenda",
+    "date": "2024-07-09",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/9%20July%202024%20Special%20Council%20Meeting%20Agenda%20-%20Public%20Version.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/9%20July%202024%20Special%20Council%20Meeting%20Agenda%20-%20Public%20Version.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/9_july_2024_special_council_meeting_minutes_-_public_version.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-06-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-06/Requests%20to%20be%20Heard%20-%2018%20June%202024%20Council%20Meeting_1.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-06/Requests%20to%20be%20Heard%20-%2018%20June%202024%20Council%20Meeting_1.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/18%20June%202024%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-06-11",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-06/requests_to_be_heard_-_11_june_2024_planning_and_amenity_delegated_committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-06/requests_to_be_heard_-_11_june_2024_planning_and_amenity_delegated_committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-06/11_june_2024_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-05-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-05/requests_to_be_heard_-_21_may_2024_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-05/requests_to_be_heard_-_21_may_2024_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-05/21%20May%202024%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-05-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-05/requests_to_be_heard_-_14_may_2024_planning_and_amenity_delegated_committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-05/requests_to_be_heard_-_14_may_2024_planning_and_amenity_delegated_committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-05/14_may_2024_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "Special Council Meeting Agenda",
+    "date": "2024-04-30",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/30%20April%202024%20Special%20Council%20Meeting%20Agenda%20%28public%29.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/30%20April%202024%20Special%20Council%20Meeting%20Agenda%20%28public%29.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-07/30%20April%202024%20Special%20Council%20Meeting%20Minutes%20%28Public%20Version%29.PDF"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-04-23",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-04/requests_to_be_heard_-_23_april_2024_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-04/requests_to_be_heard_-_23_april_2024_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-04/23%20April%202024%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-04-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-04/requests_to_be_heard_-_16_april_2024_planning_and_amenity_delegated_committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-04/requests_to_be_heard_-_16_april_2024_planning_and_amenity_delegated_committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-04/16_april_2024_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-03-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-03/requests_to_be_heard_-_19_march_2024_council_meeting_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-03/requests_to_be_heard_-_19_march_2024_council_meeting_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-03/19_march_2024_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-03-12",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-03/Requests%20to%20be%20Heard%20-%2012%20March%202024%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-03/Requests%20to%20be%20Heard%20-%2012%20March%202024%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-03/12_march_2024_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-02-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-02/Requests%20to%20be%20Heard%20-%2020%20February%202024%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-02/Requests%20to%20be%20Heard%20-%2020%20February%202024%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-02/20%20February%202024%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2024-02-13",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-02/Requests%20to%20be%20Heard%20-%2013%20February%202024%20Planning%20and%20Amenity%20Delegated%20Committee_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-02/Requests%20to%20be%20Heard%20-%2013%20February%202024%20Planning%20and%20Amenity%20Delegated%20Committee_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-02/13_february_2024_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-12-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-12/requests_to_be_heard_-_19_december_2023_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-12/requests_to_be_heard_-_19_december_2023_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-12/19_december_2023_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "Item 8.2 - (Revised) Attachment 1 - Minutes of the Billilla Advisory Committee held in",
+    "date": "2023-12-13",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-03/minutes_of_billilla_advisory_committee_13_december_2023_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-03/minutes_of_billilla_advisory_committee_13_december_2023_0.pdf",
+    "minutes_url": null
+  },
+  {
+    "name": "-\u00a0Requests to be Heard",
+    "date": "2023-12-11",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-12/Requests%20to%20be%20Heard%20-%2011%20December%202023%20Planning%20and%20Amenity%20Delegated%20Committee_2.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-12/Requests%20to%20be%20Heard%20-%2011%20December%202023%20Planning%20and%20Amenity%20Delegated%20Committee_2.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-12/11_december_2023_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "-\u00a0Requests to be Heard",
+    "date": "2023-11-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-11/requests_to_be_heard_-_21_november_2023_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-11/requests_to_be_heard_-_21_november_2023_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-11/21_november_2023_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-11-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-11/requests_to_be_heard_-_14_november_2023_planning_and_amenity_delegated_committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-11/requests_to_be_heard_-_14_november_2023_planning_and_amenity_delegated_committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-11/14%20November%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "Annual Meeting of Council Agenda",
+    "date": "2023-11-08",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-11/8%20November%202023%20Annual%20Meeting%20of%20Council%20Agenda.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-11/8%20November%202023%20Annual%20Meeting%20of%20Council%20Agenda.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-11/8_november_2023_annual_meeting_of_council_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-10-17",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-10/17_october_2023_-_requests_to_be_heard_redacted.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-10/17_october_2023_-_requests_to_be_heard_redacted.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-10/17%20October%202023%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "-\u00a0Requests to be Heard",
+    "date": "2023-10-10",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-10/Requests%20to%20be%20Heard%20-%2010%20October%202023%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-10/Requests%20to%20be%20Heard%20-%2010%20October%202023%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-10/10%20October%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-09-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-09/19_september_2023_-_requests_to_be_heard.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-09/19_september_2023_-_requests_to_be_heard.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-09/19%20September%202023%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-09-12",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-09/Requests%20to%20be%20Heard%20-%2012%20September%202023%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-09/Requests%20to%20be%20Heard%20-%2012%20September%202023%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-09/12_september_2023_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-08-15",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-08/15_august_2023_-_requests_to_be_heard.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-08/15_august_2023_-_requests_to_be_heard.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-08/15_august_2023_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-08-08",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-08/requests_to_be_heard_-_8_august_2023_planning_and_amenity_delegated_committee_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-08/requests_to_be_heard_-_8_august_2023_planning_and_amenity_delegated_committee_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-08/8_august_2023_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "-\u00a0\u200b\u200b\u200b\u200b\u200b\u200b\u200bRequests to be Heard",
+    "date": "2023-07-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-07/requests_to_be_heard_-_18_july_2023_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-07/requests_to_be_heard_-_18_july_2023_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-07/18_july_2023_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "-\u00a0Requests to be Heard",
+    "date": "2023-07-11",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-09/Requests%20to%20be%20Heard%20-%2011%20July%202023%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-09/Requests%20to%20be%20Heard%20-%2011%20July%202023%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-09/11%20July%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "-\u00a0Requests to be Heard",
+    "date": "2023-06-27",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-06/Requests%20to%20be%20Heard%20-%2027%20June%202023%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-06/Requests%20to%20be%20Heard%20-%2027%20June%202023%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-06/27_june_2023_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-06-13",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-06/requests_to_be_heard_-_13_june_2023_planning_and_amenity_delegated_committee_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-06/requests_to_be_heard_-_13_june_2023_planning_and_amenity_delegated_committee_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-06/13%20June%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-05-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-05/requests_to_be_heard_-_16_may_2023_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-05/requests_to_be_heard_-_16_may_2023_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-05/16_may_2023_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "-\u00a0Requests to be Heard",
+    "date": "2023-05-09",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-05/requests_to_be_heard_-_9_may_2023_planning_and_amenity_delegated_committee_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-05/requests_to_be_heard_-_9_may_2023_planning_and_amenity_delegated_committee_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-05/9_may_2023_planning_and_amenity_delegated_committee_minutes.pdf"
+  },
+  {
+    "name": "Special Committee of Council Agenda",
+    "date": "2023-04-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-04/19%20April%202023%20Special%20Committee%20of%20Council%20Agenda%20%28Public%20version%29.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-04/19%20April%202023%20Special%20Committee%20of%20Council%20Agenda%20%28Public%20version%29.pdf",
+    "minutes_url": null
+  },
+  {
+    "name": "Council Meeting Agenda",
+    "date": "2023-04-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-04/18%20April%202023%20Council%20Meeting%20Agenda.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-04/18%20April%202023%20Council%20Meeting%20Agenda.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-04/18_april_2023_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-04-04",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-04/Requests%20to%20be%20Heard%20-%204%20April%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-04/Requests%20to%20be%20Heard%20-%204%20April%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-04/4%20April%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-03-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-03/Requests%20to%20be%20Heard%20-%2021%20March%202023%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-03/Requests%20to%20be%20Heard%20-%2021%20March%202023%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-03/21%20March%202023%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-03-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-03/Requests%20to%20be%20Heard%20-%2014%20March%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-03/Requests%20to%20be%20Heard%20-%2014%20March%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-03/14%20March%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-02-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-02/Requests%20to%20be%20Heard%20-%2021%20February%202023%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-02/Requests%20to%20be%20Heard%20-%2021%20February%202023%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-02/21%20February%202023%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-02-15",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-02/Requests%20to%20be%20Heard%20-%2015%20February%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting_1.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-02/Requests%20to%20be%20Heard%20-%2015%20February%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting_1.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-02/15%20February%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2023-02-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-02/Requests%20to%20be%20Heard%20-%2014%20February%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-02/Requests%20to%20be%20Heard%20-%2014%20February%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2023-02/14%20February%202023%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-12-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-12/Requests%20to%20be%20Heard%20-%2020%20December%202022%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-12/Requests%20to%20be%20Heard%20-%2020%20December%202022%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-12/20%20December%202022%20Council%20Meeting%20Minutes_1.pdf"
+  },
+  {
+    "name": "-\u00a0Requests to be Heard",
+    "date": "2022-12-12",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-12/Requests%20to%20be%20Heard%20-%2012%20December%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting_1.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-12/Requests%20to%20be%20Heard%20-%2012%20December%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting_1.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-12/12%20December%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-11-22",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-11/Requests%20to%20be%20Heard%20-%2022%20November%202022%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-11/Requests%20to%20be%20Heard%20-%2022%20November%202022%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-11/22%20November%202022%20Council%20Meeting%20Minutes_0.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-11-15",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-11/Requests%20to%20be%20Heard%20-%2015%20Novembr%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-11/Requests%20to%20be%20Heard%20-%2015%20Novembr%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-11/15%20November%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "Annual Meeting of Council Agenda",
+    "date": "2022-11-09",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-11/9%20November%202022%20Annual%20Meeting%20of%20Council%20Agenda.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-11/9%20November%202022%20Annual%20Meeting%20of%20Council%20Agenda.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-11/9%20November%202022%20Annual%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "Council Meeting Agenda",
+    "date": "2022-10-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-10/18%20October%202022%20Council%20Meeting%20Agenda_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-10/18%20October%202022%20Council%20Meeting%20Agenda_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-10/18%20October%202022%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-10-11",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-10/Requests%20to%20be%20Heard%20-%2011%20October%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-10/Requests%20to%20be%20Heard%20-%2011%20October%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-10/11%20October%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "-\u00a0Requests to be Heard",
+    "date": "2022-09-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-09/Requests%20to%20be%20Heard%20-%2020%20September%202022%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-09/Requests%20to%20be%20Heard%20-%2020%20September%202022%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-09/20%20September%202022%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-09-13",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-09/Requests%20to%20be%20Heard%20-%2013%20September%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-09/Requests%20to%20be%20Heard%20-%2013%20September%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Meeting_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-09/13%20September%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.PDF"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-08-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-08/requests_to_be_heard_-_16_august_2022_council_meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-08/requests_to_be_heard_-_16_august_2022_council_meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-08/16%20August%202022%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-08-09",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-08/Requests%20to%20be%20Heard%20-%209%20August%202022%20Planning%20and%20Amenity%20Delegated%20Committte%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-08/Requests%20to%20be%20Heard%20-%209%20August%202022%20Planning%20and%20Amenity%20Delegated%20Committte%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-08/9%20August%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes_0.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-07-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-07/Requests%20to%20be%20Heard%20-%2019%20July%202022%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-07/Requests%20to%20be%20Heard%20-%2019%20July%202022%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-07/19_july_2022_council_meeting_minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-07-12",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-07/12%20July%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20-%20Requests%20to%20be%20Heard_1.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-07/12%20July%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20-%20Requests%20to%20be%20Heard_1.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-07/12_july_2022_planning_and_amenity_delegated_committee_minutes_0_0.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-06-28",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/Requests%20to%20be%20Heard%20-%2028%20June%202022%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/Requests%20to%20be%20Heard%20-%2028%20June%202022%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/28%20June%202022%20Council%20Meeting%20Minutes_0.pdf"
+  },
+  {
+    "name": "15 and  - Requests to be Heard",
+    "date": "2022-06-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/Requests%20to%20be%20Heard%20-%2015%20and%2016%20June%2022%20Delegated%20Committee%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2024-10/Requests%20to%20be%20Heard%20-%2015%20and%2016%20June%2022%20Delegated%20Committee%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/15%20and%2016%20June%202022%20Delegated%20Committee%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-06-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/Requests%20to%20be%20Heard%20-%2014%20June%202022%20Planning%20and%20Amenity%20Delegated%20Committee_1.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/Requests%20to%20be%20Heard%20-%2014%20June%202022%20Planning%20and%20Amenity%20Delegated%20Committee_1.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/14%20June%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "Special Meeting of Council Agenda",
+    "date": "2022-06-07",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/7%20June%202022%20Special%20Meeting%20of%20Council%20Agenda.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/7%20June%202022%20Special%20Meeting%20of%20Council%20Agenda.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-06/7%20June%202022%20Special%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-05-17",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-05/Requests%20to%20be%20Heard%20-%2017%20May%202022%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-05/Requests%20to%20be%20Heard%20-%2017%20May%202022%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-05/17%20May%202022%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-05-10",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-05/Written%20Statements%20-%2010%20May%202022%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-05/Written%20Statements%20-%2010%20May%202022%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-05/10%20May%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-04-26",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-04/Requests%20to%20be%20Heard%20-%2026%20April%202022%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-04/Requests%20to%20be%20Heard%20-%2026%20April%202022%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-04/26%20April%202022%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Requests to be Heard",
+    "date": "2022-04-12",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-04/Requests%20to%20be%20Heard%20-%2012%20April%202022%20Planning%20and%20Amenity%20Delegated%20Committee_3.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-04/Requests%20to%20be%20Heard%20-%2012%20April%202022%20Planning%20and%20Amenity%20Delegated%20Committee_3.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-04/12%20April%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "Special Meeting of Council Agenda",
+    "date": "2022-04-05",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-03/5%20April%202022%20Special%20Meeting%20of%20Council%20Agenda_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-03/5%20April%202022%20Special%20Meeting%20of%20Council%20Agenda_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-04/5%20April%202022%20Special%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2022-03-15",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-03/Written%20Statements%20-%2015%20March%202022%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-03/Written%20Statements%20-%2015%20March%202022%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-03/15%20March%202022%20Council%20Meeting%20Minutes_0.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2022-03-08",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-03/Written%20Statements%20-%208%20March%202022%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-03/Written%20Statements%20-%208%20March%202022%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-03/8%20March%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2022-02-15",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-02/Written%20Statements%20-%2015%20February%202022%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-02/Written%20Statements%20-%2015%20February%202022%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-02/15%20February%202022%20Council%20Meeting%20Minutes_1.pdf"
+  },
+  {
+    "name": "-\u00a0Written Statements",
+    "date": "2022-02-08",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-02/Written%20Statements%20-%208%20February%202022%20Planning%20and%20Amenity%20Delegated%20Committee_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-02/Written%20Statements%20-%208%20February%202022%20Planning%20and%20Amenity%20Delegated%20Committee_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-02/8%20February%202022%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes_1.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-12-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-12/Written%20Statements%20-%2021%20December%202021%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-12/Written%20Statements%20-%2021%20December%202021%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-12/21%20December%202021%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-12-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-12/14%20December%202021%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-12/14%20December%202021%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-12/14%20December%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-11-23",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-11/Written%20Statements%20-%2023%20November%202021%20Council%20Meeting.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-11/Written%20Statements%20-%2023%20November%202021%20Council%20Meeting.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-11/23%20November%202021%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-11-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-11/Written%20Statements%20-%2016%20November%202021%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-11/Written%20Statements%20-%2016%20November%202021%20Planning%20and%20Amenity%20Delegated%20Committee.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-11/16%20November%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "Annual Meeting of Council Agenda",
+    "date": "2021-11-10",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-11/10%20November%202021%20Annual%20Meeting%20of%20Council%20Agenda%20%28Public%20version%29_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-11/10%20November%202021%20Annual%20Meeting%20of%20Council%20Agenda%20%28Public%20version%29_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2022-01/10%20November%202021%20Annual%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-10-26",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/Written%20Statements_0.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/Written%20Statements_0.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/26%20October%202021%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-10-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/20%20October%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "Special Meeting of Council - Item 3.1 - Attachment 1 - Annual Report 2020\u201321",
+    "date": "2021-10-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/Item%203.1%20-%20Attachment%201%20-%20Annual%20Report%202020%E2%80%9321_0.PDF",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/Item%203.1%20-%20Attachment%201%20-%20Annual%20Report%202020%E2%80%9321_0.PDF",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/19%20October%202021%20Special%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-09-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/21%20September%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/21%20September%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/21_september_2021_special_meeting_of_council_minutes_0.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-09-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/14%20September%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/14%20September%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/14%20September%202021%20Council%20Meeting%20Minutes_1.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-09-07",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/7%20September%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/7%20September%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/7%20September%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes_0.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-08-17",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/17%20August%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/17%20August%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/17%20August%202021%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-08-10",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/10%20August%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/10%20August%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/10%20August%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-07-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/20%20July%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/20%20July%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/20%20July%202021%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-07-13",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/13%20July%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/13%20July%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/13%20July%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-06-29",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/29%20June%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/29%20June%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/29%20June%202021%20Special%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-06-15",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/15%20June%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/15%20June%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/15%20June%202021%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-06-08",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/8%20June%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/8%20June%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/8%20June%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-05-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/18%20May%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/18%20May%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/18%20May%202021%20Council%20Meeting%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-05-11",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/11%20May%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/11%20May%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/11%20May%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Ordinary Meeting of Council Agenda",
+    "date": "2021-04-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/20%20April%202021%20-%20Ordinary%20Meeting%20of%20Council%20Agenda.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/20%20April%202021%20-%20Ordinary%20Meeting%20of%20Council%20Agenda.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/20%20April%202021%20Ordinary%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "31 March and  - Special Committee of Council Agenda",
+    "date": "2021-04-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/31%20March%20and%2014%20April%202021%20-%20Special%20Committee%20of%20Council%20Agenda.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/31%20March%20and%2014%20April%202021%20-%20Special%20Committee%20of%20Council%20Agenda.pdf",
+    "minutes_url": null
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-04-13",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/13%20April%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/13%20April%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/13%20April%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-03-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/16%20March%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/16%20March%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/16%20March%202021%20Ordinary%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Planning and Amenity Delegated Committee Agenda",
+    "date": "2021-03-09",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/9%20March%202021%20-%20Planning%20and%20Amenity%20Delegated%20Committee%20Agenda.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/9%20March%202021%20-%20Planning%20and%20Amenity%20Delegated%20Committee%20Agenda.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/9%20March%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-02-25",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/25%20February%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/25%20February%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/25%20February%202021%20Special%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-02-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/16%20February%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/16%20February%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/16%20February%202021%20Ordinary%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-02-09",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/9%20February%202021%20-%20Written%20Statements_1.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/9%20February%202021%20-%20Written%20Statements_1.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/9%20February%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  },
+  {
+    "name": "- Special Meeting of Council Agenda",
+    "date": "2021-02-02",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/2%20February%202021%20-%20Special%20Meeting%20of%20Council%20Agenda.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/2%20February%202021%20-%20Special%20Meeting%20of%20Council%20Agenda.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/2%20February%202021%20Special%20Meeting%20of%20Council%20Minutes.pdf"
+  },
+  {
+    "name": "- Written Statements",
+    "date": "2021-01-28",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.bayside.vic.gov.au",
+    "download_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/28%20January%202021%20-%20Written%20Statements.pdf",
+    "agenda_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/28%20January%202021%20-%20Written%20Statements.pdf",
+    "minutes_url": "https://www.bayside.vic.gov.au/sites/default/files/2021-10/28%20January%202021%20Planning%20and%20Amenity%20Delegated%20Committee%20Minutes.pdf"
+  }
+]

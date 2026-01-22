@@ -15,51 +15,87 @@ class BaysideVicScraper(BaseScraper):
         self.default_time = "18:30"
 
     def scraper(self) -> list[ScraperReturn]:
-        initial_webpage_url = "https://www.bayside.vic.gov.au/council/meetings-agendas-and-minutes/council-meeting-agendas"
+        agendas_page_url = "https://www.bayside.vic.gov.au/council/meetings-agendas-and-minutes/council-meeting-agendas"
         minutes_page_url = "https://www.bayside.vic.gov.au/council/meetings-agendas-and-minutes/council-minutes"
 
-        raw_html = self.fetcher.fetch_with_requests(initial_webpage_url)
+        # Fetch all agendas
+        agendas_html = self.fetcher.fetch_with_requests(agendas_page_url)
+        agendas_soup = BeautifulSoup(agendas_html, "html.parser")
+        agenda_list = agendas_soup.find("div", class_="page__body")
 
-        # Find latest agenda link
-        soup = BeautifulSoup(raw_html, "html.parser")
-        agenda_list = soup.find("div", class_="page__body")
-        latest_agenda = agenda_list.find("a")
+        # Build a dict of meetings from agendas: date -> meeting info
+        meetings = {}
+        if agenda_list:
+            for link in agenda_list.find_all("a"):
+                try:
+                    link_text = link.get_text(strip=True)
+                    date_match = re.search(self.date_regex, link_text)
+                    if not date_match:
+                        continue
 
-        # Scrape the data
-        raw_date = re.search(self.date_regex, latest_agenda.text).group()
-        date = "-".join([datetime.strptime(raw_date, "%d %B %Y").strftime("%Y-%m-%d")])
-        name = latest_agenda.text.replace(date, "").strip()
-        download_url = latest_agenda["href"]
+                    raw_date = date_match.group()
+                    date = datetime.strptime(raw_date, "%d %B %Y").strftime("%Y-%m-%d")
+                    name = link_text.replace(raw_date, "").strip()
+                    agenda_url = link["href"]
 
-        # Fetch minutes page and find matching minutes
-        minutes_url = None
+                    meetings[date] = {
+                        "name": name,
+                        "date": date,
+                        "raw_date": raw_date,
+                        "agenda_url": agenda_url,
+                        "minutes_url": None,
+                    }
+                except Exception as e:
+                    self.logger.debug(f"Error parsing agenda link: {e}")
+                    continue
+
+        # Fetch all minutes and match them to agendas
         try:
             minutes_html = self.fetcher.fetch_with_requests(minutes_page_url)
             minutes_soup = BeautifulSoup(minutes_html, "html.parser")
             minutes_list = minutes_soup.find("div", class_="page__body")
 
-            # Find all minutes links and look for one matching the same date
             if minutes_list:
                 for link in minutes_list.find_all("a"):
-                    link_text = link.get_text()
-                    # Check if this minutes link has the same date as the agenda
-                    if raw_date in link_text and "minute" in link_text.lower():
-                        minutes_url = link["href"]
-                        break
-        except Exception as e:
-            print(f"Error fetching minutes: {e}")
+                    try:
+                        link_text = link.get_text(strip=True)
+                        date_match = re.search(self.date_regex, link_text)
+                        if not date_match:
+                            continue
 
-        return [
-            ScraperReturn(
-                name=name,
-                date=date,
-                time=None,
-                webpage_url=self.base_url,
-                agenda_url=download_url,
-                minutes_url=minutes_url,
-                download_url=download_url,
+                        raw_date = date_match.group()
+                        date = datetime.strptime(raw_date, "%d %B %Y").strftime(
+                            "%Y-%m-%d"
+                        )
+
+                        # If we have an agenda for this date, add the minutes URL
+                        if date in meetings:
+                            meetings[date]["minutes_url"] = link["href"]
+                    except Exception as e:
+                        self.logger.debug(f"Error parsing minutes link: {e}")
+                        continue
+        except Exception as e:
+            self.logger.warning(f"Error fetching minutes: {e}")
+
+        # Convert to list of ScraperReturn objects
+        results = []
+        for meeting in meetings.values():
+            results.append(
+                ScraperReturn(
+                    name=meeting["name"],
+                    date=meeting["date"],
+                    time=None,
+                    webpage_url=self.base_url,
+                    agenda_url=meeting["agenda_url"],
+                    minutes_url=meeting["minutes_url"],
+                    download_url=meeting["agenda_url"],
+                )
             )
-        ]
+
+        # Sort by date descending (newest first)
+        results.sort(key=lambda x: x.date, reverse=True)
+
+        return results
 
 
 if __name__ == "__main__":
