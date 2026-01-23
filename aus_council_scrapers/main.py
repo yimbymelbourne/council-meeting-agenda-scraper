@@ -14,6 +14,7 @@ from dotenv import dotenv_values
 
 import aus_council_scrapers.database as db
 from aus_council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, ScraperReturn
+from aus_council_scrapers.constants import EARLIEST_YEAR
 from aus_council_scrapers.discord_bot import DiscordNotifier
 from aus_council_scrapers.logging_config import setup_logging
 from aus_council_scrapers.utils import (
@@ -87,8 +88,6 @@ def main():
 
     # Validate years argument
     if args.years:
-        from aus_council_scrapers.constants import EARLIEST_YEAR
-
         current_year = datetime.now().year
         min_year = EARLIEST_YEAR
         max_year = current_year + 2
