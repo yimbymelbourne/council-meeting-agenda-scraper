@@ -168,6 +168,7 @@ def main():
             "adapter_mode": args.adapter,
             "council_filter": args.council,
             "state_filter": args.state,
+            "years_filter": args.years,
             "results": results,
         }
         sys.stdout.write(json.dumps(payload, ensure_ascii=False, default=json_default))
