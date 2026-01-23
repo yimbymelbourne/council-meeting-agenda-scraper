@@ -14,6 +14,7 @@ from dotenv import dotenv_values
 
 import aus_council_scrapers.database as db
 from aus_council_scrapers.base import SCRAPER_REGISTRY, BaseScraper, ScraperReturn
+from aus_council_scrapers.constants import EARLIEST_YEAR
 from aus_council_scrapers.discord_bot import DiscordNotifier
 from aus_council_scrapers.logging_config import setup_logging
 from aus_council_scrapers.utils import (
@@ -59,6 +60,12 @@ def main():
     )
     parser.add_argument("--council", help="Scan only this council")
     parser.add_argument("--state", help="Scan only this state")
+    parser.add_argument(
+        "--years",
+        nargs="+",
+        type=int,
+        help="Filter meetings by year(s). Example: --years 2025 or --years 2024 2025",
+    )
     parser.add_argument("--log-level", help="Set the log level", default="INFO")
     parser.add_argument("--workers", help="Number of workers", default=6, type=int)
     parser.add_argument(
@@ -78,6 +85,18 @@ def main():
         help="Skip PDF download/keyword extraction (useful for adapter mode).",
     )
     args = parser.parse_args()
+
+    # Validate years argument
+    if args.years:
+        current_year = datetime.now().year
+        min_year = EARLIEST_YEAR
+        max_year = current_year + 2
+        for year in args.years:
+            if year < min_year or year > max_year:
+                parser.error(
+                    f"Year {year} is outside valid range {min_year}-{max_year}. "
+                    f"Scrapers only fetch data from {min_year} to {max_year} (current year + 2)."
+                )
 
     # Adapter defaults (safe, non-side-effecting)
     if args.adapter:
@@ -123,6 +142,7 @@ def main():
                         skip_keywords=args.skip_keywords,
                         adapter_mode=args.adapter,
                         skip_pdf=args.skip_pdf,
+                        years=args.years,
                     )
                 )
 
@@ -147,6 +167,7 @@ def main():
             "adapter_mode": args.adapter,
             "council_filter": args.council,
             "state_filter": args.state,
+            "years_filter": args.years,
             "results": results,
         }
         sys.stdout.write(json.dumps(payload, ensure_ascii=False, default=json_default))
@@ -161,11 +182,61 @@ def run_scraper(
     skip_keywords: bool = False,
     adapter_mode: bool = False,
     skip_pdf: bool = False,
+    years: list[int] = None,
 ):
     try:
         scraper.logger.info("Scraper started")
 
-        result = get_agenda_info(scraper)
+        results = get_agenda_info(scraper)
+
+        # Filter by years if specified
+        if years:
+            results = [
+                r for r in results if r.cleaned_date and r.cleaned_date.year in years
+            ]
+            scraper.logger.info(f"Filtered to {len(results)} meetings in years {years}")
+
+        # In adapter mode, return all meetings in JSON format
+        if adapter_mode:
+            meetings = []
+            for result in results:
+                date_value = (
+                    result.cleaned_date.isoformat() if result.cleaned_date else None
+                )
+                time_value = (
+                    result.cleaned_time.isoformat() if result.cleaned_time else None
+                )
+
+                meetings.append(
+                    {
+                        "name": result.name,
+                        "date": date_value,
+                        "time": time_value,
+                        "webpage_url": result.webpage_url,
+                        "agenda_url": result.agenda_url,
+                        "minutes_url": result.minutes_url,
+                        "download_url": result.download_url,
+                        "location": getattr(result, "location", None)
+                        or getattr(result, "cleaned_location", None),
+                    }
+                )
+
+            scraper.logger.info(
+                f"Scraper finished successfully with {len(meetings)} meetings"
+            )
+            return {
+                "ok": True,
+                "council": scraper.council_name,
+                "state": scraper.state.upper(),
+                "meetings": meetings,  # Changed from "meeting" to "meetings" (array)
+            }
+
+        # Legacy mode: process only the first meeting (backward compatibility)
+        if not results:
+            scraper.logger.info("No meetings found")
+            return None
+
+        result = results[0]  # Take first meeting for legacy mode
 
         # Skip if already scraped (legacy mode only)
         # Only skip if BOTH agenda and minutes URLs match a previous scrape
@@ -267,26 +338,30 @@ def run_scraper(
         }
 
 
-def get_agenda_info(scraper: BaseScraper) -> Optional[ScraperReturn]:
+def get_agenda_info(scraper: BaseScraper) -> list[ScraperReturn]:
     scraper.logger.info("Finding agenda...")
-    result = scraper.scraper()
-    scraper.logger.debug(f"Found agenda: {result}")
+    results = scraper.scraper()
+    scraper.logger.debug(f"Found {len(results)} meetings")
 
-    result.add_default_values(
-        default_name=scraper.default_name,
-        default_time=scraper.default_time,
-        default_location=scraper.default_location,
-    )
+    processed_results = []
+    for result in results:
+        result.add_default_values(
+            default_name=scraper.default_name,
+            default_time=scraper.default_time,
+            default_location=scraper.default_location,
+        )
 
-    result.check_required_properties(scraper.state)
+        result.check_required_properties(scraper.state)
 
-    if not result.cleaned_time and result.time:
-        scraper.logger.warning(f"Time found but could not be parsed: {result.time}")
+        if not result.cleaned_time and result.time:
+            scraper.logger.warning(f"Time found but could not be parsed: {result.time}")
 
-    if result.is_date_in_past(scraper.state):
-        scraper.logger.warning(f"Date is in the past: {result.cleaned_date}")
+        if result.is_date_in_past(scraper.state):
+            scraper.logger.warning(f"Date is in the past: {result.cleaned_date}")
 
-    return result
+        processed_results.append(result)
+
+    return processed_results
 
 
 def process_pdf(

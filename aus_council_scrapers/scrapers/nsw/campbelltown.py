@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from aus_council_scrapers.constants import EARLIEST_YEAR
 
 
 _MONTHS = "January|February|March|April|May|June|July|August|September|October|November|December"
@@ -81,7 +82,10 @@ class CampbelltownScraper(BaseScraper):
                 f"/Council-and-Councillors/Meetings-and-Minutes/{year}-Business-Papers#section-1",
             )
             try:
-                _ = self._fetch_html(candidate)
+                html = self._fetch_html(candidate)
+                # Check if we got actual content (not empty HTML from test playback)
+                if len(html) < 100 or "<body></body>" in html:
+                    continue
                 return year, candidate
             except Exception:
                 continue
@@ -142,80 +146,134 @@ class CampbelltownScraper(BaseScraper):
 
         # unreachable
 
-    def scraper(self) -> ScraperReturn:
+    def _scrape_year_page(self, year: int, webpage_url: str) -> list[ScraperReturn]:
+        """
+        Scrape all meetings from a specific year's Business Papers page.
+        """
+        results = []
+
+        try:
+            # Use selenium directly for year pages to match test replay data
+            output = self.fetcher.fetch_with_selenium(webpage_url)
+            # Check if we got actual content
+            if len(output) < 100 or "<body></body>" in output:
+                return results
+
+            soup = BeautifulSoup(output, "html.parser")
+
+            # Find all h2 headers that indicate meetings
+            for header in soup.find_all("h2"):
+                header_text = header.get_text(" ", strip=True)
+
+                # Skip headers that don't look like meetings
+                if not any(
+                    keyword in header_text.lower() for keyword in ["meeting", "council"]
+                ):
+                    continue
+
+                # Date: prefer extracting from header; if it includes no year, append year
+                date_match = _DATE_RE.search(header_text)
+                if date_match:
+                    date_raw = date_match.group(1)
+                    # if year already present, keep it; otherwise append year
+                    if re.search(r"\b\d{4}\b", date_raw):
+                        date = date_raw
+                    else:
+                        date = f"{date_raw} {year}"
+                else:
+                    # Skip headers without dates
+                    continue
+
+                # Name: keep stable "meeting type"
+                name = header_text
+                if date_match:
+                    name = (
+                        header_text[: date_match.start()].strip(" -\u2013\u2014")
+                        or header_text
+                    )
+
+                # Agenda link: prefer within this meeting section
+                download_url = self._find_agenda_link_within_section(header)
+
+                # Skip if no agenda found
+                if not download_url:
+                    continue
+
+                # Minutes link: look within the same section
+                minutes_url = self._find_minutes_link_within_section(header)
+
+                results.append(
+                    ScraperReturn(
+                        name=name,
+                        date=date,
+                        time=None,
+                        webpage_url=webpage_url,
+                        agenda_url=download_url,
+                        minutes_url=minutes_url,
+                        download_url=download_url,
+                        location=self.default_location,
+                    )
+                )
+        except Exception as e:
+            self.logger.warning(f"Failed to scrape year {year}: {e}")
+
+        return results
+
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         meetings_url = urljoin(
             self.base_url, "/Council-and-Councillors/Meetings-and-Minutes"
         )
-        papers_year, webpage_url = self._get_latest_business_papers_url(meetings_url)
 
-        output = self._fetch_html(webpage_url)
-        soup = BeautifulSoup(output, "html.parser")
+        all_results = []
 
-        header = self._find_latest_meeting_header(soup)
-        if not header:
-            raise ValueError(
-                "Could not find meeting header <h2> on Business Papers page"
-            )
+        # Try to get all available years from the meetings page
+        try:
+            # Use selenium directly for the meetings index page
+            html = self.fetcher.fetch_with_selenium(meetings_url)
+            soup = BeautifulSoup(html, "html.parser")
 
-        header_text = header.get_text(" ", strip=True)
-
-        # Date: prefer extracting from header; if it includes no year, append papers_year
-        date_match = _DATE_RE.search(header_text)
-        if date_match:
-            date_raw = date_match.group(1)
-            # if year already present, keep it; otherwise append papers_year
-            if re.search(r"\b\d{4}\b", date_raw):
-                date = date_raw
-            else:
-                date = f"{date_raw} {papers_year}"
-        else:
-            # fallback: still parseable, but clearly a fallback
-            date = f"1 January {papers_year}"
-
-        # Name: keep stable “meeting type” (fixture-friendly)
-        # e.g. "Ordinary Meeting 14 May" -> "Ordinary Meeting"
-        name = header_text
-        if date_match:
-            name = (
-                header_text[: date_match.start()].strip(" -\u2013\u2014") or header_text
-            )
-
-        # Agenda link: prefer within the first meeting section
-        download_url = self._find_agenda_link_within_section(header)
-
-        # Fallback: any agenda-looking pdf link on page
-        if not download_url:
+            years_found: list[tuple[int, str]] = []
             for a in soup.select("a[href]"):
-                href = (a.get("href") or "").strip()
-                if not href or ".pdf" not in href.lower():
+                href = a.get("href") or ""
+                m = re.search(r"/(\d{4})-Business-Papers\b", href)
+                if not m:
                     continue
-                txt = (a.get_text(" ", strip=True) or "").lower()
-                if "agenda" in txt and "minute" not in txt:
-                    download_url = urljoin(self.base_url, href)
-                    break
+                year = int(m.group(1))
+                # Skip years before EARLIEST_YEAR
+                if year < EARLIEST_YEAR:
+                    continue
+                year_url = urljoin(self.base_url, href)
+                years_found.append((year, year_url))
 
-        # Last fallback: first pdf link after header
-        if not download_url:
-            a = header.find_next("a", href=True)
-            if not a:
-                raise ValueError("Could not find any PDF links for the latest meeting")
-            download_url = urljoin(self.base_url, a["href"])
+            if years_found:
+                # Sort by year descending
+                years_found.sort(key=lambda x: x[0], reverse=True)
 
-        # Minutes link: look within the same section
-        minutes_url = self._find_minutes_link_within_section(header)
+                # Scrape all years
+                for year, year_url in years_found:
+                    year_results = self._scrape_year_page(year, year_url)
+                    all_results.extend(year_results)
 
-        # Time: not provided on page
-        time = None
+                if all_results:
+                    return all_results
+        except Exception as e:
+            self.logger.warning(f"Could not fetch all years from meetings page: {e}")
 
-        return ScraperReturn(
-            name=name,
-            date=date,
-            time=time,
-            webpage_url=webpage_url,
-            agenda_url=download_url,
-            minutes_url=minutes_url,
-            download_url=download_url,  # For backward compatibility
-            location=self.default_location,
-        )
+        # Fallback: try current year and previous years down to EARLIEST_YEAR
+        this_year = datetime.date.today().year
+        for year in range(
+            this_year, max(EARLIEST_YEAR - 1, this_year - 10), -1
+        ):  # Try current year back to EARLIEST_YEAR
+            year_url = urljoin(
+                self.base_url,
+                f"/Council-and-Councillors/Meetings-and-Minutes/{year}-Business-Papers#section-1",
+            )
+            year_results = self._scrape_year_page(year, year_url)
+            all_results.extend(year_results)
+
+        if not all_results:
+            raise RuntimeError("Could not find any meetings")
+
+        return all_results

@@ -18,7 +18,7 @@ class CanadaBayScraper(BaseScraper):
         )
         self.default_time = "6 pm"
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
 
         webpage_url = (
@@ -90,4 +90,4 @@ class CanadaBayScraper(BaseScraper):
             {scraper_return.download_url}"""
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
-        return scraper_return
+        return [scraper_return]

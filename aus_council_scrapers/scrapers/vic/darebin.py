@@ -22,7 +22,7 @@ class DarebinScraper(BaseScraper):
         self.default_location = "Council Chamber, 350 High Street, Preston."
         self.default_time = "18:00"
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         # Get page
         webpage_url = "https://www.darebin.vic.gov.au/About-Council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2024-Council-meeting-agendas-and-minutes"
         output = self.fetcher.fetch_with_requests(webpage_url)
@@ -52,13 +52,15 @@ class DarebinScraper(BaseScraper):
             date_str = self.date_pattern.search(txt_value).group()
             self.logger.debug(f"Date string: {date_str}")
 
-        return ScraperReturn(
-            name=None,
-            date=date_str,
-            time=None,
-            webpage_url=webpage_url,
-            download_url=download_url,
-        )
+        return [
+            ScraperReturn(
+                name=None,
+                date=date_str,
+                time=None,
+                webpage_url=webpage_url,
+                download_url=download_url,
+            )
+        ]
 
 
 if __name__ == "__main__":

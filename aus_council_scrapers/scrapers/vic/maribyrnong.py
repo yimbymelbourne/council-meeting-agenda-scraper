@@ -13,13 +13,13 @@ class MaribyrnongScraper(BaseScraper):
         self.date_pattern = r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
         self.time_pattern = r"\b(\d{1,2}:\d{2})\s(AM|PM)\b"
 
-    def scraper(self) -> ScraperReturn | None:
+    def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
         webpage_url = "https://www.maribyrnong.vic.gov.au/About-us/Council-and-committee-meetings/Agendas-and-minutes"
         response = self.fetch_with_requests(webpage_url)
         if response.status_code != 200:
             self.logger.error("Failed to fetch the main page.")
-            return None
+            return []
 
         soup = BeautifulSoup(response.content, "html.parser")
         latest_meeting_link = soup.find(
@@ -30,13 +30,13 @@ class MaribyrnongScraper(BaseScraper):
         meeting_response = self.fetch_with_requests(latest_meeting_link)
         if meeting_response.status_code != 200:
             self.logger.error("Failed to fetch the latest meeting page.")
-            return None
+            return []
 
         soup = BeautifulSoup(meeting_response.content, "html.parser")
         meeting_container = soup.find("div", class_="meeting-container")
         if not meeting_container:
             self.logger.error("Meeting container not found.")
-            return None
+            return []
 
         name_date_details = soup.find(
             "ul", class_="content-details-list minutes-details-list"
@@ -104,4 +104,4 @@ class MaribyrnongScraper(BaseScraper):
             {scraper_return.download_url}"""
         )
         self.logger.info(f"{self.council_name} scraper finished successfully")
-        return scraper_return
+        return [scraper_return]

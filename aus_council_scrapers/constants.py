@@ -62,3 +62,6 @@ TIMEZONES_BY_STATE = {
     "NT": "Australia/Darwin",
     "ACT": "Australia/Sydney",
 }
+
+# Earliest year to fetch meeting data from
+EARLIEST_YEAR = 2020

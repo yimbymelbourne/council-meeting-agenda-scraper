@@ -1,10 +1,1702 @@
-{
-  "name": "Ordinary Meeting",
-  "date": "14 May 2024",
-  "time": null,
-  "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
-  "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers#section-1",
-  "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/may-2024/ordinarycouncilmeetingagenda-14may2024.pdf",
-  "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/may-2024/ordinary-meeting-minutes-17-may-2024.pdf",
-  "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/may-2024/ordinarycouncilmeetingagenda-14may2024.pdf"
-}
+[
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 December 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/december/ordinary-council-meeting-agenda-9-december-2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/december/ordinary-council-meeting-agenda-9-december-2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/december/ordinary-council-meeting-minutes-9-december-2025.pdf"
+  },
+  {
+    "name": "AGM/Ordinary Meeting",
+    "date": "11 November 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/november/ordinarycouncilmeetingagenda-11november2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/november/ordinarycouncilmeetingagenda-11november2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/november/ordinary-council-meeting-minutes-11-november-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 October 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/october/ordinarycouncilmeetingagenda-14october2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/october/ordinarycouncilmeetingagenda-14october2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/october/ordinarycouncilmeetingminutes-14october2025.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "30 September 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/extraordinary-september/extraordinarycouncilmeetingagenda-30september2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/extraordinary-september/extraordinarycouncilmeetingagenda-30september2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/september/extraordinary-council-meeting-minutes-30-september-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 September 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/september/publicordinarycouncilagenda-9september2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/september/publicordinarycouncilagenda-9september2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/september/ordinarymeetingminutes-9september2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 August 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/august/councilmeetingagenda-12august2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/august/councilmeetingagenda-12august2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/august/ordinary-council-meeting-minutes-12-august-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 July 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/july/councilmeetingagenda-8july2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/july/councilmeetingagenda-8july2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/july/item5.2-mayoralminute-bettercommunitiesprogram-tabledatmeeting.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "27 June 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-27/extraordinarycouncilmeetingagenda-27june2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-27/extraordinarycouncilmeetingagenda-27june2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-27/extraordinarycouncilmeetingminutes-27june2025.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "24 June 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-extraordinary/extraordinarycouncilmeetingagenda-24june2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-extraordinary/extraordinarycouncilmeetingagenda-24june2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/june/june-extraordinary/extraordinary-council-meeting-minutes-24-june-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "10 June 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/publicordinarycouncilmeetingagenda-10june2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/publicordinarycouncilmeetingagenda-10june2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meeting-and-minutes-2025/june/ordinary-meeting-minutes-10-june-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 May 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/may/ordinary-council-meeting-agenda-13-may-2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/may/ordinary-council-meeting-agenda-13-may-2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/may/ordinary-council-meeting-minutes-13-may-2025.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "22 April 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/extraordinarycouncilmeetingagenda-22april2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/extraordinarycouncilmeetingagenda-22april2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/extraordinarycouncilmeetingminutes-22april2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 April 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/publicordinarycouncilmeetingagenda-8april2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/publicordinarycouncilmeetingagenda-8april2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/ordinarycouncilmeetingminutes-8april2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 March 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meeting-and-minutes-2025/march/ordinarycouncilmeetingagenda-11march2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meeting-and-minutes-2025/march/ordinarycouncilmeetingagenda-11march2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/march/ordinarycouncilmeetingminutes-11march2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 February 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/february/ordinarycouncilmeetingagenda-11february2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/february/ordinarycouncilmeetingagenda-11february2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/february/councilmeetingminutes-11february2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 December 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/december/ordinary-council-meeting-agenda-9-december-2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/december/ordinary-council-meeting-agenda-9-december-2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/december/ordinary-council-meeting-minutes-9-december-2025.pdf"
+  },
+  {
+    "name": "AGM/Ordinary Meeting",
+    "date": "11 November 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/november/ordinarycouncilmeetingagenda-11november2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/november/ordinarycouncilmeetingagenda-11november2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/november/ordinary-council-meeting-minutes-11-november-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 October 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/october/ordinarycouncilmeetingagenda-14october2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/october/ordinarycouncilmeetingagenda-14october2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/october/ordinarycouncilmeetingminutes-14october2025.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "30 September 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/extraordinary-september/extraordinarycouncilmeetingagenda-30september2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/extraordinary-september/extraordinarycouncilmeetingagenda-30september2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/september/extraordinary-council-meeting-minutes-30-september-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 September 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/september/publicordinarycouncilagenda-9september2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/september/publicordinarycouncilagenda-9september2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/september/ordinarymeetingminutes-9september2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 August 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/august/councilmeetingagenda-12august2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/august/councilmeetingagenda-12august2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/august/ordinary-council-meeting-minutes-12-august-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 July 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/july/councilmeetingagenda-8july2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/july/councilmeetingagenda-8july2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/july/item5.2-mayoralminute-bettercommunitiesprogram-tabledatmeeting.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "27 June 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-27/extraordinarycouncilmeetingagenda-27june2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-27/extraordinarycouncilmeetingagenda-27june2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-27/extraordinarycouncilmeetingminutes-27june2025.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "24 June 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-extraordinary/extraordinarycouncilmeetingagenda-24june2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/june-extraordinary/extraordinarycouncilmeetingagenda-24june2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/june/june-extraordinary/extraordinary-council-meeting-minutes-24-june-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "10 June 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/publicordinarycouncilmeetingagenda-10june2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/june/publicordinarycouncilmeetingagenda-10june2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meeting-and-minutes-2025/june/ordinary-meeting-minutes-10-june-2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 May 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/may/ordinary-council-meeting-agenda-13-may-2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/may/ordinary-council-meeting-agenda-13-may-2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/may/ordinary-council-meeting-minutes-13-may-2025.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "22 April 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/extraordinarycouncilmeetingagenda-22april2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/extraordinarycouncilmeetingagenda-22april2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/extraordinarycouncilmeetingminutes-22april2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 April 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/publicordinarycouncilmeetingagenda-8april2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/publicordinarycouncilmeetingagenda-8april2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/april/ordinarycouncilmeetingminutes-8april2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 March 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meeting-and-minutes-2025/march/ordinarycouncilmeetingagenda-11march2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meeting-and-minutes-2025/march/ordinarycouncilmeetingagenda-11march2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/march/ordinarycouncilmeetingminutes-11march2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 February 2025",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2025-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/february/ordinarycouncilmeetingagenda-11february2025.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meeting-and-minutes-2025/february/ordinarycouncilmeetingagenda-11february2025.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meeting-and-minutes-2025/february/councilmeetingminutes-11february2025.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "10 December 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meetings-and-minutes-2024/december-2024/public-agenda-ordinary-council-meeting-10-december-2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meetings-and-minutes-2024/december-2024/public-agenda-ordinary-council-meeting-10-december-2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/december-2024/ordinarycouncilmeetingminutes-10december2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 November 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/november-2024/publicbusinesspaper-12november2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/november-2024/publicbusinesspaper-12november2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/november-2024/ordinarycouncilmeetingminutes-12november2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "29 October 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/ordinarycouncilmeetingagenda-29october2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/ordinarycouncilmeetingagenda-29october2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/minutes-of-the-oridinary-meeting-29-october-2024.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "15 October 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/extraordinary-business-paper-15-october-2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/extraordinary-business-paper-15-october-2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/extraordinary-council-meeting-minutes-15-october-2024.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "20 August 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/extraordinaryagenda-20august2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/extraordinaryagenda-20august2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/minutesofextraordinarycouncilmeeting.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 August 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/ordinarycouncilmeetingagenda-13august2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/ordinarycouncilmeetingagenda-13august2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/ordinarycouncilminutes-13august2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 July 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/july-2024/ordinarycouncilmeetingagenda-9july2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/july-2024/ordinarycouncilmeetingagenda-9july2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/july-2024/ordinarycouncilmeetingminutes-9july2024.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "25 June 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/extraordinarycouncilmeetingagenda-25june2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/extraordinarycouncilmeetingagenda-25june2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/extraordinarymeetingminutes-25june2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 June 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/ordinarycouncilagenda-11june2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/ordinarycouncilagenda-11june2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/ordinarymeetingminutes-11june2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 May 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/may-2024/ordinarycouncilmeetingagenda-14may2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/may-2024/ordinarycouncilmeetingagenda-14may2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/may-2024/ordinary-meeting-minutes-17-may-2024.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "16 April 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/extraordinarymeetingagenda-16april2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/extraordinarymeetingagenda-16april2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/extraordinarycouncilminutes-16april2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 April 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/ordinarymeetingagenda-9april2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/ordinarymeetingagenda-9april2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/ordinarymeetingminutes-9april2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "26 March 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/march-2024/agendaofordinarymeeting-tuesday26march2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/march-2024/agendaofordinarymeeting-tuesday26march2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/march-2024/item5.3-additionalmayoralminute-charitygaladinnersuccess.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 February 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/february-2024/ordinary-meeting-agenda-13-february-2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/february-2024/ordinary-meeting-agenda-13-february-2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/february-2024/item5.4-mayoralminute-turningthesodonfutureresearch.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "10 December 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meetings-and-minutes-2024/december-2024/public-agenda-ordinary-council-meeting-10-december-2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meetings-and-minutes-2024/december-2024/public-agenda-ordinary-council-meeting-10-december-2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/december-2024/ordinarycouncilmeetingminutes-10december2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 November 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/november-2024/publicbusinesspaper-12november2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/november-2024/publicbusinesspaper-12november2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/november-2024/ordinarycouncilmeetingminutes-12november2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "29 October 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/ordinarycouncilmeetingagenda-29october2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/ordinarycouncilmeetingagenda-29october2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/minutes-of-the-oridinary-meeting-29-october-2024.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "15 October 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/extraordinary-business-paper-15-october-2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/extraordinary-business-paper-15-october-2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/october-2024/extraordinary-council-meeting-minutes-15-october-2024.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "20 August 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/extraordinaryagenda-20august2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/extraordinaryagenda-20august2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/minutesofextraordinarycouncilmeeting.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 August 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/ordinarycouncilmeetingagenda-13august2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/ordinarycouncilmeetingagenda-13august2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/august-2024/ordinarycouncilminutes-13august2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 July 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/july-2024/ordinarycouncilmeetingagenda-9july2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/july-2024/ordinarycouncilmeetingagenda-9july2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/july-2024/ordinarycouncilmeetingminutes-9july2024.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "25 June 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/extraordinarycouncilmeetingagenda-25june2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/extraordinarycouncilmeetingagenda-25june2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/extraordinarymeetingminutes-25june2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 June 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/ordinarycouncilagenda-11june2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/ordinarycouncilagenda-11june2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/june-2024/ordinarymeetingminutes-11june2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 May 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/may-2024/ordinarycouncilmeetingagenda-14may2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/may-2024/ordinarycouncilmeetingagenda-14may2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/may-2024/ordinary-meeting-minutes-17-may-2024.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "16 April 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/extraordinarymeetingagenda-16april2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/extraordinarymeetingagenda-16april2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/extraordinarycouncilminutes-16april2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 April 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/ordinarymeetingagenda-9april2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/ordinarymeetingagenda-9april2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/april-2024/ordinarymeetingminutes-9april2024.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "26 March 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/march-2024/agendaofordinarymeeting-tuesday26march2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/march-2024/agendaofordinarymeeting-tuesday26march2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/march-2024/item5.3-additionalmayoralminute-charitygaladinnersuccess.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 February 2024",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2024-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/february-2024/ordinary-meeting-agenda-13-february-2024.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/february-2024/ordinary-meeting-agenda-13-february-2024.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2024/february-2024/item5.4-mayoralminute-turningthesodonfutureresearch.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 December 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/december/ordinary-council-meeting-agenda-12-december-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/december/ordinary-council-meeting-agenda-12-december-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/december/ordinary-meeting-minutes-12-december-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "7 November 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/november/ordinary-council-meeting-agenda-7-november-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/november/ordinary-council-meeting-agenda-7-november-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/november/item-5.4-mayoral-minute-the-right-to-peaceful-assembly.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "10 October 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/october/ordinary-meeting-agenda-10-october-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/october/ordinary-meeting-agenda-10-october-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/october/ordinary-meeting-minutes-10-october-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 September 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/ordinary-business-paper-12-september-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/ordinary-business-paper-12-september-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/mayoral-minute-5.3-recognising-a-career-well-served.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "5 September 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/extraordinary-business-paper-5-september-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/extraordinary-business-paper-5-september-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/extraordinary-meeting-minutes-5-september-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 August 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/august/ordinary-council-business-paper-8-august-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/august/ordinary-council-business-paper-8-august-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/august/ordinary-council-meeting-minutes-8-august-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 July 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/july/ordinary-business-paper-11-july-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/july/ordinary-business-paper-11-july-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/july/item-5-attachment-5.3-recognising-30-years-of-service-to-our-community.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "27 June 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/june/extraordinary-meeting-27-june-2023/extraordinary-council-meeting-agenda-27-june-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/june/extraordinary-meeting-27-june-2023/extraordinary-council-meeting-agenda-27-june-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/june/extraordinary-meeting-27-june-2023/minutes-of-extraordinary-council-meeting-27-june-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "6 June 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/june/ordinary-council-meeting-agenda-6-june-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/june/ordinary-council-meeting-agenda-6-june-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/june/item-8.3-attachment-2-minutes-and-attachments-of-wildlife-and-advisory-meeting-22-february-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 May 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/may/ordinary-business-paper-9-may-2023_1.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/may/ordinary-business-paper-9-may-2023_1.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/may/mayoral-minute-emergency-services-levy-cost-shifting.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "18 April 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meetings-and-minutes-2023/april/extraordinary-meeting-agenda-18-april-2023/extraordinary-council-meeting-agenda-18.04.2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meetings-and-minutes-2023/april/extraordinary-meeting-agenda-18-april-2023/extraordinary-council-meeting-agenda-18.04.2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/april/extraordinary-meeting-agenda-18-april-2023/extraordinary-council-meeting-minutes-18-april-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 April 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/april/ordinary-meeting-agenda-11-april-2023-2.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/april/ordinary-meeting-agenda-11-april-2023-2.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/7/council-and-councillors/documents/meetings-and-minutes-2023/april/ordinary-meeting-minutes-11-april-2023v1.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 March 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/march/ordinarymeetingagenda-14march2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/march/ordinarymeetingagenda-14march2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/march/item5.3-mayoralminute-oursharedfutureforum.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 February 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/february/ordinarycouncilmeetingagenda-14february2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/february/ordinarycouncilmeetingagenda-14february2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/february/ordinarycouncilmeetingminutes-14february2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 December 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/december/ordinary-council-meeting-agenda-12-december-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/december/ordinary-council-meeting-agenda-12-december-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/december/ordinary-meeting-minutes-12-december-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "7 November 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/november/ordinary-council-meeting-agenda-7-november-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/november/ordinary-council-meeting-agenda-7-november-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/november/item-5.4-mayoral-minute-the-right-to-peaceful-assembly.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "10 October 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/october/ordinary-meeting-agenda-10-october-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/october/ordinary-meeting-agenda-10-october-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/october/ordinary-meeting-minutes-10-october-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 September 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/ordinary-business-paper-12-september-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/ordinary-business-paper-12-september-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/mayoral-minute-5.3-recognising-a-career-well-served.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "5 September 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/extraordinary-business-paper-5-september-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/extraordinary-business-paper-5-september-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/september/extraordinary-meeting-minutes-5-september-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 August 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/august/ordinary-council-business-paper-8-august-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/august/ordinary-council-business-paper-8-august-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/august/ordinary-council-meeting-minutes-8-august-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 July 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/july/ordinary-business-paper-11-july-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/july/ordinary-business-paper-11-july-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/july/item-5-attachment-5.3-recognising-30-years-of-service-to-our-community.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "27 June 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/june/extraordinary-meeting-27-june-2023/extraordinary-council-meeting-agenda-27-june-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/june/extraordinary-meeting-27-june-2023/extraordinary-council-meeting-agenda-27-june-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/june/extraordinary-meeting-27-june-2023/minutes-of-extraordinary-council-meeting-27-june-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "6 June 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/june/ordinary-council-meeting-agenda-6-june-2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/june/ordinary-council-meeting-agenda-6-june-2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/june/item-8.3-attachment-2-minutes-and-attachments-of-wildlife-and-advisory-meeting-22-february-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 May 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/may/ordinary-business-paper-9-may-2023_1.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/may/ordinary-business-paper-9-may-2023_1.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/may/mayoral-minute-emergency-services-levy-cost-shifting.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "18 April 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meetings-and-minutes-2023/april/extraordinary-meeting-agenda-18-april-2023/extraordinary-council-meeting-agenda-18.04.2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/3/council-and-councillors/documents/meetings-and-minutes-2023/april/extraordinary-meeting-agenda-18-april-2023/extraordinary-council-meeting-agenda-18.04.2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/april/extraordinary-meeting-agenda-18-april-2023/extraordinary-council-meeting-minutes-18-april-2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 April 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/april/ordinary-meeting-agenda-11-april-2023-2.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/april/ordinary-meeting-agenda-11-april-2023-2.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/7/council-and-councillors/documents/meetings-and-minutes-2023/april/ordinary-meeting-minutes-11-april-2023v1.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 March 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/march/ordinarymeetingagenda-14march2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/march/ordinarymeetingagenda-14march2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/march/item5.3-mayoralminute-oursharedfutureforum.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 February 2023",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2023-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/february/ordinarycouncilmeetingagenda-14february2023.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/2/council-and-councillors/documents/meetings-and-minutes-2023/february/ordinarycouncilmeetingagenda-14february2023.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2023/february/ordinarycouncilmeetingminutes-14february2023.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 December 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/publicordinarymeetingagenda-13december2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/publicordinarymeetingagenda-13december2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilminutes-13december2022.pdf"
+  },
+  {
+    "name": "AGM/ Ordinary Meeting",
+    "date": "8 November 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/agm-councilagenda-8november2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/agm-councilagenda-8november2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-meeting-minutes-8-november-2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 October 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-11october2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-11october2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilminutes-11october2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 September 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-13september2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-13september2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/item5.3-mayoralminutehermajestythequeenelizabethii.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 August 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingagenda-9august2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingagenda-9august2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingminutes-9august2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 July 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingagenda-12july2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingagenda-12july2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/item5.2-mayoralminute-billabongparklandsprojectaudit.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "28 June 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingagenda-28june2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingagenda-28june2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarycouncilmeetingminutes-28june2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 June 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-14june2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-14june2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingminutes-14june2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "10 May 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-10may2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-10may2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilminutes-10may2022.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "26 April 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingagenda-26april2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingagenda-26april2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingminutes-26april2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 April 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-12april2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-12april2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingminutes-12april2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 March 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-meeting-agenda-8-march-2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-meeting-agenda-8-march-2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/mayoralminute-item5.2-takecarecampbelltown.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 February 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-council-agenda-8-february-2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-council-agenda-8-february-2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingminutes-8february2022.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "11 January 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinary-meeting-agenda-11-january-2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinary-meeting-agenda-11-january-2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingminutes11january2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 December 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/publicordinarymeetingagenda-13december2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/publicordinarymeetingagenda-13december2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilminutes-13december2022.pdf"
+  },
+  {
+    "name": "AGM/ Ordinary Meeting",
+    "date": "8 November 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/agm-councilagenda-8november2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/agm-councilagenda-8november2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-meeting-minutes-8-november-2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 October 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-11october2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-11october2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilminutes-11october2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 September 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-13september2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-13september2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/item5.3-mayoralminutehermajestythequeenelizabethii.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "9 August 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingagenda-9august2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingagenda-9august2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingminutes-9august2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 July 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingagenda-12july2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilmeetingagenda-12july2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/item5.2-mayoralminute-billabongparklandsprojectaudit.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "28 June 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingagenda-28june2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingagenda-28june2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarycouncilmeetingminutes-28june2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 June 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-14june2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-14june2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingminutes-14june2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "10 May 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-10may2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-10may2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarycouncilminutes-10may2022.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "26 April 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingagenda-26april2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingagenda-26april2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingminutes-26april2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 April 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-12april2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingagenda-12april2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingminutes-12april2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 March 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-meeting-agenda-8-march-2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-meeting-agenda-8-march-2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/mayoralminute-item5.2-takecarecampbelltown.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 February 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-council-agenda-8-february-2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinary-council-agenda-8-february-2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/ordinarymeetingminutes-8february2022.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "11 January 2022",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2022-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinary-meeting-agenda-11-january-2022.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinary-meeting-agenda-11-january-2022.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2022/extraordinarymeetingminutes11january2022.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2 November 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-2november2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-2november2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-2november2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 October 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-12october2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-12october2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-12october2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 September 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/councilmeetingagenda-14september2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/councilmeetingagenda-14september2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-minutes-14-september-2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "3 August 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/council-meeting-agenda-3-august-2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/council-meeting-agenda-3-august-2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/councilmeetingminutes-3august2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 July 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-13july2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-13july2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-13july2021.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "29 June 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingagenda-29june2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingagenda-29june2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingminutes-29june2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 June 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-8june2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-8june2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-minutes-8-june-2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 May 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-11may2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-11may2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-minutes-11-may-2021.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "27 April 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingagenda-27april2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingagenda-27april2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingminutes-27april2021.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "13 April 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-13april2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-13april2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-13april2021.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "9 March 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-agenda-9-march-2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-agenda-9-march-2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-9march2021.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "9 February 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda9february2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda9february2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-9february2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2 November 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-2november2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-2november2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-2november2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "12 October 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-12october2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-12october2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-12october2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "14 September 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/councilmeetingagenda-14september2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/councilmeetingagenda-14september2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-minutes-14-september-2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "3 August 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/council-meeting-agenda-3-august-2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/council-meeting-agenda-3-august-2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/councilmeetingminutes-3august2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "13 July 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-13july2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-13july2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-13july2021.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "29 June 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingagenda-29june2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingagenda-29june2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingminutes-29june2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "8 June 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-8june2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-8june2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-minutes-8-june-2021.pdf"
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "11 May 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-11may2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-11may2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-minutes-11-may-2021.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "27 April 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingagenda-27april2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingagenda-27april2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/extraordinarymeetingminutes-27april2021.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "13 April 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-13april2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda-13april2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-13april2021.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "9 March 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-agenda-9-march-2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinary-meeting-agenda-9-march-2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-9march2021.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "9 February 2021",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2021-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda9february2021.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingagenda9february2021.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2021/ordinarymeetingminutes-9february2021.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "8 December 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-8december2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-8december2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-8december2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "10 November 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-10november2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-10november2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes10november2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "13 October 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinary-meeting-agenda-13-october-2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinary-meeting-agenda-13-october-2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-13october2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "29 September 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-29september2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-29september2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes-29september2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "8 September 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-8september2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-8september2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-8september2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "1 September 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-1september2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-1september2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes-1september2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "11 August 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-11august2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-11august2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarycouncilminutes11august2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "14 July 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-14july2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-14july2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-14july2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "30 June 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-30june2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-30june2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes-30june2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "9 June 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-9june2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-9june2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-9june2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "12 May 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-12may2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-12may2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinary-meeting-minutes-12-may-2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "28 April 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinary-meeting-agenda-28-april-2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinary-meeting-agenda-28-april-2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes-28april2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "14 April 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-14april2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-14april2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinary-meeting-minutes-14-april-2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "10 March 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-10march2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-10march2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-10march2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "18 February 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-18february2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-18february2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes18february2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "11 February 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda11february2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda11february2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes11february2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "8 December 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-8december2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-8december2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-8december2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "10 November 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-10november2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-10november2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes10november2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "13 October 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinary-meeting-agenda-13-october-2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinary-meeting-agenda-13-october-2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-13october2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "29 September 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-29september2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-29september2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes-29september2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "8 September 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-8september2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-8september2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-8september2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "1 September 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-1september2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-1september2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes-1september2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "11 August 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-11august2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-11august2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarycouncilminutes11august2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "14 July 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-14july2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-14july2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-14july2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "30 June 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-30june2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-30june2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes-30june2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "9 June 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-9june2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-9june2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-9june2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "12 May 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-12may2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-12may2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinary-meeting-minutes-12-may-2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "28 April 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinary-meeting-agenda-28-april-2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinary-meeting-agenda-28-april-2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes-28april2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "14 April 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-14april2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-14april2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinary-meeting-minutes-14-april-2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "10 March 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-10march2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda-10march2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes-10march2020.pdf"
+  },
+  {
+    "name": "Extraordinary Meeting",
+    "date": "18 February 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-18february2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingagenda-18february2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/extraordinarymeetingminutes18february2020.pdf"
+  },
+  {
+    "name": "Council Meeting",
+    "date": "11 February 2020",
+    "time": null,
+    "location": "Corner Queen and Broughton Streets, Campbelltown NSW 2560",
+    "webpage_url": "https://www.campbelltown.nsw.gov.au/Council-and-Councillors/Meetings-and-Minutes/2020-Business-Papers",
+    "download_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda11february2020.pdf",
+    "agenda_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingagenda11february2020.pdf",
+    "minutes_url": "https://www.campbelltown.nsw.gov.au/files/sharedassets/public/v/1/council-and-councillors/documents/meetings-and-minutes-2020/ordinarymeetingminutes11february2020.pdf"
+  }
+]
