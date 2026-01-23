@@ -88,6 +88,23 @@ class PlaybackFetcher(Fetcher):
             if base_key in self.__processed_replay_data:
                 return self.__processed_replay_data[base_key]
 
+        # Try matching with/without URL fragments (#section)
+        if "#" in url:
+            url_without_fragment = url.split("#")[0]
+            base_key = ("selenium", url_without_fragment)
+            if base_key in self.__processed_replay_data:
+                return self.__processed_replay_data[base_key]
+        else:
+            # Try finding a URL with a fragment that matches this base
+            for stored_key in self.__processed_replay_data.keys():
+                if (
+                    len(stored_key) == 2
+                    and stored_key[0] == "selenium"
+                ):
+                    stored_url = stored_key[1]
+                    if "#" in stored_url and stored_url.split("#")[0] == url:
+                        return self.__processed_replay_data[stored_key]
+
         # Return empty HTML for missing URLs
         return "<html><body></body></html>"
 

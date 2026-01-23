@@ -153,7 +153,8 @@ class CampbelltownScraper(BaseScraper):
         results = []
 
         try:
-            output = self._fetch_html(webpage_url)
+            # Use selenium directly for year pages to match test replay data
+            output = self.fetcher.fetch_with_selenium(webpage_url)
             # Check if we got actual content
             if len(output) < 100 or "<body></body>" in output:
                 return results
@@ -229,7 +230,8 @@ class CampbelltownScraper(BaseScraper):
 
         # Try to get all available years from the meetings page
         try:
-            html = self._fetch_html(meetings_url)
+            # Use selenium directly for the meetings index page
+            html = self.fetcher.fetch_with_selenium(meetings_url)
             soup = BeautifulSoup(html, "html.parser")
 
             years_found: list[tuple[int, str]] = []
