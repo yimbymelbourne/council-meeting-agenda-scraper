@@ -1,3 +1,4 @@
+from aus_council_scrapers.scrapers.vic.banyule import BanyuleScraper
 from aus_council_scrapers.scrapers.vic.bayside import BaysideVicScraper
 from aus_council_scrapers.scrapers.vic.boroondara import BoroondaraScraper
 from aus_council_scrapers.scrapers.vic.darebin import DarebinScraper
@@ -11,7 +12,6 @@ from aus_council_scrapers.scrapers.vic.whitehorse import WhitehorseScraper
 from aus_council_scrapers.scrapers.vic.yarra import YarraScraper
 
 # BROKEN SCRAPERS
-# from council_scrapers.scrapers.vic.banyule import BanyuleScraper
 # from council_scrapers.scrapers.vic.maribyrnong import MaribyrnongScraper
 
 # UNIMPLEMENTED SCRAPERS
