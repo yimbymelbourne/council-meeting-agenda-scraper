@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-import datetime
 import json
 import re
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
-from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from aus_council_scrapers.constants import EARLIEST_YEAR
 
@@ -17,6 +15,11 @@ _LISTING_URL = (
     "/About-us/Councillors-and-Council-meetings"
     "/Council-meetings/Council-meeting-agendas-and-minutes"
 )
+
+# ASP.NET control names for the year filter on the listing page.
+_YEAR_SELECT = "ctl11$ctl00$ctl05$ctl00$ctl00"
+_APPLY_BUTTON = "ctl11$ctl00$ctl06"
+_NEXT_BUTTON = "ctl11$ctl00$ctl16"
 
 # Stable URL (no cachebuster) so it is uniquely recordable per meeting
 _OCSVC_URL = (
@@ -60,17 +63,35 @@ def _clean_location(location_div: BeautifulSoup) -> str | None:
     heading and the Google Maps link are removed before reading the text –
     otherwise both end up appended to the address.  Banyule separates the
     address parts with ``&nbsp;``, which is collapsed to plain spaces.
+
+    Banyule also pastes notices into this div as extra paragraphs::
+
+        <p>Please note: due to technical difficulties, the first half of last
+           night's Council meeting isn't available…</p>
+        <p>Council Chambers @ Ivanhoe Library…<a>View Map</a></p>
+
+    Reading the whole div would store that apology as the meeting location, so
+    when the address can be identified by its map link, only that paragraph is
+    used.
     """
     for heading in location_div.find_all("h3"):
         heading.decompose()
 
-    for anchor in location_div.find_all("a", href=True):
+    # The paragraph holding the map link is the address; anything else in the
+    # div is commentary.
+    address = location_div
+    for paragraph in location_div.find_all("p"):
+        if paragraph.find("a", href=re.compile(r"maps\.google\.com")):
+            address = paragraph
+            break
+
+    for anchor in address.find_all("a", href=True):
         if "maps.google.com" in anchor["href"] or re.fullmatch(
             r"view map", anchor.get_text(strip=True), re.IGNORECASE
         ):
             anchor.decompose()
 
-    return re.sub(r"\s+", " ", location_div.get_text(" ", strip=True)).strip() or None
+    return re.sub(r"\s+", " ", address.get_text(" ", strip=True)).strip() or None
 
 
 @register_scraper
@@ -86,65 +107,79 @@ class BanyuleScraper(BaseScraper):
     # Step 1: collect meeting CVIDs from the listing page
     # ------------------------------------------------------------------
 
+    def _offered_years(self, soup: BeautifulSoup) -> list[str]:
+        """The years Banyule's own filter offers, newest first.
+
+        Asking for a year the dropdown does not list does nothing useful:
+        assigning an absent value to a ``<select>`` silently leaves it on
+        whatever was selected, so the "filtered" request returns the unfiltered
+        listing. The previous code counted up to ``current_year + 1``, which is
+        never an option, and its first pass was therefore an accidental
+        unfiltered crawl. Reading the options makes that pass deliberate.
+        """
+        select = soup.find("select", attrs={"name": _YEAR_SELECT})
+        years = []
+        for option in select.find_all("option") if select else []:
+            label = option.get_text(strip=True)
+            if label.isdigit() and len(label) == 4 and int(label) >= EARLIEST_YEAR:
+                years.append(option.get("value") or label)
+        return years
+
+    def _page_through(
+        self, driver, seen_cvids: set[str], all_items: list[tuple[str, str, str]]
+    ) -> None:
+        """Collect every meeting in the listing as currently filtered."""
+        while True:
+            page_soup = BeautifulSoup(driver.page_source, "html.parser")
+            for item in _parse_listing_items(page_soup):
+                if item[2] not in seen_cvids:
+                    seen_cvids.add(item[2])
+                    all_items.append(item)
+
+            next_btn = page_soup.find(
+                "input", attrs={"name": _NEXT_BUTTON, "type": "submit"}
+            )
+            if not next_btn or next_btn.get("disabled"):
+                return
+            driver.execute_script(
+                f"document.querySelector('input[name=\"{_NEXT_BUTTON}\"]').click();"
+            )
+            self.fetcher.sleep(3)
+
     def _collect_all_cvids(self) -> list[tuple[str, str, str]]:
         """
-        Load the listing page and attempt to collect CVIDs for all years
-        from EARLIEST_YEAR to current+1.
+        Collect meeting CVIDs from the unfiltered listing and from each year
+        the site's own filter offers.
 
-        The initial Selenium load gives us the first page (~10 items).
-        For complete coverage we submit the year-filter form via the Selenium
-        driver for each year and page through that year's results.
+        Note that Banyule offers years in the dropdown that hold no meetings:
+        as of August 2026 it lists 2017-2026, but 2017-2021 each return only a
+        sticky "next meeting" element. Its published history genuinely starts
+        in 2022, so the shortfall against EARLIEST_YEAR is the council's, not a
+        gap in this scraper — there is nothing here to fix.
         """
-        # --- Load page 1 ---
         listing_html = self.fetcher.fetch_with_selenium(self.webpage_url)
         initial_soup = BeautifulSoup(listing_html, "html.parser")
-        page1_items = _parse_listing_items(initial_soup)
 
         all_items: list[tuple[str, str, str]] = []
         seen_cvids: set[str] = set()
-        for item in page1_items:
-            if item[2] not in seen_cvids:
-                seen_cvids.add(item[2])
-                all_items.append(item)
 
-        # --- Try year-filter form for full coverage ---
         try:
             driver = self.fetcher.get_selenium_driver()
 
-            current_year = clock.current_year()
-            for year in range(current_year + 1, EARLIEST_YEAR - 1, -1):
+            # The unfiltered listing first — it carries everything, and paging
+            # it is cheaper than trusting the filter to be exhaustive.
+            self._page_through(driver, seen_cvids, all_items)
+
+            for year in self._offered_years(initial_soup):
                 driver.execute_script(
                     f"""
-                    document.querySelector(
-                        'select[name="ctl11$ctl00$ctl05$ctl00$ctl00"]'
-                    ).value = '{year}';
-                    document.querySelector(
-                        'input[name="ctl11$ctl00$ctl06"]'
-                    ).click();
+                    document.querySelector('select[name="{_YEAR_SELECT}"]')
+                        .value = '{year}';
+                    document.querySelector('input[name="{_APPLY_BUTTON}"]').click();
                     """
                 )
                 self.fetcher.sleep(3)
-
-                while True:
-                    page_soup = BeautifulSoup(driver.page_source, "html.parser")
-                    for item in _parse_listing_items(page_soup):
-                        if item[2] not in seen_cvids:
-                            seen_cvids.add(item[2])
-                            all_items.append(item)
-
-                    # Follow "Next" page button if available and enabled
-                    next_btn = page_soup.find(
-                        "input",
-                        attrs={"name": "ctl11$ctl00$ctl16", "type": "submit"},
-                    )
-                    if not next_btn or next_btn.get("disabled"):
-                        break
-                    driver.execute_script(
-                        "document.querySelector("
-                        "'input[name=\"ctl11$ctl00$ctl16\"]'"
-                        ").click();"
-                    )
-                    self.fetcher.sleep(3)
+                self._page_through(driver, seen_cvids, all_items)
 
         except Exception:
             # The year filter is how this scraper reaches anything beyond the
@@ -152,9 +187,11 @@ class BanyuleScraper(BaseScraper):
             # a detail. Log it loudly and keep the partial result rather than
             # dropping the meetings we did get.
             self.logger.exception(
-                "Banyule year-filter pagination failed; falling back to page 1 "
-                f"only ({len(all_items)} meetings)."
+                "Banyule listing pagination failed; keeping the "
+                f"{len(all_items)} meetings collected so far."
             )
+            if not all_items:
+                all_items = _parse_listing_items(initial_soup)
 
         # Keep only years >= EARLIEST_YEAR
         return [
