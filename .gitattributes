@@ -1,0 +1,16 @@
+# Recorded HTTP fixtures are single-line JSON blobs, some tens of megabytes
+# (manningham is ~27MB on one line). A textual three-way merge of these
+# produces garbage rather than a conflict, so refuse to merge them: resolve
+# by re-recording instead.
+#
+#   RECORD=<slug> poetry run pytest tests/scraper_test.py -k <slug>
+tests/test-cases/*-replay_data.json -merge -diff linguist-generated
+
+# Expected results are small and human-readable, so keep them diffable — but
+# still never auto-merged, since two branches editing the same council's
+# fixture means one of them recorded against a different site state.
+tests/test-cases/*-result.json -merge linguist-generated
+
+# Regenerated on main by .github/workflows/status.yml. Never hand-edited, so
+# a conflict here means two branches raced — resolve by regenerating.
+docs/status.md -merge linguist-generated

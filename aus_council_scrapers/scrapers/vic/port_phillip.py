@@ -4,7 +4,7 @@ from aus_council_scrapers.base import InfoCouncilScraper, register_scraper
 @register_scraper
 class PortPhilipScraper(InfoCouncilScraper):
     def __init__(self):
-        council = "port_philip"
+        council = "port_phillip"
         state = "VIC"
         base_url = "https://www.portphillip.vic.gov.au/"
         infocouncil_url = "https://portphillip.infocouncil.biz/"

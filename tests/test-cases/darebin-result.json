@@ -1,6 +1,78 @@
 [
   {
     "name": "Council Meeting",
+    "date": "25 August 2026",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.darebin.vic.gov.au/About-council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2026-Council-meeting-agendas-and-minutes",
+    "download_url": "https://www.darebin.vic.gov.au/files/assets/public/v/1/about-council/documents/council-meetings/2026/25-august-2026/council-meeting-agenda-25-august-2026_1.pdf",
+    "agenda_url": "https://www.darebin.vic.gov.au/files/assets/public/v/1/about-council/documents/council-meetings/2026/25-august-2026/council-meeting-agenda-25-august-2026_1.pdf",
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "28 July 2026",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.darebin.vic.gov.au/About-council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2026-Council-meeting-agendas-and-minutes",
+    "download_url": "https://www.darebin.vic.gov.au/files/assets/public/v/3/about-council/documents/council-meetings/2026/28-july-2026/council-meeting-agenda-28-july-2026.pdf",
+    "agenda_url": "https://www.darebin.vic.gov.au/files/assets/public/v/3/about-council/documents/council-meetings/2026/28-july-2026/council-meeting-agenda-28-july-2026.pdf",
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Council Meeting",
+    "date": "30 June 2026",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.darebin.vic.gov.au/About-council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2026-Council-meeting-agendas-and-minutes",
+    "download_url": "https://www.darebin.vic.gov.au/files/assets/public/v/2/about-council/documents/council-meetings/2026/07.-30-june-2026/30-june-2026-special-council-meeting-agenda.pdf",
+    "agenda_url": "https://www.darebin.vic.gov.au/files/assets/public/v/2/about-council/documents/council-meetings/2026/07.-30-june-2026/30-june-2026-special-council-meeting-agenda.pdf",
+    "minutes_url": "https://www.darebin.vic.gov.au/files/assets/public/v/3/about-council/documents/council-meetings/2026/07.-30-june-2026/30-june-2026-special-council-meeting-minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "16 June 2026",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.darebin.vic.gov.au/About-council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2026-Council-meeting-agendas-and-minutes",
+    "download_url": "https://www.darebin.vic.gov.au/files/assets/public/v/1/about-council/documents/council-meetings/2026/16-june-2026/council-agenda-16-june-2026.pdf",
+    "agenda_url": "https://www.darebin.vic.gov.au/files/assets/public/v/1/about-council/documents/council-meetings/2026/16-june-2026/council-agenda-16-june-2026.pdf",
+    "minutes_url": "https://www.darebin.vic.gov.au/files/assets/public/v/4/about-council/documents/council-meetings/2026/16-june-2026/council-minutes-16-june-2026.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "26 May 2026",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.darebin.vic.gov.au/About-council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2026-Council-meeting-agendas-and-minutes",
+    "download_url": "https://www.darebin.vic.gov.au/files/assets/public/v/1/about-council/documents/council-meetings/2026/26-may-2026/council-meeting-agenda-26-may-2026.pdf",
+    "agenda_url": "https://www.darebin.vic.gov.au/files/assets/public/v/1/about-council/documents/council-meetings/2026/26-may-2026/council-meeting-agenda-26-may-2026.pdf",
+    "minutes_url": "https://www.darebin.vic.gov.au/files/assets/public/v/3/about-council/documents/council-meetings/2026/26-may-2026/council-meeting-minutes-26-may-2026.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "28 April 2026",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.darebin.vic.gov.au/About-council/Council-structure-and-performance/Council-and-Committee-Meetings/Council-meetings/Meeting-agendas-and-minutes/2026-Council-meeting-agendas-and-minutes",
+    "download_url": "https://www.darebin.vic.gov.au/files/assets/public/v/1/about-council/documents/council-meetings/2026/28-april-2026/council-agenda-28-april-2026.pdf",
+    "agenda_url": "https://www.darebin.vic.gov.au/files/assets/public/v/1/about-council/documents/council-meetings/2026/28-april-2026/council-agenda-28-april-2026.pdf",
+    "minutes_url": "https://www.darebin.vic.gov.au/files/assets/public/v/2/about-council/documents/council-meetings/2026/28-april-2026/council-minutes-28-april-2026.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
     "date": "24 March 2026",
     "time": null,
     "location": null,

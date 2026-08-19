@@ -1,7 +1,10 @@
 import datetime
 import json
 import logging
+import os
+import random
 import re
+import time
 import urllib.parse
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -15,6 +18,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 
+from aus_council_scrapers import clock
 from aus_council_scrapers.constants import (
     COUNCIL_HOUSING_REGEX,
     DATE_REGEX,
@@ -22,6 +26,32 @@ from aus_council_scrapers.constants import (
     TIME_REGEX,
     TIMEZONES_BY_STATE,
 )
+
+
+USER_AGENT_ISSUE = (
+    "https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142"
+)
+
+
+class BlockedByWAF(requests.HTTPError):
+    """A council's firewall rejected us with 403.
+
+    This is a known, tracked problem with a known cause, so it should stop
+    work on that council rather than prompt a workaround.
+    """
+
+    def __init__(self, url: str):
+        super().__init__(
+            f"403 for {url}\n\n"
+            f"This council's firewall is blocking us. Do NOT work around it — "
+            f"it is a known issue with a pending decision, tracked at:\n"
+            f"  {USER_AGENT_ISSUE}\n\n"
+            f"The cause is our spoofed browser User-Agent: 13 of 15 blocked "
+            f"councils return 200 with an identifying User-Agent instead. "
+            f"Defer this council until that issue is resolved.\n\n"
+            f"(cardinia stays blocked either way, behind a Cloudflare "
+            f"challenge — that one needs Selenium, not a header.)"
+        )
 
 
 def register_scraper(cls):
@@ -144,71 +174,18 @@ class ScraperReturn:
         return json.dumps(self.to_dict(), indent=2)
 
     def __eq__(self, other):
-        """Custom equality that handles backward compatibility.
+        """Strict field-by-field equality.
 
-        Compares all fields, but treats download_url==agenda_url as equivalent
-        for backward compatibility with old test data.
-        Also allows new scrapers to find minutes when old test data didn't have them.
+        This deliberately has no backward-compatibility branches. Earlier
+        versions treated a missing ``minutes_url`` on either side as a match
+        and let a one-meeting fixture satisfy a many-meeting result, which
+        meant a scraper could regress from hundreds of meetings to one and
+        still pass. Cassettes recorded in the old shape are normalised on the
+        way in by ``from_dict`` instead.
         """
         if not isinstance(other, ScraperReturn):
-            return False
-
-        # Compare basic fields
-        if (
-            self.name != other.name
-            or self.date != other.date
-            or self.time != other.time
-            or self.webpage_url != other.webpage_url
-            or self.location != other.location
-        ):
-            return False
-
-        # Compare HTML URLs (only if both have them, for backward compatibility)
-        if (
-            self.agenda_html_url
-            and other.agenda_html_url
-            and self.agenda_html_url != other.agenda_html_url
-        ):
-            return False
-        if (
-            self.minutes_html_url
-            and other.minutes_html_url
-            and self.minutes_html_url != other.minutes_html_url
-        ):
-            return False
-
-        # Handle URL comparison with backward compatibility
-        # Case 1: Both use new format (agenda_url/minutes_url)
-        if self.agenda_url and other.agenda_url:
-            if self.agenda_url != other.agenda_url:
-                return False
-            # For minutes: if both have them, they must match
-            # But if only one has minutes (likely the new scraper found them), that's OK
-            if (
-                self.minutes_url
-                and other.minutes_url
-                and self.minutes_url != other.minutes_url
-            ):
-                return False
-            return True
-
-        # Case 2: One uses old format (download_url), other uses new format
-        # Consider them equal if agenda_url matches download_url
-        self_agenda = self.agenda_url or self.download_url
-        other_agenda = other.agenda_url or other.download_url
-
-        if self_agenda != other_agenda:
-            return False
-
-        # For minutes, only compare if both have them (backward compat)
-        if (
-            self.minutes_url
-            and other.minutes_url
-            and self.minutes_url != other.minutes_url
-        ):
-            return False
-
-        return True
+            return NotImplemented
+        return self.to_dict() == other.to_dict()
 
     def to_dict(self):
         return {
@@ -226,24 +203,22 @@ class ScraperReturn:
 
     @staticmethod
     def from_dict(d):
-        # Backward compatibility: if agenda_url/minutes_url not present,
-        # use download_url as agenda_url
-        agenda_url = d.get("agenda_url")
-        minutes_url = d.get("minutes_url")
-        download_url = d.get("download_url")
+        """Load exactly what is in the record — no inference.
 
-        # If old format (only download_url), migrate it to agenda_url
-        if not agenda_url and download_url:
-            agenda_url = download_url
-
+        This used to copy ``download_url`` into ``agenda_url`` when the latter
+        was absent. That invented documents: for a minutes-only meeting whose
+        ``download_url`` points at the minutes, it manufactured an agenda that
+        does not exist, and it made recorded fixtures compare unequal to the
+        very scraper output they were recorded from.
+        """
         return ScraperReturn(
             name=d["name"],
             date=d["date"],
             time=d["time"],
             webpage_url=d["webpage_url"],
-            download_url=download_url,
-            agenda_url=agenda_url,
-            minutes_url=minutes_url,
+            download_url=d.get("download_url"),
+            agenda_url=d.get("agenda_url"),
+            minutes_url=d.get("minutes_url"),
             agenda_html_url=d.get("agenda_html_url"),
             minutes_html_url=d.get("minutes_html_url"),
             location=d.get("location"),
@@ -256,22 +231,81 @@ class Fetcher(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def fetch_with_requests(self, url, method="GET") -> str:
+    def fetch_with_requests(self, url, method="GET", **kwargs) -> str:
         raise NotImplementedError()
 
     @abstractmethod
-    def fetch_with_selenium(self, url):
+    def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
         raise NotImplementedError()
+
+    def sleep(self, seconds: float) -> None:
+        """Wait for a page to settle after driving it.
+
+        Scrapers should call this rather than ``time.sleep`` directly: during
+        replay nothing is actually loading, so the playback fetcher overrides
+        it to return immediately.
+        """
+        time.sleep(seconds)
 
     def close(self) -> None:
         pass
 
 
 class DefaultFetcher(Fetcher):
-    def __init__(self):
+    """Live fetcher, throttled per host.
+
+    Councils sit behind WAFs that block on request *rate* far more often than
+    on anything about the client itself, and a re-record of one InfoCouncil
+    site is eight year-pages back to back. Requests to the same host are
+    spaced by `FETCH_DELAY` seconds (jittered, so the pattern is not a
+    metronome), and 429/403/503 responses are retried with exponential
+    backoff honouring `Retry-After`.
+
+    The delay is keyed by host, so scraping different councils concurrently
+    is unaffected.
+    """
+
+    DEFAULT_FETCH_DELAY = 2.0
+    MAX_RETRIES = 4
+    RETRY_STATUSES = frozenset({403, 429, 500, 502, 503, 504})
+
+    def __init__(self, fetch_delay: Optional[float] = None):
         self.__session = requests.Session()
         self.__set_headers(self.DEFAULTHEADERS)
         self.__driver = None
+        self.__last_request_at: dict[str, float] = {}
+        self.__logger = logging.getLogger(self.__class__.__name__)
+
+        if fetch_delay is None:
+            fetch_delay = float(
+                os.environ.get("FETCH_DELAY", self.DEFAULT_FETCH_DELAY)
+            )
+        self.__fetch_delay = fetch_delay
+
+    def __throttle(self, url: str) -> None:
+        """Space out consecutive requests to the same host."""
+        if self.__fetch_delay <= 0:
+            return
+
+        host = urllib.parse.urlparse(url).netloc
+        last = self.__last_request_at.get(host)
+        if last is not None:
+            # Jitter so a long run of requests is not perfectly periodic.
+            wait = self.__fetch_delay * random.uniform(0.75, 1.25) - (
+                time.monotonic() - last
+            )
+            if wait > 0:
+                time.sleep(wait)
+        self.__last_request_at[host] = time.monotonic()
+
+    def __backoff(self, response, attempt: int) -> float:
+        retry_after = response.headers.get("Retry-After") if response else None
+        if retry_after:
+            try:
+                return min(float(retry_after), 120.0)
+            except ValueError:
+                pass
+        return min(self.__fetch_delay * (2**attempt), 60.0)
 
     DEFAULTHEADERS = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.62 Safari/537.3",
@@ -314,16 +348,42 @@ class DefaultFetcher(Fetcher):
         return self.__driver
 
     def fetch_with_requests(self, url, method="GET", **kwargs):
-        if method.upper() == "POST":
-            response = self.__session.post(url, **kwargs)
-        else:
-            response = self.__session.get(url, **kwargs)
-        response.raise_for_status()
-        return response.text
+        last_error = None
+        for attempt in range(self.MAX_RETRIES):
+            self.__throttle(url)
+            if method.upper() == "POST":
+                response = self.__session.post(url, **kwargs)
+            else:
+                response = self.__session.get(url, **kwargs)
+
+            if response.status_code not in self.RETRY_STATUSES:
+                response.raise_for_status()
+                return response.text
+
+            last_error = requests.HTTPError(
+                f"{response.status_code} for {url}", response=response
+            )
+            if response.status_code == 403:
+                # Not a transient failure and not something to engineer around.
+                # A measured 13 of 15 blocked councils return 200 as soon as we
+                # send an identifying User-Agent instead of the spoofed browser
+                # one, so a workaround here would be solving the wrong problem.
+                last_error = BlockedByWAF(url)
+                break
+            if attempt < self.MAX_RETRIES - 1:
+                delay = self.__backoff(response, attempt)
+                self.__logger.warning(
+                    f"{response.status_code} from {url} — backing off {delay:.1f}s "
+                    f"(attempt {attempt + 1}/{self.MAX_RETRIES})"
+                )
+                time.sleep(delay)
+
+        raise last_error
 
     def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
         if not self.__driver:
             self.__setup_selenium_driver()
+        self.__throttle(url)
         self.__driver.get(url)
         if wait_condition:
             WebDriverWait(self.__driver, wait_time).until(wait_condition)
@@ -400,7 +460,7 @@ class InfoCouncilScraper(BaseScraper):
 
         # Try from EARLIEST_YEAR to current year + 2 (meetings published up to 2 years in advance)
         # InfoCouncil sites may support ?year=YYYY parameter
-        current_year = datetime.datetime.now().year
+        current_year = clock.current_year()
         years_filter = getattr(self, "years_filter", None)
         if years_filter:
             years_to_try = sorted(years_filter)

@@ -3,6 +3,7 @@ import re
 
 from bs4 import BeautifulSoup
 
+from aus_council_scrapers import clock
 from aus_council_scrapers.base import (
     BaseScraper,
     ScraperReturn,
@@ -133,7 +134,7 @@ class DarebinScraper(BaseScraper):
         return results
 
     def scraper(self) -> list[ScraperReturn]:
-        current_year = datetime.date.today().year
+        current_year = clock.current_year()
         years_filter = getattr(self, "years_filter", None)
 
         if years_filter:

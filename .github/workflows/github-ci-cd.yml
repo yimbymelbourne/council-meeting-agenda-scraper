@@ -43,6 +43,14 @@ jobs:
       - name: Test with pytest
         run: |
           poetry run pytest --timeout=30
+      # Coverage against the target is reported, never gated. A scraper that
+      # reaches only two years of history is unfinished, not broken, and a
+      # build that goes red for unfinished work is a build people learn to
+      # ignore. The invariants that *are* gated live in test_conformance.py.
+      - name: Coverage scorecard
+        if: always()
+        run: |
+          poetry run python scripts/scorecard.py | tee -a "$GITHUB_STEP_SUMMARY"
   deploy:
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
