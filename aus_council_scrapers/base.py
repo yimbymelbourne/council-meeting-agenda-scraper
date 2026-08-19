@@ -278,7 +278,14 @@ class DefaultFetcher(Fetcher):
         "Accept-Language": "en-US,en;q=0.9",
         "Referer": "https://www.google.com/",
         "Connection": "keep-alive",
-        "Accept": "application/json, text/html, application/xml, text/plain",
+        # application/javascript is needed by councils whose meeting list is a
+        # single-page app: fetching its script bundle is the only way to read the
+        # settings it uses to build document URLs. Servers that negotiate
+        # strictly answer 406 when the type is missing.
+        "Accept": (
+            "application/json, text/html, application/xml, text/plain,"
+            " application/javascript"
+        ),
     }
 
     def __set_headers(self, headers):
