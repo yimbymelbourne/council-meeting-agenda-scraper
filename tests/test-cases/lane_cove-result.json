@@ -401,23 +401,11 @@
     "time": "7pm",
     "location": "Council Chambers",
     "webpage_url": "https://lanecove.infocouncil.biz",
-    "download_url": null,
-    "agenda_url": null,
-    "minutes_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/12/CNL_08122022_MIN.PDF",
-    "agenda_html_url": null,
-    "minutes_html_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/12/CNL_08122022_MIN_WEB.htm"
-  },
-  {
-    "name": "Ordinary Council",
-    "date": "08 Dec 2022",
-    "time": "7pm",
-    "location": "Council Chambers",
-    "webpage_url": "https://lanecove.infocouncil.biz",
     "download_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/12/CNL_08122022_AGN_AT.PDF",
     "agenda_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/12/CNL_08122022_AGN_AT.PDF",
-    "minutes_url": null,
+    "minutes_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/12/CNL_08122022_MIN.PDF",
     "agenda_html_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/12/CNL_08122022_AGN_AT_WEB.htm",
-    "minutes_html_url": null
+    "minutes_html_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/12/CNL_08122022_MIN_WEB.htm"
   },
   {
     "name": "Lane Cove Local Planning Panel",
@@ -437,23 +425,11 @@
     "time": "7pm",
     "location": "Council Chambers",
     "webpage_url": "https://lanecove.infocouncil.biz",
-    "download_url": null,
-    "agenda_url": null,
-    "minutes_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/11/CNL_24112022_MIN.PDF",
-    "agenda_html_url": null,
-    "minutes_html_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/11/CNL_24112022_MIN_WEB.htm"
-  },
-  {
-    "name": "Ordinary Council",
-    "date": "24 Nov 2022",
-    "time": "7pm",
-    "location": "Council Chambers",
-    "webpage_url": "https://lanecove.infocouncil.biz",
     "download_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/11/CNL_24112022_AGN_AT.PDF",
     "agenda_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/11/CNL_24112022_AGN_AT.PDF",
-    "minutes_url": null,
+    "minutes_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/11/CNL_24112022_MIN.PDF",
     "agenda_html_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/11/CNL_24112022_AGN_AT_WEB.htm",
-    "minutes_html_url": null
+    "minutes_html_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/11/CNL_24112022_MIN_WEB.htm"
   },
   {
     "name": "Lane Cove Local Planning Panel",
@@ -485,23 +461,11 @@
     "time": "7:00 PM",
     "location": "Council Chambers",
     "webpage_url": "https://lanecove.infocouncil.biz",
-    "download_url": null,
-    "agenda_url": null,
-    "minutes_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/10/CNL_27102022_MIN.PDF",
-    "agenda_html_url": null,
-    "minutes_html_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/10/CNL_27102022_MIN_WEB.htm"
-  },
-  {
-    "name": "Ordinary Council",
-    "date": "27 Oct 2022",
-    "time": "7:00 PM",
-    "location": "Council Chambers",
-    "webpage_url": "https://lanecove.infocouncil.biz",
     "download_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/10/CNL_27102022_AGN_AT.PDF",
     "agenda_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/10/CNL_27102022_AGN_AT.PDF",
-    "minutes_url": null,
+    "minutes_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/10/CNL_27102022_MIN.PDF",
     "agenda_html_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/10/CNL_27102022_AGN_AT_WEB.htm",
-    "minutes_html_url": null
+    "minutes_html_url": "https://lanecove.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2022/10/CNL_27102022_MIN_WEB.htm"
   },
   {
     "name": "Ordinary Council",
