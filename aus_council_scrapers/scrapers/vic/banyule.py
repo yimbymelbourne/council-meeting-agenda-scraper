@@ -51,6 +51,27 @@ def _year_of(date_str: str) -> int | None:
     return int(m.group(1)) if m else None
 
 
+def _clean_location(location_div: BeautifulSoup) -> str | None:
+    """
+    Extract the address text from a ``meeting-address`` div.
+
+    The markup is ``<h3>Location</h3><p>…address… <a>View Map</a></p>``, so the
+    heading and the Google Maps link are removed before reading the text –
+    otherwise both end up appended to the address.  Banyule separates the
+    address parts with ``&nbsp;``, which is collapsed to plain spaces.
+    """
+    for heading in location_div.find_all("h3"):
+        heading.decompose()
+
+    for anchor in location_div.find_all("a", href=True):
+        if "maps.google.com" in anchor["href"] or re.fullmatch(
+            r"view map", anchor.get_text(strip=True), re.IGNORECASE
+        ):
+            anchor.decompose()
+
+    return re.sub(r"\s+", " ", location_div.get_text(" ", strip=True)).strip() or None
+
+
 @register_scraper
 class BanyuleScraper(BaseScraper):
     def __init__(self):
@@ -203,14 +224,7 @@ class BanyuleScraper(BaseScraper):
 
         # Location
         location_div = content_soup.find("div", class_="meeting-address")
-        location: str | None = None
-        if location_div:
-            location = (
-                location_div.get_text(" ", strip=True)
-                .replace("Location", "")
-                .strip()
-                or None
-            )
+        location = _clean_location(location_div) if location_div else None
 
         # Agenda / minutes from meeting-document divs
         agenda_url: str | None = None
