@@ -91,10 +91,8 @@ class BanyuleScraper(BaseScraper):
         from EARLIEST_YEAR to current+1.
 
         The initial Selenium load gives us the first page (~10 items).
-        For complete coverage we try to submit the year-filter form via the
-        Selenium driver for each year.  This requires ``get_selenium_driver()``
-        which raises in the test harness – the exception is caught and we
-        fall back to whatever page-1 gave us.
+        For complete coverage we submit the year-filter form via the Selenium
+        driver for each year and page through that year's results.
         """
         # --- Load page 1 ---
         listing_html = self.fetcher.fetch_with_selenium(self.webpage_url)
@@ -110,8 +108,6 @@ class BanyuleScraper(BaseScraper):
 
         # --- Try year-filter form for full coverage ---
         try:
-            import time
-
             driver = self.fetcher.get_selenium_driver()
 
             current_year = datetime.date.today().year
@@ -126,7 +122,7 @@ class BanyuleScraper(BaseScraper):
                     ).click();
                     """
                 )
-                time.sleep(3)
+                self.fetcher.sleep(3)
 
                 while True:
                     page_soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -147,14 +143,17 @@ class BanyuleScraper(BaseScraper):
                         "'input[name=\"ctl11$ctl00$ctl16\"]'"
                         ").click();"
                     )
-                    time.sleep(3)
+                    self.fetcher.sleep(3)
 
         except Exception:
-            # Driver unavailable, page error, etc. – use what page 1 gave us.
-            pass
-        except BaseException:
-            # pytest.skip() or similar raised in test harness – silently continue.
-            pass
+            # The year filter is how this scraper reaches anything beyond the
+            # ~10 meetings on page 1, so losing it is a real degradation, not
+            # a detail. Log it loudly and keep the partial result rather than
+            # dropping the meetings we did get.
+            self.logger.exception(
+                "Banyule year-filter pagination failed; falling back to page 1 "
+                f"only ({len(all_items)} meetings)."
+            )
 
         # Keep only years >= EARLIEST_YEAR
         return [

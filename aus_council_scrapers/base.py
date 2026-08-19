@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import re
+import time
 import urllib.parse
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -144,71 +145,18 @@ class ScraperReturn:
         return json.dumps(self.to_dict(), indent=2)
 
     def __eq__(self, other):
-        """Custom equality that handles backward compatibility.
+        """Strict field-by-field equality.
 
-        Compares all fields, but treats download_url==agenda_url as equivalent
-        for backward compatibility with old test data.
-        Also allows new scrapers to find minutes when old test data didn't have them.
+        This deliberately has no backward-compatibility branches. Earlier
+        versions treated a missing ``minutes_url`` on either side as a match
+        and let a one-meeting fixture satisfy a many-meeting result, which
+        meant a scraper could regress from hundreds of meetings to one and
+        still pass. Cassettes recorded in the old shape are normalised on the
+        way in by ``from_dict`` instead.
         """
         if not isinstance(other, ScraperReturn):
-            return False
-
-        # Compare basic fields
-        if (
-            self.name != other.name
-            or self.date != other.date
-            or self.time != other.time
-            or self.webpage_url != other.webpage_url
-            or self.location != other.location
-        ):
-            return False
-
-        # Compare HTML URLs (only if both have them, for backward compatibility)
-        if (
-            self.agenda_html_url
-            and other.agenda_html_url
-            and self.agenda_html_url != other.agenda_html_url
-        ):
-            return False
-        if (
-            self.minutes_html_url
-            and other.minutes_html_url
-            and self.minutes_html_url != other.minutes_html_url
-        ):
-            return False
-
-        # Handle URL comparison with backward compatibility
-        # Case 1: Both use new format (agenda_url/minutes_url)
-        if self.agenda_url and other.agenda_url:
-            if self.agenda_url != other.agenda_url:
-                return False
-            # For minutes: if both have them, they must match
-            # But if only one has minutes (likely the new scraper found them), that's OK
-            if (
-                self.minutes_url
-                and other.minutes_url
-                and self.minutes_url != other.minutes_url
-            ):
-                return False
-            return True
-
-        # Case 2: One uses old format (download_url), other uses new format
-        # Consider them equal if agenda_url matches download_url
-        self_agenda = self.agenda_url or self.download_url
-        other_agenda = other.agenda_url or other.download_url
-
-        if self_agenda != other_agenda:
-            return False
-
-        # For minutes, only compare if both have them (backward compat)
-        if (
-            self.minutes_url
-            and other.minutes_url
-            and self.minutes_url != other.minutes_url
-        ):
-            return False
-
-        return True
+            return NotImplemented
+        return self.to_dict() == other.to_dict()
 
     def to_dict(self):
         return {
@@ -226,24 +174,22 @@ class ScraperReturn:
 
     @staticmethod
     def from_dict(d):
-        # Backward compatibility: if agenda_url/minutes_url not present,
-        # use download_url as agenda_url
-        agenda_url = d.get("agenda_url")
-        minutes_url = d.get("minutes_url")
-        download_url = d.get("download_url")
+        """Load exactly what is in the record — no inference.
 
-        # If old format (only download_url), migrate it to agenda_url
-        if not agenda_url and download_url:
-            agenda_url = download_url
-
+        This used to copy ``download_url`` into ``agenda_url`` when the latter
+        was absent. That invented documents: for a minutes-only meeting whose
+        ``download_url`` points at the minutes, it manufactured an agenda that
+        does not exist, and it made recorded fixtures compare unequal to the
+        very scraper output they were recorded from.
+        """
         return ScraperReturn(
             name=d["name"],
             date=d["date"],
             time=d["time"],
             webpage_url=d["webpage_url"],
-            download_url=download_url,
-            agenda_url=agenda_url,
-            minutes_url=minutes_url,
+            download_url=d.get("download_url"),
+            agenda_url=d.get("agenda_url"),
+            minutes_url=d.get("minutes_url"),
             agenda_html_url=d.get("agenda_html_url"),
             minutes_html_url=d.get("minutes_html_url"),
             location=d.get("location"),
@@ -256,12 +202,21 @@ class Fetcher(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def fetch_with_requests(self, url, method="GET") -> str:
+    def fetch_with_requests(self, url, method="GET", **kwargs) -> str:
         raise NotImplementedError()
 
     @abstractmethod
-    def fetch_with_selenium(self, url):
+    def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
         raise NotImplementedError()
+
+    def sleep(self, seconds: float) -> None:
+        """Wait for a page to settle after driving it.
+
+        Scrapers should call this rather than ``time.sleep`` directly: during
+        replay nothing is actually loading, so the playback fetcher overrides
+        it to return immediately.
+        """
+        time.sleep(seconds)
 
     def close(self) -> None:
         pass

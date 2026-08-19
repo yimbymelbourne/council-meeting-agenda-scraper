@@ -137,14 +137,37 @@ If test data exists (`tests/test-cases/<slug>-replay_data.json` and `*-result.js
 
 If test data does not exist, the test runs **live** and saves new test data files automatically.
 
-**If a scraper changes and the old test data no longer matches:** delete both test data files and re-run to record fresh data:
+Playback is **strict**. Two things follow from that:
+
+- A URL the scraper requests that is not in the cassette raises `CassetteMiss`
+  instead of returning an empty page. If you see one, the scraper is fetching
+  something it wasn't fetching when the cassette was cut — decide whether that
+  is intended before re-recording.
+- The comparison against `<slug>-result.json` is exact. A scraper that returns
+  a different number of meetings, or any changed field, fails.
+
+**If a scraper changes and the old test data no longer matches**, re-record it
+by slug:
 
 ```bash
-rm tests/test-cases/<slug>-result.json tests/test-cases/<slug>-replay_data.json
-poetry run pytest tests/scraper_test.py -k <council_slug> -v
+RECORD=<council_slug> poetry run pytest tests/scraper_test.py -k <council_slug> -v
 ```
 
-Then commit the new test data files.
+`RECORD=1` re-records everything in the selection — avoid it. Cassettes are
+per-council, and a blanket re-record pulls other people's in-flight fixture
+changes into your branch.
+
+Read the diff in `<slug>-result.json` before committing. It is the only place
+the scraper's actual output gets reviewed, and going from 200 meetings to 3 is
+an easy thing to re-record past without noticing.
+
+### Driving a page with Selenium
+
+`self.fetcher.get_selenium_driver()` is recordable, but only through
+`execute_script()`, `page_source` and `get()`. `find_element` and friends
+return live handles that cannot be serialised and will raise. Use
+`self.fetcher.sleep(n)` rather than `time.sleep(n)` to wait for a page to
+settle — during playback nothing is loading and `sleep` becomes a no-op.
 
 ### Step 5 — Update councils.md
 
