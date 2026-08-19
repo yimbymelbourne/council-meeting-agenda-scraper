@@ -26,17 +26,11 @@ _PLATFORM_GONE = "{host} returns 404 — council has left the InfoCouncil platfo
 
 REPLAY_BROKEN = {
     "hunters_hill": _PLATFORM_GONE.format(host="huntershill.infocouncil.biz"),
-    "northern_beaches": _PLATFORM_GONE.format(host="northernbeaches.infocouncil.biz"),
     "woollahra": _PLATFORM_GONE.format(host="woollahra.infocouncil.biz"),
-    "lane_cove": (
-        "cassette predates the InfoCouncil template redesign; "
-        "fix in flight on another branch"
-    ),
 }
 
 OUTPUT_BROKEN = {
     "hunters_hill": _PLATFORM_GONE.format(host="huntershill.infocouncil.biz"),
-    "northern_beaches": _PLATFORM_GONE.format(host="northernbeaches.infocouncil.biz"),
     "woollahra": _PLATFORM_GONE.format(host="woollahra.infocouncil.biz"),
     "strathfield": "records zero meetings — never produced usable output",
 }
