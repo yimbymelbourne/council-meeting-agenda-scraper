@@ -296,7 +296,9 @@ class DefaultFetcher(Fetcher):
         self.__driver = webdriver.Chrome(options=chrome_options)
         self.__driver.execute_cdp_cmd(
             "Page.addScriptToEvaluateOnNewDocument",
-            {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"},
+            {
+                "source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+            },
         )
 
     def get_selenium_driver(self):
@@ -406,6 +408,10 @@ class InfoCouncilScraper(BaseScraper):
                 meeting_table = soup.find("table", id="grdMenu", recursive=True)
 
                 if meeting_table is None:
+                    # InfoCouncil is rolling out a redesigned template that drops
+                    # table#grdMenu for a div layout. Fall back to that before
+                    # giving up on the year.
+                    results.extend(self._scrape_responsive_rows(soup, year))
                     continue
 
                 # Get all meeting rows
@@ -414,9 +420,7 @@ class InfoCouncilScraper(BaseScraper):
                 # Process each meeting row
                 for current_meeting in meeting_rows:
                     # Look for agenda PDF link
-                    agenda_cell = current_meeting.find(
-                        "td", class_="bpsGridAgenda"
-                    )
+                    agenda_cell = current_meeting.find("td", class_="bpsGridAgenda")
                     agenda_link = current_meeting.find(
                         "a", class_="bpsGridPDFLink", recursive=True
                     )
@@ -470,9 +474,7 @@ class InfoCouncilScraper(BaseScraper):
 
                     # Look for minutes HTML link
                     minutes_html_url = None
-                    minutes_cell = current_meeting.find(
-                        "td", class_="bpsGridMinutes"
-                    )
+                    minutes_cell = current_meeting.find("td", class_="bpsGridMinutes")
                     if minutes_cell:
                         minutes_html_link = minutes_cell.find(
                             "a", class_="bpsGridHTMLLink"
@@ -544,6 +546,98 @@ class InfoCouncilScraper(BaseScraper):
             )
 
         return results
+
+    def _scrape_responsive_rows(self, soup, year: int) -> list[ScraperReturn]:
+        """Parse the redesigned InfoCouncil template.
+
+        Instead of table#grdMenu, each meeting is a `div.meeting-row` holding
+        `.meeting-date`, `.meeting-time`, `.meeting-title` and `.meeting-location`,
+        with documents grouped under `.paper-group-header` labels ("Agenda",
+        "Minutes", "Agenda - Supplementary", ...). Unlike the legacy grid, this
+        template exposes the meeting time and location directly.
+        """
+        results = []
+
+        for row in soup.find_all("div", class_="meeting-row"):
+            date_text = self._responsive_text(row, "meeting-date")
+            time_text = self._responsive_text(row, "meeting-time")
+
+            date_search = self.date_regex.search(date_text) if date_text else None
+            date = date_search.group() if date_search else None
+
+            # Some sites ignore ?year= and always return the latest listing,
+            # which would otherwise duplicate meetings across year queries.
+            if date:
+                try:
+                    if parse_date(date, fuzzy=True).year != year:
+                        continue
+                except Exception:
+                    pass
+
+            time_search = self.time_regex.search(f"{date_text} {time_text}".strip())
+            time = time_search.group() if time_search else None
+
+            papers = self._responsive_papers(row)
+            agenda_url = papers.get("agenda_pdf")
+            minutes_url = papers.get("minutes_pdf")
+
+            if not agenda_url and not minutes_url:
+                continue
+
+            results.append(
+                ScraperReturn(
+                    name=self._responsive_text(row, "meeting-title") or None,
+                    date=date,
+                    time=time,
+                    webpage_url=self.infocouncil_url,
+                    agenda_url=agenda_url,
+                    minutes_url=minutes_url,
+                    agenda_html_url=papers.get("agenda_html"),
+                    minutes_html_url=papers.get("minutes_html"),
+                    download_url=agenda_url,  # For backward compatibility
+                    location=self._responsive_text(row, "meeting-location") or None,
+                )
+            )
+
+        return results
+
+    @staticmethod
+    def _responsive_text(row, class_name: str) -> str:
+        element = row.find(class_=class_name)
+        return element.get_text(" ", strip=True) if element else ""
+
+    def _responsive_papers(self, row) -> dict:
+        """Map the paper groups in a `div.meeting-row` to document URLs.
+
+        A meeting can carry several agenda or minutes groups - a supplementary
+        agenda, an extraordinary one - so the plainly labelled "Agenda" and
+        "Minutes" groups are read first and win over the variants.
+        """
+        papers = {}
+
+        for exact_labels_only in (True, False):
+            for header in row.find_all(class_="paper-group-header"):
+                label = header.get_text(" ", strip=True).lower()
+                if (label in ("agenda", "minutes")) != exact_labels_only:
+                    continue
+
+                if label.startswith("agenda"):
+                    kind = "agenda"
+                elif label.startswith("minutes"):
+                    kind = "minutes"
+                else:
+                    continue
+
+                items = header.find_next_sibling(class_="paper-items")
+                if items is None:
+                    continue
+
+                for link in items.find_all("a", class_="paper-link", href=True):
+                    url = urllib.parse.urljoin(self.infocouncil_url, link["href"])
+                    suffix = "pdf" if url.lower().endswith(".pdf") else "html"
+                    papers.setdefault(f"{kind}_{suffix}", url)
+
+        return papers
 
 
 SCRAPER_REGISTRY: dict[str, BaseScraper] = {}
