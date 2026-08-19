@@ -89,26 +89,23 @@ def test_every_recorded_scraper_appears_in_the_council_list():
     )
 
 
-@pytest.mark.skipif(
-    os.environ.get("GITHUB_REF") != "refs/heads/main",
-    reason="status.md is maintained on main only; it is expected to lag on a branch",
-)
 def test_status_doc_is_current():
     """docs/status.md is what a developer reads to see which councils work, so
-    a stale one is worse than none. This catches the regeneration workflow
-    failing silently.
+    a stale one is worse than none.
 
-    Deliberately main-only. A branch that re-records a scraper changes the
-    coverage this file reports, and enforcing it there would force every such
-    PR to regenerate and commit status.md — putting all of them back in
-    conflict over one file, which is the whole reason generation happens after
-    merge rather than in the PR.
+    Enforced on every branch. It was briefly main-only, on the theory that a
+    workflow would regenerate the file after merge and requiring it in PRs
+    would put them all in conflict over one file. That failed twice over:
+    `main` is protected, so the bot could not push at all, and the two
+    workflows fired on the same event so the check raced its own fix.
+
+    Regenerating in the PR is the honest cost. It is one command, and a
+    conflict in a sixty-line generated file is resolved by re-running it —
+    unlike the cassettes, which is where the conflict argument actually
+    applied.
     """
     import subprocess
     import sys
-
-    if not os.path.exists("docs/status.md"):
-        pytest.skip("docs/status.md has not been generated yet")
 
     generated = subprocess.run(
         [sys.executable, "scripts/scorecard.py", "--markdown"],
@@ -119,5 +116,5 @@ def test_status_doc_is_current():
 
     assert generated == open("docs/status.md").read().strip(), (
         "docs/status.md is out of date. Regenerate it with:\n"
-        "  python scripts/scorecard.py --markdown > docs/status.md"
+        "  poetry run python scripts/scorecard.py --markdown > docs/status.md"
     )

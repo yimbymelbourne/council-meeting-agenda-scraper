@@ -80,8 +80,8 @@ This repository is designed to be a **scraping engine** that can be used in two 
 
 # Scraper coverage
 
-**[docs/status.md](docs/status.md) shows which councils work**, regenerated
-automatically on every merge to `main`.
+**[docs/status.md](docs/status.md) shows which councils work**, generated
+from the recorded fixtures.
 
 Coverage is measured from the recorded fixtures rather than tracked by hand,
 because hand-maintained counts drifted badly — this section used to claim
