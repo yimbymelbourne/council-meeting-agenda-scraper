@@ -49,8 +49,8 @@ class BlockedByWAF(requests.HTTPError):
             f"The cause is our spoofed browser User-Agent: 13 of 15 blocked "
             f"councils return 200 with an identifying User-Agent instead. "
             f"Defer this council until that issue is resolved.\n\n"
-            f"(Two councils stay blocked either way, behind a Cloudflare "
-            f"challenge — those need Selenium, not a header.)"
+            f"(cardinia stays blocked either way, behind a Cloudflare "
+            f"challenge — that one needs Selenium, not a header.)"
         )
 
 

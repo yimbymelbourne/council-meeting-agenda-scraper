@@ -170,13 +170,18 @@ is sent instead. The fix is a project-wide decision pending at
 [issue #142](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142).
 
 Leave the council alone and say it is blocked pending #142. Councils
-currently in this state: `cardinia`, `frankston`, `hobsons_bay`, `hume`,
-`kingston`, `maribyrnong`, `melton`, `monash`, `mornington_peninsula`,
-`nillumbik`, `stonnington`, `whittlesea`, `yarra_ranges`, `blacktown`,
-`bayside_nsw`.
+currently in this state: `frankston`, `hobsons_bay`, `hume`, `kingston`,
+`maribyrnong`, `melton`, `monash`, `mornington_peninsula`, `nillumbik`,
+`stonnington`, `whittlesea`, `yarra_ranges`, `blacktown`.
 
-(`cardinia` and `bayside_nsw` are behind a Cloudflare challenge and will stay
-blocked whatever the User-Agent — those genuinely need Selenium.)
+`cardinia` is the exception: it returns a Cloudflare challenge
+(`cf-mitigated: challenge`) and stays blocked whatever the User-Agent, so it
+genuinely needs Selenium.
+
+When testing this yourself, go through `DefaultFetcher` rather than `curl`.
+Our fetcher sends a full browser-shaped header set, and some sites challenge
+a bare request that the real client passes — `bayside_nsw` looks blocked
+under `curl -A` and returns 200 through the fetcher.
 
 ### Step 4 — Implement
 
