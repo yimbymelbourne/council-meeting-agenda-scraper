@@ -59,3 +59,31 @@ def test_known_broken_lists_have_no_stale_entries():
     for name, listing in (("OUTPUT_BROKEN", OUTPUT_BROKEN), ("REPLAY_BROKEN", REPLAY_BROKEN)):
         unknown = set(listing) - recorded
         assert not unknown, f"{name} names scrapers with no fixture: {sorted(unknown)}"
+
+
+def test_every_recorded_scraper_appears_in_the_council_list():
+    """A slug that differs between the scraper and docs/councils.md makes the
+    scorecard count one council twice — once as recorded, once as never
+    started. Three slugs had drifted this way: a misspelled 'port_philip', a
+    'penrith' that the scraper called 'penrith_city', and a Randwick scraper
+    with 431 meetings and no row at all.
+    """
+    import re
+
+    tracked = set()
+    for line in open("docs/councils.md"):
+        if not line.startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if cells and re.fullmatch(r"[a-z0-9_]+", cells[-1]):
+            tracked.add(cells[-1])
+
+    recorded = {
+        os.path.basename(p).replace("-result.json", "")
+        for p in glob.glob("tests/test-cases/*-result.json")
+    }
+    missing = sorted(recorded - tracked)
+    assert not missing, (
+        f"these scrapers have fixtures but no row in docs/councils.md: {missing}. "
+        f"Add a row, or align the slug so the two agree."
+    )

@@ -78,15 +78,21 @@ This repository is designed to be a **scraping engine** that can be used in two 
 1. **As a data source** (adapter mode) - Outputs clean JSON for consumption by other systems
 2. **As a standalone application** (legacy mode) - Handles the full pipeline including storage and notifications
 
-# List of functioning agenda scrapers
+# Scraper coverage
 
-## Victoria 5/30
+Coverage is measured from the recorded fixtures rather than tracked by hand,
+because hand-maintained counts drifted badly — this section used to claim
+per-state totals that no longer matched reality, and `docs/councils.md`
+listed councils as "Functioning" whose fixtures held a single meeting and no
+minutes.
 
-## NSW 17/30
+```bash
+poetry run python scripts/scorecard.py          # every council
+poetry run python scripts/scorecard.py --gaps   # only what is unfinished
+```
 
-## QLD 0/1
-
-Scraper details, including links and current status, can be found [in the docs](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/blob/main/docs/councils.md) (`docs/councils.md`)
+`docs/councils.md` lists every council tracked, with its meeting page and
+slug.
 
 [Write a Scraper! (Instructions)](#writing-a-scraper)
 
@@ -209,78 +215,45 @@ Full Discord setup instructions: `docs/discord.md`
 
 Australia has many, many councils! As such, we need many, many scrapers!
 
-You can find a full list of active scrapers at `docs/councils.md`. Additionally, you can find a starting file at `docs/scraper_template.py`.
+**[AGENTS.md](AGENTS.md) is the guide** — scraper structure, the record and
+replay test harness, what a scraper is required to produce, and how to record
+fixtures. It is written for both people and AI assistants, and it is kept in
+one place so it cannot drift from what the code does. This section used to
+repeat it and fell out of date.
 
-## How scrapers work
+The short version:
 
-Scrapers for each council are contained within the `scrapers/[state]/` directory.
+1. Check whether the council runs a platform we already handle. Often it is a
+   ten-line subclass rather than a parser:
 
-A scraper should be able to reliably find meeting agendas on a Council's website. **Scrapers now return multiple meetings**, not just the most recent one. By default, scrapers fetch meetings from **2020 to the current year + 2 years** (to capture future scheduled meetings).
+   ```bash
+   poetry run python scripts/detect_platform.py <slug>
+   ```
 
-Once meeting links are found, they are checked against an existing database (in legacy mode)—if links are new, then agendas are downloaded, scanned, and notifications can be sent.
+2. Copy `docs/scraper_template.py` into
+   `aus_council_scrapers/scrapers/<state>/<council>.py` and work through the
+   TODOs. The template is checked by the test suite, so it always matches the
+   current API.
 
-In addition to the links, the scraper function should return a list of objects with the following shape, outlined in `base.py`:
+3. Import your scraper in the state's `__init__.py`. `@register_scraper` alone
+   does nothing — nine scrapers in this repo were written and then never ran
+   because this step was missed.
 
-```py
-@dataclass
-class ScraperReturn:
-    name: str # The name of the meeting (e.g. City Development Delegated Committee).
-    date: str # The date of the meeting (e.g. 2021-08-01).
-    time: str # The time of the meeting (e.g. 18:00).
-    webpage_url: str # The URL of the webpage where the agenda is found.
-    download_url: str # The URL of the PDF of the agenda.
-```
+4. Record fixtures and check the result:
 
-**It is not always possible to scrape the date and time of meetings from Council websites. In these cases, these values should be returned as empty strings.**
+   ```bash
+   RECORD=<slug> poetry run pytest tests/scraper_test.py -k <slug> -v
+   poetry run python scripts/scorecard.py
+   ```
 
-The `scraper` function is then included within a Scraper class, which extends `BaseScraper.py`.
+   Read the diff in `tests/test-cases/<slug>-result.json` before committing —
+   it is the only place the scraper's real output gets reviewed.
 
-**Important:** The `scraper()` method should return a `list[ScraperReturn]`, not a single object. Even if your scraper only finds one meeting, return it as a list with one element: `return [scraper_return]`.
+A scraper must return a `list[ScraperReturn]` covering **multiple meetings**,
+with agendas and minutes on the same record. Returning a single meeting, or an
+empty list, means something is wrong.
 
-## Easy scraping
-
-Thanks to the phenomenal work of @catatonicChimp, a lot of the scraping can now be done by extending the BaseScraper class.
-
-### 1. Duplicate the scraper template
-
-For writing a new scraper, you can refer to and duplicate the template: `docs/scraper_template.py`.
-
-### 2. Get the agenda page HTML
-
-In the case of most councils, you will will be able to use the `self.fetcher.fetch_with_requests(url)` method to return the agenda page html as output.
-
-For more complex Javascript pages, you may need to use `self.fetcher.fetch_with_selenium(url)`.
-
-For pages requiring interactivity using a headless browser, you may need to write a Selenium script using the driver returned by `self.fetcher.get_selenium_driver()`, and then utilise the [Selenium library](https://www.selenium.dev/documentation/) to navigate the page effectively.
-
-### 3. Use BeautifulSoup to get the agenda details
-
-Load the HTML into BeautifulSoup like this:
-
-```py
-soup = BeautifulSoup(output, 'html.parser')
-```
-
-And then use the [BeautifulSoup documentation](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) to navigate the HTML and grab the relevant elements and information.
-
-You may also need to use regular expressions (regexes) to parse dates etc.
-
-Luckily, ChatGPT is quite good at both BeautifulSoup and regexes. So it's recommended that you'll save a great deal of time feeding your HTML into ChatGPT, Github Copilot, or the shockingly reliable [Phind.com](https://www.phind.com) and iterating like that.
-
-Once you have got the agenda download link and all other available, scrapeable information, return a ScraperReturn object.
-
-### 4. Add the scraper class to the folder's `__init__.py` file
-
-To register the Scraper, import the scraper in the relevant folder's `__init__.py` file.
-
-As an example, to add the scraper for the Yarra council, open `council_scrapers/scrapers/vic/__init__.py`, and add:
-
-```py
-from council_scrapers.scrapers.vic.yarra import YarraScraper
-```
-
-### 5. Run tests and save the cached page
-
-Once you have your scraper working locally, run pytest in the root directory (`council-meeting-agenda-scraper/`) and add the cached results to the commit when successful.
-
-This is done to prevent spamming requests to council pages during the development of scrapers.
+If a council returns `403`, stop: that is a known issue with a pending
+decision, tracked at
+[#142](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142).
+Do not work around it.
