@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from aus_council_scrapers.constants import EARLIEST_YEAR
 
@@ -75,7 +76,7 @@ class CampbelltownScraper(BaseScraper):
                 "Could not derive Business Papers year from Meetings-and-Minutes; falling back."
             )
 
-        this_year = datetime.date.today().year
+        this_year = clock.current_year()
         for year in [this_year, this_year - 1, this_year - 2]:
             candidate = urljoin(
                 self.base_url,
@@ -262,7 +263,7 @@ class CampbelltownScraper(BaseScraper):
             self.logger.warning(f"Could not fetch all years from meetings page: {e}")
 
         # Fallback: try current year and previous years down to EARLIEST_YEAR
-        this_year = datetime.date.today().year
+        this_year = clock.current_year()
         for year in range(
             this_year, max(EARLIEST_YEAR - 1, this_year - 10), -1
         ):  # Try current year back to EARLIEST_YEAR

@@ -21,6 +21,7 @@ import json
 import os
 from typing import Any
 
+from aus_council_scrapers import clock
 from aus_council_scrapers.base import Fetcher
 
 
@@ -111,7 +112,11 @@ class RecordingDriver:
 
 class RecordingFetcher(Fetcher):
     def __init__(self, delegated_fetcher: Fetcher):
-        self.replay_data: list = []
+        # Stamp the recording date first, so replay can pin the clock to it
+        # and the cassette does not expire on a calendar boundary.
+        self.replay_data: list = [
+            [["meta", "recorded_date"], clock.today().isoformat()]
+        ]
         self.__delegate = delegated_fetcher
         self.__driver: RecordingDriver | None = None
 
@@ -187,10 +192,16 @@ class PlaybackFetcher(Fetcher):
     def __init__(self, replay_data: list, slug: str | None = None):
         self._slug = slug
         self._responses: dict[tuple, str] = {}
+        self.recorded_date: str | None = None
         driver_ops: list[tuple[int, str, str, Any]] = []
 
         for key, value in replay_data:
-            if key and key[0] == "driver":
+            if not key:
+                continue
+            if key[0] == "meta":
+                if key[1] == "recorded_date":
+                    self.recorded_date = value
+            elif key[0] == "driver":
                 _, index, op, args = key
                 driver_ops.append((index, op, args, value))
             else:

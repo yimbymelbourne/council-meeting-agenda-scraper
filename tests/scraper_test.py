@@ -3,6 +3,7 @@ import os
 
 import pytest
 
+from aus_council_scrapers import clock
 from aus_council_scrapers.base import (
     SCRAPER_REGISTRY,
     BaseScraper,
@@ -55,8 +56,20 @@ def _replay(scraper: BaseScraper, slug: str, result_path: str, replay_path: str)
     with open(replay_path, "r") as f:
         replay_data = json.load(f)
 
-    scraper.fetcher = PlaybackFetcher(replay_data, slug)
-    result = scraper.scraper()
+    fetcher = PlaybackFetcher(replay_data, slug)
+    scraper.fetcher = fetcher
+
+    if fetcher.recorded_date:
+        # Pin "now" to when the cassette was cut. Scrapers that build year
+        # ranges from the current date would otherwise start requesting a
+        # year the recording has never seen, every January.
+        with clock.frozen(fetcher.recorded_date):
+            result = scraper.scraper()
+    else:
+        # Cassette predates the recorded_date stamp; it will expire when the
+        # calendar moves. Re-record it to fix that.
+        result = scraper.scraper()
+
     _assert_matches(result, expected, slug)
 
 

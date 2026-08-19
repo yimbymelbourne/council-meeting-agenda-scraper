@@ -1,6 +1,8 @@
 import datetime
 import json
 import logging
+import os
+import random
 import re
 import time
 import urllib.parse
@@ -16,6 +18,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 
+from aus_council_scrapers import clock
 from aus_council_scrapers.constants import (
     COUNCIL_HOUSING_REGEX,
     DATE_REGEX,
@@ -223,10 +226,60 @@ class Fetcher(ABC):
 
 
 class DefaultFetcher(Fetcher):
-    def __init__(self):
+    """Live fetcher, throttled per host.
+
+    Councils sit behind WAFs that block on request *rate* far more often than
+    on anything about the client itself, and a re-record of one InfoCouncil
+    site is eight year-pages back to back. Requests to the same host are
+    spaced by `FETCH_DELAY` seconds (jittered, so the pattern is not a
+    metronome), and 429/403/503 responses are retried with exponential
+    backoff honouring `Retry-After`.
+
+    The delay is keyed by host, so scraping different councils concurrently
+    is unaffected.
+    """
+
+    DEFAULT_FETCH_DELAY = 2.0
+    MAX_RETRIES = 4
+    RETRY_STATUSES = frozenset({403, 429, 500, 502, 503, 504})
+
+    def __init__(self, fetch_delay: Optional[float] = None):
         self.__session = requests.Session()
         self.__set_headers(self.DEFAULTHEADERS)
         self.__driver = None
+        self.__last_request_at: dict[str, float] = {}
+        self.__logger = logging.getLogger(self.__class__.__name__)
+
+        if fetch_delay is None:
+            fetch_delay = float(
+                os.environ.get("FETCH_DELAY", self.DEFAULT_FETCH_DELAY)
+            )
+        self.__fetch_delay = fetch_delay
+
+    def __throttle(self, url: str) -> None:
+        """Space out consecutive requests to the same host."""
+        if self.__fetch_delay <= 0:
+            return
+
+        host = urllib.parse.urlparse(url).netloc
+        last = self.__last_request_at.get(host)
+        if last is not None:
+            # Jitter so a long run of requests is not perfectly periodic.
+            wait = self.__fetch_delay * random.uniform(0.75, 1.25) - (
+                time.monotonic() - last
+            )
+            if wait > 0:
+                time.sleep(wait)
+        self.__last_request_at[host] = time.monotonic()
+
+    def __backoff(self, response, attempt: int) -> float:
+        retry_after = response.headers.get("Retry-After") if response else None
+        if retry_after:
+            try:
+                return min(float(retry_after), 120.0)
+            except ValueError:
+                pass
+        return min(self.__fetch_delay * (2**attempt), 60.0)
 
     DEFAULTHEADERS = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.62 Safari/537.3",
@@ -269,16 +322,35 @@ class DefaultFetcher(Fetcher):
         return self.__driver
 
     def fetch_with_requests(self, url, method="GET", **kwargs):
-        if method.upper() == "POST":
-            response = self.__session.post(url, **kwargs)
-        else:
-            response = self.__session.get(url, **kwargs)
-        response.raise_for_status()
-        return response.text
+        last_error = None
+        for attempt in range(self.MAX_RETRIES):
+            self.__throttle(url)
+            if method.upper() == "POST":
+                response = self.__session.post(url, **kwargs)
+            else:
+                response = self.__session.get(url, **kwargs)
+
+            if response.status_code not in self.RETRY_STATUSES:
+                response.raise_for_status()
+                return response.text
+
+            last_error = requests.HTTPError(
+                f"{response.status_code} for {url}", response=response
+            )
+            if attempt < self.MAX_RETRIES - 1:
+                delay = self.__backoff(response, attempt)
+                self.__logger.warning(
+                    f"{response.status_code} from {url} — backing off {delay:.1f}s "
+                    f"(attempt {attempt + 1}/{self.MAX_RETRIES})"
+                )
+                time.sleep(delay)
+
+        raise last_error
 
     def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
         if not self.__driver:
             self.__setup_selenium_driver()
+        self.__throttle(url)
         self.__driver.get(url)
         if wait_condition:
             WebDriverWait(self.__driver, wait_time).until(wait_condition)
@@ -355,7 +427,7 @@ class InfoCouncilScraper(BaseScraper):
 
         # Try from EARLIEST_YEAR to current year + 2 (meetings published up to 2 years in advance)
         # InfoCouncil sites may support ?year=YYYY parameter
-        current_year = datetime.datetime.now().year
+        current_year = clock.current_year()
         years_filter = getattr(self, "years_filter", None)
         if years_filter:
             years_to_try = sorted(years_filter)

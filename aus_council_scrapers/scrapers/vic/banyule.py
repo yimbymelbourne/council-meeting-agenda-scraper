@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from aus_council_scrapers.constants import EARLIEST_YEAR
 
@@ -110,7 +111,7 @@ class BanyuleScraper(BaseScraper):
         try:
             driver = self.fetcher.get_selenium_driver()
 
-            current_year = datetime.date.today().year
+            current_year = clock.current_year()
             for year in range(current_year + 1, EARLIEST_YEAR - 1, -1):
                 driver.execute_script(
                     f"""

@@ -143,3 +143,51 @@ def test_record_flag_is_slug_scoped(monkeypatch, value, slug, expected):
     work into whichever branch happened to run it."""
     monkeypatch.setenv("RECORD", value)
     assert should_record(slug) is expected
+
+
+def test_recording_stamps_the_date_so_cassettes_do_not_expire_annually():
+    """Year-range scrapers request a new URL every January. Without a pinned
+    clock their cassettes fail on a calendar boundary rather than on a real
+    change."""
+    from aus_council_scrapers import clock
+    from tests.cassette import RecordingFetcher
+
+    class _NullFetcher:
+        def fetch_with_requests(self, url, method="GET", **kwargs):
+            return ""
+
+        def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
+            return ""
+
+        def get_selenium_driver(self):
+            raise NotImplementedError
+
+        def close(self):
+            pass
+
+    with clock.frozen("2026-08-19"):
+        recorder = RecordingFetcher(_NullFetcher())
+
+    assert recorder.replay_data[0] == [["meta", "recorded_date"], "2026-08-19"]
+    assert PlaybackFetcher(recorder.replay_data).recorded_date == "2026-08-19"
+
+
+def test_meta_entries_are_not_served_as_responses():
+    fetcher = PlaybackFetcher(
+        [
+            [["meta", "recorded_date"], "2026-08-19"],
+            [["requests", "https://x.test/", "GET"], "body"],
+        ]
+    )
+    assert fetcher.fetch_with_requests("https://x.test/") == "body"
+    assert fetcher.recorded_date == "2026-08-19"
+
+
+def test_clock_freezes_and_restores():
+    from aus_council_scrapers import clock
+
+    real = clock.current_year()
+    with clock.frozen("2021-03-04"):
+        assert clock.current_year() == 2021
+        assert clock.today().isoformat() == "2021-03-04"
+    assert clock.current_year() == real

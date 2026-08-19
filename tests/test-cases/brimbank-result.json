@@ -1,5 +1,77 @@
 [
   {
+    "name": "18 August 2026",
+    "date": "2026-08-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.brimbank.vic.gov.au/about-council/your-council/agendas-and-minutes/council-meetings-2026",
+    "download_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073233/file/document",
+    "agenda_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073233/file/document",
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "21 July 2026",
+    "date": "2026-07-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.brimbank.vic.gov.au/about-council/your-council/agendas-and-minutes/council-meetings-2026",
+    "download_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073231/file/document",
+    "agenda_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073231/file/document",
+    "minutes_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073232/file/document",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "20 July 2026",
+    "date": "2026-07-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.brimbank.vic.gov.au/about-council/your-council/agendas-and-minutes/council-meetings-2026",
+    "download_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073229/file/document",
+    "agenda_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073229/file/document",
+    "minutes_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073230/file/document",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "16 June 2026",
+    "date": "2026-06-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.brimbank.vic.gov.au/about-council/your-council/agendas-and-minutes/council-meetings-2026",
+    "download_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073226/file/document",
+    "agenda_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073226/file/document",
+    "minutes_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073227/file/document",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "19 May 2026",
+    "date": "2026-05-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.brimbank.vic.gov.au/about-council/your-council/agendas-and-minutes/council-meetings-2026",
+    "download_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073224/file/document",
+    "agenda_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073224/file/document",
+    "minutes_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8073225/file/document",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "21 April 2026",
+    "date": "2026-04-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.brimbank.vic.gov.au/about-council/your-council/agendas-and-minutes/council-meetings-2026",
+    "download_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8053741/file/document",
+    "agenda_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8053741/file/document",
+    "minutes_url": "https://serviceapi.brimbank.vic.gov.au/CMServiceAPI/Record/8053743/file/document",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "17 March 2026",
     "date": "2026-03-17",
     "time": null,
