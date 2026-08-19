@@ -77,10 +77,10 @@ _STATUS_ICON = {"complete": "✅", "partial": "🟡", "broken": "❌"}
 def render_markdown(rows, unstarted, total: int) -> str:
     """The at-a-glance view, for people who have not cloned the repo.
 
-    Regenerated on main after every merge — see .github/workflows/status.yml.
-    Hand-editing it is pointless: the next merge overwrites it. That is the
-    intent, because the columns this replaces were hand-edited and spent
-    months claiming councils worked when their fixtures held one meeting.
+    Committed, and checked by tests/test_conformance.py, so a change that
+    alters any fixture must regenerate it. Hand-editing it only makes the
+    build red: the columns this replaces were hand-edited and spent months
+    claiming councils worked when their fixtures held a single meeting.
     """
     counts = Counter(r.status for r in rows)
     complete = counts["complete"]
@@ -93,8 +93,9 @@ def render_markdown(rows, unstarted, total: int) -> str:
         f"{counts['partial']} partial, {counts['broken']} broken, {len(unstarted)} not started.",
         "",
         "Derived from the recorded test fixtures, so it cannot disagree with",
-        "what the scrapers actually produce. Regenerated automatically on every",
-        "merge to `main`.",
+        "what the scrapers actually produce. Regenerate with",
+        "`poetry run python scripts/scorecard.py --markdown > docs/status.md`",
+        "whenever a fixture changes; CI checks it is current.",
         "",
         "- ✅ **complete** — multiple meetings across multiple years, with minutes",
         "- 🟡 **partial** — works, but short of the target (fewer years, no minutes)",

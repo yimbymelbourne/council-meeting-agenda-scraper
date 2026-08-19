@@ -2,11 +2,12 @@
 
 # Scraper status
 
-**16 of 60 councils complete (26%)** — 14 partial, 3 broken, 27 not started.
+**17 of 60 councils complete (28%)** — 13 partial, 3 broken, 27 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
-what the scrapers actually produce. Regenerated automatically on every
-merge to `main`.
+what the scrapers actually produce. Regenerate with
+`poetry run python scripts/scorecard.py --markdown > docs/status.md`
+whenever a fixture changes; CI checks it is current.
 
 - ✅ **complete** — multiple meetings across multiple years, with minutes
 - 🟡 **partial** — works, but short of the target (fewer years, no minutes)
@@ -33,7 +34,7 @@ merge to `main`.
 | ✅ | `hornsby` | 294 | 2020-2026 | 294 | 143 |  |
 | ✅ | `inner_west` | 307 | 2020-2026 | 307 | 203 |  |
 | ✅ | `kuringgai` | 285 | 2020-2026 | 285 | 239 |  |
-| 🟡 | `lane_cove` | 164 | 2020-2026 | 159 | 150 | 3 meeting(s) split across agenda/minutes rows |
+| ✅ | `lane_cove` | 161 | 2020-2026 | 159 | 150 |  |
 | ✅ | `liverpool` | 201 | 2020-2026 | 201 | 135 |  |
 | 🟡 | `manningham` | 53 | 2021-2026 | 53 | 37 | history starts 2021, target 2020 |
 | 🟡 | `melbourne` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; history starts 2024, target 2020; nothing newer than 2024 |
