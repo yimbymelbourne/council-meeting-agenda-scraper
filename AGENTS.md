@@ -158,6 +158,26 @@ work into a ten-line subclass. Fetch the meeting page and look for:
 Note that InfoCouncil is not forever: three councils have left the platform
 and their old `*.infocouncil.biz` subdomains now 404.
 
+### If you get a 403 — stop, do not work around it
+
+A `403` from a council raises `BlockedByWAF`, which is a **deferral, not a
+puzzle to solve**. Do not add headers, change the User-Agent locally, add
+proxies, or switch to Selenium to get past it.
+
+The cause is known: our default User-Agent is a spoofed browser string, and
+13 of 15 blocked councils return `200` as soon as an identifying User-Agent
+is sent instead. The fix is a project-wide decision pending at
+[issue #142](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142).
+
+Leave the council alone and say it is blocked pending #142. Councils
+currently in this state: `cardinia`, `frankston`, `hobsons_bay`, `hume`,
+`kingston`, `maribyrnong`, `melton`, `monash`, `mornington_peninsula`,
+`nillumbik`, `stonnington`, `whittlesea`, `yarra_ranges`, `blacktown`,
+`bayside_nsw`.
+
+(`cardinia` and `bayside_nsw` are behind a Cloudflare challenge and will stay
+blocked whatever the User-Agent — those genuinely need Selenium.)
+
 ### Step 4 — Implement
 
 Write or fix the scraper. Common patterns:

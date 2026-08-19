@@ -28,6 +28,32 @@ from aus_council_scrapers.constants import (
 )
 
 
+USER_AGENT_ISSUE = (
+    "https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142"
+)
+
+
+class BlockedByWAF(requests.HTTPError):
+    """A council's firewall rejected us with 403.
+
+    This is a known, tracked problem with a known cause, so it should stop
+    work on that council rather than prompt a workaround.
+    """
+
+    def __init__(self, url: str):
+        super().__init__(
+            f"403 for {url}\n\n"
+            f"This council's firewall is blocking us. Do NOT work around it — "
+            f"it is a known issue with a pending decision, tracked at:\n"
+            f"  {USER_AGENT_ISSUE}\n\n"
+            f"The cause is our spoofed browser User-Agent: 13 of 15 blocked "
+            f"councils return 200 with an identifying User-Agent instead. "
+            f"Defer this council until that issue is resolved.\n\n"
+            f"(Two councils stay blocked either way, behind a Cloudflare "
+            f"challenge — those need Selenium, not a header.)"
+        )
+
+
 def register_scraper(cls):
     SCRAPER_REGISTRY[cls.__name__] = cls()
     return cls
@@ -337,6 +363,13 @@ class DefaultFetcher(Fetcher):
             last_error = requests.HTTPError(
                 f"{response.status_code} for {url}", response=response
             )
+            if response.status_code == 403:
+                # Not a transient failure and not something to engineer around.
+                # A measured 13 of 15 blocked councils return 200 as soon as we
+                # send an identifying User-Agent instead of the spoofed browser
+                # one, so a workaround here would be solving the wrong problem.
+                last_error = BlockedByWAF(url)
+                break
             if attempt < self.MAX_RETRIES - 1:
                 delay = self.__backoff(response, attempt)
                 self.__logger.warning(

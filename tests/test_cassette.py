@@ -221,3 +221,18 @@ def test_a_recorded_failure_is_distinguishable_from_a_missing_recording():
         fetcher.fetch_with_requests("https://x.test/a")
     with pytest.raises(CassetteMiss):
         fetcher.fetch_with_requests("https://x.test/b")
+
+
+def test_a_403_is_raised_as_a_deferral_pointing_at_the_tracking_issue():
+    """A firewall block is a known problem with a pending decision, so the
+    error must say so rather than inviting a workaround."""
+    from aus_council_scrapers.base import USER_AGENT_ISSUE, BlockedByWAF
+
+    error = BlockedByWAF("https://www.example.vic.gov.au/meetings")
+    assert USER_AGENT_ISSUE in str(error)
+    assert "Do NOT work around it" in str(error)
+    # Still an HTTPError, so scrapers that already tolerate fetch failures
+    # keep working unchanged.
+    import requests
+
+    assert isinstance(error, requests.HTTPError)
