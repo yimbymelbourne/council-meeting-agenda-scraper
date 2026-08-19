@@ -89,10 +89,20 @@ def test_every_recorded_scraper_appears_in_the_council_list():
     )
 
 
+@pytest.mark.skipif(
+    os.environ.get("GITHUB_REF") != "refs/heads/main",
+    reason="status.md is maintained on main only; it is expected to lag on a branch",
+)
 def test_status_doc_is_current():
     """docs/status.md is what a developer reads to see which councils work, so
-    a stale one is worse than none. Regenerated on main by
-    .github/workflows/status.yml; this catches the workflow silently failing.
+    a stale one is worse than none. This catches the regeneration workflow
+    failing silently.
+
+    Deliberately main-only. A branch that re-records a scraper changes the
+    coverage this file reports, and enforcing it there would force every such
+    PR to regenerate and commit status.md — putting all of them back in
+    conflict over one file, which is the whole reason generation happens after
+    merge rather than in the PR.
     """
     import subprocess
     import sys
