@@ -29,11 +29,20 @@ from dataclasses import dataclass, field
 from dateutil.parser import parse as parse_date
 
 from aus_council_scrapers import clock
-from aus_council_scrapers.constants import EARLIEST_YEAR
 
 # A scraper is "complete" when it reaches all of these.
+#
+# Note what is deliberately absent: how far back the history goes. That was
+# measured against EARLIEST_YEAR, which is a *fetch bound* — don't bother
+# requesting pages older than this — and reusing it as a coverage target
+# judged scrapers on something they do not control. Banyule offers 2017-2026
+# in its own filter but publishes nothing before 2022, so it could never pass,
+# however well written it was.
+#
+# The span each scraper reaches is still reported in the table, so a start
+# date that looks too recent stays visible for a human to investigate.
 TARGET_MIN_MEETINGS = 2
-TARGET_MIN_YEARS = 2
+TARGET_MIN_YEARS = 3
 
 _URL_FIELDS = ("agenda_url", "minutes_url", "agenda_html_url", "minutes_html_url")
 
@@ -136,10 +145,6 @@ def assess(slug: str, meetings: list[dict]) -> Assessment:
         result.coverage.append("no minutes on any past meeting")
     if result.agenda == 0:
         result.coverage.append("no agendas")
-    if result.years and result.years[0] > EARLIEST_YEAR:
-        result.coverage.append(
-            f"history starts {result.years[0]}, target {EARLIEST_YEAR}"
-        )
     if result.years and result.years[-1] < this_year:
         result.coverage.append(f"nothing newer than {result.years[-1]}")
 
