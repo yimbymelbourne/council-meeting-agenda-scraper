@@ -446,6 +446,53 @@ class BaseScraper(ABC):
         raise NotImplementedError("Scrape method must be implemented by the subclass.")
 
 
+_DOCUMENT_FIELDS = ("agenda_url", "minutes_url", "agenda_html_url", "minutes_html_url")
+
+
+def _merge_split_meetings(results: list[ScraperReturn]) -> list[ScraperReturn]:
+    """Combine rows that are one meeting split across separate listings.
+
+    Some InfoCouncil sites emit two `div.meeting-row` entries for a single
+    meeting — one carrying the agenda, another the minutes. Left alone that
+    produces two records for one meeting, each missing half its documents,
+    which defeats the point of holding agenda and minutes together.
+
+    Only complementary rows are merged. Two rows sharing a name and date but
+    each holding a *different* agenda are two real meetings — a council can
+    hold two special meetings on one night — so any conflicting field blocks
+    the merge and both records survive.
+    """
+    merged: list[ScraperReturn] = []
+    by_identity: dict[tuple, ScraperReturn] = {}
+
+    for record in results:
+        key = (record.name, record.date)
+        existing = by_identity.get(key)
+
+        if existing is None or any(
+            getattr(existing, field)
+            and getattr(record, field)
+            and getattr(existing, field) != getattr(record, field)
+            for field in _DOCUMENT_FIELDS
+        ):
+            by_identity.setdefault(key, record)
+            merged.append(record)
+            continue
+
+        for field in _DOCUMENT_FIELDS:
+            if not getattr(existing, field):
+                setattr(existing, field, getattr(record, field))
+        for field in ("time", "location"):
+            if not getattr(existing, field):
+                setattr(existing, field, getattr(record, field))
+        # download_url is deprecated but still consumed: keep it pointing at
+        # the agenda now that one is known.
+        if not existing.download_url:
+            existing.download_url = existing.agenda_url or existing.minutes_url
+
+    return merged
+
+
 class InfoCouncilScraper(BaseScraper):
     def __init__(self, council, state, base_url, infocouncil_url):
         self.infocouncil_url = infocouncil_url
@@ -666,7 +713,7 @@ class InfoCouncilScraper(BaseScraper):
                 )
             )
 
-        return results
+        return _merge_split_meetings(results)
 
     @staticmethod
     def _responsive_text(row, class_name: str) -> str:
