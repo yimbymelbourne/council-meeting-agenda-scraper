@@ -235,7 +235,10 @@ class CampbelltownScraper(BaseScraper):
             html = self.fetcher.fetch_with_selenium(meetings_url)
             soup = BeautifulSoup(html, "html.parser")
 
-            years_found: list[tuple[int, str]] = []
+            # The page links every year twice (navigation and body), so
+            # collect by year — scraping a year page twice emitted every
+            # meeting twice.
+            years_by_number: dict[int, str] = {}
             for a in soup.select("a[href]"):
                 href = a.get("href") or ""
                 m = re.search(r"/(\d{4})-Business-Papers\b", href)
@@ -245,8 +248,9 @@ class CampbelltownScraper(BaseScraper):
                 # Skip years before EARLIEST_YEAR
                 if year < EARLIEST_YEAR:
                     continue
-                year_url = urljoin(self.base_url, href)
-                years_found.append((year, year_url))
+                years_by_number.setdefault(year, urljoin(self.base_url, href))
+
+            years_found: list[tuple[int, str]] = list(years_by_number.items())
 
             if years_found:
                 # Sort by year descending

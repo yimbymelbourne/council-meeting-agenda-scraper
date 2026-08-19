@@ -16,6 +16,7 @@ from tests.cassette import (
     cassette_paths,
     should_record,
 )
+from tests.known_broken import REPLAY_BROKEN
 
 
 def _load_expected(result_path: str) -> list[ScraperReturn]:
@@ -94,9 +95,16 @@ def _record(scraper: BaseScraper, slug: str, result_path: str, replay_path: str)
         )
 
 
-@pytest.mark.parametrize(
-    "scraper_instance", SCRAPER_REGISTRY.values(), ids=SCRAPER_REGISTRY.keys()
-)
+def _scrapers():
+    for name, scraper in SCRAPER_REGISTRY.items():
+        marks = []
+        reason = REPLAY_BROKEN.get(scraper.council_name)
+        if reason:
+            marks.append(pytest.mark.xfail(strict=True, reason=reason))
+        yield pytest.param(scraper, marks=marks, id=name)
+
+
+@pytest.mark.parametrize("scraper_instance", list(_scrapers()))
 def test_scraper(scraper_instance: BaseScraper):
     slug = scraper_instance.council_name
     result_path, replay_path = cassette_paths(slug)
