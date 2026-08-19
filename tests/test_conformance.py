@@ -87,3 +87,27 @@ def test_every_recorded_scraper_appears_in_the_council_list():
         f"these scrapers have fixtures but no row in docs/councils.md: {missing}. "
         f"Add a row, or align the slug so the two agree."
     )
+
+
+def test_status_doc_is_current():
+    """docs/status.md is what a developer reads to see which councils work, so
+    a stale one is worse than none. Regenerated on main by
+    .github/workflows/status.yml; this catches the workflow silently failing.
+    """
+    import subprocess
+    import sys
+
+    if not os.path.exists("docs/status.md"):
+        pytest.skip("docs/status.md has not been generated yet")
+
+    generated = subprocess.run(
+        [sys.executable, "scripts/scorecard.py", "--markdown"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+
+    assert generated == open("docs/status.md").read().strip(), (
+        "docs/status.md is out of date. Regenerate it with:\n"
+        "  python scripts/scorecard.py --markdown > docs/status.md"
+    )

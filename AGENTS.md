@@ -31,6 +31,8 @@ Only **adapter mode** is prioritised. Adapter mode returns clean JSON to stdout 
 | `tests/known_broken.py` | Strict xfails for scrapers known to be broken |
 | `tests/test-cases/` | Cached HTTP responses (`*-replay_data.json`) and expected results (`*-result.json`) |
 | `scripts/scorecard.py` | Coverage report derived from the fixtures |
+| `scripts/detect_platform.py` | Identify a council's platform before writing a parser |
+| `docs/status.md` | Which councils work — generated, do not edit |
 | `docs/scraper_template.py` | Starting point for a new scraper (kept valid by `tests/test_template.py`) |
 | `docs/councils.md` | Council list and meeting-page URLs |
 
@@ -239,7 +241,11 @@ poetry run python scripts/scorecard.py        # all councils
 poetry run python scripts/scorecard.py --gaps # only what is unfinished
 ```
 
-This derives coverage from the recorded fixtures — meetings found, years
+[docs/status.md](docs/status.md) holds the same thing as a committed table,
+regenerated on every merge to `main` — read that if you just want to know
+which councils work. Do not edit it; the next merge overwrites it.
+
+The command derives coverage from the recorded fixtures — meetings found, years
 covered, minutes coverage — and reports each council as `complete`,
 `partial` or `broken`. Nothing is stored: the fixtures are the source of
 truth, so there is no scorecard file to update or conflict over.

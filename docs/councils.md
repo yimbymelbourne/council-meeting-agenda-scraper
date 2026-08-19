@@ -3,6 +3,9 @@
 Every council this project tracks, with the meeting page to scrape and the
 slug used for its scraper and fixtures.
 
+**[status.md](status.md) shows which councils currently work** — generated
+from the fixtures after every merge to `main`.
+
 **Scraper status is not recorded here.** It used to be, in three hand-edited
 columns, and they drifted out of date — the table claimed councils were
 "Functioning" while their fixtures held a single meeting and no minutes.
