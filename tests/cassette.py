@@ -21,6 +21,8 @@ import json
 import os
 from typing import Any
 
+import requests
+
 from aus_council_scrapers import clock
 from aus_council_scrapers.base import Fetcher
 
@@ -53,6 +55,33 @@ class UnsupportedDriverCall(BaseException):
 def _canonical_kwargs(kwargs: dict[str, Any]) -> str:
     """Stable string form of request kwargs, so keys compare reliably."""
     return json.dumps(kwargs, sort_keys=True, default=str)
+
+
+# Recorded values are normally the response body (a string). A failed fetch is
+# stored as this marker dict instead, so replay can raise rather than invent a
+# success the live run never had.
+FAILURE_MARKER = "__failed__"
+
+_REPLAYABLE_ERRORS = {
+    "HTTPError": requests.HTTPError,
+    "ConnectionError": requests.ConnectionError,
+    "Timeout": requests.Timeout,
+    "TooManyRedirects": requests.TooManyRedirects,
+}
+
+
+def encode_failure(error: Exception) -> dict:
+    return {FAILURE_MARKER: type(error).__name__, "message": str(error)}
+
+
+def decode_failure(value: dict) -> Exception:
+    name = value.get(FAILURE_MARKER, "Exception")
+    message = value.get("message", "")
+    return _REPLAYABLE_ERRORS.get(name, Exception)(message)
+
+
+def is_failure(value: Any) -> bool:
+    return isinstance(value, dict) and FAILURE_MARKER in value
 
 
 def requests_key(url: str, method: str, kwargs: dict[str, Any] | None) -> list:
@@ -128,12 +157,25 @@ class RecordingFetcher(Fetcher):
         return self.__driver
 
     def fetch_with_requests(self, url, method="GET", **kwargs):
-        result = self.__delegate.fetch_with_requests(url, method, **kwargs)
-        self.replay_data.append([requests_key(url, method, kwargs), result])
+        key = requests_key(url, method, kwargs)
+        try:
+            result = self.__delegate.fetch_with_requests(url, method, **kwargs)
+        except Exception as e:
+            # A failure is an outcome worth recording. Scrapers legitimately
+            # probe URLs that may not exist — a year page for a year the
+            # council has not scheduled yet — and swallow the error. If the
+            # cassette holds nothing for those, replay cannot reproduce them.
+            self.replay_data.append([key, encode_failure(e)])
+            raise
+        self.replay_data.append([key, result])
         return result
 
     def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
-        result = self.__delegate.fetch_with_selenium(url, wait_time, wait_condition)
+        try:
+            result = self.__delegate.fetch_with_selenium(url, wait_time, wait_condition)
+        except Exception as e:
+            self.replay_data.append([["selenium", url], encode_failure(e)])
+            raise
         self.replay_data.append([["selenium", url], result])
         return result
 
@@ -219,7 +261,12 @@ class PlaybackFetcher(Fetcher):
 
     def _lookup(self, key: tuple, description: str) -> str:
         if key in self._responses:
-            return self._responses[key]
+            value = self._responses[key]
+            if is_failure(value):
+                # This fetch failed when the cassette was cut; reproduce that
+                # rather than handing back a success.
+                raise decode_failure(value)
+            return value
         raise CassetteMiss(
             f"No recorded response for {description}.\n"
             f"  looked up: {list(key)}\n"

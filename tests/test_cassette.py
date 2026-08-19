@@ -191,3 +191,33 @@ def test_clock_freezes_and_restores():
         assert clock.current_year() == 2021
         assert clock.today().isoformat() == "2021-03-04"
     assert clock.current_year() == real
+
+
+def test_recorded_failures_are_replayed_as_failures():
+    """Scrapers probe URLs that may not exist (a year page the council has
+    not scheduled yet) and swallow the error. Replay must reproduce the
+    failure, not invent a success."""
+    import requests
+
+    from tests.cassette import encode_failure
+
+    failure = encode_failure(requests.HTTPError("404 Client Error for url"))
+    fetcher = PlaybackFetcher([[["requests", "https://x.test/2027", "GET"], failure]])
+
+    with pytest.raises(requests.HTTPError):
+        fetcher.fetch_with_requests("https://x.test/2027")
+
+
+def test_a_recorded_failure_is_distinguishable_from_a_missing_recording():
+    """Both stop the scraper, but only one means the cassette is stale."""
+    import requests
+
+    from tests.cassette import encode_failure
+
+    fetcher = PlaybackFetcher(
+        [[["requests", "https://x.test/a", "GET"], encode_failure(requests.HTTPError("404"))]]
+    )
+    with pytest.raises(requests.HTTPError):
+        fetcher.fetch_with_requests("https://x.test/a")
+    with pytest.raises(CassetteMiss):
+        fetcher.fetch_with_requests("https://x.test/b")
