@@ -23,9 +23,16 @@ Only **adapter mode** is prioritised. Adapter mode returns clean JSON to stdout 
 | `aus_council_scrapers/constants.py` | `EARLIEST_YEAR`, regex patterns, timezones |
 | `aus_council_scrapers/scrapers/vic/` | Victoria scrapers |
 | `aus_council_scrapers/scrapers/nsw/` | NSW scrapers |
-| `tests/scraper_test.py` | Test harness (recording/playback) |
+| `aus_council_scrapers/clock.py` | `current_year()` / `today()` — use instead of `datetime` |
+| `aus_council_scrapers/conformance.py` | What a scraper must produce, and how coverage is measured |
+| `tests/scraper_test.py` | Replays each scraper against its cassette |
+| `tests/cassette.py` | The record/replay machinery |
+| `tests/test_conformance.py` | The gate: invariants that fail the build |
+| `tests/known_broken.py` | Strict xfails for scrapers known to be broken |
 | `tests/test-cases/` | Cached HTTP responses (`*-replay_data.json`) and expected results (`*-result.json`) |
-| `docs/councils.md` | Status table for all councils — update this after fixing a scraper |
+| `scripts/scorecard.py` | Coverage report derived from the fixtures |
+| `docs/scraper_template.py` | Starting point for a new scraper (kept valid by `tests/test_template.py`) |
+| `docs/councils.md` | Council list and meeting-page URLs |
 
 ---
 
@@ -36,7 +43,11 @@ Every scraper:
 - Uses `@register_scraper` decorator
 - Extends `BaseScraper`
 - Implements `def scraper(self) -> list[ScraperReturn]:`
-- Must be imported in the state's `__init__.py`
+- Must be imported in the state's `__init__.py` — **this step is load-bearing
+  and easy to miss.** `@register_scraper` does nothing if the module is never
+  imported: nine scrapers in this repo were written, decorated, and then
+  forgotten because the import line was omitted. They have never run and have
+  never been tested.
 
 ```python
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
@@ -98,7 +109,19 @@ Scrapers must return meetings from `EARLIEST_YEAR` (currently 2020) up to at lea
 from aus_council_scrapers.constants import EARLIEST_YEAR
 ```
 
-Iterate over years: `for year in range(EARLIEST_YEAR, datetime.datetime.now().year + 3):`
+Iterate over years using the project clock, **not** `datetime.now()`:
+
+```python
+from aus_council_scrapers import clock
+from aus_council_scrapers.constants import EARLIEST_YEAR
+
+for year in range(EARLIEST_YEAR, clock.current_year() + 3):
+    ...
+```
+
+Replay pins the clock to the date the cassette was recorded. A scraper reading
+the real clock starts requesting an unrecorded year every January, and its
+fixture fails for a reason nobody caused.
 
 ---
 
@@ -110,7 +133,7 @@ Before touching anything, read 1–2 functioning scrapers to understand patterns
 
 - `aus_council_scrapers/scrapers/vic/bayside.py` — simple requests-based scraper
 - `aus_council_scrapers/scrapers/vic/banyule.py` — complex Selenium scraper
-- `aus_council_scrapers/scrapers/nsw/inner_west.py` — InfoCouncil-based scraper
+- `aus_council_scrapers/scrapers/nsw/innerwest.py` — InfoCouncil-based scraper
 
 ### Step 2 — Visit the Council's URL
 
@@ -120,14 +143,29 @@ Check `docs/councils.md` for the council's meeting page URL. Open it and underst
 - Whether meetings span multiple pages or years
 - Whether future (upcoming) meetings appear on the same page
 
-### Step 3 — Implement
+### Step 3 — Check for a known platform before writing a parser
+
+Many councils run the same handful of platforms, and a match turns a day's
+work into a ten-line subclass. Fetch the meeting page and look for:
+
+| Signature in the page or URL | Use |
+|---|---|
+| `*.infocouncil.biz`, `bpsGridPDFLink`, `grdMenu` | `InfoCouncilScraper` |
+| `docspublished.com.au` | see `aus_council_scrapers/scrapers/nsw/parramatta.py` |
+| `OCServiceHandler.axd`, `accordion-list-item-container` | OpenCities; see `aus_council_scrapers/scrapers/vic/banyule.py` |
+| `cf-mitigated: challenge`, `server: cloudflare` | Cloudflare interstitial — needs Selenium, no header will get past it |
+
+Note that InfoCouncil is not forever: three councils have left the platform
+and their old `*.infocouncil.biz` subdomains now 404.
+
+### Step 4 — Implement
 
 Write or fix the scraper. Common patterns:
 - Parse an HTML listing page with BeautifulSoup
 - Match agenda links to minutes links by date or meeting name
 - Handle year-by-year pagination where needed
 
-### Step 4 — Run Tests
+### Step 5 — Run Tests
 
 ```bash
 poetry run pytest tests/scraper_test.py -k <council_slug> -v
@@ -169,13 +207,32 @@ return live handles that cannot be serialised and will raise. Use
 `self.fetcher.sleep(n)` rather than `time.sleep(n)` to wait for a page to
 settle — during playback nothing is loading and `sleep` becomes a no-op.
 
-### Step 5 — Update councils.md
+### Step 6 — Check the scorecard
 
-After fixing or adding a scraper, update `docs/councils.md` to reflect the current status. The columns are:
+```bash
+poetry run python scripts/scorecard.py        # all councils
+poetry run python scripts/scorecard.py --gaps # only what is unfinished
+```
 
-- **Agenda Scraper**: `Functioning` / `Broken` / `Not Tested`
-- **Minutes Scraper**: `Functioning` / `Not Implemented` / `Broken`
-- **Multiple Meetings**: `Functioning` / `Not Implemented` / `Timeout` / `N/A`
+This derives coverage from the recorded fixtures — meetings found, years
+covered, minutes coverage — and reports each council as `complete`,
+`partial` or `broken`. Nothing is stored: the fixtures are the source of
+truth, so there is no scorecard file to update or conflict over.
+
+Two categories, treated differently:
+
+- **Invariants** fail the build (`tests/test_conformance.py`): a meeting
+  emitted twice, a date that will not parse, a relative URL, no meetings.
+  These are defects now, whatever state the scraper is in.
+- **Coverage** is reported only. Reaching two years instead of six means
+  unfinished, not broken.
+
+A scraper that is genuinely broken goes in `tests/known_broken.py` with a
+reason. Those are *strict* xfails — the build fails when one starts passing,
+so an entry cannot outlive its fix.
+
+`docs/councils.md` is still maintained by hand and is the place to record a
+council's meeting-page URL.
 
 ---
 
