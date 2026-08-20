@@ -42,7 +42,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `northern_beaches` | 141 | 2016-2026 | 139 | 126 |  |
 | ✅ | `parramatta` | 742 | 2008-2026 | 742 | 683 |  |
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |
-| ✅ | `port_phillip` | 69 | 2024-2026 | 69 | 63 |  |
+| ✅ | `port_phillip` | 128 | 2022-2026 | 128 | 121 |  |
 | ✅ | `randwick` | 431 | 2020-2026 | 431 | 360 |  |
 | 🟡 | `ryde` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; nothing newer than 2024 |
 | ✅ | `waverley` | 278 | 2020-2026 | 278 | 247 |  |
