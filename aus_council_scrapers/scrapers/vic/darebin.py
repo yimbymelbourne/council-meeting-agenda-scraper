@@ -111,12 +111,50 @@ class DarebinScraper(BaseScraper):
             elif doc_type == "minutes" and not meetings[key]["minutes_url"]:
                 meetings[key]["minutes_url"] = full_url
 
+        results = self._build_results(meetings, order, url)
+        return results
+
+    def _resolve_shared_document(
+        self, agenda_url: str | None, minutes_url: str | None, key: tuple
+    ) -> tuple[str | None, str | None]:
+        """Decide what a single PDF offered as both agenda and minutes really is.
+
+        Darebin's own pages sometimes link the same file twice under different
+        labels — 14 November 2022 lists both "Special Council Meeting Agenda"
+        and "Special Council Meeting Minutes" pointing at
+        ``…specialcouncilmeetingminutes.pdf``. That is the council's mistake,
+        not a parsing one, but recording it as an agenda sends readers to a
+        document that is not the agenda.
+
+        One file cannot be both, so the filename decides. When it says neither,
+        there is nothing to go on and the pair is left alone with a warning.
+        """
+        if not agenda_url or agenda_url != minutes_url:
+            return agenda_url, minutes_url
+
+        filename = agenda_url.rsplit("/", 1)[-1].lower()
+        says_minutes = "minutes" in filename
+        says_agenda = "agenda" in filename
+
+        if says_minutes and not says_agenda:
+            return None, minutes_url
+        if says_agenda and not says_minutes:
+            return agenda_url, None
+
+        self.logger.warning(
+            f"{key[1]} on {key[0]} lists one file as both agenda and minutes, "
+            f"and its name settles nothing: {filename}"
+        )
+        return agenda_url, minutes_url
+
+    def _build_results(self, meetings, order, url) -> list[ScraperReturn]:
         results = []
         for key in order:
             date_str, meeting_type = key
             docs = meetings[key]
-            agenda_url = docs["agenda_url"]
-            minutes_url = docs["minutes_url"]
+            agenda_url, minutes_url = self._resolve_shared_document(
+                docs["agenda_url"], docs["minutes_url"], key
+            )
             if not agenda_url and not minutes_url:
                 continue
             results.append(

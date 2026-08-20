@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-import time
 from datetime import datetime
 from urllib.parse import urljoin
 
@@ -9,311 +8,256 @@ from bs4 import BeautifulSoup
 
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 
+# Past meetings, newest first, ten to a page — every meeting with published
+# documents. Upcoming meetings live on the parent page, oldest first; Boroondara
+# publishes an agenda about ten days ahead, so the newest agendas appear there
+# before the meeting moves across to the past listing.
+PAST_MEETINGS_URL = (
+    "https://www.boroondara.vic.gov.au/your-council/councillors-and-meetings/"
+    "council-and-committee-meetings/past-meeting-minutes-agendas-and-video-recordings"
+)
+UPCOMING_MEETINGS_URL = (
+    "https://www.boroondara.vic.gov.au/your-council/councillors-and-meetings/"
+    "council-and-committee-meetings"
+)
+
 
 @register_scraper
 class BoroondaraScraper(BaseScraper):
-    def __init__(self):
-        council = "boroondara"
-        state = "VIC"
-        base_url = "https://www.boroondara.vic.gov.au"
-        super().__init__(council, state, base_url)
+    """Boroondara publishes one Drupal event page per meeting.
 
-        # Example titles:
-        # "Council Meeting - 24 November 2025"
-        # "Additional Council Meeting - 20 October 2025"
-        # "Council Meeting (Councillor Assignments) - 17 November 2025"
-        self._event_year_re = re.compile(r"\b(19|20)\d{2}\b")
+    Each event page carries its documents in ``para-downloads`` blocks titled by
+    document type, and its start date and time in the add-to-calendar
+    ``<var class="atc_date_start">`` — which is the only place on the page the
+    time appears in a machine-readable form.
+    """
+
+    def __init__(self):
+        super().__init__("boroondara", "VIC", "https://www.boroondara.vic.gov.au")
         self.default_location = "8 Inglesby Road, Camberwell, Victoria 3124"
 
-        self._title_date_re = re.compile(
-            r"\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+((?:19|20)\d{2})\b",
-            re.I,
-        )
+    _MAX_PAGES = 40  # safety net; the past listing is 11 pages
 
-    _REQUEST_DELAY = 1.5  # seconds between requests
+    # Titles look like "Council Meeting - 24 November 2025", "Additional Council
+    # Meeting - 20 October 2025", "Council Meeting - 28 October 2024 - CANCELLED".
+    _TITLE_DATE_RE = re.compile(
+        r"\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September"
+        r"|October|November|December)\s+((?:19|20)\d{2})\b",
+        re.I,
+    )
 
-    def _fetch(self, url: str) -> str:
-        """Fetch a URL with a polite delay and automatic 429 retry."""
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                html = self.fetcher.fetch_with_requests(url)
-                time.sleep(self._REQUEST_DELAY)
-                return html
-            except Exception as e:
-                status = getattr(getattr(e, "response", None), "status_code", None)
-                if status == 429 and attempt < max_retries - 1:
-                    wait = 60 * (2 ** attempt)  # 60s, then 120s
-                    self.logger.warning(
-                        f"Rate limited (429). Waiting {wait}s before retry {attempt + 2}/{max_retries}..."
-                    )
-                    time.sleep(wait)
-                else:
-                    raise
+    # "08/17/2026 6:30 pm" — month first, and the time is what we are after.
+    _ATC_RE = re.compile(
+        r"(\d{1,2})/(\d{1,2})/((?:19|20)\d{2})\s+(\d{1,2}:\d{2}\s*[ap]\.?m\.?)", re.I
+    )
 
-    def _abs(self, href: str) -> str:
-        return urljoin(self.base_url, href)
+    def _soup(self, url: str) -> BeautifulSoup:
+        # The fetcher throttles per host and backs off on 429 already; a run
+        # over ~115 event pages needs nothing more than that.
+        return BeautifulSoup(self.fetcher.fetch_with_requests(url), "html.parser")
 
-    def _get_years_filter(self) -> set[int] | None:
-        for attr in ["years_filter", "years", "year_filter", "year", "years_filter_list"]:
-            v = getattr(self, attr, None)
-            if v is None:
+    def _years_filter(self) -> set[int] | None:
+        years = getattr(self, "years_filter", None)
+        return set(years) if years else None
+
+    # ---------------------------------------------------------------- listings
+
+    def _event_links(self, soup: BeautifulSoup, page_url: str) -> list[str]:
+        """Event page URLs from a listing page, in the order they are listed.
+
+        Each entry is an ``h2`` heading link; the "View event" link below it
+        points at the same page, so keying on the heading avoids the duplicate.
+        """
+        urls: list[str] = []
+        for a in soup.select("h2 a[href]"):
+            href = (a.get("href") or "").strip()
+            if "/events/" not in href:
                 continue
-            if isinstance(v, int):
-                return {v}
-            if isinstance(v, (list, tuple, set)) and all(isinstance(x, int) for x in v):
-                return set(v)
+            title = a.get_text(" ", strip=True)
+            if "meeting" not in title.lower():
+                continue
+            url = urljoin(page_url, href)
+            if url not in urls:
+                urls.append(url)
+        return urls
+
+    def _next_page_url(self, soup: BeautifulSoup, page_url: str) -> str | None:
+        """The pager's next link, resolved against the page it was found on.
+
+        The hrefs are query-only (``?page=3``), so they must resolve against the
+        current URL rather than the site root.
+        """
+        a = soup.select_one("li.pager__item--next a[href]")
+        if not a:
+            a = soup.select_one('a[rel="next"][href]')
+        if a and a.get("href"):
+            return urljoin(page_url, a["href"])
         return None
+
+    def _listing_event_urls(self, listing_url: str, newest_first: bool) -> list[str]:
+        """Walk a paginated listing and collect its event URLs.
+
+        When a year filter is set and the listing runs newest first, stop paging
+        once a whole page falls below the earliest year asked for.
+        """
+        years = self._years_filter()
+        urls: list[str] = []
+        page_url: str | None = listing_url
+        seen_pages: set[str] = set()
+
+        while (
+            page_url
+            and page_url not in seen_pages
+            and len(seen_pages) < self._MAX_PAGES
+        ):
+            seen_pages.add(page_url)
+            soup = self._soup(page_url)
+
+            page_urls = self._event_links(soup, page_url)
+            urls.extend(page_urls)
+
+            if years and newest_first and page_urls:
+                page_years = {y for u in page_urls if (y := self._year_from_slug(u))}
+                if page_years and max(page_years) < min(years):
+                    break
+
+            page_url = self._next_page_url(soup, page_url)
+
+        return urls
+
+    def _year_from_slug(self, event_url: str) -> int | None:
+        """Year from an event slug, e.g. ``/events/council-meeting-27-july-2026``.
+
+        Used only to decide whether an event page is worth fetching, so the
+        authoritative date still comes from the page itself. The day number
+        precedes the year, and a slug can carry a "-cancelled" suffix after it,
+        so take the last four-digit group rather than the first.
+        """
+        years = re.findall(r"-((?:19|20)\d{2})(?=-|$)", event_url)
+        return int(years[-1]) if years else None
+
+    # ------------------------------------------------------------ event pages
+
+    def _download_blocks(self, soup: BeautifulSoup) -> dict[str, str]:
+        """Map each downloads block's title to its first document URL."""
+        blocks: dict[str, str] = {}
+        for block in soup.select("div.paragraph--type--para-downloads"):
+            heading = block.find(["h2", "h3", "h4", "h5", "h6"])
+            if not heading:
+                continue
+            title = heading.get_text(" ", strip=True).strip().lower()
+            link = block.select_one("a[href]")
+            if title and link and title not in blocks:
+                blocks[title] = urljoin(self.base_url, link["href"].strip())
+        return blocks
+
+    def _agenda_and_minutes(self, soup: BeautifulSoup) -> tuple[str | None, str | None]:
+        blocks = self._download_blocks(soup)
+        agenda = next(
+            (blocks[t] for t in ("revised agenda", "agenda") if t in blocks), None
+        )
+        # Only a bare "Minutes" block holds this meeting's minutes. "Minutes for
+        # Adoption", "Minutes to be Adopted" and "Minutes to Adopt" are the
+        # previous meeting's minutes, tabled here for ratification.
+        return agenda, blocks.get("minutes")
+
+    def _date_and_time(
+        self, soup: BeautifulSoup, title: str
+    ) -> tuple[str | None, str | None]:
+        """Start date and time, preferring the add-to-calendar value.
+
+        The page's visible time is only rendered for upcoming meetings, and a
+        regex over the whole page text picks up PDF file sizes ("36.67 MB")
+        ahead of any real time — so the ``<var>`` is the only sound source.
+        """
+        date = time = None
+
+        var = soup.select_one("var.atc_date_start")
+        if var:
+            m = self._ATC_RE.search(var.get_text(" ", strip=True))
+            if m:
+                month, day, year, time = (
+                    int(m.group(1)),
+                    int(m.group(2)),
+                    int(m.group(3)),
+                    m.group(4).strip(),
+                )
+                try:
+                    date = f"{datetime(year, month, day):%Y-%m-%d}"
+                except ValueError:
+                    date = None
+
+        return date or self._date_from_title(title), time
 
     def _date_from_title(self, title: str) -> str | None:
-        if not title:
-            return None
-        m = self._title_date_re.search(title)
+        m = self._TITLE_DATE_RE.search(title or "")
         if not m:
             return None
-        day = int(m.group(1))
-        month = m.group(2)
-        year = int(m.group(3))
         try:
-            dt = datetime.strptime(f"{day} {month} {year}", "%d %B %Y")
-            return dt.strftime("%Y-%m-%d")
+            dt = datetime.strptime(
+                f"{m.group(1)} {m.group(2)} {m.group(3)}", "%d %B %Y"
+            )
         except ValueError:
             return None
+        return f"{dt:%Y-%m-%d}"
 
-    def _extract_event_links_from_listing(self, soup: BeautifulSoup) -> list[tuple[str, int]]:
-        out: list[tuple[str, int]] = []
+    def _location(self, soup: BeautifulSoup) -> str:
+        """Venue and street address, e.g. "Council Chamber, 8 Inglesby Road, Camberwell"."""
+        parts = []
+        for selector in (
+            ".field--name-event-location",
+            ".location-address span.address",
+        ):
+            el = soup.select_one(selector)
+            if el:
+                text = el.get_text(" ", strip=True)
+                if text and text not in parts:
+                    parts.append(text)
+        return ", ".join(parts) if parts else self.default_location
 
-        for a in soup.select("h2 a[href]"):
-            text = (a.get_text(" ", strip=True) or "").strip()
-            href = (a.get("href") or "").strip()
-            if not href or "/events/" not in href:
-                continue
-
-            t = text.lower()
-            # include "Council Meeting", "Urban Planning Delegated Committee Meeting", etc.
-            if "meeting" not in t:
-                continue
-
-            m = self._event_year_re.search(text)
-            if not m:
-                continue
-            year = int(m.group(0))
-
-            out.append((self._abs(href), year))
-
-        # de-dupe
-        seen: set[str] = set()
-        deduped: list[tuple[str, int]] = []
-        for url, year in out:
-            if url in seen:
-                continue
-            seen.add(url)
-            deduped.append((url, year))
-        return deduped
-
-    def _next_page_url(self, soup: BeautifulSoup, current_url: str) -> str | None:
-        """
-        Robust pagination. Resolves relative hrefs against current_url (not base_url)
-        so that ?page=N query-only hrefs resolve correctly.
-        1) Site pager next selector (most reliable)
-        2) rel=next
-        3) aria/title/text contains next + href has page=
-        """
-        def resolve(href: str) -> str:
-            return urljoin(current_url, href)
-
-        # 1) Common Drupal pager markup
-        a = soup.select_one("li.pager__item--next a[href], li.pagination__item--next a[href]")
-        if a and a.get("href"):
-            return resolve(a["href"])
-
-        # 2) rel=next
-        a = soup.select_one('a[rel="next"][href]')
-        if a and a.get("href"):
-            return resolve(a["href"])
-
-        # 3) Heuristic search
-        for a in soup.select("a[href]"):
-            href = (a.get("href") or "").strip()
-            if not href:
-                continue
-            text = (a.get_text(" ", strip=True) or "").lower()
-            aria = (a.get("aria-label") or "").lower()
-            title = (a.get("title") or "").lower()
-            if ("next" in text) or ("next" in aria) or ("next" in title):
-                if "page=" in href:
-                    return resolve(href)
-
-        return None
-
-    def _looks_like_pdf_link(self, a) -> bool:
-        href = (a.get("href") or "").lower()
-        text = (a.get_text(" ", strip=True) or "").lower()
-
-        if "/media/" in href and "/download" in href:
-            return True
-        if "[pdf]" in text:
-            return True
-        if ".pdf" in href:
-            return True
-        return False
-
-    def _first_pdf_after_heading(self, soup: BeautifulSoup, heading_regex: re.Pattern) -> str | None:
-        """
-        Find a heading (h2-h6) matching heading_regex, then return the first PDF-ish link
-        in the content until the next heading (h2-h6).
-        """
-        heading_tags = ["h2", "h3", "h4", "h5", "h6"]
-
-        h = soup.find(heading_tags, string=heading_regex)
-        if not h:
-            for hx in soup.find_all(heading_tags):
-                txt = (hx.get_text(" ", strip=True) or "").strip()
-                if heading_regex.search(txt):
-                    h = hx
-                    break
-        if not h:
-            return None
-
-        node = h
-        while True:
-            node = node.find_next_sibling()
-            if node is None:
-                return None
-            if getattr(node, "name", None) in heading_tags:
-                return None
-
-            for a in node.select("a[href]"):
-                if self._looks_like_pdf_link(a):
-                    href = (a.get("href") or "").strip()
-                    if href:
-                        return self._abs(href)
-
-    def _first_pdf_anywhere(self, soup: BeautifulSoup) -> str | None:
-        """
-        Fallback: first PDF-ish link anywhere on the page.
-        Useful if headings change.
-        """
-        for a in soup.select("a[href]"):
-            if self._looks_like_pdf_link(a):
-                href = (a.get("href") or "").strip()
-                if href:
-                    return self._abs(href)
-        return None
-
-    def _extract_agenda_minutes(self, event_html: str) -> tuple[str | None, str | None]:
-        soup = BeautifulSoup(event_html, "html.parser")
-
-        # Agenda (prefer Revised Agenda if present, otherwise Agenda)
-        agenda = self._first_pdf_after_heading(soup, re.compile(r"^\s*Revised Agenda\s*$", re.I))
-        if not agenda:
-            agenda = self._first_pdf_after_heading(soup, re.compile(r"^\s*Agenda\s*$", re.I))
-
-        # Minutes: only use the "Minutes" heading.
-        # "Minutes to be adopted" on Boroondara event pages refers to the *previous* meeting's
-        # minutes being ratified at the current meeting — not this meeting's minutes.
-        minutes = self._first_pdf_after_heading(soup, re.compile(r"^\s*Minutes\s*$", re.I))
-
-        # Fallbacks (some pages differ slightly)
-        if not agenda:
-            # Some pages put the agenda PDF without a clean "Agenda" heading match
-            agenda = self._first_pdf_anywhere(soup)
-        # Minutes are often multiple; if heading lookup fails, don't guess aggressively.
-        return agenda, minutes
+    # ---------------------------------------------------------------- scraping
 
     def scraper(self) -> list[ScraperReturn]:
-        years_filter = self._get_years_filter()
+        years = self._years_filter()
 
-        # Past meetings (paginated, newest-first): all meetings with published docs.
-        # Upcoming meetings (main council page, also paginated): scheduled future meetings.
-        listing_urls = [
-            (
-                "https://www.boroondara.vic.gov.au/your-council/councillors-and-meetings/"
-                "council-and-committee-meetings/past-meeting-minutes-agendas-and-video-recordings"
-            ),
-            (
-                "https://www.boroondara.vic.gov.au/your-council/councillors-and-meetings/"
-                "council-and-committee-meetings"
-            ),
-        ]
+        event_urls: list[str] = []
+        for listing_url, newest_first in (
+            (PAST_MEETINGS_URL, True),
+            (UPCOMING_MEETINGS_URL, False),
+        ):
+            for url in self._listing_event_urls(listing_url, newest_first):
+                if url not in event_urls:
+                    event_urls.append(url)
 
         results: list[ScraperReturn] = []
-        seen_event_urls: set[str] = set()
+        for event_url in event_urls:
+            slug_year = self._year_from_slug(event_url)
+            if years and slug_year and slug_year not in years:
+                continue
 
-        for listing_url in listing_urls:
-            url: str | None = listing_url
-            max_pages = 200  # safety
+            soup = self._soup(event_url)
+            agenda_url, minutes_url = self._agenda_and_minutes(soup)
+            if not agenda_url and not minutes_url:
+                # Scheduled but nothing published yet, or a cancelled meeting.
+                # A record with no documents fails the pipeline's required-field
+                # check, so there is nothing to emit.
+                continue
 
-            pages_seen = 0
-            while url and pages_seen < max_pages:
-                pages_seen += 1
+            h1 = soup.find("h1")
+            name = h1.get_text(" ", strip=True) if h1 else "Council Meeting"
+            date, time = self._date_and_time(soup, name)
 
-                html = self._fetch(url)
-                soup = BeautifulSoup(html, "html.parser")
-
-                events = self._extract_event_links_from_listing(soup)
-
-                # Stop early if we’ve paged past the target year(s) (listings are newest-first)
-                if years_filter and events:
-                    years_on_page = {y for _, y in events}
-                    if years_on_page and max(years_on_page) < min(years_filter):
-                        break
-
-                for event_url, year in events:
-                    if event_url in seen_event_urls:
-                        continue
-                    seen_event_urls.add(event_url)
-
-                    if years_filter and year not in years_filter:
-                        continue
-
-                    event_html = self._fetch(event_url)
-                    agenda_url, minutes_url = self._extract_agenda_minutes(event_html)
-
-                    # Skip if neither doc exists (upcoming meetings may not have docs yet)
-                    if not agenda_url and not minutes_url:
-                        continue
-
-                    event_soup = BeautifulSoup(event_html, "html.parser")
-                    h1 = event_soup.find("h1")
-                    name = h1.get_text(" ", strip=True) if h1 else "Council Meeting"
-
-                    # Date: parse from title first (most reliable), then fall back to page regex.
-                    date = self._date_from_title(name)
-
-                    page_text = event_soup.get_text(" ", strip=True)
-                    if not date and hasattr(self, "date_regex") and getattr(self, "date_regex"):
-                        m = re.search(self.date_regex, page_text)
-                        if m:
-                            raw = m.group()
-                            iso = self._date_from_title(f"Council Meeting - {raw}")
-                            date = iso or raw
-
-                    # Time: best-effort using base regexes
-                    time = None
-                    if hasattr(self, "time_regex") and getattr(self, "time_regex"):
-                        tm = re.search(self.time_regex, page_text)
-                        if tm:
-                            time = tm.group().replace(".", ":")
-
-                    results.append(
-                        ScraperReturn(
-                            name=name,
-                            date=date,
-                            time=time,
-                            webpage_url=event_url,
-                            download_url=agenda_url or minutes_url,  # backward compatibility
-                            agenda_url=agenda_url,
-                            minutes_url=minutes_url,
-                            location=self.default_location,
-                        )
-                    )
-
-                # Advance to the next page; stop if none found.
-                next_url = self._next_page_url(soup, url)
-                url = next_url
-
-        if years_filter and not results:
-            raise RuntimeError(f"No meetings found for year(s): {sorted(years_filter)}")
+            results.append(
+                ScraperReturn(
+                    name=name,
+                    date=date,
+                    time=time,
+                    webpage_url=event_url,
+                    download_url=agenda_url or minutes_url,  # backward compatibility
+                    agenda_url=agenda_url,
+                    minutes_url=minutes_url,
+                    location=self._location(soup),
+                )
+            )
 
         return results

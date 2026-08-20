@@ -162,7 +162,11 @@ driver = self.fetcher.get_selenium_driver()
 
 ### Year Filtering
 
-Scrapers must return meetings from `EARLIEST_YEAR` (currently 2020) up to at least 2 years in the future. Import and use the constant:
+Scrapers should ask for meetings from `EARLIEST_YEAR` (currently 2020) up to
+at least 2 years ahead. This is a **fetch bound** — how far back to bother
+requesting — not a target a scraper is judged against. Plenty of councils
+publish nothing that old; Banyule offers 2017-2026 in its own filter but has
+documents only from 2022. Import and use the constant:
 
 ```python
 from aus_council_scrapers.constants import EARLIEST_YEAR
@@ -350,8 +354,11 @@ Two categories, treated differently:
 - **Invariants** fail the build (`tests/test_conformance.py`): a meeting
   emitted twice, a date that will not parse, a relative URL, no meetings.
   These are defects now, whatever state the scraper is in.
-- **Coverage** is reported only. Reaching two years instead of six means
-  unfinished, not broken.
+- **Coverage** is reported only. A scraper is `complete` when it returns
+  several meetings across at least 3 years, including the current year, with
+  minutes on past meetings. How far back its history reaches is reported but
+  does not count against it — that is usually the council's choice, not the
+  scraper's.
 
 A scraper that is genuinely broken goes in `tests/known_broken.py` with a
 reason. Those are *strict* xfails — the build fails when one starts passing,
