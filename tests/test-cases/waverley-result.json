@@ -864,18 +864,6 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council",
-    "date": "2021-05-25",
-    "time": null,
-    "location": null,
-    "webpage_url": "https://waverley.infocouncil.biz/",
-    "download_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/05/CM_20210525_ATT_606_DRAFT_EXCLUDED.PDF",
-    "agenda_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/05/CM_20210525_ATT_606_DRAFT_EXCLUDED.PDF",
-    "minutes_url": null,
-    "agenda_html_url": null,
-    "minutes_html_url": null
-  },
-  {
     "name": "Waverley Traffic Committee",
     "date": "2021-04-22",
     "time": null,
@@ -2165,8 +2153,8 @@
     "time": null,
     "location": null,
     "webpage_url": "https://waverley.infocouncil.biz/",
-    "download_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2024/11/ARIC_20241121_MIN_754.PDF",
-    "agenda_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2024/11/ARIC_20241121_MIN_754.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2024/11/ARIC_20241121_MIN_754.PDF",
     "agenda_html_url": null,
     "minutes_html_url": null
@@ -2549,8 +2537,8 @@
     "time": null,
     "location": null,
     "webpage_url": "https://waverley.infocouncil.biz/",
-    "download_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/12/ARIC_20251211_MIN_832.PDF",
-    "agenda_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/12/ARIC_20251211_MIN_832.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/12/ARIC_20251211_MIN_832.PDF",
     "agenda_html_url": null,
     "minutes_html_url": null
@@ -2645,8 +2633,8 @@
     "time": null,
     "location": null,
     "webpage_url": "https://waverley.infocouncil.biz/",
-    "download_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/10/ARIC_20251016_MIN_831.PDF",
-    "agenda_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/10/ARIC_20251016_MIN_831.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/10/ARIC_20251016_MIN_831.PDF",
     "agenda_html_url": null,
     "minutes_html_url": null
@@ -2717,8 +2705,8 @@
     "time": null,
     "location": null,
     "webpage_url": "https://waverley.infocouncil.biz/",
-    "download_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/08/ARIC_20250828_MIN_830.PDF",
-    "agenda_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/08/ARIC_20250828_MIN_830.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/08/ARIC_20250828_MIN_830.PDF",
     "agenda_html_url": null,
     "minutes_html_url": null
@@ -2837,8 +2825,8 @@
     "time": null,
     "location": null,
     "webpage_url": "https://waverley.infocouncil.biz/",
-    "download_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/06/ARIC_20250612_MIN_829.PDF",
-    "agenda_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/06/ARIC_20250612_MIN_829.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/06/ARIC_20250612_MIN_829.PDF",
     "agenda_html_url": null,
     "minutes_html_url": null
@@ -2957,8 +2945,8 @@
     "time": null,
     "location": null,
     "webpage_url": "https://waverley.infocouncil.biz/",
-    "download_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/03/ARIC_20250320_MIN_828.PDF",
-    "agenda_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/03/ARIC_20250320_MIN_828.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/03/ARIC_20250320_MIN_828.PDF",
     "agenda_html_url": null,
     "minutes_html_url": null
@@ -3245,8 +3233,8 @@
     "time": null,
     "location": null,
     "webpage_url": "https://waverley.infocouncil.biz/",
-    "download_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/03/ARIC_20260326_MIN_844_AT.PDF",
-    "agenda_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/03/ARIC_20260326_MIN_844_AT.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://waverley.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/03/ARIC_20260326_MIN_844_AT.PDF",
     "agenda_html_url": null,
     "minutes_html_url": null
