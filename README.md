@@ -71,12 +71,41 @@ This mode provides the original functionality:
 - Can send email and Discord notifications (if configured via `.env`)
 - Suitable for standalone deployments
 
+## How this is used in production
+
+The scrapers are run by the **[council-alerts](https://github.com/yimbymelbourne/council-alerts)**
+repository, not from here. Its `Ingest councils` workflow runs nightly at
+19:05 UTC (early morning Melbourne), checks out this repository's default
+branch, and calls adapter mode:
+
+```bash
+poetry run python aus_council_scrapers/main.py --adapter --format json
+```
+
+It then writes the results to its own database and records a per-council
+success or failure for each run.
+
+**That nightly run is the only scheduled crawl of council websites**, and it
+should stay that way. This repository used to run a second one — a
+`Generate Agenda Database` workflow that scraped every council each night in
+legacy mode and uploaded an `agendas.db` artifact nothing consumed. It has
+been removed: it doubled the request load on council servers to produce
+output no one read. Before adding any scheduled job here, check whether the
+council-alerts run already provides what you need.
+
+CI in this repository is offline. Tests replay recorded fixtures rather than
+fetching anything, so nothing on this side touches a council website unless
+you explicitly re-record with `RECORD=<slug>`.
+
 ## Architecture
 
 This repository is designed to be a **scraping engine** that can be used in two ways:
 
 1. **As a data source** (adapter mode) - Outputs clean JSON for consumption by other systems
 2. **As a standalone application** (legacy mode) - Handles the full pipeline including storage and notifications
+
+Adapter mode is what production uses. Legacy mode remains available for
+standalone deployments and is not run on a schedule by this project.
 
 # Scraper coverage
 
