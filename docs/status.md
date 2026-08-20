@@ -22,20 +22,20 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `bayside_vic` | 121 | 2021-2025 | 121 | 118 | history starts 2021, target 2020; nothing newer than 2025 |
 | 🟡 | `boroondara` | 83 | 2024-2026 | 83 | 81 | history starts 2024, target 2020 |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
-| ✅ | `burwood` | 166 | 2020-2026 | 166 | 139 |  |
+| ✅ | `burwood` | 166 | 2020-2026 | 162 | 139 |  |
 | 🟡 | `camden` | 1 | 2024-2024 | 1 | 1 | only 1 meeting(s); only 1 year(s); history starts 2024, target 2020; nothing newer than 2024 |
 | ✅ | `campbelltown` | 95 | 2020-2026 | 95 | 95 |  |
 | 🟡 | `canada_bay` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; history starts 2024, target 2020; nothing newer than 2024 |
 | 🟡 | `canterbury_bankstown` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; history starts 2024, target 2020; nothing newer than 2024 |
-| ✅ | `cumberland` | 329 | 2020-2026 | 329 | 229 |  |
+| ✅ | `cumberland` | 329 | 2020-2026 | 311 | 229 |  |
 | 🟡 | `darebin` | 84 | 2022-2026 | 84 | 79 | history starts 2022, target 2020 |
-| ✅ | `georges_river` | 632 | 2020-2026 | 632 | 571 |  |
+| ✅ | `georges_river` | 632 | 2020-2026 | 630 | 571 |  |
 | ✅ | `glen_eira` | 130 | 2020-2026 | 130 | 130 |  |
-| ✅ | `hornsby` | 294 | 2020-2026 | 294 | 143 |  |
-| ✅ | `inner_west` | 307 | 2020-2026 | 307 | 203 |  |
-| ✅ | `kuringgai` | 285 | 2020-2026 | 285 | 239 |  |
+| ✅ | `hornsby` | 291 | 2020-2026 | 288 | 143 |  |
+| ✅ | `inner_west` | 306 | 2020-2026 | 297 | 203 |  |
+| ✅ | `kuringgai` | 313 | 2020-2026 | 296 | 259 |  |
 | ✅ | `lane_cove` | 161 | 2020-2026 | 159 | 150 |  |
-| ✅ | `liverpool` | 201 | 2020-2026 | 201 | 135 |  |
+| ✅ | `liverpool` | 200 | 2020-2026 | 194 | 135 |  |
 | 🟡 | `manningham` | 53 | 2021-2026 | 53 | 37 | history starts 2021, target 2020 |
 | 🟡 | `melbourne` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; history starts 2024, target 2020; nothing newer than 2024 |
 | ✅ | `merri_bek` | 142 | 2016-2026 | 128 | 110 |  |
@@ -43,10 +43,10 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `parramatta` | 742 | 2008-2026 | 742 | 683 |  |
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |
 | 🟡 | `port_phillip` | 69 | 2024-2026 | 69 | 63 | history starts 2024, target 2020 |
-| ✅ | `randwick` | 431 | 2020-2026 | 431 | 360 |  |
+| ✅ | `randwick` | 429 | 2020-2026 | 424 | 360 |  |
 | 🟡 | `ryde` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; history starts 2024, target 2020; nothing newer than 2024 |
-| ✅ | `waverley` | 278 | 2020-2026 | 278 | 247 |  |
-| ✅ | `whitehorse` | 161 | 2020-2026 | 161 | 150 |  |
+| ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
+| ✅ | `whitehorse` | 160 | 2020-2026 | 160 | 150 |  |
 | 🟡 | `yarra` | 1 | 2025-2025 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; history starts 2025, target 2020; nothing newer than 2025 |
 
 ## Not started

@@ -1171,20 +1171,8 @@
     "webpage_url": "https://businesspapers.hornsby.nsw.gov.au/",
     "download_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/03/LPP_30032022_AGN.PDF",
     "agenda_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/03/LPP_30032022_AGN.PDF",
-    "minutes_url": null,
-    "agenda_html_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/03/LPP_30032022_AGN_WEB.htm",
-    "minutes_html_url": null
-  },
-  {
-    "name": "Local Planning Panel Council Chambers",
-    "date": "30 Mar 2022",
-    "time": "4.00pm",
-    "location": "Council Chambers",
-    "webpage_url": "https://businesspapers.hornsby.nsw.gov.au/",
-    "download_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/03/LPP_30032022_MIN.PDF",
-    "agenda_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/03/LPP_30032022_MIN.PDF",
     "minutes_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/03/LPP_30032022_MIN.PDF",
-    "agenda_html_url": null,
+    "agenda_html_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/03/LPP_30032022_AGN_WEB.htm",
     "minutes_html_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/03/LPP_30032022_MIN_WEB.htm"
   },
   {
@@ -1709,8 +1697,8 @@
     "time": "2:30pm",
     "location": "Council Chambers",
     "webpage_url": "https://businesspapers.hornsby.nsw.gov.au/",
-    "download_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/12/LPP_19122022_MIN.PDF",
-    "agenda_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/12/LPP_19122022_MIN.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/12/LPP_19122022_MIN.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2022/12/LPP_19122022_MIN_WEB.htm"
@@ -3017,8 +3005,8 @@
     "time": "11:00 AM",
     "location": "Teleconference",
     "webpage_url": "https://businesspapers.hornsby.nsw.gov.au/",
-    "download_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2025/09/LPP_24092025_MIN.PDF",
-    "agenda_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2025/09/LPP_24092025_MIN.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2025/09/LPP_24092025_MIN.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2025/09/LPP_24092025_MIN_WEB.htm"
@@ -3245,8 +3233,8 @@
     "time": "10:30 AM",
     "location": "Teleconference",
     "webpage_url": "https://businesspapers.hornsby.nsw.gov.au/",
-    "download_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/03/LPP_25032026_MIN.PDF",
-    "agenda_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/03/LPP_25032026_MIN.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/03/LPP_25032026_MIN.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/03/LPP_25032026_MIN_WEB.htm"
@@ -3396,40 +3384,16 @@
     "minutes_html_url": null
   },
   {
-    "name": "General Meeting Supplementary uploaded 5/06/2026 14:26",
-    "date": "10 Jun 2026",
-    "time": "7:00 PM",
-    "location": null,
-    "webpage_url": "https://businesspapers.hornsby.nsw.gov.au/",
-    "download_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/06/GM_10062026_ATT_SUP_17223_17208_17206.PDF",
-    "agenda_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/06/GM_10062026_ATT_SUP_17223_17208_17206.PDF",
-    "minutes_url": null,
-    "agenda_html_url": null,
-    "minutes_html_url": null
-  },
-  {
     "name": "General Meeting ",
     "date": "8 Jul 2026",
     "time": "6:30 PM",
     "location": null,
     "webpage_url": "https://businesspapers.hornsby.nsw.gov.au/",
-    "download_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/07/GM_08072026_MIN.PDF",
-    "agenda_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/07/GM_08072026_MIN.PDF",
-    "minutes_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/07/GM_08072026_MIN.PDF",
-    "agenda_html_url": null,
-    "minutes_html_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/07/GM_08072026_MIN_WEB.htm"
-  },
-  {
-    "name": "General Meeting ",
-    "date": "8 Jul 2026",
-    "time": "7:00 PM",
-    "location": null,
-    "webpage_url": "https://businesspapers.hornsby.nsw.gov.au/",
     "download_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/07/GM_08072026_AGN.PDF",
     "agenda_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/07/GM_08072026_AGN.PDF",
-    "minutes_url": null,
+    "minutes_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/07/GM_08072026_MIN.PDF",
     "agenda_html_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/07/GM_08072026_AGN_WEB.htm",
-    "minutes_html_url": null
+    "minutes_html_url": "https://businesspapers.hornsby.nsw.gov.au/RedirectToDoc.aspx?URL=Open/2026/07/GM_08072026_MIN_WEB.htm"
   },
   {
     "name": "General Meeting Supplementary uploaded 8/07/2026 13:27",
