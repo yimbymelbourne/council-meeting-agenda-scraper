@@ -197,8 +197,8 @@
     "time": "06:00PM",
     "location": "Remote Meeting",
     "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2020/09/C_29092020_MIN_3823_EXTRA.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2020/09/C_29092020_MIN_3823_EXTRA.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2020/09/C_29092020_MIN_3823_EXTRA.PDF",
     "agenda_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2020/09/C_29092020_AGN_3823_AT_EXTRA_WEB.htm",
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2020/09/C_29092020_MIN_3823_EXTRA_WEB.htm"
@@ -1421,8 +1421,8 @@
     "time": "6.30pm",
     "location": "Ashfield Service Centre, 260 Liverpool Road, Ashfield",
     "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/03/C_30032021_MIN_3892_EXTRA.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/03/C_30032021_MIN_3892_EXTRA.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/03/C_30032021_MIN_3892_EXTRA.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/03/C_30032021_MIN_3892_EXTRA_WEB.htm"
@@ -2556,18 +2556,6 @@
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2024/09/C_03092024_MIN_4102_WEB.htm"
   },
   {
-    "name": "Council Ashfield Service Centre, 260 Liverpool Road, Ashfield",
-    "date": "3 Sep 2024",
-    "time": "6:30 PM",
-    "location": "Ashfield Service Centre, 260 Liverpool Road, Ashfield",
-    "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2024/09/C_03092024_ATT_4102_DRAFT_EXCLUDED.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2024/09/C_03092024_ATT_4102_DRAFT_EXCLUDED.PDF",
-    "minutes_url": null,
-    "agenda_html_url": null,
-    "minutes_html_url": null
-  },
-  {
     "name": "Local Traffic Committee Level 6, Ashfield Service Centre, 260 Liverpool Road, Ashfield",
     "date": "19 Aug 2024",
     "time": "11:00 AM",
@@ -3005,8 +2993,8 @@
     "time": "6:30 PM",
     "location": "Ashfield Service Centre, 260 Liverpool Road, Ashfield",
     "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/09/PFCCC_22092025_ATT_4232_EXCLUDED.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/09/PFCCC_22092025_ATT_4232_EXCLUDED.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/09/PFCCC_22092025_MIN_4232.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2025/09/PFCCC_22092025_MIN_4232_WEB.htm"
@@ -3389,8 +3377,8 @@
     "time": "6:30 PM",
     "location": "Ashfield Service Centre, 260 Liverpool Road, Ashfield",
     "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/06/PFCCC_16062026_MIN_4317.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/06/PFCCC_16062026_MIN_4317.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/06/PFCCC_16062026_MIN_4317.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/06/PFCCC_16062026_MIN_4317_WEB.htm"
@@ -3437,8 +3425,8 @@
     "time": "6:30 PM",
     "location": "Ashfield Service Centre, 260 Liverpool Road, Ashfield",
     "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/05/PFCCC_19052026_MIN_4315.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/05/PFCCC_19052026_MIN_4315.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/05/PFCCC_19052026_MIN_4315.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/05/PFCCC_19052026_MIN_4315_WEB.htm"
@@ -3497,8 +3485,8 @@
     "time": "6:30 PM",
     "location": "Ashfield Service Centre, 260 Liverpool Road, Ashfield",
     "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/04/PFCCC_28042026_MIN_4314.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/04/PFCCC_28042026_MIN_4314.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/04/PFCCC_28042026_MIN_4314.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/04/PFCCC_28042026_MIN_4314_WEB.htm"
@@ -3533,8 +3521,8 @@
     "time": "6:30 PM",
     "location": "Ashfield Service Centre, 260 Liverpool Road, Ashfield",
     "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/04/PFCCC_21042026_MIN_4312.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/04/PFCCC_21042026_MIN_4312.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/04/PFCCC_21042026_MIN_4312.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/04/PFCCC_21042026_MIN_4312_WEB.htm"
@@ -3581,8 +3569,8 @@
     "time": "6:30 PM",
     "location": "Ashfield Service Centre, 260 Liverpool Road, Ashfield",
     "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/03/PFCCC_17032026_MIN_4308.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/03/PFCCC_17032026_MIN_4308.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/03/PFCCC_17032026_MIN_4308.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/03/PFCCC_17032026_MIN_4308_WEB.htm"
@@ -3653,8 +3641,8 @@
     "time": "6:30 PM",
     "location": "Ashfield Service Centre, 260 Liverpool Road, Ashfield",
     "webpage_url": "https://innerwest.infocouncil.biz/Default.aspx",
-    "download_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/02/PFCCC_17022026_MIN_4326.PDF",
-    "agenda_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/02/PFCCC_17022026_MIN_4326.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/02/PFCCC_17022026_MIN_4326.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://innerwest.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2026/02/PFCCC_17022026_MIN_4326_WEB.htm"

@@ -185,8 +185,8 @@
     "time": "6:00pm",
     "location": null,
     "webpage_url": "https://burwood.infocouncil.biz/",
-    "download_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2020/03/CM_24032020_MIN.PDF",
-    "agenda_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2020/03/CM_24032020_MIN.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2020/03/CM_24032020_MIN.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2020/03/CM_24032020_MIN_WEB.htm"
@@ -449,8 +449,8 @@
     "time": "16:00",
     "location": "Virtual - via Zoom",
     "webpage_url": "https://burwood.infocouncil.biz/",
-    "download_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/03/CM_02032021_MIN_PF_EXTRA.PDF",
-    "agenda_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/03/CM_02032021_MIN_PF_EXTRA.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/03/CM_02032021_MIN_PF_EXTRA.PDF",
     "agenda_html_url": null,
     "minutes_html_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2021/03/CM_02032021_MIN_PF_EXTRA_WEB.htm"
@@ -845,8 +845,8 @@
     "time": "9:00 AM",
     "location": "electronically",
     "webpage_url": "https://burwood.infocouncil.biz/",
-    "download_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2023/10/LT_05102023_MIN.PDF",
-    "agenda_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2023/10/LT_05102023_MIN.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2023/10/LT_05102023_MIN.PDF",
     "agenda_html_url": null,
     "minutes_html_url": null
@@ -1145,8 +1145,8 @@
     "time": "9:00am",
     "location": "electronically",
     "webpage_url": "https://burwood.infocouncil.biz/",
-    "download_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2023/02/LT_02022023_MIN.PDF",
-    "agenda_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2023/02/LT_02022023_MIN.PDF",
+    "download_url": null,
+    "agenda_url": null,
     "minutes_url": "https://burwood.infocouncil.biz/RedirectToDoc.aspx?URL=Open/2023/02/LT_02022023_MIN.PDF",
     "agenda_html_url": null,
     "minutes_html_url": null

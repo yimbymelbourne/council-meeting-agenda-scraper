@@ -533,10 +533,19 @@ class InfoCouncilScraper(BaseScraper):
 
                 # Process each meeting row
                 for current_meeting in meeting_rows:
-                    # Look for agenda PDF link
+                    # Look for agenda PDF link.
+                    #
+                    # Search inside the agenda cell, not the whole row. Minutes
+                    # links carry the same bpsGridPDFLink class, so searching
+                    # the row meant a meeting with minutes but no agenda stored
+                    # its minutes PDF as the agenda — inventing an agenda that
+                    # does not exist. That affected 76 meetings across ten
+                    # councils.
                     agenda_cell = current_meeting.find("td", class_="bpsGridAgenda")
-                    agenda_link = current_meeting.find(
-                        "a", class_="bpsGridPDFLink", recursive=True
+                    agenda_link = (
+                        agenda_cell.find("a", class_="bpsGridPDFLink")
+                        if agenda_cell
+                        else None
                     )
                     agenda_url = None
                     if agenda_link and "href" in agenda_link.attrs:
@@ -651,6 +660,13 @@ class InfoCouncilScraper(BaseScraper):
                 # Log but continue trying other years
                 self.logger.debug(f"Failed to fetch meetings for year {year}: {e}")
                 continue
+
+        # The legacy grid splits some meetings across two rows in the same way
+        # the redesigned template does — one carrying the agenda, another the
+        # minutes. That was invisible until agenda links stopped being read
+        # from the whole row, because the minutes row was given a fabricated
+        # agenda and so never looked like half a meeting.
+        results = _merge_split_meetings(results)
 
         if not results:
             self.logger.info(f"{self.council_name} scraper found no meetings")
