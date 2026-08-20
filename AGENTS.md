@@ -6,6 +6,14 @@ Scrapes Australian council websites for meeting agendas and minutes. The scraper
 
 Only **adapter mode** is prioritised. Adapter mode returns clean JSON to stdout with no side effects (no DB writes, no file downloads, no notifications).
 
+**Where this runs in production:** the [council-alerts](https://github.com/yimbymelbourne/council-alerts)
+repository runs `Ingest councils` nightly at 19:05 UTC, checking out this
+repository's default branch and calling
+`main.py --adapter --format json`. That is the only scheduled crawl of
+council websites — do not add another here. CI in this repository is
+offline: tests replay recorded fixtures and touch no council site unless you
+re-record with `RECORD=<slug>`.
+
 ---
 
 ## What You Will Be Asked To Do
