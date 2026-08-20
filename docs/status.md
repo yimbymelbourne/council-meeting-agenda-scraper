@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**18 of 60 councils complete (30%)** — 12 partial, 3 broken, 27 not started.
+**19 of 60 councils complete (31%)** — 11 partial, 3 broken, 27 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -37,7 +37,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `lane_cove` | 161 | 2020-2026 | 159 | 150 |  |
 | ✅ | `liverpool` | 201 | 2020-2026 | 201 | 135 |  |
 | 🟡 | `manningham` | 53 | 2021-2026 | 53 | 37 | history starts 2021, target 2020 |
-| 🟡 | `melbourne` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; history starts 2024, target 2020; nothing newer than 2024 |
+| ✅ | `melbourne` | 224 | 2020-2026 | 224 | 220 |  |
 | ✅ | `merri_bek` | 142 | 2016-2026 | 128 | 110 |  |
 | ✅ | `northern_beaches` | 141 | 2016-2026 | 139 | 126 |  |
 | ✅ | `parramatta` | 742 | 2008-2026 | 742 | 683 |  |
