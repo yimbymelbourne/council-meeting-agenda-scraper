@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**22 of 60 councils complete (36%)** — 8 partial, 3 broken, 27 not started.
+**23 of 60 councils complete (38%)** — 7 partial, 3 broken, 27 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -20,7 +20,7 @@ whenever a fixture changes; CI checks it is current.
 | ❌ | `woollahra` | 0 | - | 0 | 0 | returns no meetings |
 | ✅ | `banyule` | 73 | 2022-2026 | 73 | 72 |  |
 | 🟡 | `bayside_vic` | 121 | 2021-2025 | 121 | 118 | nothing newer than 2025 |
-| 🟡 | `boroondara` | 4 | 2024-2024 | 4 | 3 | only 1 year(s); nothing newer than 2024 |
+| ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
 | ✅ | `burwood` | 166 | 2020-2026 | 166 | 139 |  |
 | 🟡 | `camden` | 1 | 2024-2024 | 1 | 1 | only 1 meeting(s); only 1 year(s); nothing newer than 2024 |
