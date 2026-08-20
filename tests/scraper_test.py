@@ -75,7 +75,17 @@ def _replay(scraper: BaseScraper, slug: str, result_path: str, replay_path: str)
 
 
 def _record(scraper: BaseScraper, slug: str, result_path: str, replay_path: str):
-    recorder = RecordingFetcher(DefaultFetcher())
+    # Carry the scraper's own fetching settings into the recording run. A bare
+    # DefaultFetcher() silently drops them, so a council needing a per-scraper
+    # User-Agent — or headless Chrome's marker stripped, as melbourne does —
+    # records against a firewall page while the same scraper works in
+    # production, which is a very confusing way to find out.
+    recorder = RecordingFetcher(
+        DefaultFetcher(
+            user_agent=scraper.user_agent,
+            strip_headless_user_agent=scraper.strip_headless_user_agent,
+        )
+    )
     scraper.fetcher = recorder
     try:
         result = scraper.scraper()

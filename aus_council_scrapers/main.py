@@ -50,6 +50,12 @@ def suppress_stdout(enabled: bool):
         yield
 
 
+def _matches(selector: str, value: str) -> bool:
+    """Does `value` appear in a comma-separated `--council`/`--state` list?"""
+    wanted = {part.strip().lower() for part in selector.split(",") if part.strip()}
+    return value.lower() in wanted
+
+
 def main():
 
     # Parse arguments
@@ -58,8 +64,10 @@ def main():
     parser.add_argument(
         "--skip-keywords", help="Skip keyword extraction", action="store_true"
     )
-    parser.add_argument("--council", help="Scan only this council")
-    parser.add_argument("--state", help="Scan only this state")
+    parser.add_argument(
+        "--council", help="Scan only these councils (comma-separated)"
+    )
+    parser.add_argument("--state", help="Scan only these states (comma-separated)")
     parser.add_argument(
         "--years",
         nargs="+",
@@ -126,13 +134,15 @@ def main():
     with suppress_stdout(args.format == "json"):
         with ThreadPoolExecutor(max_workers=args.workers) as executor:
             for scraper in SCRAPER_REGISTRY.values():
-                # Filter by council and state
-                if args.state and args.state.lower() != scraper.state.lower():
+                # Filter by council and state. Both accept a comma-separated
+                # list, because our only production caller already sends one:
+                # council-alerts builds `--council a,b` from its workflow
+                # input, and an exact single-name comparison matched nothing,
+                # so a multi-council request scraped no councils at all and
+                # reported success with an empty result.
+                if args.state and not _matches(args.state, scraper.state):
                     continue
-                if (
-                    args.council
-                    and args.council.lower() != scraper.council_name.lower()
-                ):
+                if args.council and not _matches(args.council, scraper.council_name):
                     continue
 
                 futures.append(

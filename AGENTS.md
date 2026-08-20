@@ -8,6 +8,63 @@ Only **adapter mode** is prioritised. Adapter mode returns clean JSON to stdout 
 
 ---
 
+## Where This Runs — read before weighing any fetching change
+
+Live scraping does not happen here. It happens in a **GitHub Action in
+another repository**:
+
+[`yimbymelbourne/council-alerts` → `.github/workflows/ingest-councils.yml`](https://github.com/yimbymelbourne/council-alerts/blob/main/.github/workflows/ingest-councils.yml)
+
+That workflow checks this repo out **at `main`, with no pinned ref**, and runs
+`aus_council_scrapers/main.py --adapter --format json` through
+`packages/scraper-adapter`. Merging to main is therefore deploying: whatever
+lands here runs against every council the following night.
+
+There is a second, older runner in this repo —
+`.github/workflows/run-agenda.yml` — which builds `agendas.db` on a daily
+cron. It is not the production path, and it differs in ways that matter
+(it installs Chrome via `browser-actions/setup-chrome`; production does not).
+
+Four constraints follow, and a fetching change that ignores any of them
+looks fine locally and breaks production:
+
+1. **Headless only.** `runs-on: ubuntu-latest`, no display and no `xvfb`, and
+   production installs no browser at all — Selenium gets whatever Chrome the
+   runner image ships. Anything that needs a headed browser is not
+   deployable as things stand.
+2. **One process for every council, and a hard kill.** The adapter is invoked
+   **once** for all councils with `--workers 6`, and the Node side
+   `SIGKILL`s it at `SCRAPE_TIMEOUT_MS` (default **180 s**, set in the
+   workflow's `env:`). A slow scraper does not just fail itself — the kill
+   discards stdout, so the run ends in `Python adapter did not produce valid
+   JSON on stdout` and **nothing at all is persisted, for any council**. The
+   nightly run already exceeds this budget, so treat per-scraper wall time as
+   a scarce shared resource and say what a new scraper costs.
+3. **Env vars are the deployment lever, and they live in the other repo.**
+   The adapter spawns Python with `env: {...process.env}`, so anything in
+   that workflow's `env:` block reaches the fetcher — `FETCH_DELAY`,
+   `SCRAPE_TIMEOUT_MS`, and any future `USER_AGENT`. The corollary: a
+   mechanism that is only configurable by editing this repo cannot be tuned
+   in production without a PR to `council-alerts`, and a default chosen here
+   is what production gets until someone changes that workflow.
+4. **Python 3.11 in production**, 3.10 in `run-agenda.yml`, `>=3.10,<3.13` in
+   `pyproject.toml`.
+
+To check what production actually did last night:
+
+```bash
+gh run list --repo yimbymelbourne/council-alerts --workflow ingest-councils.yml -L 5
+gh run view <run-id> --repo yimbymelbourne/council-alerts --log | grep -E "Scraper failed|SIGKILL"
+```
+
+Prefer a code default that is correct unattended over a knob someone has to
+set in the other repo. The User-Agent decision is deliberately shaped that
+way: the honest default and the per-council overrides are both in code, so
+`ingest-councils.yml` needs no change for them to take effect, and
+`USER_AGENT` exists only as an escape hatch.
+
+---
+
 ## What You Will Be Asked To Do
 
 1. **Fix a broken council scraper** — a scraper that returns errors or zero results
@@ -160,30 +217,62 @@ work into a ten-line subclass. Fetch the meeting page and look for:
 Note that InfoCouncil is not forever: three councils have left the platform
 and their old `*.infocouncil.biz` subdomains now 404.
 
-### If you get a 403 — stop, do not work around it
+### How we identify ourselves, and what a 403 means now
 
-A `403` from a council raises `BlockedByWAF`, which is a **deferral, not a
-puzzle to solve**. Do not add headers, change the User-Agent locally, add
-proxies, or switch to Selenium to get past it.
+Settled in [#142](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142):
+we identify honestly rather than imitating a browser. **Two channels, two
+honest strings, and the difference is not an oversight:**
 
-The cause is known: our default User-Agent is a spoofed browser string, and
-13 of 15 blocked councils return `200` as soon as an identifying User-Agent
-is sent instead. The fix is a project-wide decision pending at
-[issue #142](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142).
+| Channel | User-Agent | Why |
+|---|---|---|
+| `fetch_with_requests` | `IDENTIFYING_USER_AGENT` — `aus-council-scrapers/0.1 (+repo URL)` | We are a script; saying so unblocks 13 councils |
+| Selenium | Chrome's own string, untouched | We really are Chrome, so its string is already true |
 
-Leave the council alone and say it is blocked pending #142. Councils
-currently in this state: `frankston`, `hobsons_bay`, `hume`, `kingston`,
-`maribyrnong`, `melton`, `monash`, `mornington_peninsula`, `nillumbik`,
-`stonnington`, `whittlesea`, `yarra_ranges`, `blacktown`.
+Do **not** "align" these by sending the identifying string to Chrome. It is
+measured: it gains nothing on any council and loses `melbourne`, whose
+CloudFront rules 403 anything not browser-shaped.
 
-`cardinia` is the exception: it returns a Cloudflare challenge
-(`cf-mitigated: challenge`) and stays blocked whatever the User-Agent, so it
-genuinely needs Selenium.
+Headless Chrome puts `HeadlessChrome` in that string, and some WAFs reject the
+token alone. Stripping it is opt-in per scraper
+(`strip_headless_user_agent = True`, currently `melbourne` only) because it is
+**not** a free win: it is the difference between 0 and 224 meetings for
+melbourne and between 73 and 10 for `banyule`, whose year-filter postbacks
+stop working. Verify either flag by running the scraper both ways and
+comparing meetings returned — reachability proves nothing here, since banyule
+loads its listing page fine and then fails on the interaction.
 
-When testing this yourself, go through `DefaultFetcher` rather than `curl`.
-Our fetcher sends a full browser-shaped header set, and some sites challenge
-a bare request that the real client passes — `bayside_nsw` looks blocked
-under `curl -A` and returns 200 through the fetcher.
+**A 403 now means we identified ourselves and were refused anyway**, which is a
+different thing from the old blanket deferral. Three outcomes, in order:
+
+1. **The council wants a browser-shaped client.** Rare but real — set
+   `user_agent = BROWSER_USER_AGENT` on the scraper class, verified against
+   that council alone. `manningham` is the only current case (200 as a
+   browser, 403 identifying). `scripts/detect_platform.py` reports this as
+   `browser-only`. **Never widen it to the project default** — 13 councils are
+   reachable *because* the default identifies us: `ryde`, which had a scraper
+   but was blocked, plus `blacktown`, `frankston`, `hume`, `kingston`,
+   `maribyrnong`, `melton`, `monash`, `mornington_peninsula`, `nillumbik`,
+   `stonnington`, `whittlesea` and `yarra_ranges`, which have none yet.
+   (`hobsons_bay` also answers now, with a 404 and a real page — its URL in
+   `docs/councils.md` is stale.)
+2. **A JS challenge**, not a header problem: `cf-mitigated: challenge`
+   (Cloudflare, e.g. `cardinia`) or `x-amzn-waf-action: challenge` (AWS, e.g.
+   `melbourne`). Needs Selenium. Note the AWS variant answers **202 with an
+   empty body**, not 403, so it never raises `BlockedByWAF` — a scraper built
+   on `fetch_with_requests` there silently finds nothing.
+3. **Genuinely refused.** Leave it alone and say so. `bayside_vic` is here:
+   403 as a browser, connection reset when identifying.
+
+Overrides are constrained by `tests/test_user_agent.py`: an override may only
+ever be `BROWSER_USER_AGENT`, so there is one string to re-verify rather than a
+drift of hand-rolled ones.
+
+When testing any of this, go through `DefaultFetcher` rather than `curl`. Our
+fetcher sends a full header set, and some sites challenge a bare request that
+the real client passes — `bayside_nsw` looks blocked under `curl -A` and
+returns 200 through the fetcher. Probe the endpoint the **scraper** hits, not
+the council's homepage: for every InfoCouncil council those are different
+hosts, and `burwood.infocouncil.biz` is fine while `burwood.nsw.gov.au` 403s.
 
 ### Step 4 — Implement
 
