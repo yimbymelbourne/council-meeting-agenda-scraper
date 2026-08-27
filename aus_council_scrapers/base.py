@@ -351,32 +351,51 @@ class DefaultFetcher(Fetcher):
         last_error = None
         for attempt in range(self.MAX_RETRIES):
             self.__throttle(url)
-            if method.upper() == "POST":
-                response = self.__session.post(url, **kwargs)
+            try:
+                if method.upper() == "POST":
+                    response = self.__session.post(url, **kwargs)
+                else:
+                    response = self.__session.get(url, **kwargs)
+            except (requests.ConnectionError, requests.Timeout) as e:
+                # A dropped connection is exactly the transient failure this
+                # fetcher exists to absorb (see class docstring) -- confirmed
+                # against a real one, ~600 requests into a long recording,
+                # not a hypothetical. Retry it the same as a retryable status
+                # code rather than aborting the whole scrape on one flaky
+                # request.
+                last_error = e
+                if attempt < self.MAX_RETRIES - 1:
+                    delay = self.__backoff(None, attempt)
+                    self.__logger.warning(
+                        f"{e.__class__.__name__} from {url} — backing off "
+                        f"{delay:.1f}s (attempt {attempt + 1}/{self.MAX_RETRIES})"
+                    )
+                    time.sleep(delay)
+                    continue
+                raise
             else:
-                response = self.__session.get(url, **kwargs)
+                if response.status_code not in self.RETRY_STATUSES:
+                    response.raise_for_status()
+                    return response.text
 
-            if response.status_code not in self.RETRY_STATUSES:
-                response.raise_for_status()
-                return response.text
-
-            last_error = requests.HTTPError(
-                f"{response.status_code} for {url}", response=response
-            )
-            if response.status_code == 403:
-                # Not a transient failure and not something to engineer around.
-                # A measured 13 of 15 blocked councils return 200 as soon as we
-                # send an identifying User-Agent instead of the spoofed browser
-                # one, so a workaround here would be solving the wrong problem.
-                last_error = BlockedByWAF(url)
-                break
-            if attempt < self.MAX_RETRIES - 1:
-                delay = self.__backoff(response, attempt)
-                self.__logger.warning(
-                    f"{response.status_code} from {url} — backing off {delay:.1f}s "
-                    f"(attempt {attempt + 1}/{self.MAX_RETRIES})"
+                last_error = requests.HTTPError(
+                    f"{response.status_code} for {url}", response=response
                 )
-                time.sleep(delay)
+                if response.status_code == 403:
+                    # Not a transient failure and not something to engineer
+                    # around. A measured 13 of 15 blocked councils return 200
+                    # as soon as we send an identifying User-Agent instead of
+                    # the spoofed browser one, so a workaround here would be
+                    # solving the wrong problem.
+                    last_error = BlockedByWAF(url)
+                    break
+                if attempt < self.MAX_RETRIES - 1:
+                    delay = self.__backoff(response, attempt)
+                    self.__logger.warning(
+                        f"{response.status_code} from {url} — backing off {delay:.1f}s "
+                        f"(attempt {attempt + 1}/{self.MAX_RETRIES})"
+                    )
+                    time.sleep(delay)
 
         raise last_error
 
