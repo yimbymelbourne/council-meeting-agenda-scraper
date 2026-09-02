@@ -291,8 +291,19 @@ class StrathfieldNSWScraper(BaseScraper):
                     self.logger.info(f"Found agenda for {meeting.name}: {agenda_url}")
                 if minutes_url:
                     self.logger.info(f"Found minutes for {meeting.name}: {minutes_url}")
+
+                # Strathfield publishes two 2020 meetings with no papers at all —
+                # `status: Okay`, nothing but a meeting-time block. Those are real
+                # meetings, but downstream keys a meeting on its document URL, so a
+                # row with no documents has no identity and `ingestCouncils` drops it
+                # on arrival ("the scrapers shouldn't emit these"). Skip it here,
+                # where it is visible and named, rather than emitting something that
+                # cannot be stored. This is not the same as a failure, which raises.
                 if not agenda_url and not minutes_url:
-                    self.logger.info(f"No documents published for {meeting.name}")
+                    self.logger.info(
+                        f"No documents published for {meeting.name}, skipping"
+                    )
+                    continue
 
                 all_results.append(
                     ScraperReturn(

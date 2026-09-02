@@ -172,10 +172,10 @@ class TestYearsFilter:
         results = scraper.scraper()
 
         # The 2019 meeting is below EARLIEST_YEAR, so pagination stops there. The
-        # two 2025 meetings have no documents in this mock, which is not an error:
-        # they are still returned, without URLs.
-        assert [r.date for r in results] == ["16 December 2025", "25 November 2025"]
-        assert all(r.agenda_url is None and r.minutes_url is None for r in results)
+        # two 2025 meetings have no documents in this mock, which is not an error
+        # but is not emittable either — downstream keys a meeting on its document
+        # URL — so they are skipped and nothing is returned.
+        assert results == []
 
 
 _ALL_CURRENT_YEAR_PAGE = """
@@ -239,3 +239,29 @@ class TestFailuresAreNotSilent:
         results = scraper.scraper()
 
         assert [r.date for r in results] == ["16 December 2025", "25 November 2025"]
+
+    def test_undocumented_meeting_is_skipped_without_losing_its_siblings(
+        self, scraper
+    ):
+        """A meeting with no papers is skipped, not treated as a failure.
+
+        `ingestCouncils` keys a meeting on its document URL and discards rows
+        that have none, so emitting one is pointless. Skipping it must not cost
+        the meetings around it, which is what an abort would do.
+        """
+        scraper.years_filter = [2025]
+
+        class MockFetcher:
+            def fetch_with_selenium(self, url):
+                if "aaaa1111" in url:
+                    return _NO_PDF_RESPONSE
+                if "OCServiceHandler" in url:
+                    return _AGENDA_AND_MINUTES_RESPONSE
+                if "pageindex" in url:
+                    return "<html><body></body></html>"
+                return _ALL_CURRENT_YEAR_PAGE
+
+        scraper.fetcher = MockFetcher()
+        results = scraper.scraper()
+
+        assert [r.date for r in results] == ["25 November 2025"]

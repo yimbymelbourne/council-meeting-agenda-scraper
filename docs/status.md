@@ -49,7 +49,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `port_phillip` | 128 | 2022-2026 | 128 | 121 |  |
 | ✅ | `randwick` | 429 | 2020-2026 | 424 | 360 |  |
 | 🟡 | `ryde` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; nothing newer than 2024 |
-| ✅ | `strathfield` | 99 | 2020-2026 | 97 | 90 |  |
+| ✅ | `strathfield` | 97 | 2020-2026 | 97 | 90 |  |
 | ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
 | ✅ | `whitehorse` | 160 | 2020-2026 | 160 | 150 |  |
 | 🟡 | `yarra` | 1 | 2025-2025 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; nothing newer than 2025 |
