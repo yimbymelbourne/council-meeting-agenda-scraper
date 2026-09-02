@@ -58,7 +58,18 @@ PLATFORMS: tuple[Platform, ...] = (
     ),
     Platform(
         name="Granicus/Legistar",
-        signatures=(r"granicus\.com", r"legistar"),
+        # Granicus sells several unrelated products, including OpenCities —
+        # a general council-website CMS with no connection to Legistar's
+        # meeting/agenda system. Every OpenCities site credits it by URL in
+        # its own generator meta tag and footer (.../product/opencities,
+        # .../solution/govaccess/opencities/), which otherwise satisfies
+        # this signature on any OpenCities council regardless of what
+        # actually publishes its agendas — confirmed on Logan and Ipswich,
+        # both really on eScribe and InfoCouncil respectively. The lookahead
+        # excludes only that self-referential branding path; a genuine
+        # Granicus agenda URL (a subdomain, or /solution/agenda-management/)
+        # is unaffected.
+        signatures=(r"granicus\.com(?![\w/-]*opencities)", r"legistar"),
         guidance="No base class yet — first council on this platform gets to write one.",
     ),
     Platform(
