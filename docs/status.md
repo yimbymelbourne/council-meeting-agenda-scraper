@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**25 of 60 councils complete (41%)** — 6 partial, 3 broken, 26 not started.
+**27 of 60 councils complete (45%)** — 6 partial, 3 broken, 24 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -19,6 +19,7 @@ whenever a fixture changes; CI checks it is current.
 | ❌ | `strathfield` | 0 | - | 0 | 0 | returns no meetings |
 | ❌ | `woollahra` | 0 | - | 0 | 0 | returns no meetings |
 | ✅ | `banyule` | 73 | 2022-2026 | 73 | 72 |  |
+| ✅ | `bayside_nsw` | 649 | 2020-2026 | 642 | 557 |  |
 | 🟡 | `bayside_vic` | 121 | 2021-2025 | 121 | 118 | nothing newer than 2025 |
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
@@ -40,6 +41,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `melbourne` | 224 | 2020-2026 | 224 | 220 |  |
 | ✅ | `merri_bek` | 142 | 2016-2026 | 128 | 110 |  |
 | ✅ | `mornington_peninsula` | 145 | 2022-2026 | 145 | 141 |  |
+| ✅ | `north_sydney` | 115 | 2020-2026 | 115 | 115 |  |
 | ✅ | `northern_beaches` | 141 | 2016-2026 | 139 | 126 |  |
 | ✅ | `parramatta` | 742 | 2008-2026 | 742 | 683 |  |
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |
@@ -55,4 +57,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`bayside_nsw` `blacktown` `cardinia` `casey` `fairfield` `frankston` `greater_dandenong` `hobsons_bay` `hume` `kingston` `knox` `maribyrnong` `melton` `monash` `moonee_valley` `mosman` `nillumbik` `north_sydney` `stonnington` `sutherland` `sydney` `the_hills` `whittlesea` `willoughby` `wyndham` `yarra_ranges`
+`blacktown` `cardinia` `casey` `fairfield` `frankston` `greater_dandenong` `hobsons_bay` `hume` `kingston` `knox` `maribyrnong` `melton` `monash` `moonee_valley` `mosman` `nillumbik` `stonnington` `sutherland` `sydney` `the_hills` `whittlesea` `willoughby` `wyndham` `yarra_ranges`
