@@ -227,6 +227,24 @@ work into a ten-line subclass. Fetch the meeting page and look for:
 Note that InfoCouncil is not forever: three councils have left the platform
 and their old `*.infocouncil.biz` subdomains now 404.
 
+**A domain signature is not proof of absence.** These are matched on vendor
+domains and strings, so two things slip past:
+
+- **White-labelled apps.** `yarra_ranges` serves the docspublished app from
+  `www.yarraranges.vic.gov.au`, so the `docspublished.com.au` signature never
+  appears. What gave it away was the SPA shell loading the *same Angular
+  bundle* (`main-RS6B3YTL.js`) as a known docspublished council. Compare bundle
+  hashes, and probe `api.docassembler.com.au/api/organisation/<slug>` with
+  candidate slugs — it returns the org record or an empty body.
+- **Vendor names in the footer.** `platforms.py` matches the bare string
+  `granicus`, which hits the OpenCities `<meta name="generator">` tag and the
+  "Powered by Granicus" footer, since Granicus owns OpenCities. Four councils
+  report as `Granicus/Legistar` on that basis with zero Legistar in the page.
+
+Also check the URL in `docs/councils.md` actually *is* the meeting listing.
+Several are landing pages that link to it, and detection run against one of
+those sees a page with no meetings on it.
+
 ### How we identify ourselves, and what a 403 means now
 
 Settled in [#142](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142):
