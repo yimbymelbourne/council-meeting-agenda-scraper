@@ -10,6 +10,7 @@ from aus_council_scrapers.scrapers.vic.merribek import MerribekScraper
 from aus_council_scrapers.scrapers.vic.mornington_peninsula import (
     MorningtonPeninsulaScraper,
 )
+from aus_council_scrapers.scrapers.vic.nillumbik import NillumbikScraper
 
 from aus_council_scrapers.scrapers.vic.port_phillip import PortPhilipScraper
 from aus_council_scrapers.scrapers.vic.whitehorse import WhitehorseScraper
