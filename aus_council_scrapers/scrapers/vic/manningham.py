@@ -1,4 +1,9 @@
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+from aus_council_scrapers.base import (
+    BROWSER_USER_AGENT,
+    BaseScraper,
+    ScraperReturn,
+    register_scraper,
+)
 from aus_council_scrapers.constants import EARLIEST_YEAR
 from bs4 import BeautifulSoup
 import re
@@ -8,6 +13,13 @@ from urllib.parse import urljoin
 
 @register_scraper
 class ManninghamScraper(BaseScraper):
+    # Manningham's CloudFront rules run the opposite way to most councils':
+    # they serve a browser-shaped client and 403 an identifying one (measured
+    # 2026-08-20 — 200 with 364KB against a 919-byte 403). It is the only
+    # council in the project that needs this, and the override is deliberately
+    # per-scraper so the project-wide identifying default stays put.
+    user_agent = BROWSER_USER_AGENT
+
     def __init__(self):
         council_name = "manningham"
         state = "VIC"

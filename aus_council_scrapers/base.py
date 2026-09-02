@@ -32,26 +32,65 @@ USER_AGENT_ISSUE = (
     "https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142"
 )
 
+# How we describe ourselves, one string per channel. Both are honest, which is
+# the point: #142 objected to claiming to be a browser while not being one.
+#
+# On the requests channel we are a script, so we say so. We fetch agendas and
+# minutes councils are legally required to publish, and an identifiable client
+# with a contact URL can be allowlisted or contacted instead of silently
+# blocked.
+IDENTIFYING_USER_AGENT = (
+    "aus-council-scrapers/0.1 "
+    "(+https://github.com/yimbymelbourne/council-meeting-agenda-scraper)"
+)
+
+# A minority of councils run WAF rules that do the opposite: they reject
+# anything that is not browser-shaped. Those get this string via a per-scraper
+# `user_agent` override — never globally, or the 13 councils that only answer
+# an identifying client go dark again.
+#
+# The trailing token is `Safari/537.36`. The string this replaced ended
+# `537.3`, one digit short, which made it a rare fingerprint rather than a
+# common one — the worst of both worlds.
+BROWSER_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
+
+
+def resolve_user_agent(override: Optional[str] = None) -> str:
+    """The User-Agent for the requests channel.
+
+    Precedence: an explicit per-scraper override, then the `USER_AGENT`
+    environment variable, then the identifying default. The override wins over
+    the environment on purpose — a scraper sets it because its council demands
+    it, so an env var meant for everything else must not switch it off.
+    """
+    return override or os.environ.get("USER_AGENT") or IDENTIFYING_USER_AGENT
+
 
 class BlockedByWAF(requests.HTTPError):
     """A council's firewall rejected us with 403.
 
-    This is a known, tracked problem with a known cause, so it should stop
-    work on that council rather than prompt a workaround.
+    Since #142 was settled this means something narrower than it used to:
+    we identified ourselves honestly and were refused anyway.
     """
 
-    def __init__(self, url: str):
-        super().__init__(
-            f"403 for {url}\n\n"
-            f"This council's firewall is blocking us. Do NOT work around it — "
-            f"it is a known issue with a pending decision, tracked at:\n"
-            f"  {USER_AGENT_ISSUE}\n\n"
-            f"The cause is our spoofed browser User-Agent: 13 of 15 blocked "
-            f"councils return 200 with an identifying User-Agent instead. "
-            f"Defer this council until that issue is resolved.\n\n"
-            f"(cardinia stays blocked either way, behind a Cloudflare "
-            f"challenge — that one needs Selenium, not a header.)"
+    def __init__(self, url: str, user_agent: str):
+        browser_hint = (
+            f"You are already sending {BROWSER_USER_AGENT!r}, so this is not a "
+            f"User-Agent problem. Check for a JS challenge "
+            f"(`cf-mitigated`, `x-amzn-waf-action`), which needs Selenium."
+            if user_agent == BROWSER_USER_AGENT
+            else f"A few councils reject any client that is not browser-shaped "
+            f"— `manningham` is one. If this is another, set\n"
+            f"  user_agent = BROWSER_USER_AGENT\n"
+            f"on the scraper class, and verify it against that council only.\n\n"
+            f"Do NOT change the project-wide default: 13 councils are "
+            f"reachable *because* it identifies us. Background: "
+            f"{USER_AGENT_ISSUE}"
         )
+        super().__init__(f"403 for {url}\n\nSent as: {user_agent}\n\n{browser_hint}")
 
 
 def register_scraper(cls):
@@ -247,6 +286,19 @@ class Fetcher(ABC):
         """
         time.sleep(seconds)
 
+    def restart_driver(self) -> None:
+        """Throw away the browser so the next fetch starts a fresh one.
+
+        A scraper that loads dozens of heavy pages through one long-lived
+        Chrome can find it dead mid-run — `InvalidSessionIdException`, "the
+        browser has closed the connection" — after which every later fetch
+        fails and the scraper looks merely unproductive. Retrying is useless
+        against a dead session; restarting is not.
+
+        A no-op by default so replay, which has no browser, ignores it.
+        """
+        return None
+
     def close(self) -> None:
         pass
 
@@ -269,9 +321,16 @@ class DefaultFetcher(Fetcher):
     MAX_RETRIES = 4
     RETRY_STATUSES = frozenset({403, 429, 500, 502, 503, 504})
 
-    def __init__(self, fetch_delay: Optional[float] = None):
+    def __init__(
+        self,
+        fetch_delay: Optional[float] = None,
+        user_agent: Optional[str] = None,
+        strip_headless_user_agent: bool = False,
+    ):
         self.__session = requests.Session()
-        self.__set_headers(self.DEFAULTHEADERS)
+        self.user_agent = resolve_user_agent(user_agent)
+        self.strip_headless_user_agent = strip_headless_user_agent
+        self.__set_headers({**self.DEFAULTHEADERS, "User-Agent": self.user_agent})
         self.__driver = None
         self.__last_request_at: dict[str, float] = {}
         self.__logger = logging.getLogger(self.__class__.__name__)
@@ -308,7 +367,9 @@ class DefaultFetcher(Fetcher):
         return min(self.__fetch_delay * (2**attempt), 60.0)
 
     DEFAULTHEADERS = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.62 Safari/537.3",
+        # Overridden per instance by `resolve_user_agent`; the value here is
+        # what a caller reading DEFAULTHEADERS directly should send.
+        "User-Agent": IDENTIFYING_USER_AGENT,
         "Accept-Language": "en-US,en;q=0.9",
         "Referer": "https://www.google.com/",
         "Connection": "keep-alive",
@@ -341,6 +402,34 @@ class DefaultFetcher(Fetcher):
                 "source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
             },
         )
+        # Chrome's own string is the honest answer on this channel — we really
+        # are Chrome — so it is left alone by default, and the identifying
+        # string is deliberately NOT sent here (it gains nothing on any
+        # council and melbourne 403s anything not browser-shaped).
+        #
+        # The one exception is opt-in per scraper: headless Chrome announces
+        # itself as "HeadlessChrome", and a few WAFs reject that token on
+        # sight. Stripping it is off by default because it is not free.
+        # Measured by running each Selenium-channel scraper both ways
+        # (2026-08-20), meetings returned:
+        #
+        #   scraper       headless UA   de-headlessed
+        #   banyule                73     10   <- year-filter postbacks break
+        #   campbelltown           95     95
+        #   darebin                84     84
+        #   melbourne               0    224   <- 403 without it
+        #   strathfield            97     97
+        #
+        # So this is melbourne's fix, not a global improvement. Reachability
+        # alone would have said all five were fine either way — banyule loads
+        # its listing page and then fails on the interaction.
+        if self.strip_headless_user_agent:
+            user_agent = self.__driver.execute_script("return navigator.userAgent")
+            if "Headless" in user_agent:
+                self.__driver.execute_cdp_cmd(
+                    "Network.setUserAgentOverride",
+                    {"userAgent": user_agent.replace("Headless", "")},
+                )
 
     def get_selenium_driver(self):
         if not self.__driver:
@@ -364,11 +453,10 @@ class DefaultFetcher(Fetcher):
                 f"{response.status_code} for {url}", response=response
             )
             if response.status_code == 403:
-                # Not a transient failure and not something to engineer around.
-                # A measured 13 of 15 blocked councils return 200 as soon as we
-                # send an identifying User-Agent instead of the spoofed browser
-                # one, so a workaround here would be solving the wrong problem.
-                last_error = BlockedByWAF(url)
+                # Not a transient failure, so retrying is pointless. What it
+                # means now that we identify ourselves is narrower than it used
+                # to be — see BlockedByWAF.
+                last_error = BlockedByWAF(url, self.user_agent)
                 break
             if attempt < self.MAX_RETRIES - 1:
                 delay = self.__backoff(response, attempt)
@@ -388,6 +476,16 @@ class DefaultFetcher(Fetcher):
         if wait_condition:
             WebDriverWait(self.__driver, wait_time).until(wait_condition)
         return self.__driver.page_source
+
+    def restart_driver(self) -> None:
+        if self.__driver:
+            try:
+                self.__driver.quit()
+            except Exception:
+                # Already gone — quitting a dead session raises, and the point
+                # of this call is to recover from exactly that.
+                pass
+        self.__driver = None
 
     def close(self) -> None:
         if self.__driver:
@@ -419,6 +517,16 @@ class BaseScraper(ABC):
         `close()`: Closes the Selenium WebDriver instance if it exists.
     """
 
+    # Set on the subclass only for a council whose WAF refuses an identifying
+    # client — `BROWSER_USER_AGENT`, verified against that council. Leave it
+    # None everywhere else; see `resolve_user_agent` and #142.
+    user_agent: Optional[str] = None
+
+    # Set on the subclass for a council that rejects the "HeadlessChrome"
+    # token in Chrome's User-Agent. Verify by running the scraper both ways
+    # and comparing meetings returned — it costs banyule most of its history.
+    strip_headless_user_agent: bool = False
+
     def __init__(
         self,
         council_name: str,
@@ -435,7 +543,10 @@ class BaseScraper(ABC):
         self.time_regex: re.Pattern = TIME_REGEX
         self.date_regex: re.Pattern = DATE_REGEX
         self.keyword_regexes: list[re.Pattern] = COUNCIL_HOUSING_REGEX
-        self.fetcher = DefaultFetcher()
+        self.fetcher = DefaultFetcher(
+            user_agent=self.user_agent,
+            strip_headless_user_agent=self.strip_headless_user_agent,
+        )
 
         self.default_name: str = f"{self.council_name.capitalize()} Council Meeting"
         self.default_time: Optional[str] = None

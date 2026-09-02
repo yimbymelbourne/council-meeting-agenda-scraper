@@ -9,9 +9,12 @@ from typing import Optional
 import fitz
 import pytz
 import requests
-from base import ScraperReturn
 from dotenv import dotenv_values
 
+# Not `from base import ...`: that only resolves because main.py is launched as
+# a script, which puts its own directory on sys.path. As a package module it
+# fails, which made `aus_council_scrapers.main` unimportable and so untestable.
+from aus_council_scrapers.base import ScraperReturn
 from aus_council_scrapers.constants import TIMEZONES_BY_STATE
 
 config = dotenv_values(".env") if os.path.exists(".env") else {}

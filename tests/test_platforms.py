@@ -7,7 +7,7 @@ platform already handled by a ten-line subclass.
 
 from aus_council_scrapers.platforms import (
     detect,
-    is_cloudflare_challenge,
+    is_js_challenge,
     platform_links,
 )
 
@@ -50,13 +50,23 @@ def test_platform_links_ignores_unrelated_hosts():
 
 def test_recognises_a_cloudflare_challenge():
     """Distinct from a plain 403: no User-Agent gets past this one."""
-    assert is_cloudflare_challenge({"cf-mitigated": "challenge", "Server": "cloudflare"})
-    assert is_cloudflare_challenge({"Server": "cloudflare"})
+    assert is_js_challenge({"cf-mitigated": "challenge", "Server": "cloudflare"})
+    assert is_js_challenge({"Server": "cloudflare"})
+
+
+def test_recognises_an_aws_waf_challenge():
+    """The dangerous one: 202 and an empty body, so nothing raises.
+
+    `melbourne` answered this to every header set we tried, which is why a
+    scraper built on `fetch_with_requests` there found nothing and looked
+    merely unfinished rather than blocked.
+    """
+    assert is_js_challenge({"x-amzn-waf-action": "challenge", "Server": "CloudFront"})
 
 
 def test_plain_403_is_not_a_cloudflare_challenge():
-    assert not is_cloudflare_challenge({"Server": "nginx"})
-    assert not is_cloudflare_challenge({})
+    assert not is_js_challenge({"Server": "nginx"})
+    assert not is_js_challenge({})
 
 
 def test_every_platform_reference_exists():

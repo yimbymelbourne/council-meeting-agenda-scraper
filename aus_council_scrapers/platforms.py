@@ -89,13 +89,21 @@ def platform_links(html: str) -> set[str]:
     return {match.lower() for match in _EXTERNAL_PLATFORM.findall(html)}
 
 
-def is_cloudflare_challenge(headers: dict) -> bool:
-    """A Cloudflare interstitial needs a real browser.
+def is_js_challenge(headers: dict) -> bool:
+    """A challenge interstitial needs a real browser.
 
-    No User-Agent gets past it, so a council in this state wants Selenium
-    rather than another header experiment.
+    No User-Agent gets past one, so a council in this state wants Selenium
+    rather than another header experiment. Two vendors, and the second is the
+    one that bites:
+
+    - Cloudflare answers `403` with `cf-mitigated: challenge`, which at least
+      raises.
+    - AWS WAF answers **`202` with an empty body** and
+      `x-amzn-waf-action: challenge`. That is not an error status, so
+      `fetch_with_requests` returns `""` and a scraper reports zero meetings
+      while looking merely unfinished. `melbourne` sat in exactly that state.
     """
     lowered = {k.lower(): str(v).lower() for k, v in headers.items()}
-    if "cf-mitigated" in lowered:
+    if "cf-mitigated" in lowered or "x-amzn-waf-action" in lowered:
         return True
     return "cloudflare" in lowered.get("server", "")

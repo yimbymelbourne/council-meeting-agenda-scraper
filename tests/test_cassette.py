@@ -223,14 +223,25 @@ def test_a_recorded_failure_is_distinguishable_from_a_missing_recording():
         fetcher.fetch_with_requests("https://x.test/b")
 
 
-def test_a_403_is_raised_as_a_deferral_pointing_at_the_tracking_issue():
-    """A firewall block is a known problem with a pending decision, so the
-    error must say so rather than inviting a workaround."""
-    from aus_council_scrapers.base import USER_AGENT_ISSUE, BlockedByWAF
+def test_a_403_says_what_we_sent_and_what_is_and_is_not_allowed():
+    """A firewall block should point at the one sanctioned remedy.
 
-    error = BlockedByWAF("https://www.example.vic.gov.au/meetings")
+    Since #142 that is a per-council `BROWSER_USER_AGENT` override, so the
+    message names it — while still ruling out changing the project default,
+    which is what the 403s used to tempt people into.
+    """
+    from aus_council_scrapers.base import (
+        IDENTIFYING_USER_AGENT,
+        USER_AGENT_ISSUE,
+        BlockedByWAF,
+    )
+
+    error = BlockedByWAF(
+        "https://www.example.vic.gov.au/meetings", IDENTIFYING_USER_AGENT
+    )
     assert USER_AGENT_ISSUE in str(error)
-    assert "Do NOT work around it" in str(error)
+    assert IDENTIFYING_USER_AGENT in str(error)
+    assert "Do NOT change the project-wide default" in str(error)
     # Still an HTTPError, so scrapers that already tolerate fetch failures
     # keep working unchanged.
     import requests
