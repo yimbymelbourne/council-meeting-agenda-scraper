@@ -14,6 +14,8 @@ learns to ignore protects nothing.
 import glob
 import json
 import os
+import re
+from collections import Counter
 
 import pytest
 
@@ -61,6 +63,55 @@ def test_known_broken_lists_have_no_stale_entries():
         assert not unknown, f"{name} names scrapers with no fixture: {sorted(unknown)}"
 
 
+SLUG_PATTERN = re.compile(r"[a-z0-9_]+")
+
+
+def _council_doc_rows() -> list[tuple[str, str]]:
+    """The (name, slug) of every council row in docs/councils.md.
+
+    Deliberately does not filter on the slug looking like a slug — the tests
+    below are the thing that decides whether it does.
+    """
+    rows = []
+    for line in open("docs/councils.md"):
+        if not line.startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) != 5:
+            continue
+        if cells[0] == "Name" or set(cells[0]) == {"-"}:  # header, separator
+            continue
+        rows.append((cells[0], cells[-1]))
+    return rows
+
+
+def test_council_list_slugs_are_lowercase_and_unique():
+    """A malformed slug in the doc is not an error anywhere — it is invisible.
+
+    Both the scorecard's denominator and the check below match the slug column
+    against a lowercase-only pattern, so a capitalised cell is silently skipped
+    rather than reported. That is how Randwick ended up listed twice: its real
+    row said `Randwick`, nothing could see it, and a second row was appended to
+    satisfy the check it was already failing.
+    """
+    rows = _council_doc_rows()
+    assert rows, "parsed no council rows out of docs/councils.md"
+
+    malformed = sorted(slug for _, slug in rows if not SLUG_PATTERN.fullmatch(slug))
+    assert not malformed, (
+        f"these slugs in docs/councils.md are not lowercase [a-z0-9_]: {malformed}. "
+        f"Nothing reads them, so the councils they name are invisible to the "
+        f"scorecard — fix the case rather than adding a second row."
+    )
+
+    counts = Counter(slug for _, slug in rows)
+    duplicated = sorted(slug for slug, n in counts.items() if n > 1)
+    assert not duplicated, (
+        f"these slugs have more than one row in docs/councils.md: {duplicated}. "
+        f"One council, one row."
+    )
+
+
 def test_every_recorded_scraper_appears_in_the_council_list():
     """A slug that differs between the scraper and docs/councils.md makes the
     scorecard count one council twice — once as recorded, once as never
@@ -68,15 +119,7 @@ def test_every_recorded_scraper_appears_in_the_council_list():
     'penrith' that the scraper called 'penrith_city', and a Randwick scraper
     with 431 meetings and no row at all.
     """
-    import re
-
-    tracked = set()
-    for line in open("docs/councils.md"):
-        if not line.startswith("|"):
-            continue
-        cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if cells and re.fullmatch(r"[a-z0-9_]+", cells[-1]):
-            tracked.add(cells[-1])
+    tracked = {slug for _, slug in _council_doc_rows() if SLUG_PATTERN.fullmatch(slug)}
 
     recorded = {
         os.path.basename(p).replace("-result.json", "")
