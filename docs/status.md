@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**25 of 60 councils complete (41%)** — 6 partial, 3 broken, 26 not started.
+**26 of 60 councils complete (43%)** — 6 partial, 3 broken, 25 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -19,6 +19,7 @@ whenever a fixture changes; CI checks it is current.
 | ❌ | `strathfield` | 0 | - | 0 | 0 | returns no meetings |
 | ❌ | `woollahra` | 0 | - | 0 | 0 | returns no meetings |
 | ✅ | `banyule` | 73 | 2022-2026 | 73 | 72 |  |
+| ✅ | `bayside_nsw` | 649 | 2020-2026 | 642 | 557 |  |
 | 🟡 | `bayside_vic` | 121 | 2021-2025 | 121 | 118 | nothing newer than 2025 |
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
@@ -55,4 +56,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`bayside_nsw` `blacktown` `cardinia` `casey` `fairfield` `frankston` `greater_dandenong` `hobsons_bay` `hume` `kingston` `knox` `maribyrnong` `melton` `monash` `moonee_valley` `mornington_peninsula` `mosman` `nillumbik` `stonnington` `sutherland` `sydney` `the_hills` `whittlesea` `willoughby` `wyndham` `yarra_ranges`
+`blacktown` `cardinia` `casey` `fairfield` `frankston` `greater_dandenong` `hobsons_bay` `hume` `kingston` `knox` `maribyrnong` `melton` `monash` `moonee_valley` `mornington_peninsula` `mosman` `nillumbik` `stonnington` `sutherland` `sydney` `the_hills` `whittlesea` `willoughby` `wyndham` `yarra_ranges`

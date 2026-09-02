@@ -1,3 +1,4 @@
+from aus_council_scrapers.scrapers.nsw.bayside_nsw import BaysideNSWScraper
 from aus_council_scrapers.scrapers.nsw.burwood import BurwoodNSWScraper
 from aus_council_scrapers.scrapers.nsw.camden import CamdenScraper
 from aus_council_scrapers.scrapers.nsw.campbelltown import CampbelltownScraper
@@ -24,7 +25,6 @@ from aus_council_scrapers.scrapers.nsw.waverley import WaverleyScraper
 from aus_council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
 
 # BROKEN
-# from council_scrapers.scrapers.nsw.bayside_nsw import BaysideNSWScraper
 # from council_scrapers.scrapers.nsw.willoughby import WilloughbyNSWScraper
 
 # NOT IMPLEMENTED
