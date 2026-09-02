@@ -98,9 +98,14 @@ class TestExtractUrls:
         assert minutes_url is not None
         assert "minutes" in minutes_url
 
-    def test_no_pdfs_raises(self, scraper):
-        with pytest.raises(ValueError, match="Could not find any PDF links"):
-            scraper._extract_urls_from_details(_NO_PDF_RESPONSE)
+    def test_no_pdfs_yields_no_urls(self, scraper):
+        """A meeting with no published documents is still a meeting.
+
+        This used to raise, which the caller caught and turned into a dropped
+        row — so two 2020 meetings Strathfield never published papers for went
+        missing from the output rather than appearing without documents.
+        """
+        assert scraper._extract_urls_from_details(_NO_PDF_RESPONSE) == (None, None)
 
     def test_relative_url_resolved_to_absolute(self, scraper):
         agenda_url, _ = scraper._extract_urls_from_details(_AGENDA_ONLY_RESPONSE)
@@ -166,6 +171,71 @@ class TestYearsFilter:
         scraper.fetcher = MockFetcher()
         results = scraper.scraper()
 
-        # 2019 meeting is below EARLIEST_YEAR so stops pagination; 2025 meetings fail
-        # to get details (mock returns empty HTML for OCServiceHandler), so 0 results
-        assert isinstance(results, list)
+        # The 2019 meeting is below EARLIEST_YEAR, so pagination stops there. The
+        # two 2025 meetings have no documents in this mock, which is not an error:
+        # they are still returned, without URLs.
+        assert [r.date for r in results] == ["16 December 2025", "25 November 2025"]
+        assert all(r.agenda_url is None and r.minutes_url is None for r in results)
+
+
+_ALL_CURRENT_YEAR_PAGE = """
+<html><body>
+<a class="accordion-trigger minutes-trigger ajax-trigger"
+   data-cvid="aaaa1111-0000-0000-0000-000000000001">
+  <span class="minutes-date">16 December 2025</span>
+  <span class="meeting-type">Extraordinary Meeting</span>
+</a>
+<a class="accordion-trigger minutes-trigger ajax-trigger"
+   data-cvid="bbbb2222-0000-0000-0000-000000000002">
+  <span class="minutes-date">25 November 2025</span>
+  <span class="meeting-type">Ordinary Meeting</span>
+</a>
+</body></html>
+"""
+
+
+class TestFailuresAreNotSilent:
+    """A short run must never be reported as a complete one.
+
+    On 2026-09-01 production returned page one's ten meetings for 2026 and
+    logged "10 meetings" for a year holding fifteen: the second page fetch
+    failed and `except Exception: break` presented the truncation as the end
+    of the listing. Only an empty page ends pagination; every other failure
+    has to reach the caller.
+    """
+
+    def _fetcher(self, fail_on):
+        class MockFetcher:
+            def fetch_with_selenium(self, url):
+                if fail_on(url):
+                    raise RuntimeError("simulated fetch failure")
+                if "OCServiceHandler" in url:
+                    return _AGENDA_ONLY_RESPONSE
+                if "pageindex" in url:
+                    return "<html><body></body></html>"
+                return _ALL_CURRENT_YEAR_PAGE
+
+        return MockFetcher()
+
+    def test_page_fetch_failure_propagates(self, scraper):
+        scraper.years_filter = [2025]
+        scraper.fetcher = self._fetcher(lambda url: "pageindex=2" in url)
+
+        with pytest.raises(RuntimeError, match="simulated fetch failure"):
+            scraper.scraper()
+
+    def test_detail_fetch_failure_propagates(self, scraper):
+        scraper.years_filter = [2025]
+        scraper.fetcher = self._fetcher(lambda url: "OCServiceHandler" in url)
+
+        with pytest.raises(RuntimeError, match="simulated fetch failure"):
+            scraper.scraper()
+
+    def test_empty_page_still_ends_pagination(self, scraper):
+        """The one legitimate stop condition keeps working."""
+        scraper.years_filter = [2025]
+        scraper.fetcher = self._fetcher(lambda url: False)
+
+        results = scraper.scraper()
+
+        assert [r.date for r in results] == ["16 December 2025", "25 November 2025"]

@@ -1080,6 +1080,18 @@
     "minutes_html_url": null
   },
   {
+    "name": "04 August 2020 Ordinary Meeting",
+    "date": "04 August 2020",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.strathfield.nsw.gov.au/Council/Council-Meetings",
+    "download_url": null,
+    "agenda_url": null,
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "07 July 2020 Ordinary Meeting",
     "date": "07 July 2020",
     "time": null,
@@ -1088,6 +1100,18 @@
     "download_url": "https://www.strathfield.nsw.gov.au/files/assets/public/v/1/council/council-meetings/2020/council-meeting-7-july-2020-agenda-1.pdf",
     "agenda_url": "https://www.strathfield.nsw.gov.au/files/assets/public/v/1/council/council-meetings/2020/council-meeting-7-july-2020-agenda-1.pdf",
     "minutes_url": "https://www.strathfield.nsw.gov.au/files/assets/public/v/1/council/council-meetings/2020/council-meeting-7-july-2020-minutes-1.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "02 June 2020 Ordinary Meeting",
+    "date": "02 June 2020",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.strathfield.nsw.gov.au/Council/Council-Meetings",
+    "download_url": null,
+    "agenda_url": null,
+    "minutes_url": null,
     "agenda_html_url": null,
     "minutes_html_url": null
   },
