@@ -7,6 +7,9 @@ from aus_council_scrapers.scrapers.vic.glen_eira import GlenEiraScraper
 from aus_council_scrapers.scrapers.vic.manningham import ManninghamScraper
 from aus_council_scrapers.scrapers.vic.melbourne import MelbourneScraper
 from aus_council_scrapers.scrapers.vic.merribek import MerribekScraper
+from aus_council_scrapers.scrapers.vic.mornington_peninsula import (
+    MorningtonPeninsulaScraper,
+)
 
 from aus_council_scrapers.scrapers.vic.port_phillip import PortPhilipScraper
 from aus_council_scrapers.scrapers.vic.whitehorse import WhitehorseScraper
