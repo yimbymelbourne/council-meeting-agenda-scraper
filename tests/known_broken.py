@@ -32,5 +32,4 @@ REPLAY_BROKEN = {
 OUTPUT_BROKEN = {
     "hunters_hill": _PLATFORM_GONE.format(host="huntershill.infocouncil.biz"),
     "woollahra": _PLATFORM_GONE.format(host="woollahra.infocouncil.biz"),
-    "strathfield": "records zero meetings — never produced usable output",
 }

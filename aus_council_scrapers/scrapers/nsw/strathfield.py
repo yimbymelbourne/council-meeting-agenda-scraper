@@ -194,10 +194,13 @@ class StrathfieldNSWScraper(BaseScraper):
         if not pdf_links:
             pdf_links = [m.group(0) for m in _PDF_URL_RE.finditer(combined)]
 
+        # A meeting with no documents is a real meeting, not a failure. Strathfield
+        # answers `status: Okay` with nothing but a meeting-time block for two 2020
+        # meetings it never published papers for. Raising here dropped them from the
+        # output entirely, which understated the council's meeting count to hide two
+        # missing PDFs.
         if not pdf_links:
-            raise ValueError(
-                "Could not find any PDF links in OpenCities details response."
-            )
+            return None, None
 
         pdf_links = list(dict.fromkeys(pdf_links))  # deduplicate, preserve order
 
@@ -240,73 +243,81 @@ class StrathfieldNSWScraper(BaseScraper):
         while should_continue:
             self.logger.info(f"Fetching page {page}")
 
-            try:
-                index_html = self._fetch_index_html(page)
-                meetings = self._extract_meeting_stubs(index_html)
+            # Deliberately unguarded. A failed page fetch is not the end of the
+            # listing, and treating it as one truncated the run and reported the
+            # truncation as success: the 2026-09-01 production run returned page
+            # one's ten meetings for 2026 and logged "10 meetings" when the year
+            # holds fifteen. An empty page below is the only legitimate end of
+            # pagination; anything else must go red.
+            index_html = self._fetch_index_html(page)
+            meetings = self._extract_meeting_stubs(index_html)
 
-                if not meetings:
+            if not meetings:
+                self.logger.info(
+                    f"No meetings found on page {page}, stopping pagination"
+                )
+                break
+
+            self.logger.info(f"Found {len(meetings)} meetings on page {page}")
+
+            for meeting in meetings:
+                try:
+                    meeting_date = datetime.strptime(meeting.date, "%d %B %Y")
+                    meeting_year = meeting_date.year
+                except ValueError:
+                    self.logger.warning(f"Could not parse date: {meeting.date}")
+                    meeting_year = None
+
+                if meeting_year is not None and meeting_year < min_year:
                     self.logger.info(
-                        f"No meetings found on page {page}, stopping pagination"
+                        f"Meeting {meeting.name} is before {min_year}, stopping pagination"
                     )
+                    should_continue = False
                     break
 
-                self.logger.info(f"Found {len(meetings)} meetings on page {page}")
+                # Skip meetings outside the requested years
+                if years_filter and meeting_year not in years_filter:
+                    continue
 
-                for meeting in meetings:
-                    try:
-                        meeting_date = datetime.strptime(meeting.date, "%d %B %Y")
-                        meeting_year = meeting_date.year
-                    except ValueError:
-                        self.logger.warning(f"Could not parse date: {meeting.date}")
-                        meeting_year = None
+                # Also unguarded, for the same reason: a meeting we cannot fetch
+                # details for is a meeting missing from the output, and dropping
+                # it quietly makes a short run indistinguishable from a full one.
+                # A meeting that simply has no documents is handled in
+                # `_extract_urls_from_details`, and is not an error.
+                details_html = self._fetch_meeting_details_html(meeting.cvid)
+                agenda_url, minutes_url = self._extract_urls_from_details(details_html)
 
-                    if meeting_year is not None and meeting_year < min_year:
-                        self.logger.info(
-                            f"Meeting {meeting.name} is before {min_year}, stopping pagination"
-                        )
-                        should_continue = False
-                        break
+                if agenda_url:
+                    self.logger.info(f"Found agenda for {meeting.name}: {agenda_url}")
+                if minutes_url:
+                    self.logger.info(f"Found minutes for {meeting.name}: {minutes_url}")
 
-                    # Skip meetings outside the requested years
-                    if years_filter and meeting_year not in years_filter:
-                        continue
+                # Strathfield publishes two 2020 meetings with no papers at all —
+                # `status: Okay`, nothing but a meeting-time block. Those are real
+                # meetings, but downstream keys a meeting on its document URL, so a
+                # row with no documents has no identity and `ingestCouncils` drops it
+                # on arrival ("the scrapers shouldn't emit these"). Skip it here,
+                # where it is visible and named, rather than emitting something that
+                # cannot be stored. This is not the same as a failure, which raises.
+                if not agenda_url and not minutes_url:
+                    self.logger.info(
+                        f"No documents published for {meeting.name}, skipping"
+                    )
+                    continue
 
-                    # Fetch details for this meeting
-                    try:
-                        details_html = self._fetch_meeting_details_html(meeting.cvid)
-                        agenda_url, minutes_url = self._extract_urls_from_details(details_html)
+                all_results.append(
+                    ScraperReturn(
+                        name=meeting.name,
+                        date=meeting.date,
+                        time=None,
+                        webpage_url=_STRATHFIELD_INDEX_URL,
+                        download_url=agenda_url,
+                        agenda_url=agenda_url,
+                        minutes_url=minutes_url,
+                    )
+                )
 
-                        if agenda_url:
-                            self.logger.info(
-                                f"Found agenda for {meeting.name}: {agenda_url}"
-                            )
-                        if minutes_url:
-                            self.logger.info(
-                                f"Found minutes for {meeting.name}: {minutes_url}"
-                            )
-
-                        all_results.append(
-                            ScraperReturn(
-                                name=meeting.name,
-                                date=meeting.date,
-                                time=None,
-                                webpage_url=_STRATHFIELD_INDEX_URL,
-                                download_url=agenda_url,
-                                agenda_url=agenda_url,
-                                minutes_url=minutes_url,
-                            )
-                        )
-                    except Exception as e:
-                        self.logger.error(
-                            f"Failed to get agenda for {meeting.name}: {e}"
-                        )
-                        continue
-
-                page += 1
-
-            except Exception as e:
-                self.logger.error(f"Error fetching page {page}: {e}")
-                break
+            page += 1
 
         self.logger.info(f"Scraped {len(all_results)} meetings total")
         return all_results
