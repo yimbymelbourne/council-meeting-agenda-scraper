@@ -15,6 +15,7 @@ from aus_council_scrapers.scrapers.vic.nillumbik import NillumbikScraper
 from aus_council_scrapers.scrapers.vic.port_phillip import PortPhilipScraper
 from aus_council_scrapers.scrapers.vic.whitehorse import WhitehorseScraper
 from aus_council_scrapers.scrapers.vic.yarra import YarraScraper
+from aus_council_scrapers.scrapers.vic.yarra_ranges import YarraRangesScraper
 
 # BROKEN SCRAPERS
 # from council_scrapers.scrapers.vic.maribyrnong import MaribyrnongScraper
