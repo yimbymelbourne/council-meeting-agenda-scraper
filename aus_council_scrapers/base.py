@@ -881,4 +881,97 @@ class InfoCouncilScraper(BaseScraper):
         return papers
 
 
+class DocsPublishedScraper(BaseScraper):
+    """Councils publishing through docspublished.com.au (DocAssembler).
+
+    The published page is an Angular app that renders nothing useful without
+    JavaScript, but the listing behind it is a single JSON endpoint keyed by
+    the council's organisation id, so this needs no browser.
+
+    A subclass supplies the publishing slug — the path segment in the public
+    URL — and that organisation id. The id is not derivable from the slug;
+    look one up with:
+
+        https://api.docassembler.com.au/api/organisation/<publishing_slug>
+
+    which returns the org record with the id in its `Id` field.
+    """
+
+    API_ROOT = "https://api.docassembler.com.au/api"
+
+    # Set both on the subclass.
+    publishing_slug: str = ""
+    org_id: str = ""
+
+    def __init__(self, council_name: str, state: str):
+        super().__init__(
+            council_name,
+            state,
+            f"https://docspublished.com.au/{self.publishing_slug}",
+        )
+
+    def scraper(self) -> list[ScraperReturn]:
+        years_filter = getattr(self, "years_filter", None)
+
+        response = self.fetcher.fetch_with_requests(
+            f"{self.API_ROOT}/documents/{self.org_id}"
+        )
+        documents = json.loads(response)
+
+        tz = pytz.timezone(TIMEZONES_BY_STATE[self.state.upper()])
+        results = []
+
+        for doc in documents:
+            meeting_date_str = doc.get("MeetingDate")
+            if not meeting_date_str:
+                continue
+
+            # MeetingDate is UTC without an offset, so the local date can
+            # differ from the UTC one — a 10:30am Sydney meeting is stamped
+            # 23:30 the previous day.
+            meeting_dt = (
+                datetime.datetime.fromisoformat(meeting_date_str)
+                .replace(tzinfo=datetime.timezone.utc)
+                .astimezone(tz)
+            )
+
+            if years_filter and meeting_dt.year not in years_filter:
+                continue
+
+            agenda_doc_id = doc.get("AgendaDocumentId")
+            minutes_doc_id = doc.get("MinutesDocumentId")
+
+            agenda_url = (
+                f"{self.base_url}/document/{agenda_doc_id}" if agenda_doc_id else None
+            )
+            minutes_url = (
+                f"{self.base_url}/document/{minutes_doc_id}" if minutes_doc_id else None
+            )
+
+            # A meeting can be listed before either paper is published.
+            if not agenda_url and not minutes_url:
+                continue
+
+            results.append(
+                ScraperReturn(
+                    name=doc.get("DocumentTitle"),
+                    date=meeting_dt.strftime("%Y-%m-%d"),
+                    time=meeting_dt.strftime("%I:%M%p").lstrip("0").lower(),
+                    webpage_url=self.base_url,
+                    agenda_url=agenda_url,
+                    minutes_url=minutes_url,
+                    download_url=agenda_url or minutes_url,
+                )
+            )
+
+        if not results:
+            self.logger.info(f"{self.council_name} scraper found no meetings")
+        else:
+            self.logger.info(
+                f"{self.council_name} scraper found {len(results)} meetings"
+            )
+
+        return results
+
+
 SCRAPER_REGISTRY: dict[str, BaseScraper] = {}

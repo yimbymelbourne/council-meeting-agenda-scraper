@@ -220,7 +220,7 @@ work into a ten-line subclass. Fetch the meeting page and look for:
 | Signature in the page or URL | Use |
 |---|---|
 | `*.infocouncil.biz`, `bpsGridPDFLink`, `grdMenu` | `InfoCouncilScraper` |
-| `docspublished.com.au` | see `aus_council_scrapers/scrapers/nsw/parramatta.py` |
+| `docspublished.com.au` | `DocsPublishedScraper` — needs the publishing slug and the org id, which `/api/organisation/<slug>` returns |
 | `OCServiceHandler.axd`, `accordion-list-item-container` | OpenCities; see `aus_council_scrapers/scrapers/vic/banyule.py` |
 | `cf-mitigated: challenge`, `server: cloudflare` | Cloudflare interstitial — needs Selenium, no header will get past it |
 

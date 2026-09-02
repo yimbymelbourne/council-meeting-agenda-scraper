@@ -14,6 +14,7 @@ from aus_council_scrapers.scrapers.nsw.innerwest import InnerWestScraper
 from aus_council_scrapers.scrapers.nsw.kuringgai import KuRingGaiScraper
 from aus_council_scrapers.scrapers.nsw.lane_cove import LaneCoveScraper
 from aus_council_scrapers.scrapers.nsw.liverpool import LiverpoolScraper
+from aus_council_scrapers.scrapers.nsw.mosman import MosmanScraper
 from aus_council_scrapers.scrapers.nsw.north_sydney import NorthSydneyScraper
 from aus_council_scrapers.scrapers.nsw.northern_beaches import NorthernBeachesScraper
 from aus_council_scrapers.scrapers.nsw.parramatta import ParramattaScraper
@@ -30,7 +31,6 @@ from aus_council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
 # NOT IMPLEMENTED
 # from council_scrapers.scrapers.nsw.blacktown import BlacktownScraper
 # from council_scrapers.scrapers.nsw.fairfield_city import FairfieldCityScraper
-# from council_scrapers.scrapers.nsw.mosman import MosmanScraper
 # from council_scrapers.scrapers.nsw.sutherland_shire import SutherlandShireScraper
 # from council_scrapers.scrapers.nsw.sydney import SydneyScraper
 # from council_scrapers.scrapers.nsw.the_hills import TheHillsScraper
