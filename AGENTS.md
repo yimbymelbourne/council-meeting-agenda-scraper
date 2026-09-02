@@ -28,18 +28,16 @@ That workflow checks this repo out **at `main`, with no pinned ref**, and runs
 `packages/scraper-adapter`. Merging to main is therefore deploying: whatever
 lands here runs against every council the following night.
 
-There is a second, older runner in this repo —
-`.github/workflows/run-agenda.yml` — which builds `agendas.db` on a daily
-cron. It is not the production path, and it differs in ways that matter
-(it installs Chrome via `browser-actions/setup-chrome`; production does not).
-
 Four constraints follow, and a fetching change that ignores any of them
 looks fine locally and breaks production:
 
-1. **Headless only.** `runs-on: ubuntu-latest`, no display and no `xvfb`, and
-   production installs no browser at all — Selenium gets whatever Chrome the
-   runner image ships. Anything that needs a headed browser is not
-   deployable as things stand.
+1. **Headless only, on a browser nobody declared.** `runs-on: ubuntu-latest`,
+   no display and no `xvfb`, so anything needing a headed browser is not
+   deployable. And unlike CI here — which installs Chrome explicitly with
+   `browser-actions/setup-chrome` — that workflow installs no browser at all
+   and relies on whatever the runner image happens to ship. It works today
+   (`banyule`, `campbelltown`, `darebin`, `melbourne` and `strathfield` all
+   drive Selenium in production), but nothing pins it.
 2. **One process for every council, and a hard kill.** The adapter is invoked
    **once** for all councils with `--workers 6`, and the Node side
    `SIGKILL`s it at `SCRAPE_TIMEOUT_MS` (default **180 s**, set in the
@@ -55,7 +53,7 @@ looks fine locally and breaks production:
    mechanism that is only configurable by editing this repo cannot be tuned
    in production without a PR to `council-alerts`, and a default chosen here
    is what production gets until someone changes that workflow.
-4. **Python 3.11 in production**, 3.10 in `run-agenda.yml`, `>=3.10,<3.13` in
+4. **Python 3.11 in production**, 3.10 in CI here, `>=3.10,<3.13` in
    `pyproject.toml`.
 
 To check what production actually did last night:
