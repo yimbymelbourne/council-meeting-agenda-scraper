@@ -40,11 +40,11 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `melbourne` | 224 | 2020-2026 | 224 | 220 |  |
 | ✅ | `merri_bek` | 142 | 2016-2026 | 128 | 110 |  |
 | ✅ | `mornington_peninsula` | 145 | 2022-2026 | 145 | 141 |  |
-| ✅ | `mosman` | 202 | 2019-2026 | 202 | 198 |  |
+| ✅ | `mosman` | 203 | 2019-2026 | 203 | 200 |  |
 | ✅ | `nillumbik` | 121 | 2020-2026 | 121 | 119 |  |
 | ✅ | `north_sydney` | 115 | 2020-2026 | 115 | 115 |  |
-| ✅ | `northern_beaches` | 141 | 2016-2026 | 139 | 126 |  |
-| ✅ | `parramatta` | 742 | 2008-2026 | 742 | 683 |  |
+| ✅ | `northern_beaches` | 143 | 2016-2026 | 143 | 128 |  |
+| ✅ | `parramatta` | 778 | 2008-2026 | 778 | 716 |  |
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |
 | ✅ | `port_phillip` | 128 | 2022-2026 | 128 | 121 |  |
 | ✅ | `randwick` | 429 | 2020-2026 | 424 | 360 |  |
@@ -53,7 +53,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
 | ✅ | `whitehorse` | 160 | 2020-2026 | 160 | 150 |  |
 | ✅ | `yarra` | 120 | 2020-2026 | 120 | 119 |  |
-| ✅ | `yarra_ranges` | 128 | 2021-2026 | 128 | 128 |  |
+| ✅ | `yarra_ranges` | 129 | 2021-2026 | 129 | 128 |  |
 
 ## Not started
 

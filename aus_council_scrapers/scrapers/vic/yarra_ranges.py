@@ -8,7 +8,6 @@ class YarraRangesScraper(DocsPublishedScraper):
     # host. The council page in docs/councils.md is a landing page that links to
     # it, which is why the platform sweep missed this one.
     publishing_slug = "yarraranges"
-    org_id = "ae91e94f-70a6-426b-9aea-520debec7e39"
 
     def __init__(self):
         super().__init__("yarra_ranges", "VIC")
