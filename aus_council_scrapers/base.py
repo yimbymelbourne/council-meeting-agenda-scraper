@@ -9,6 +9,7 @@ import urllib.parse
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional
+from xml.etree import ElementTree
 
 import pytz
 import requests
@@ -884,39 +885,89 @@ class InfoCouncilScraper(BaseScraper):
 class DocsPublishedScraper(BaseScraper):
     """Councils publishing through docspublished.com.au (DocAssembler).
 
-    The published page is an Angular app that renders nothing useful without
-    JavaScript, but the listing behind it is a single JSON endpoint keyed by
-    the council's organisation id, so this needs no browser.
+    The published page is an Angular app that renders nothing without
+    JavaScript, but everything behind it is JSON, so this needs no browser.
+    A subclass supplies only the publishing slug — the path segment in the
+    public URL.
 
-    A subclass supplies the publishing slug — the path segment in the public
-    URL — and that organisation id. The id is not derivable from the slug;
-    look one up with:
+    **The viewer URL is not the document.** `/<slug>/document/<uuid>` is the
+    SPA shell: it answers 200 `text/html` and fetches the PDF client-side, so
+    anything downstream expecting a PDF gets ~10 KB of Angular instead. The
+    shell is also what *unknown* paths under the slug return, so getting this
+    wrong fails silently rather than 404ing. The real document lives in Azure
+    blob storage and is composed in three steps:
 
-        https://api.docassembler.com.au/api/organisation/<publishing_slug>
+    1. `/api/organisation/<slug>` → `Key`, the tenant's blob path segment.
+       `Key` and `Id` are different UUIDs: `Id` keys the document list, `Key`
+       keys the storage path, and swapping them yields URLs that 404.
+    2. `/api/documents/<Id>` → per meeting, the assembled agenda and minutes
+       as `<kind>AssembledDocFolderName` and `<kind>DocumentFilePath`.
+    3. `<container>/<Key>/<folder>/<file>` plus the container's read-only SAS
+       token, which the portal ships in its JS bundle (see `_storage_config`).
 
-    which returns the org record with the id in its `Id` field.
+    The filenames the API reports cannot be trusted verbatim. Blob names are
+    byte-exact, and DocAssembler's stored path sometimes disagrees with what
+    it actually wrote — always in whitespace, always in the same direction:
+    the blob has a run of spaces where the API reports one. Ten of Northern
+    Beaches' 269 documents are affected, and every one of them 404s. Both the
+    list and the per-document endpoint report the collapsed name, so there is
+    no better field to read; the only source of truth is the container
+    listing, which the same SAS token makes readable. `_stored_names` reads it
+    once per council and `_document_url` reconciles against it, which also
+    drops the occasional document the API lists but nobody ever uploaded (two
+    at Parramatta).
     """
 
     API_ROOT = "https://api.docassembler.com.au/api"
+    PORTAL_ROOT = "https://docspublished.com.au"
 
-    # Set both on the subclass.
+    # Azure caps a listing page at 5000 blobs; Parramatta needs three pages.
+    LISTING_PAGE_SIZE = 5000
+
+    # Set on the subclass. The organisation id is deliberately not a class
+    # attribute: `Key` has to be fetched anyway and `Id` comes back on the
+    # same response, so hardcoding the id bought nothing and left two values
+    # to keep in step.
     publishing_slug: str = ""
-    org_id: str = ""
+
+    BUNDLE_REGEX = re.compile(r'src="([^"]*main-[A-Za-z0-9]+\.js)"')
+    BASE_HREF_REGEX = re.compile(r'<base[^>]+href="([^"]*)"')
+    BLOB_CONFIG_REGEX = re.compile(
+        r'azureConnectionString:"(?P<base>[^"]+)"'
+        r',azureContainerName:"(?P<container>[^"]+)"'
+        r',azureSasToken:"(?P<sas>[^"]+)"'
+    )
 
     def __init__(self, council_name: str, state: str):
         super().__init__(
             council_name,
             state,
-            f"https://docspublished.com.au/{self.publishing_slug}",
+            f"{self.PORTAL_ROOT}/{self.publishing_slug}",
         )
 
     def scraper(self) -> list[ScraperReturn]:
         years_filter = getattr(self, "years_filter", None)
 
-        response = self.fetcher.fetch_with_requests(
-            f"{self.API_ROOT}/documents/{self.org_id}"
+        organisation = self._get_json(
+            f"{self.API_ROOT}/organisation/{self.publishing_slug}"
         )
-        documents = json.loads(response)
+        if not organisation:
+            self.logger.error(
+                f"No DocAssembler organisation for {self.publishing_slug}"
+            )
+            return []
+
+        storage = self._storage_config()
+        if not storage:
+            self.logger.error("Could not read the DocAssembler storage settings")
+            return []
+
+        tenant_key = organisation["Key"]
+        stored = self._stored_names(storage, tenant_key)
+        documents = self._get_json(f"{self.API_ROOT}/documents/{organisation['Id']}")
+        if not documents:
+            self.logger.info(f"{self.council_name} scraper found no meetings")
+            return []
 
         tz = pytz.timezone(TIMEZONES_BY_STATE[self.state.upper()])
         results = []
@@ -928,38 +979,64 @@ class DocsPublishedScraper(BaseScraper):
 
             # MeetingDate is UTC without an offset, so the local date can
             # differ from the UTC one — a 10:30am Sydney meeting is stamped
-            # 23:30 the previous day.
-            meeting_dt = (
-                datetime.datetime.fromisoformat(meeting_date_str)
-                .replace(tzinfo=datetime.timezone.utc)
-                .astimezone(tz)
-            )
+            # 23:30 the previous day. Converting is what makes the data line
+            # up: meetings then start at the hours the council publishes, and
+            # the local date agrees with the date in the document filenames.
+            try:
+                meeting_dt = (
+                    datetime.datetime.fromisoformat(meeting_date_str)
+                    .replace(tzinfo=datetime.timezone.utc)
+                    .astimezone(tz)
+                )
+            except ValueError:
+                self.logger.warning(f"Unparseable MeetingDate {meeting_date_str!r}")
+                continue
 
             if years_filter and meeting_dt.year not in years_filter:
                 continue
 
-            agenda_doc_id = doc.get("AgendaDocumentId")
-            minutes_doc_id = doc.get("MinutesDocumentId")
-
-            agenda_url = (
-                f"{self.base_url}/document/{agenda_doc_id}" if agenda_doc_id else None
-            )
-            minutes_url = (
-                f"{self.base_url}/document/{minutes_doc_id}" if minutes_doc_id else None
-            )
+            papers = {}
+            for kind in ("Agenda", "Minutes"):
+                url = self._document_url(
+                    storage,
+                    tenant_key,
+                    stored,
+                    doc.get(f"{kind}AssembledDocFolderName"),
+                    doc.get(f"{kind}DocumentFilePath"),
+                )
+                if not url:
+                    continue
+                # Councils occasionally publish a Word agenda. Report it as
+                # the HTML rendition so the PDF fields only ever hold a PDF.
+                suffix = "pdf" if url.split("?")[0].lower().endswith(".pdf") else "html"
+                papers[f"{kind.lower()}_{suffix}"] = url
 
             # A meeting can be listed before either paper is published.
-            if not agenda_url and not minutes_url:
+            if not papers:
                 continue
+
+            # The viewer page for the document we linked: the page a human
+            # would land on, and the one identifier that survives a SAS-token
+            # rotation. The blob URL can be re-resolved from this UUID,
+            # whereas the signed URL alone goes permanently dead.
+            viewer_id = doc.get("AgendaDocumentId") or doc.get("MinutesDocumentId")
+            agenda_url = papers.get("agenda_pdf")
+            minutes_url = papers.get("minutes_pdf")
 
             results.append(
                 ScraperReturn(
-                    name=doc.get("DocumentTitle"),
+                    name=doc.get("MeetingType") or doc.get("DocumentTitle"),
                     date=meeting_dt.strftime("%Y-%m-%d"),
-                    time=meeting_dt.strftime("%I:%M%p").lstrip("0").lower(),
-                    webpage_url=self.base_url,
+                    time=meeting_dt.strftime("%I:%M %p").lstrip("0"),
+                    webpage_url=(
+                        f"{self.base_url}/document/{viewer_id}"
+                        if viewer_id
+                        else self.base_url
+                    ),
                     agenda_url=agenda_url,
                     minutes_url=minutes_url,
+                    agenda_html_url=papers.get("agenda_html"),
+                    minutes_html_url=papers.get("minutes_html"),
                     download_url=agenda_url or minutes_url,
                 )
             )
@@ -972,6 +1049,146 @@ class DocsPublishedScraper(BaseScraper):
             )
 
         return results
+
+    def _get_json(self, url: str):
+        """Fetch JSON through the fetcher so runs stay recordable."""
+        try:
+            body = self.fetcher.fetch_with_requests(url)
+            return json.loads(body) if body else None
+        except Exception as e:
+            self.logger.error(f"Failed to fetch {url}: {e}")
+            return None
+
+    def _storage_config(self) -> Optional[dict]:
+        """Read the blob storage settings out of the portal's JS bundle.
+
+        The container is not anonymously readable — without the SAS token
+        every blob answers `404 BlobNotFound` — and the token is public only
+        in the sense that the portal hands it to every visitor. It carries no
+        expiry of its own but is bound to a stored access policy, so the
+        operator can rotate or revoke it server-side at any time. Hardcoding
+        it would work right up until it silently stopped, so it is read from
+        the bundle on each run. The bundle name carries a build hash that
+        changes on every deploy, so that too is discovered from the page.
+        """
+        try:
+            shell = self.fetcher.fetch_with_requests(self.base_url)
+            bundle_match = self.BUNDLE_REGEX.search(shell)
+            if not bundle_match:
+                self.logger.error("Could not find the DocAssembler JS bundle")
+                return None
+
+            # The portal is an Angular app served with <base href="/">, so its
+            # relative script tags resolve against the site root, not the
+            # council path. Getting this wrong is quiet rather than loud:
+            # unknown paths return the app shell with a 200 instead of a 404.
+            base_href = self.BASE_HREF_REGEX.search(shell)
+            base_url = urllib.parse.urljoin(
+                self.base_url, base_href.group(1) if base_href else "/"
+            )
+
+            bundle = self.fetcher.fetch_with_requests(
+                urllib.parse.urljoin(base_url, bundle_match.group(1))
+            )
+            config_match = self.BLOB_CONFIG_REGEX.search(bundle)
+            if not config_match:
+                self.logger.error("Could not find the storage settings in the bundle")
+                return None
+
+            return config_match.groupdict()
+        except Exception as e:
+            self.logger.error(f"Failed to read the storage settings: {e}")
+            return None
+
+    def _stored_names(self, storage: dict, tenant_key: str) -> Optional[dict]:
+        """List the council's blobs, as `{folder: [filename, ...]}`.
+
+        Returns None when the listing cannot be read, which the caller treats
+        as "trust the API" rather than "emit nothing": a listing failure
+        should cost the handful of misnamed documents, not the whole council.
+        """
+        names: dict[str, list[str]] = {}
+        marker = ""
+
+        try:
+            while True:
+                query = urllib.parse.urlencode(
+                    {
+                        "restype": "container",
+                        "comp": "list",
+                        "prefix": f"{tenant_key}/",
+                        "maxresults": self.LISTING_PAGE_SIZE,
+                        **({"marker": marker} if marker else {}),
+                    }
+                )
+                body = self.fetcher.fetch_with_requests(
+                    f"{storage['base']}/{storage['container']}{storage['sas']}&{query}"
+                )
+                listing = ElementTree.fromstring(body)
+
+                for element in listing.iter("Name"):
+                    # "<tenant>/<folder>/<file>". Deeper paths are the
+                    # per-agenda-item PDFs, which we do not link.
+                    parts = (element.text or "").split("/")
+                    if len(parts) == 3:
+                        names.setdefault(parts[1], []).append(parts[2])
+
+                marker = (listing.findtext("NextMarker") or "").strip()
+                if not marker:
+                    return names
+        except Exception as e:
+            self.logger.warning(
+                f"Could not list DocAssembler storage for {self.council_name}; "
+                f"falling back to the filenames the API reports: {e}"
+            )
+            return None
+
+    @staticmethod
+    def _collapse(name: str) -> str:
+        return re.sub(r"\s+", " ", name)
+
+    def _document_url(
+        self,
+        storage: dict,
+        tenant_key: str,
+        stored: Optional[dict],
+        folder_name: Optional[str],
+        file_path: Optional[str],
+    ) -> Optional[str]:
+        """Build the storage URL for one document, mirroring the portal."""
+        if not folder_name or not file_path:
+            return None
+
+        if stored is None:
+            # No listing to check against, so the API's name is all we have.
+            name = file_path
+        else:
+            in_folder = stored.get(folder_name, ())
+            if file_path in in_folder:
+                name = file_path
+            else:
+                collapsed = self._collapse(file_path)
+                candidates = [n for n in in_folder if self._collapse(n) == collapsed]
+                if len(candidates) == 1:
+                    name = candidates[0]
+                    self.logger.debug(
+                        f"Blob name differs from the API's: {file_path!r} -> {name!r}"
+                    )
+                else:
+                    # Either the document was never uploaded, or two blobs
+                    # differ only in whitespace and there is no telling which
+                    # the API meant. A URL we know 404s is worse than none.
+                    near = f" ({len(candidates)} near matches)" if candidates else ""
+                    self.logger.info(
+                        f"No stored blob for {folder_name}/{file_path!r}{near}"
+                    )
+                    return None
+
+        quoted = "/".join(
+            urllib.parse.quote(part, safe="")
+            for part in (tenant_key, folder_name, name)
+        )
+        return f"{storage['base']}/{storage['container']}/{quoted}{storage['sas']}"
 
 
 SCRAPER_REGISTRY: dict[str, BaseScraper] = {}
