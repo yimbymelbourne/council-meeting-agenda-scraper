@@ -39,13 +39,16 @@ looks fine locally and breaks production:
    (`banyule`, `campbelltown`, `darebin`, `melbourne` and `strathfield` all
    drive Selenium in production), but nothing pins it.
 2. **One process for every council, and a hard kill.** The adapter is invoked
-   **once** for all councils with `--workers 6`, and the Node side
-   `SIGKILL`s it at `SCRAPE_TIMEOUT_MS` (default **180 s**, set in the
-   workflow's `env:`). A slow scraper does not just fail itself — the kill
-   discards stdout, so the run ends in `Python adapter did not produce valid
-   JSON on stdout` and **nothing at all is persisted, for any council**. The
-   nightly run already exceeds this budget, so treat per-scraper wall time as
-   a scarce shared resource and say what a new scraper costs.
+   **once** for all councils, and the Node side `SIGKILL`s it at
+   `SCRAPE_TIMEOUT_MS` — **600 s**, both as the workflow's `env:` value and as
+   `ingestCouncils.ts`'s own fallback. A slow scraper does not just fail
+   itself — the kill discards stdout, so the run ends in `Python adapter did
+   not produce valid JSON on stdout` and **nothing at all is persisted, for
+   any council**. The nightly run currently takes around 340 s of that, so
+   treat per-scraper wall time as a scarce shared resource and say what a new
+   scraper costs. Concurrency is `main.py`'s own `--workers` default of 6: the
+   adapter passes no flag for it, so unlike the fetcher's env vars it cannot
+   be tuned from the other repo at all.
 3. **Env vars are the deployment lever, and they live in the other repo.**
    The adapter spawns Python with `env: {...process.env}`, so anything in
    that workflow's `env:` block reaches the fetcher — `FETCH_DELAY`,
@@ -61,7 +64,19 @@ To check what production actually did last night:
 ```bash
 gh run list --repo yimbymelbourne/council-alerts --workflow ingest-councils.yml -L 5
 gh run view <run-id> --repo yimbymelbourne/council-alerts --log | grep -E "Scraper failed|SIGKILL"
+# and, separately, the councils that "succeeded" with nothing:
+gh run view <run-id> --repo yimbymelbourne/council-alerts --log | grep "0 meetings"
 ```
+
+**That run's `okCouncils` count is not a count of working councils.** It
+counts councils that did not raise, and a scraper returning an empty list
+does not raise — so `hunters_hill` and `woollahra`, both broken, are inside
+it. Worse, `InfoCouncilScraper` catches per-year fetch failures and logs them
+at DEBUG (`base.py`, the year loop), so a council that is *blocked from the
+runner's IP* also lands in `okCouncils` with 0 meetings: `bayside_nsw` returns
+76 meetings for 2026 from a home IP and 0 in production, because
+`infoweb.bayside.nsw.gov.au` is behind Cloudflare. Always read the per-council
+meeting counts, never the summary.
 
 Prefer a code default that is correct unattended over a knob someone has to
 set in the other repo. The User-Agent decision is deliberately shaped that
@@ -192,6 +207,36 @@ Replay pins the clock to the date the cassette was recorded. A scraper reading
 the real clock starts requesting an unrecorded year every January, and its
 fixture fails for a reason nobody caused.
 
+#### `years_filter` — the one lever that bounds production cost
+
+`main.py` sets `scraper.years_filter` from `--years` **before** calling
+`scraper()`, and production always passes a single year (the workflow computes
+`YEARS` and the last runs have all been `2026`). It also filters the results
+afterwards, so ignoring the attribute is never *wrong* — it is just wasteful,
+and the waste is charged against the shared 600 s budget above.
+
+So read it, and use it to decide what to fetch:
+
+```python
+def _wanted_years(self) -> set[int]:
+    years_filter = getattr(self, "years_filter", None)
+    if years_filter:
+        return set(years_filter)
+    return set(range(EARLIEST_YEAR, clock.current_year() + 3))
+```
+
+`getattr` with a default, because the attribute only exists when `--years` was
+passed. This matters most for a council whose documents live on a page per
+meeting — `yarra`, `ryde` — where the difference is 16 requests a night
+instead of 130. For a listing that is newest-first and paged (`ryde`,
+`canterbury_bankstown`), also stop paging once a whole page predates the
+earliest year you want.
+
+Note the asymmetry it creates, because it is easy to misread: the cassette is
+recorded **unfiltered**, so the fixture — and therefore the coverage in
+`status.md` — shows the full history, while production only ever asks for the
+current year. Both are correct.
+
 ---
 
 ## How to Fix or Add a Scraper
@@ -200,9 +245,17 @@ fixture fails for a reason nobody caused.
 
 Before touching anything, read 1–2 functioning scrapers to understand patterns. Good references:
 
-- `aus_council_scrapers/scrapers/vic/bayside.py` — simple requests-based scraper
+- `aus_council_scrapers/scrapers/nsw/canada_bay.py` — the simplest shape: one
+  request, whole history off a single listing page
+- `aus_council_scrapers/scrapers/nsw/camden.py` — a page per year, discovered
+  from an index
+- `aus_council_scrapers/scrapers/vic/yarra.py` — documents only on per-meeting
+  pages, so `years_filter` decides what gets fetched
 - `aus_council_scrapers/scrapers/vic/banyule.py` — complex Selenium scraper
 - `aus_council_scrapers/scrapers/nsw/innerwest.py` — InfoCouncil-based scraper
+
+Not `vic/bayside.py`: it reads fine but the council blocks us, so you cannot
+run it against anything but its cassette.
 
 ### Step 2 — Visit the Council's URL
 
@@ -335,9 +388,19 @@ by slug:
 RECORD=<council_slug> poetry run pytest tests/scraper_test.py -k <council_slug> -v
 ```
 
+`-k` matches the **class** name, not the slug — `-k CanadaBay`, not
+`-k canada_bay`, which selects nothing and silently records nothing.
+
 `RECORD=1` re-records everything in the selection — avoid it. Cassettes are
 per-council, and a blanket re-record pulls other people's in-flight fixture
 changes into your branch.
+
+A cassette stores every response body in full, so a scraper that fetches a
+page per meeting is expensive on both axes: recording `ryde` takes ~3.5
+minutes of throttled requests and the fixture is 26 MB, `yarra` ~4 minutes and
+19 MB. That is in line with what is already here (`manningham` is 27 MB), but
+it is the cost of the design — if a listing page carries the document links
+directly, as Canada Bay's does, one request covers the whole history.
 
 Read the diff in `<slug>-result.json` before committing. It is the only place
 the scraper's actual output gets reviewed, and going from 200 meetings to 3 is
@@ -396,6 +459,15 @@ council's meeting-page URL.
 ## Critical Rules
 
 **Never return zero results.** A scraper that returns an empty list is broken — it should always return at least upcoming meetings or recent past meetings. If the page structure has changed, investigate why rather than silently returning `[]`.
+
+**Return every meeting in range, not just the newest one.** The oldest
+scrapers here parsed a listing page, took the first entry and returned a
+one-element list. That reads as working — no error, one plausible meeting — and
+the scorecard is the only thing that ever noticed. `camden`, `canada_bay`,
+`canterbury_bankstown`, `ryde` and `yarra` were all built that way; the last of
+them was throwing away 29 of the 30 meeting pages it had already fetched. If
+you are looking at `find(...)` where the page has many matches, that is the
+bug.
 
 **Always include future meetings.** Councils publish upcoming agendas before the meeting date. Make sure the scraper captures them — a common failure is only fetching the current year when meetings are already scheduled for next year.
 

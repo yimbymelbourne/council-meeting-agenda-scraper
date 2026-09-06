@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**31 of 60 councils complete (51%)** — 6 partial, 2 broken, 21 not started.
+**36 of 60 councils complete (60%)** — 1 partial, 2 broken, 21 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -23,10 +23,10 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
 | ✅ | `burwood` | 166 | 2020-2026 | 162 | 139 |  |
-| 🟡 | `camden` | 1 | 2024-2024 | 1 | 1 | only 1 meeting(s); only 1 year(s); nothing newer than 2024 |
+| ✅ | `camden` | 76 | 2020-2026 | 76 | 75 |  |
 | ✅ | `campbelltown` | 95 | 2020-2026 | 95 | 95 |  |
-| 🟡 | `canada_bay` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; nothing newer than 2024 |
-| 🟡 | `canterbury_bankstown` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; nothing newer than 2024 |
+| ✅ | `canada_bay` | 101 | 2018-2026 | 101 | 100 |  |
+| ✅ | `canterbury_bankstown` | 152 | 2020-2026 | 152 | 150 |  |
 | ✅ | `cumberland` | 329 | 2020-2026 | 311 | 229 |  |
 | ✅ | `darebin` | 84 | 2022-2026 | 84 | 79 |  |
 | ✅ | `georges_river` | 632 | 2020-2026 | 630 | 571 |  |
@@ -48,11 +48,11 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |
 | ✅ | `port_phillip` | 128 | 2022-2026 | 128 | 121 |  |
 | ✅ | `randwick` | 429 | 2020-2026 | 424 | 360 |  |
-| 🟡 | `ryde` | 1 | 2024-2024 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; nothing newer than 2024 |
+| ✅ | `ryde` | 96 | 2020-2026 | 96 | 94 |  |
 | ✅ | `strathfield` | 97 | 2020-2026 | 97 | 90 |  |
 | ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
 | ✅ | `whitehorse` | 160 | 2020-2026 | 160 | 150 |  |
-| 🟡 | `yarra` | 1 | 2025-2025 | 1 | 0 | only 1 meeting(s); only 1 year(s); no minutes on any past meeting; nothing newer than 2025 |
+| ✅ | `yarra` | 120 | 2020-2026 | 120 | 119 |  |
 | ✅ | `yarra_ranges` | 128 | 2021-2026 | 128 | 128 |  |
 
 ## Not started
