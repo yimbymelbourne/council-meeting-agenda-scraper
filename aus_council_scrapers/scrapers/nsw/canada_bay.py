@@ -1,6 +1,21 @@
-from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
-from bs4 import BeautifulSoup
 import re
+from urllib.parse import urljoin
+
+from bs4 import BeautifulSoup
+
+from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
+
+_LISTING_URL = "https://www.canadabay.nsw.gov.au/council/about-council/council-meetings"
+
+# Every meeting Canada Bay has published sits on this one page, as accordion
+# items: a header carrying the date (and sometimes the meeting type), and a
+# panel holding that meeting's documents.
+#
+# A supplementary agenda is a second document for a meeting that already has
+# one, and an attachment book is neither an agenda nor minutes.
+_AGENDA_LABEL = re.compile(r"\bagenda\b", re.IGNORECASE)
+_SUPPLEMENTARY = re.compile(r"supplementary|attachment", re.IGNORECASE)
+_MINUTES_LABEL = re.compile(r"\bminutes\b", re.IGNORECASE)
 
 
 @register_scraper
@@ -10,84 +25,82 @@ class CanadaBayScraper(BaseScraper):
         state = "NSW"
         base_url = "https://www.canadabay.nsw.gov.au"
         super().__init__(council, state, base_url)
-        self.date_pattern = re.compile(
-            r"\b(\d{1,2})\s(January|February|March|April|May|June|July|August|September|October|November|December)\s(\d{4})\b"
-        )
         self.default_location = (
             "Canada Bay Civic Centre, 1A Marlborough Street, Drummoyne"
         )
         self.default_time = "6 pm"
 
+    def _meeting_name(self, header_text: str, date: str) -> str:
+        qualifier = header_text.replace(date, "").strip(" -–—()")
+        if not qualifier:
+            return "Council Meeting"
+        # The headings are hand-typed, so the qualifier arrives as
+        # "Extraordinary" or "extraordinary" depending on the month.
+        qualifier = qualifier[0].upper() + qualifier[1:]
+        if "meeting" in qualifier.lower():
+            return qualifier
+        return f"{qualifier} Council Meeting"
+
     def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
 
-        webpage_url = (
-            "https://www.canadabay.nsw.gov.au/council/about-council/council-meetings"
-        )
+        html = self.fetcher.fetch_with_requests(_LISTING_URL)
+        soup = BeautifulSoup(html, "html.parser")
 
-        response = self.fetcher.fetch_with_requests(webpage_url)
+        years_filter = getattr(self, "years_filter", None)
+        results: list[ScraperReturn] = []
 
-        soup = BeautifulSoup(response, "html.parser")
+        for accordion in soup.find_all("div", class_="accordion-list"):
+            for item in accordion.find_all("div", class_="list-group-item"):
+                header = item.find("a")
+                if not header:
+                    continue
 
-        name = None
-        date = None
-        time = ""
-        download_url = None
+                header_text = re.sub(r"\s+", " ", header.get_text(" ", strip=True))
+                date_match = self.date_regex.search(header_text)
+                if not date_match:
+                    # A year label ("COUNCIL MEETINGS 2024") rather than a
+                    # meeting; it carries no documents of its own.
+                    continue
 
-        # all links are in the accordian list div
-        soup = soup.find("div", class_="accordion-list")
+                date = date_match.group()
+                if years_filter:
+                    year = int(date[-4:])
+                    if year not in years_filter:
+                        continue
 
-        # first tag with agenda in title
-        target_a_tag = soup.find(
-            "a", string=lambda string: string and "Agenda" in string
-        )
+                panel = item.find("div", class_="panel")
+                if not panel:
+                    continue
 
-        # Print the result
-        if target_a_tag:
-            self.logger.debug("a tag found")
-        else:
-            self.logger.debug(
-                "No 'a' tag with 'agenda' in the href attribute found on the page."
-            )
+                agenda_url = None
+                minutes_url = None
+                for link in panel.find_all("a", href=True):
+                    label = link.get_text(" ", strip=True)
+                    href = urljoin(_LISTING_URL, link["href"])
+                    if _MINUTES_LABEL.search(label):
+                        if minutes_url is None:
+                            minutes_url = href
+                    elif _AGENDA_LABEL.search(label) and not _SUPPLEMENTARY.search(
+                        label
+                    ):
+                        if agenda_url is None:
+                            agenda_url = href
 
-        href_value = target_a_tag.get("href")
-        if href_value:
-            download_url = self.base_url + href_value
-            self.logger.debug("download url set")
-        else:
-            self.logger.debug("link not found.")
+                if not agenda_url and not minutes_url:
+                    continue
 
-        # get the text inside that first name tag - contains both the name of the meeting and the date
-        txt_value = target_a_tag.string
-        self.logger.debug(txt_value)
-        if txt_value:
-            # extract the date from txt_value
-            match = self.date_pattern.search(txt_value)
+                results.append(
+                    ScraperReturn(
+                        name=self._meeting_name(header_text, date),
+                        date=date,
+                        time=None,
+                        webpage_url=_LISTING_URL,
+                        agenda_url=agenda_url,
+                        minutes_url=minutes_url,
+                        download_url=agenda_url or minutes_url,
+                    )
+                )
 
-            # Extract the matched date
-            if match:
-                extracted_date = match.group()
-                self.logger.info(f"Extracted Date: {extracted_date}")
-                date = extracted_date
-            else:
-                self.logger.debug("No date found in the input string.")
-
-            # extract the name from text value
-        name_ = self.date_pattern.sub("", txt_value)
-        name = name_.rstrip(" -")  # remove hanging hyphen/whitespace
-
-        if name == "":
-            name = "Council Agenda"
-
-        scraper_return = ScraperReturn(name, date, time, self.base_url, download_url)
-
-        self.logger.info(
-            f"""
-            {scraper_return.name}
-            {scraper_return.date}
-            {scraper_return.time}
-            {scraper_return.webpage_url}
-            {scraper_return.download_url}"""
-        )
-        self.logger.info(f"{self.council_name} scraper finished successfully")
-        return [scraper_return]
+        self.logger.info(f"{self.council_name} scraper found {len(results)} meetings")
+        return results
