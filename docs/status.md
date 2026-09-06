@@ -52,7 +52,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `strathfield` | 97 | 2020-2026 | 97 | 90 |  |
 | ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
 | ✅ | `whitehorse` | 160 | 2020-2026 | 160 | 150 |  |
-| ✅ | `yarra` | 115 | 2020-2026 | 115 | 113 |  |
+| ✅ | `yarra` | 120 | 2020-2026 | 120 | 119 |  |
 | ✅ | `yarra_ranges` | 128 | 2021-2026 | 128 | 128 |  |
 
 ## Not started

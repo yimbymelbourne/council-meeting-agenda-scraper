@@ -20,8 +20,17 @@ _INDEX_URL = (
 # sane: one request per meeting in range.
 _MEETING_PATH = "/about-us/committees-meetings-and-minutes/"
 
-_AGENDA_LABEL = re.compile(r"^\s*agenda\b", re.IGNORECASE)
-_MINUTES_LABEL = re.compile(r"^\s*minutes\b", re.IGNORECASE)
+# Labelling is inconsistent across the years: minutes appear as "Minutes",
+# "Council Meeting 13 May 2025 Minutes", "Minutes from Council Meeting ..." and
+# "Minutes from Ordinary Council Meeting Tuesday ...". Anchoring on the word
+# lost the 13 May 2025 minutes, which are published under the only form that
+# does not start with it. The other links in this section are Agenda, Video,
+# Recording and the venue's map links, so matching anywhere in the label is
+# safe — except that a mayoral minute is a document of its own, not the
+# meeting's minutes.
+_AGENDA_LABEL = re.compile(r"\bagenda\b", re.IGNORECASE)
+_MINUTES_LABEL = re.compile(r"\bminutes\b", re.IGNORECASE)
+_NOT_THE_MEETINGS = re.compile(r"mayoral|supplementary|attachment", re.IGNORECASE)
 _DOCUMENTS_HEADING = re.compile(r"^\s*Documents\s*$", re.IGNORECASE)
 _WHERE_HEADING = re.compile(r"^\s*Where\s*$", re.IGNORECASE)
 
@@ -78,10 +87,12 @@ class YarraScraper(BaseScraper):
         minutes_url = None
         for link in (heading.parent or soup).find_all("a", href=True):
             label = link.get_text(" ", strip=True)
+            if _NOT_THE_MEETINGS.search(label):
+                continue
             href = urljoin(page_url, link["href"])
-            if agenda_url is None and _AGENDA_LABEL.match(label):
+            if agenda_url is None and _AGENDA_LABEL.search(label):
                 agenda_url = href
-            elif minutes_url is None and _MINUTES_LABEL.match(label):
+            elif minutes_url is None and _MINUTES_LABEL.search(label):
                 minutes_url = href
         return agenda_url, minutes_url
 

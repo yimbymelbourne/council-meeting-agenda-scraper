@@ -17,8 +17,12 @@ _PAGE_URL = _LISTING_URL + "?sort_by=field_ex_co_cat&sort_order=DESC&page={page}
 _ACCORDION_ITEM = re.compile(r"accordian-item")
 _PAGE_PARAM = re.compile(r"[?&]page=(\d+)")
 
-_AGENDA_LABEL = re.compile(r"\bagenda\b", re.IGNORECASE)
-_MINUTES_LABEL = re.compile(r"\bminutes\b", re.IGNORECASE)
+# Not anchored on word boundaries: some links are labelled with the bare file
+# name ("cblpp_4_november_2024_agenda.pdf"), and `_agenda` has no word boundary
+# in front of it. Nothing else in these panels — Video, Audio, View More,
+# Public Forum — contains either word, so a plain substring is safe here.
+_AGENDA_LABEL = re.compile(r"agenda", re.IGNORECASE)
+_MINUTES_LABEL = re.compile(r"minutes", re.IGNORECASE)
 _ATTACHMENT_LABEL = re.compile(r"attachment|supplementary", re.IGNORECASE)
 
 # Meeting names arrive carrying zero-width spaces from the CMS editor.
