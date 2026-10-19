@@ -118,6 +118,27 @@ def test_the_throttle_spaces_one_host_across_fetchers(server):
     assert min(gaps) > delay * 0.75 - 0.05, gaps
 
 
+def test_a_shared_vendor_api_is_spaced_at_its_own_fraction(server, monkeypatch):
+    """api.resolve.red serves 13 councils. At the full FETCH_DELAY their
+    one-year requests alone outlast the adapter budget, so its spacing is a
+    fraction of FETCH_DELAY. It is still spaced, and FETCH_DELAY still
+    scales it."""
+    host = server.url.split("://", 1)[1]
+    monkeypatch.setitem(DefaultFetcher.HOST_DELAY_FACTORS, host, 0.25)
+    delay = 1.6
+    fetcher = DefaultFetcher(fetch_delay=delay)
+
+    started = time.monotonic()
+    for _ in range(3):
+        fetcher.fetch_with_requests(f"{server.url}/page")
+    elapsed = time.monotonic() - started
+
+    gaps = [b - a for a, b in zip(server.arrivals, server.arrivals[1:])]
+    # Spaced at 0.25 x 1.6 = 0.4 s, jittered by +/-25%, never at the full 1.6.
+    assert min(gaps) > 0.4 * 0.75 - 0.05, gaps
+    assert elapsed < 1.6, elapsed
+
+
 def test_waiting_on_one_host_does_not_hold_up_another(server, other_server):
     """The slot is reserved under the lock but slept outside it. Sleeping
     under it would serialise every host behind the busiest one."""
