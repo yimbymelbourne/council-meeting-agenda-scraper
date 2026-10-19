@@ -96,6 +96,12 @@ def _clean_location(location_div: BeautifulSoup) -> str | None:
 
 @register_scraper
 class BanyuleScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 246 s,
+    # because it does not yet honour years_filter. Lower this to the
+    # new measurement in the change that fixes that. Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 246
+
     def __init__(self):
         council = "banyule"
         state = "VIC"

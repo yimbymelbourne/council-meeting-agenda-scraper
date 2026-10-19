@@ -13,6 +13,10 @@ from urllib.parse import urljoin
 
 @register_scraper
 class ManninghamScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 25 s. Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 25
+
     # Manningham's CloudFront rules run the opposite way to most councils':
     # they serve a browser-shaped client and 403 an identifying one (measured
     # 2026-08-20 — 200 with 364KB against a 919-byte 403). It is the only

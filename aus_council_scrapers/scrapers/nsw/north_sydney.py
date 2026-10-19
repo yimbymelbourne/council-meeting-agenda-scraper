@@ -50,6 +50,12 @@ def _parse_listing_entry(anchor) -> tuple[datetime, str] | None:
 
 @register_scraper
 class NorthSydneyScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 272 s,
+    # because it does not yet honour years_filter. Lower this to the
+    # new measurement in the change that fixes that. Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 272
+
     def __init__(self):
         council = "north_sydney"
         state = "NSW"

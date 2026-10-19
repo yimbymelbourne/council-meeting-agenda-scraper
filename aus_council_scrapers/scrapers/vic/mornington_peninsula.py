@@ -192,6 +192,10 @@ def _papers(content: BeautifulSoup) -> dict[str, str]:
 
 @register_scraper
 class MorningtonPeninsulaScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 69 s. Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 69
+
     def __init__(self):
         council = "mornington_peninsula"
         state = "VIC"

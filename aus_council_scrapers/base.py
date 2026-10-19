@@ -4,6 +4,9 @@ import logging
 import os
 import random
 import re
+import signal
+import subprocess
+import threading
 import time
 import urllib.parse
 from abc import ABC, abstractmethod
@@ -303,6 +306,16 @@ class Fetcher(ABC):
     def close(self) -> None:
         pass
 
+    def abandon(self) -> None:
+        """Kill any browser this fetcher started, without waiting on it.
+
+        For a scraper the adapter is giving up on. `close` cannot be used:
+        it asks the browser to quit over the same session that may be the
+        thing that hung. A no-op by default, since only a live browser
+        outlives the process.
+        """
+        return None
+
 
 class DefaultFetcher(Fetcher):
     """Live fetcher, throttled per host.
@@ -314,13 +327,42 @@ class DefaultFetcher(Fetcher):
     metronome), and 429/403/503 responses are retried with exponential
     backoff honouring `Retry-After`.
 
-    The delay is keyed by host, so scraping different councils concurrently
-    is unaffected.
+    The spacing is per host *across the whole process*, not per fetcher.
+    Every scraper builds its own fetcher, and many councils share one vendor
+    host—a dozen Resolve tenants all call `api.resolve.red`, seven LGA SA
+    councils call one Funnelback endpoint. A per-instance throttle let all of
+    them hit that host at once, so `FETCH_DELAY` limited each council and
+    nothing limited the vendor. Different hosts still run fully in parallel.
+
+    Every request also carries a timeout. Without one a server that accepts
+    the connection and then sends nothing blocks the worker forever:
+    `api.docassembler.com.au` held a local run for 12+ minutes at 0% CPU, and
+    in production that is the 600 s SIGKILL with nothing persisted for any
+    council.
     """
 
     DEFAULT_FETCH_DELAY = 2.0
     MAX_RETRIES = 4
     RETRY_STATUSES = frozenset({403, 429, 500, 502, 503, 504})
+
+    # (connect, read) seconds for requests. The read timeout bounds the gap
+    # between bytes, not the whole download, so a big PDF listing that keeps
+    # streaming is unaffected; only a silent server trips it. 60 s is far
+    # above any response a council has taken to start answering. `FETCH_TIMEOUT`
+    # overrides the read half from the council-alerts workflow without a PR
+    # here. A total wall-clock bound is main.py's adapter budget, not this.
+    CONNECT_TIMEOUT = 10.0
+    DEFAULT_READ_TIMEOUT = 60.0
+
+    # Selenium has no default page-load timeout at all—`driver.get` waits
+    # for the load event indefinitely. Same reasoning, same order of magnitude.
+    PAGE_LOAD_TIMEOUT = 60
+
+    # Shared by every instance: the next free request slot per host. A
+    # caller reserves a slot under the lock and sleeps *outside* it, so a
+    # long wait on one host never blocks a request to another.
+    _host_lock = threading.Lock()
+    _next_slot_at: dict[str, float] = {}
 
     def __init__(
         self,
@@ -333,7 +375,6 @@ class DefaultFetcher(Fetcher):
         self.strip_headless_user_agent = strip_headless_user_agent
         self.__set_headers({**self.DEFAULTHEADERS, "User-Agent": self.user_agent})
         self.__driver = None
-        self.__last_request_at: dict[str, float] = {}
         self.__logger = logging.getLogger(self.__class__.__name__)
 
         if fetch_delay is None:
@@ -341,22 +382,26 @@ class DefaultFetcher(Fetcher):
                 os.environ.get("FETCH_DELAY", self.DEFAULT_FETCH_DELAY)
             )
         self.__fetch_delay = fetch_delay
+        self.__timeout = (
+            self.CONNECT_TIMEOUT,
+            float(os.environ.get("FETCH_TIMEOUT", self.DEFAULT_READ_TIMEOUT)),
+        )
 
     def __throttle(self, url: str) -> None:
-        """Space out consecutive requests to the same host."""
+        """Space out consecutive requests to the same host, process-wide."""
         if self.__fetch_delay <= 0:
             return
 
         host = urllib.parse.urlparse(url).netloc
-        last = self.__last_request_at.get(host)
-        if last is not None:
+        with DefaultFetcher._host_lock:
+            now = time.monotonic()
+            slot = max(now, DefaultFetcher._next_slot_at.get(host, now))
             # Jitter so a long run of requests is not perfectly periodic.
-            wait = self.__fetch_delay * random.uniform(0.75, 1.25) - (
-                time.monotonic() - last
+            DefaultFetcher._next_slot_at[host] = slot + (
+                self.__fetch_delay * random.uniform(0.75, 1.25)
             )
-            if wait > 0:
-                time.sleep(wait)
-        self.__last_request_at[host] = time.monotonic()
+        if slot > now:
+            time.sleep(slot - now)
 
     def __backoff(self, response, attempt: int) -> float:
         retry_after = response.headers.get("Retry-After") if response else None
@@ -397,6 +442,9 @@ class DefaultFetcher(Fetcher):
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option("useAutomationExtension", False)
         self.__driver = webdriver.Chrome(options=chrome_options)
+        # A page that never fires its load event raises TimeoutException
+        # instead of hanging the worker past the adapter's budget.
+        self.__driver.set_page_load_timeout(self.PAGE_LOAD_TIMEOUT)
         self.__driver.execute_cdp_cmd(
             "Page.addScriptToEvaluateOnNewDocument",
             {
@@ -438,6 +486,11 @@ class DefaultFetcher(Fetcher):
         return self.__driver
 
     def fetch_with_requests(self, url, method="GET", **kwargs):
+        # Defaulted here, below the RecordingFetcher, not in the scraper or
+        # the recorder: cassette keys are built from the kwargs a scraper
+        # passes, so adding it any higher would change every key and make
+        # every recorded fixture miss. A scraper may still pass its own.
+        kwargs.setdefault("timeout", self.__timeout)
         last_error = None
         for attempt in range(self.MAX_RETRIES):
             self.__throttle(url)
@@ -492,6 +545,32 @@ class DefaultFetcher(Fetcher):
         if self.__driver:
             self.__driver.quit()
 
+    def abandon(self) -> None:
+        # The adapter leaves with os._exit when its budget runs out, which
+        # skips Selenium's own cleanup, and chromedriver dying does not take
+        # its Chrome with it: both stayed alive after the run, reparented to
+        # init. So signal Chrome (chromedriver's children; Chrome takes its
+        # own renderers down) and then chromedriver. SIGTERM only, never a
+        # wait—this runs on the way out of a process that is already late.
+        process = getattr(getattr(self.__driver, "service", None), "process", None)
+        if process is None:
+            return
+        try:
+            children = subprocess.run(
+                ["pgrep", "-P", str(process.pid)],
+                capture_output=True,
+                text=True,
+                timeout=2,
+            ).stdout.split()
+        except Exception as e:
+            self.__logger.warning(f"Could not list chromedriver's children: {e}")
+            children = []
+        for pid in [*children, str(process.pid)]:
+            try:
+                os.kill(int(pid), signal.SIGTERM)
+            except (ProcessLookupError, ValueError):
+                pass
+
 
 class BaseScraper(ABC):
     """
@@ -527,6 +606,14 @@ class BaseScraper(ABC):
     # token in Chrome's User-Agent. Verify by running the scraper both ways
     # and comparing meetings returned — it costs banyule most of its history.
     strip_headless_user_agent: bool = False
+
+    # Roughly how long one production run (a single `--years` year, from the
+    # runner) takes, in seconds. main.py uses it only to order dispatch:
+    # longest first, so a slow scraper starts at t=0 rather than after the
+    # pool has drained the cheap ones and runs on alone towards the 600 s
+    # kill. Nothing enforces it. Leave the default unless a measured run is
+    # well above it, and then set the measured number, not a guess.
+    expected_seconds: float = 5.0
 
     def __init__(
         self,
@@ -625,6 +712,10 @@ class InfoCouncilScraper(BaseScraper):
             years_to_try = sorted(years_filter)
         else:
             years_to_try = range(EARLIEST_YEAR, current_year + 3)
+
+        # Year pages that raised, kept so that a council whose every year
+        # failed can fail too. See the handler at the bottom of the loop.
+        failures: list[Exception] = []
 
         for year in years_to_try:
             year_url = f"{self.infocouncil_url}?year={year}"
@@ -769,9 +860,24 @@ class InfoCouncilScraper(BaseScraper):
                     results.append(scraper_return)
 
             except Exception as e:
-                # Log but continue trying other years
-                self.logger.debug(f"Failed to fetch meetings for year {year}: {e}")
+                # One bad year should not cost the others: a full-history
+                # walk asks for years the site may not serve. But this used
+                # to log at DEBUG, which hid a blocked or stalled host
+                # completely—and production asks for one year only, so a
+                # requests.Timeout here came back as an ok council with 0
+                # meetings. Warn, and fail the council once every year has
+                # failed (below).
+                self.logger.warning(
+                    f"{self.council_name}: failed to fetch meetings for {year}: {e}"
+                )
+                failures.append(e)
                 continue
+
+        if failures and len(failures) == len(years_to_try):
+            raise RuntimeError(
+                f"{self.council_name}: every InfoCouncil year page failed "
+                f"({len(failures)} of {len(years_to_try)})"
+            ) from failures[-1]
 
         # The legacy grid splits some meetings across two rows in the same way
         # the redesigned template does — one carrying the agenda, another the
@@ -948,25 +1054,34 @@ class DocsPublishedScraper(BaseScraper):
     def scraper(self) -> list[ScraperReturn]:
         years_filter = getattr(self, "years_filter", None)
 
+        # Each of these three lookups is required: without the organisation,
+        # the storage token or the document list there is nothing to emit.
+        # A failure raises rather than returning [], because run_scraper
+        # reports [] as an ok council with 0 meetings and the ingest records
+        # that as a successful scrape. api.docassembler.com.au is the host
+        # that once stalled a run for 12+ minutes; now that requests time
+        # out, a stall must surface as a failed council, not a quiet one.
         organisation = self._get_json(
             f"{self.API_ROOT}/organisation/{self.publishing_slug}"
         )
         if not organisation:
-            self.logger.error(
+            raise RuntimeError(
                 f"No DocAssembler organisation for {self.publishing_slug}"
             )
-            return []
 
         storage = self._storage_config()
         if not storage:
-            self.logger.error("Could not read the DocAssembler storage settings")
-            return []
+            raise RuntimeError("Could not read the DocAssembler storage settings")
 
         tenant_key = organisation["Key"]
         stored = self._stored_names(storage, tenant_key)
         documents = self._get_json(f"{self.API_ROOT}/documents/{organisation['Id']}")
+        if documents is None:
+            raise RuntimeError(
+                f"DocAssembler returned no document list for {self.publishing_slug}"
+            )
         if not documents:
-            self.logger.info(f"{self.council_name} scraper found no meetings")
+            self.logger.warning(f"{self.council_name} scraper found no meetings")
             return []
 
         tz = pytz.timezone(TIMEZONES_BY_STATE[self.state.upper()])
@@ -1051,13 +1166,14 @@ class DocsPublishedScraper(BaseScraper):
         return results
 
     def _get_json(self, url: str):
-        """Fetch JSON through the fetcher so runs stay recordable."""
-        try:
-            body = self.fetcher.fetch_with_requests(url)
-            return json.loads(body) if body else None
-        except Exception as e:
-            self.logger.error(f"Failed to fetch {url}: {e}")
-            return None
+        """Fetch JSON through the fetcher so runs stay recordable.
+
+        Fetch and decode errors propagate: the caller has no fallback for
+        either call this serves, so catching them here only turned a timeout
+        or a 5xx into an empty result.
+        """
+        body = self.fetcher.fetch_with_requests(url)
+        return json.loads(body) if body else None
 
     def _storage_config(self) -> Optional[dict]:
         """Read the blob storage settings out of the portal's JS bundle.
@@ -1070,35 +1186,35 @@ class DocsPublishedScraper(BaseScraper):
         it would work right up until it silently stopped, so it is read from
         the bundle on each run. The bundle name carries a build hash that
         changes on every deploy, so that too is discovered from the page.
+
+        A fetch failure propagates; the caller has no fallback for a
+        missing token. A page that loads but no longer matches the regexes
+        returns None, and the caller raises on that too.
         """
-        try:
-            shell = self.fetcher.fetch_with_requests(self.base_url)
-            bundle_match = self.BUNDLE_REGEX.search(shell)
-            if not bundle_match:
-                self.logger.error("Could not find the DocAssembler JS bundle")
-                return None
-
-            # The portal is an Angular app served with <base href="/">, so its
-            # relative script tags resolve against the site root, not the
-            # council path. Getting this wrong is quiet rather than loud:
-            # unknown paths return the app shell with a 200 instead of a 404.
-            base_href = self.BASE_HREF_REGEX.search(shell)
-            base_url = urllib.parse.urljoin(
-                self.base_url, base_href.group(1) if base_href else "/"
-            )
-
-            bundle = self.fetcher.fetch_with_requests(
-                urllib.parse.urljoin(base_url, bundle_match.group(1))
-            )
-            config_match = self.BLOB_CONFIG_REGEX.search(bundle)
-            if not config_match:
-                self.logger.error("Could not find the storage settings in the bundle")
-                return None
-
-            return config_match.groupdict()
-        except Exception as e:
-            self.logger.error(f"Failed to read the storage settings: {e}")
+        shell = self.fetcher.fetch_with_requests(self.base_url)
+        bundle_match = self.BUNDLE_REGEX.search(shell)
+        if not bundle_match:
+            self.logger.error("Could not find the DocAssembler JS bundle")
             return None
+
+        # The portal is an Angular app served with <base href="/">, so its
+        # relative script tags resolve against the site root, not the
+        # council path. Getting this wrong is quiet rather than loud:
+        # unknown paths return the app shell with a 200 instead of a 404.
+        base_href = self.BASE_HREF_REGEX.search(shell)
+        base_url = urllib.parse.urljoin(
+            self.base_url, base_href.group(1) if base_href else "/"
+        )
+
+        bundle = self.fetcher.fetch_with_requests(
+            urllib.parse.urljoin(base_url, bundle_match.group(1))
+        )
+        config_match = self.BLOB_CONFIG_REGEX.search(bundle)
+        if not config_match:
+            self.logger.error("Could not find the storage settings in the bundle")
+            return None
+
+        return config_match.groupdict()
 
     def _stored_names(self, storage: dict, tenant_key: str) -> Optional[dict]:
         """List the council's blobs, as `{folder: [filename, ...]}`.

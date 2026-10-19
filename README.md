@@ -163,7 +163,7 @@ python ./aus_council_scrapers/main.py [OPTIONS]
 - `--council <name>` - Run only the specified council scraper
 - `--state <state>` - Run only scrapers for the specified state
 - `--years <year1> [year2 ...]` - Filter meetings by specific year(s). Valid range: 2020 to current year + 2
-- `--workers <N>` - Number of concurrent workers (default: 6)
+- `--workers <N>` - Number of concurrent workers (default: 10)
 
 ### Scraping Behavior
 

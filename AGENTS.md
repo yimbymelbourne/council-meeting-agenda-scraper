@@ -38,26 +38,37 @@ looks fine locally and breaks production:
    and relies on whatever the runner image happens to ship. It works today
    (`banyule`, `campbelltown`, `darebin`, `melbourne` and `strathfield` all
    drive Selenium in production), but nothing pins it.
-2. **One process for every council, and a hard kill.** The adapter is invoked
-   **once** for all councils, and the Node side `SIGKILL`s it at
-   `SCRAPE_TIMEOUT_MS` — **600 s**, both as the workflow's `env:` value and as
-   `ingestCouncils.ts`'s own fallback. A slow scraper does not just fail
-   itself — the kill discards stdout, so the run ends in `Python adapter did
-   not produce valid JSON on stdout` and **nothing at all is persisted, for
-   any council**. The nightly run currently takes around 340 s of that, so
-   treat per-scraper wall time as a scarce shared resource and say what a new
-   scraper costs. Concurrency is `main.py`'s own `--workers` default of 6: the
-   adapter passes no flag for it, so unlike the fetcher's env vars it cannot
-   be tuned from the other repo at all.
-3. **Env vars are the deployment lever, and they live in the other repo.**
-   The adapter spawns Python with `env: {...process.env}`, so anything in
-   that workflow's `env:` block reaches the fetcher — `FETCH_DELAY`,
-   `SCRAPE_TIMEOUT_MS`, and any future `USER_AGENT`. The corollary: a
-   mechanism that is only configurable by editing this repo cannot be tuned
-   in production without a PR to `council-alerts`, and a default chosen here
-   is what production gets until someone changes that workflow.
+2. **One process for every council, and a hard kill.** The adapter is invoked **once** for all councils, and the Node side `SIGKILL`s it at `SCRAPE_TIMEOUT_MS`—**600 s**, both as the workflow's `env:` value and as `ingestCouncils.ts`'s own fallback. A slow scraper does not just fail itself—the kill discards stdout, so the run ends in `Python adapter did not produce valid JSON on stdout` and **nothing at all is persisted, for any council**. The nightly run currently takes around 340 s of that, so treat per-scraper wall time as a scarce shared resource and say what a new scraper costs. main.py now stops itself before the kill (see "What keeps a run inside 600 s" below), but a council that runs past that budget still gets no update that night. Concurrency is `main.py`'s own `--workers` default, now 10: the adapter passes no flag for it, so unlike the fetcher's env vars it cannot be tuned from the other repo at all.
+3. **Env vars are the deployment lever, and they live in the other repo.** The adapter spawns Python with `env: {...process.env}`, so anything in that workflow's `env:` block reaches the fetcher—`FETCH_DELAY`, `FETCH_TIMEOUT`, `ADAPTER_BUDGET_S`, `SCRAPE_TIMEOUT_MS`, and any future `USER_AGENT`. The corollary: a mechanism that is only configurable by editing this repo cannot be tuned in production without a PR to `council-alerts`, and a default chosen here is what production gets until someone changes that workflow.
 4. **Python 3.11 in production**, 3.10 in CI here, `>=3.10,<3.13` in
    `pyproject.toml`.
+
+### What keeps a run inside 600 s
+
+Five mechanisms, all code defaults here, so none needs a change to `council-alerts`:
+
+| Mechanism | Where | What it prevents |
+|---|---|---|
+| Request timeout, `(10, 60)` s connect/read | `DefaultFetcher.fetch_with_requests` | A server that accepts the connection and then sends nothing. `api.docassembler.com.au` once held a local run for 12+ minutes at 0% CPU. The read timeout bounds the gap between bytes, not the whole download. `FETCH_TIMEOUT` overrides the read half. |
+| Selenium page-load timeout, 60 s | `DefaultFetcher.__setup_selenium_driver` | `driver.get` has no limit by default and waits for the load event forever. |
+| Per-host throttle shared across the whole process | `DefaultFetcher.__throttle` | Each scraper builds its own fetcher, so the old per-instance throttle spaced one council's requests and nothing spaced a vendor host. About 12 Resolve tenants share `api.resolve.red` and 7 LGA SA councils share one Funnelback host. Now `FETCH_DELAY` is a real per-host limit: councils on one vendor host take turns, and different hosts still run in parallel. |
+| Adapter budget, 480 s | `main.py` `_dispatch` | Councils still running (or still queued) when the budget runs out are reported as `ok: false` with `error.type: "Timeout"`. The finished results are written, stdout is flushed, and the process leaves with `os._exit(0)` instead of joining threads it cannot kill. Just before that, `Fetcher.abandon()` SIGTERMs each abandoned scraper's Chrome and chromedriver, because `os._exit` skips Selenium's cleanup and Chrome otherwise outlives the process. `ADAPTER_BUDGET_S` overrides it; keep it well under `SCRAPE_TIMEOUT_MS`. |
+| Slowest-first dispatch | `BaseScraper.expected_seconds`, sorted in `_dispatch` | Wall time is set by whichever scraper finishes last. A 100 s scraper submitted after the cheap ones starts late and runs on alone; submitted first, it overlaps with everything else. |
+
+The `--workers` default went from 6 to 10 at the same time, because the shared throttle means more workers add parallelism across hosts without adding load on any one host.
+
+What this means when you write or change a scraper:
+
+- **The budget is a backstop, not an allowance.** A council that times out gets no update that night. The per-scraper aim stays at about 20 requests and 45 s for one production year.
+- **Set `expected_seconds`** on the class when one production year measures well above the 5 s default. Use the measured number, not a guess. It only orders dispatch; nothing enforces it.
+- **Do not catch `requests.Timeout` and carry on silently.** A timeout now raises where it used to hang. Treat it like any other fetch failure: log a warning, and let the council fail rather than return a quietly short list. `run_scraper` reports a returned `[]` as `ok: true` with 0 meetings, and council-alerts records that as a successful scrape. The shared base classes follow this: `DocsPublishedScraper` raises when its organisation, storage or document lookup fails, and `InfoCouncilScraper` warns per failed year and raises when every requested year failed—which, in a one-year production run, is any failure.
+- **Councils on a shared vendor host queue behind each other.** Ten tenants at five requests each is about 100 s of host time at the default `FETCH_DELAY`. Budget for that when adding a tenant to a busy platform.
+
+**What council-alerts does with the new fields** (checked against `packages/scraper-adapter/src/schema.ts` and `packages/jobs/src/ingestCouncils.ts`):
+
+- A `Timeout` result is an ordinary `ok: false` result. `CouncilResultSchema` needs `council`, `state` and `error.{type,message}` as strings, and `saveCouncilFailure` records it as a failed scrape. The upsert on failure updates only `state`, so the council's stored meetings are left as they were.
+- The exit code must be 0. `runPythonAdapter.ts` rejects the whole payload when the exit code is non-zero, even if the JSON is valid.
+- Every result also carries `elapsed_s`, the council's own wall time (`null` for a council that never started). The zod objects strip keys they do not declare, so ingest ignores the field today. Nothing else times scrapers in production, so seeing it there needs `ingestCouncils.ts` to log `r.elapsed_s`.
 
 To check what production actually did last night:
 
