@@ -46,6 +46,21 @@ TARGET_MIN_YEARS = 3
 
 _URL_FIELDS = ("agenda_url", "minutes_url", "agenda_html_url", "minutes_html_url")
 
+# Gaps the counts above cannot see: a body or a stretch of years the council
+# publishes but the scraper does not read. Each keeps its council `partial`,
+# with the reason in the notes, so the scorecard does not call it complete.
+# Remove an entry in the change that closes the gap.
+KNOWN_GAPS: dict[str, str] = {
+    "brisbane": (
+        "papers before mid-2025 are Word files, which are not emitted: 6 "
+        "meetings in 2020-2023, none in 2024"
+    ),
+    "mount_barker": (
+        "assessment panel before Sep 2026 not read (council-domain list "
+        "behind Cloudflare)"
+    ),
+}
+
 
 @dataclass
 class Assessment:
@@ -147,5 +162,7 @@ def assess(slug: str, meetings: list[dict]) -> Assessment:
         result.coverage.append("no agendas")
     if result.years and result.years[-1] < this_year:
         result.coverage.append(f"nothing newer than {result.years[-1]}")
+    if slug in KNOWN_GAPS:
+        result.coverage.append(KNOWN_GAPS[slug])
 
     return result

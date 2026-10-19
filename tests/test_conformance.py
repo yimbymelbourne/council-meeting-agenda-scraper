@@ -63,6 +63,16 @@ def test_known_broken_lists_have_no_stale_entries():
         assert not unknown, f"{name} names scrapers with no fixture: {sorted(unknown)}"
 
 
+def test_known_gaps_name_recorded_scrapers():
+    from aus_council_scrapers.conformance import KNOWN_GAPS
+
+    recorded = {
+        os.path.basename(p).replace("-result.json", "")
+        for p in glob.glob("tests/test-cases/*-result.json")
+    }
+    assert not set(KNOWN_GAPS) - recorded, sorted(set(KNOWN_GAPS) - recorded)
+
+
 SLUG_PATTERN = re.compile(r"[a-z0-9_]+")
 
 

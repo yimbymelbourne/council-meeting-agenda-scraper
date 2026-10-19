@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**133 of 135 councils complete (98%)** — 1 partial, 0 broken, 1 not started.
+**131 of 135 councils complete (97%)** — 3 partial, 0 broken, 1 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -29,7 +29,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
 | ✅ | `brighton_tas` | 146 | 2020-2026 | 146 | 144 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
-| ✅ | `brisbane` | 72 | 2020-2026 | 72 | 66 |  |
+| 🟡 | `brisbane` | 72 | 2020-2026 | 72 | 66 | papers before mid-2025 are Word files, which are not emitted: 6 meetings in 2020-2023, none in 2024 |
 | ✅ | `burnside` | 209 | 2020-2026 | 209 | 206 |  |
 | ✅ | `burwood` | 166 | 2020-2026 | 162 | 139 |  |
 | ✅ | `cambridge` | 166 | 2020-2026 | 166 | 165 |  |
@@ -97,7 +97,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `mornington_peninsula` | 145 | 2022-2026 | 145 | 141 |  |
 | ✅ | `mosman` | 203 | 2019-2026 | 203 | 200 |  |
 | ✅ | `mosman_park` | 208 | 2020-2026 | 208 | 165 |  |
-| ✅ | `mount_barker` | 106 | 2020-2026 | 106 | 104 |  |
+| 🟡 | `mount_barker` | 106 | 2020-2026 | 106 | 104 | assessment panel before Sep 2026 not read (council-domain list behind Cloudflare) |
 | ✅ | `mundaring` | 114 | 2020-2026 | 114 | 112 |  |
 | ✅ | `murray` | 67 | 2021-2026 | 67 | 66 |  |
 | ✅ | `nedlands` | 148 | 2020-2026 | 148 | 144 |  |
