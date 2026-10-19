@@ -523,6 +523,15 @@ def run_scraper(
             "elapsed_s": round(time.monotonic() - started, 1),
             "egress": scraper.egress,
         }
+    finally:
+        # Each scraper's Chrome otherwise lives until the process exits, so a
+        # run with 10 workers piles up every browser any council opened. A
+        # failure to close is logged, never raised: it must not turn a
+        # finished council into a failed one.
+        try:
+            scraper.fetcher.close()
+        except Exception as e:
+            scraper.logger.warning(f"Could not close its browser: {e}")
 
 
 def get_agenda_info(scraper: BaseScraper, adapter_mode: bool = False) -> list[ScraperReturn]:

@@ -679,8 +679,19 @@ class DefaultFetcher(Fetcher):
         self.__driver = None
 
     def close(self) -> None:
-        if self.__driver:
+        if not self.__driver:
+            return
+        try:
             self.__driver.quit()
+        except Exception as e:
+            # A session that has already died cannot be quit over, and Chrome
+            # would outlive it. Signal the processes directly instead.
+            self.__logger.warning(f"Could not quit the browser cleanly: {e}")
+            self.abandon()
+        finally:
+            # Forgotten either way, so a later abandon() never signals a PID
+            # that chromedriver no longer owns.
+            self.__driver = None
 
     def abandon(self) -> None:
         # The adapter leaves with os._exit when its budget runs out, which

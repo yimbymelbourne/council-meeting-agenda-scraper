@@ -176,3 +176,49 @@ def test_abandon_kills_the_browser_and_its_driver():
 
 def test_abandon_without_a_browser_does_nothing():
     DefaultFetcher().abandon()
+
+
+class _ClosingFetcher(_Fetcher):
+    closed = 0
+
+    def close(self):
+        self.closed += 1
+
+
+@pytest.mark.parametrize(
+    "pages",
+    [{f"{LISTING_URL}?year=2026": GRID}, {}],
+    ids=["finished", "failed"],
+)
+def test_run_scraper_closes_the_browser_however_the_scraper_ends(pages):
+    """Nothing else closes a scraper's Chrome, so without this every browser
+    any council opened stays alive until the whole run exits."""
+    scraper = _InfoCouncil()
+    scraper.fetcher = _ClosingFetcher(pages, requests.Timeout("read timed out"))
+
+    _adapter_result(scraper, [2026])
+
+    assert scraper.fetcher.closed == 1
+
+
+class _QuitFails:
+    def __init__(self, process):
+        self.service = type("Service", (), {"process": process})()
+
+    def quit(self):
+        raise RuntimeError("session already gone")
+
+
+def test_close_kills_a_browser_it_cannot_quit_and_forgets_it():
+    driver = subprocess.Popen(["sh", "-c", "sleep 60"])
+    try:
+        fetcher = DefaultFetcher()
+        fetcher._DefaultFetcher__driver = _QuitFails(driver)
+
+        fetcher.close()
+
+        driver.wait(timeout=5)
+        assert fetcher._DefaultFetcher__driver is None
+    finally:
+        if driver.poll() is None:
+            driver.kill()
