@@ -1,3 +1,4 @@
+from aus_council_scrapers.scrapers.qld.aurukun import AurukunScraper
 from aus_council_scrapers.scrapers.qld.balonne import BalonneScraper
 from aus_council_scrapers.scrapers.qld.banana import BananaScraper
 from aus_council_scrapers.scrapers.qld.barcaldine import BarcaldineScraper
@@ -8,12 +9,20 @@ from aus_council_scrapers.scrapers.qld.bulloo import BullooScraper
 from aus_council_scrapers.scrapers.qld.bundaberg import BundabergScraper
 from aus_council_scrapers.scrapers.qld.burdekin import BurdekinScraper
 from aus_council_scrapers.scrapers.qld.burke import BurkeScraper
+from aus_council_scrapers.scrapers.qld.cairns import CairnsScraper
 from aus_council_scrapers.scrapers.qld.cassowary_coast import CassowaryCoastScraper
+from aus_council_scrapers.scrapers.qld.central_highlands_qld import (
+    CentralHighlandsQldScraper,
+)
 from aus_council_scrapers.scrapers.qld.charters_towers import ChartersTowersScraper
+from aus_council_scrapers.scrapers.qld.cherbourg import CherbourgScraper
 from aus_council_scrapers.scrapers.qld.cloncurry import CloncurryScraper
 from aus_council_scrapers.scrapers.qld.cook import CookScraper
 from aus_council_scrapers.scrapers.qld.croydon import CroydonScraper
 from aus_council_scrapers.scrapers.qld.diamantina import DiamantinaScraper
+from aus_council_scrapers.scrapers.qld.doomadgee import DoomadgeeScraper
+from aus_council_scrapers.scrapers.qld.douglas import DouglasShireScraper
+from aus_council_scrapers.scrapers.qld.etheridge import EtheridgeScraper
 from aus_council_scrapers.scrapers.qld.flinders_qld import FlindersQldScraper
 from aus_council_scrapers.scrapers.qld.gladstone import GladstoneScraper
 from aus_council_scrapers.scrapers.qld.gold_coast import GoldCoastScraper
@@ -24,13 +33,16 @@ from aus_council_scrapers.scrapers.qld.hope_vale import HopeValeScraper
 from aus_council_scrapers.scrapers.qld.ipswich import IpswichScraper
 from aus_council_scrapers.scrapers.qld.isaac import IsaacScraper
 from aus_council_scrapers.scrapers.qld.livingstone import LivingstoneScraper
+from aus_council_scrapers.scrapers.qld.lockhart_river import LockhartRiverScraper
 from aus_council_scrapers.scrapers.qld.lockyer_valley import LockyerValleyScraper
 from aus_council_scrapers.scrapers.qld.logan import LoganScraper
 from aus_council_scrapers.scrapers.qld.longreach import LongreachScraper
 from aus_council_scrapers.scrapers.qld.mackay import MackayScraper
 from aus_council_scrapers.scrapers.qld.maranoa import MaranoaScraper
+from aus_council_scrapers.scrapers.qld.mareeba import MareebaScraper
 from aus_council_scrapers.scrapers.qld.mckinlay import McKinlayScraper
 from aus_council_scrapers.scrapers.qld.moreton_bay import MoretonBayScraper
+from aus_council_scrapers.scrapers.qld.mornington import MorningtonShireScraper
 from aus_council_scrapers.scrapers.qld.mount_isa import MountIsaScraper
 from aus_council_scrapers.scrapers.qld.murweh import MurwehScraper
 from aus_council_scrapers.scrapers.qld.napranum import NapranumScraper
@@ -41,6 +53,7 @@ from aus_council_scrapers.scrapers.qld.northern_peninsula_area import (
 from aus_council_scrapers.scrapers.qld.palm_island import PalmIslandScraper
 from aus_council_scrapers.scrapers.qld.paroo import ParooScraper
 from aus_council_scrapers.scrapers.qld.pormpuraaw import PormpuraawScraper
+from aus_council_scrapers.scrapers.qld.quilpie import QuilpieScraper
 from aus_council_scrapers.scrapers.qld.redland import RedlandScraper
 from aus_council_scrapers.scrapers.qld.richmond import RichmondShireScraper
 from aus_council_scrapers.scrapers.qld.rockhampton import RockhamptonScraper
@@ -49,11 +62,16 @@ from aus_council_scrapers.scrapers.qld.somerset import SomersetScraper
 from aus_council_scrapers.scrapers.qld.south_burnett import SouthBurnettScraper
 from aus_council_scrapers.scrapers.qld.southern_downs import SouthernDownsScraper
 from aus_council_scrapers.scrapers.qld.sunshine_coast import SunshineCoastScraper
+from aus_council_scrapers.scrapers.qld.tablelands import TablelandsScraper
 from aus_council_scrapers.scrapers.qld.toowoomba import ToowoombaScraper
 from aus_council_scrapers.scrapers.qld.torres import TorresScraper
+from aus_council_scrapers.scrapers.qld.torres_strait_island import (
+    TorresStraitIslandScraper,
+)
 from aus_council_scrapers.scrapers.qld.townsville import TownsvilleScraper
 from aus_council_scrapers.scrapers.qld.western_downs import WesternDownsScraper
 from aus_council_scrapers.scrapers.qld.whitsunday import WhitsundayScraper
 from aus_council_scrapers.scrapers.qld.winton import WintonScraper
 from aus_council_scrapers.scrapers.qld.woorabinda import WoorabindaScraper
 from aus_council_scrapers.scrapers.qld.wujal_wujal import WujalWujalScraper
+from aus_council_scrapers.scrapers.qld.yarrabah import YarrabahScraper

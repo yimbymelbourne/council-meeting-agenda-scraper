@@ -1,12 +1,19 @@
 from aus_council_scrapers.scrapers.nsw.albury import AlburyScraper
 from aus_council_scrapers.scrapers.nsw.armidale import ArmidaleScraper
 from aus_council_scrapers.scrapers.nsw.ballina import BallinaScraper
+from aus_council_scrapers.scrapers.nsw.balranald import BalranaldScraper
+from aus_council_scrapers.scrapers.nsw.bathurst import BathurstScraper
 from aus_council_scrapers.scrapers.nsw.bayside_nsw import BaysideNSWScraper
 from aus_council_scrapers.scrapers.nsw.bega_valley import BegaValleyScraper
 from aus_council_scrapers.scrapers.nsw.bellingen import BellingenScraper
 from aus_council_scrapers.scrapers.nsw.berrigan import BerriganScraper
 from aus_council_scrapers.scrapers.nsw.blacktown import BlacktownScraper
 from aus_council_scrapers.scrapers.nsw.bland import BlandScraper
+from aus_council_scrapers.scrapers.nsw.blayney import BlayneyScraper
+from aus_council_scrapers.scrapers.nsw.blue_mountains import BlueMountainsScraper
+from aus_council_scrapers.scrapers.nsw.bogan import BoganScraper
+from aus_council_scrapers.scrapers.nsw.bourke import BourkeScraper
+from aus_council_scrapers.scrapers.nsw.brewarrina import BrewarrinaScraper
 from aus_council_scrapers.scrapers.nsw.broken_hill import BrokenHillScraper
 from aus_council_scrapers.scrapers.nsw.burwood import BurwoodNSWScraper
 from aus_council_scrapers.scrapers.nsw.byron import ByronScraper
@@ -21,7 +28,9 @@ from aus_council_scrapers.scrapers.nsw.central_coast_nsw import CentralCoastNSWS
 from aus_council_scrapers.scrapers.nsw.central_darling import CentralDarlingScraper
 from aus_council_scrapers.scrapers.nsw.cessnock import CessnockScraper
 from aus_council_scrapers.scrapers.nsw.clarence_valley import ClarenceValleyScraper
+from aus_council_scrapers.scrapers.nsw.cobar import CobarScraper
 from aus_council_scrapers.scrapers.nsw.coffs_harbour import CoffsHarbourScraper
+from aus_council_scrapers.scrapers.nsw.coonamble import CoonambleScraper
 from aus_council_scrapers.scrapers.nsw.cootamundra_gundagai import (
     CootamundraGundagaiScraper,
 )
@@ -30,6 +39,7 @@ from aus_council_scrapers.scrapers.nsw.cumberland import CumberlandScraper
 from aus_council_scrapers.scrapers.nsw.dubbo import DubboScraper
 from aus_council_scrapers.scrapers.nsw.dungog import DungogScraper
 from aus_council_scrapers.scrapers.nsw.edward_river import EdwardRiverScraper
+from aus_council_scrapers.scrapers.nsw.eurobodalla import EurobodallaScraper
 from aus_council_scrapers.scrapers.nsw.fairfield import FairfieldScraper
 from aus_council_scrapers.scrapers.nsw.federation import FederationScraper
 from aus_council_scrapers.scrapers.nsw.georges_river import GeorgesRiverScraper
@@ -40,11 +50,14 @@ from aus_council_scrapers.scrapers.nsw.greater_hume import GreaterHumeScraper
 from aus_council_scrapers.scrapers.nsw.griffith import GriffithScraper
 from aus_council_scrapers.scrapers.nsw.gunnedah import GunnedahScraper
 from aus_council_scrapers.scrapers.nsw.gwydir import GwydirScraper
+from aus_council_scrapers.scrapers.nsw.hawkesbury import HawkesburyScraper
+from aus_council_scrapers.scrapers.nsw.hay import HayScraper
 from aus_council_scrapers.scrapers.nsw.hilltops import HilltopsScraper
 from aus_council_scrapers.scrapers.nsw.hornsby import HornsbyScraper
 from aus_council_scrapers.scrapers.nsw.hunters_hill import HuntersHillScraper
 from aus_council_scrapers.scrapers.nsw.innerwest import InnerWestScraper
 from aus_council_scrapers.scrapers.nsw.inverell import InverellScraper
+from aus_council_scrapers.scrapers.nsw.junee import JuneeScraper
 from aus_council_scrapers.scrapers.nsw.kempsey import KempseyScraper
 from aus_council_scrapers.scrapers.nsw.kiama import KiamaScraper
 from aus_council_scrapers.scrapers.nsw.kuringgai import KuRingGaiScraper
@@ -57,6 +70,7 @@ from aus_council_scrapers.scrapers.nsw.lismore import LismoreScraper
 from aus_council_scrapers.scrapers.nsw.lithgow import LithgowScraper
 from aus_council_scrapers.scrapers.nsw.liverpool import LiverpoolScraper
 from aus_council_scrapers.scrapers.nsw.liverpool_plains import LiverpoolPlainsScraper
+from aus_council_scrapers.scrapers.nsw.lockhart import LockhartScraper
 from aus_council_scrapers.scrapers.nsw.maitland import MaitlandScraper
 from aus_council_scrapers.scrapers.nsw.mid_coast import MidCoastScraper
 from aus_council_scrapers.scrapers.nsw.mid_western import MidWesternScraper
@@ -64,9 +78,11 @@ from aus_council_scrapers.scrapers.nsw.moree_plains import MoreePlainsScraper
 from aus_council_scrapers.scrapers.nsw.mosman import MosmanScraper
 from aus_council_scrapers.scrapers.nsw.murray_river import MurrayRiverScraper
 from aus_council_scrapers.scrapers.nsw.murrumbidgee import MurrumbidgeeScraper
+from aus_council_scrapers.scrapers.nsw.muswellbrook import MuswellbrookScraper
 from aus_council_scrapers.scrapers.nsw.nambucca_valley import NambuccaValleyScraper
 from aus_council_scrapers.scrapers.nsw.narrabri import NarrabriScraper
 from aus_council_scrapers.scrapers.nsw.narrandera import NarranderaScraper
+from aus_council_scrapers.scrapers.nsw.narromine import NarromineScraper
 from aus_council_scrapers.scrapers.nsw.newcastle import NewcastleScraper
 from aus_council_scrapers.scrapers.nsw.north_sydney import NorthSydneyScraper
 from aus_council_scrapers.scrapers.nsw.northern_beaches import NorthernBeachesScraper
@@ -77,10 +93,12 @@ from aus_council_scrapers.scrapers.nsw.penrith_city import PenrithCityScraper
 from aus_council_scrapers.scrapers.nsw.port_macquarie_hastings import (
     PortMacquarieHastingsScraper,
 )
+from aus_council_scrapers.scrapers.nsw.port_stephens import PortStephensScraper
 from aus_council_scrapers.scrapers.nsw.queanbeyan_palerang import (
     QueanbeyanPalerangScraper,
 )
 from aus_council_scrapers.scrapers.nsw.randwick import RandwickScraper
+from aus_council_scrapers.scrapers.nsw.richmond_valley import RichmondValleyScraper
 from aus_council_scrapers.scrapers.nsw.ryde import RydeScraper
 from aus_council_scrapers.scrapers.nsw.shellharbour import ShellharbourScraper
 from aus_council_scrapers.scrapers.nsw.shoalhaven import ShoalhavenScraper
@@ -90,16 +108,21 @@ from aus_council_scrapers.scrapers.nsw.snowy_valleys import SnowyValleysScraper
 from aus_council_scrapers.scrapers.nsw.strathfield import StrathfieldNSWScraper
 from aus_council_scrapers.scrapers.nsw.sutherland import SutherlandShireScraper
 from aus_council_scrapers.scrapers.nsw.sydney import CityOfSydneyScraper
+from aus_council_scrapers.scrapers.nsw.tamworth import TamworthScraper
 from aus_council_scrapers.scrapers.nsw.temora import TemoraScraper
+from aus_council_scrapers.scrapers.nsw.tenterfield import TenterfieldScraper
 from aus_council_scrapers.scrapers.nsw.the_hills import TheHillsScraper
 from aus_council_scrapers.scrapers.nsw.tweed import TweedScraper
 from aus_council_scrapers.scrapers.nsw.upper_hunter import UpperHunterScraper
+from aus_council_scrapers.scrapers.nsw.upper_lachlan import UpperLachlanScraper
 from aus_council_scrapers.scrapers.nsw.uralla import UrallaScraper
 from aus_council_scrapers.scrapers.nsw.wagga_wagga import WaggaWaggaScraper
+from aus_council_scrapers.scrapers.nsw.walcha import WalchaScraper
 from aus_council_scrapers.scrapers.nsw.walgett import WalgettScraper
 from aus_council_scrapers.scrapers.nsw.warrumbungle import WarrumbungleScraper
 from aus_council_scrapers.scrapers.nsw.waverley import WaverleyScraper
 from aus_council_scrapers.scrapers.nsw.weddin import WeddinScraper
+from aus_council_scrapers.scrapers.nsw.wentworth import WentworthScraper
 from aus_council_scrapers.scrapers.nsw.willoughby import WilloughbyScraper
 from aus_council_scrapers.scrapers.nsw.wingecarribee import WingecarribeeScraper
 from aus_council_scrapers.scrapers.nsw.wollondilly import WollondillyScraper

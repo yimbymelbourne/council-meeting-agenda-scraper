@@ -116,6 +116,20 @@ KNOWN_GAPS: dict[str, str] = {
         "20 of 22 Ordinary meetings Jun 2020-Mar 2022 and nine 2020-21 specials "
         "are unpublished in the Resolve API; the tenant host is robots-disallowed"
     ),
+    "harvey": (
+        "papers are titled by month only; a day comes only from the current "
+        "schedule (Nov 2025 on), a title or a special-meeting notice, so 69 "
+        "ordinary meetings 2020-2025 and 6 special meetings (Jul 2026 among "
+        "them) are not emitted"
+    ),
+    "torres_strait_island": (
+        "ordinary meetings 2021-2025 titled by month only, not emitted "
+        "(about 60 meetings)"
+    ),
+    "gingin": (
+        "minutes before mid-2023 not emitted: their only address is the "
+        "robots-disallowed file store"
+    ),
 }
 
 
