@@ -64,6 +64,12 @@ _MINUTES_LABEL = re.compile(
 
 @register_scraper
 class EurobodallaScraper(BaseScraper):
+    # Refused from GitHub-hosted runners (403, 405 or a connection timeout,
+    # measured 20 Oct 2026 by running every state shard from a runner) and
+    # reachable from a home connection, so it goes through the residential
+    # egress. See AGENTS.md, "Councils that block GitHub's runners".
+    egress = "residential"
+
     def __init__(self):
         super().__init__("eurobodalla", "NSW", _BASE_URL)
 

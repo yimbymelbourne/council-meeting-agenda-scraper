@@ -76,6 +76,12 @@ def _label_date(text: str) -> Optional[datetime.date]:
 
 @register_scraper
 class BlayneyScraper(BaseScraper):
+    # Refused from GitHub-hosted runners (403, 405 or a connection timeout,
+    # measured 20 Oct 2026 by running every state shard from a runner) and
+    # reachable from a home connection, so it goes through the residential
+    # egress. See AGENTS.md, "Councils that block GitHub's runners".
+    egress = "residential"
+
     # The current-year page alone takes about 17 s to arrive (measured
     # 20 Oct 2026, three runs, 16.9–18.2 s), server time rather than
     # throttling, and it is the whole of a production run.

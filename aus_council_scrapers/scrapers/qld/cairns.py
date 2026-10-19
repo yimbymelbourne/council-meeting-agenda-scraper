@@ -53,6 +53,12 @@ _LOOKAHEAD = datetime.timedelta(days=21)
 
 @register_scraper
 class CairnsScraper(BaseScraper):
+    # Refused from GitHub-hosted runners (403, 405 or a connection timeout,
+    # measured 20 Oct 2026 by running every state shard from a runner) and
+    # reachable from a home connection, so it goes through the residential
+    # egress. See AGENTS.md, "Councils that block GitHub's runners".
+    egress = "residential"
+
     # One production year, measured 20 Oct 2026 from a home IP: 53 s for 23
     # requests (four searches, 19 event pages). Orders dispatch only.
     expected_seconds = 53
