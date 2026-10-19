@@ -103,8 +103,11 @@ way: the honest default and the per-council overrides are both in code, so
 |------|---------|
 | `aus_council_scrapers/base.py` | `BaseScraper`, `ScraperReturn`, `register_scraper`, fetcher classes |
 | `aus_council_scrapers/constants.py` | `EARLIEST_YEAR`, regex patterns, timezones |
-| `aus_council_scrapers/scrapers/vic/` | Victoria scrapers |
-| `aus_council_scrapers/scrapers/nsw/` | NSW scrapers |
+| `aus_council_scrapers/scrapers/<state>/` | One folder per state and territory: `act`, `nsw`, `nt`, `qld`, `sa`, `tas`, `vic`, `wa` |
+| `aus_council_scrapers/resolve.py`, `opencities.py`, `alyka.py`, `councilconnect.py`, `lgasa.py`, `craft.py`, `moderngov.py`, `escribe.py`, `ionata.py` | One base class per shared platform; see the platform table under Step 3. `InfoCouncilScraper` and `DocsPublishedScraper` are in `base.py` |
+| `aus_council_scrapers/resolve_archives.py` | Where councils that moved to Resolve keep their older papers |
+| `aus_council_scrapers/meeting_documents.py` | Groups a flat register of individually titled documents into meetings (`cockburn`, `bayswater`) |
+| `aus_council_scrapers/platforms.py` | Platform signatures, read by `scripts/detect_platform.py` |
 | `aus_council_scrapers/clock.py` | `current_year()` / `today()` — use instead of `datetime` |
 | `aus_council_scrapers/conformance.py` | What a scraper must produce, and how coverage is measured |
 | `tests/scraper_test.py` | Replays each scraper against its cassette |
