@@ -36,7 +36,7 @@ class GreaterGeraldtonScraper(TidyCouncilConnectScraper):
     def __init__(self):
         super().__init__("greater_geraldton", "WA", "https://www.cgg.wa.gov.au")
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         return super()._pick_documents(
             [
                 (group, label, url)

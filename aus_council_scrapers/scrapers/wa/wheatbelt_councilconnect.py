@@ -125,7 +125,7 @@ class WheatbeltCouncilConnectScraper(CouncilConnectScraper):
             meeting.date = self.corrected_dates[url]
         return meeting
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         # A cancelled meeting has no record to keep, even where its agenda
         # went up before the cancellation.
         if any(_CANCELLED.search(label) for _, label, _ in links):

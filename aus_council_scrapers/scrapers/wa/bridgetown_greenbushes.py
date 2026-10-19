@@ -39,7 +39,7 @@ class BridgetownGreenbushesScraper(WATidyCouncilConnectScraper):
             "bridgetown_greenbushes", "WA", "https://www.bridgetown.wa.gov.au"
         )
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         # "Council Agenda & Attachments - July 2020" is the agenda packet.
         # The base recognises a packet written "and attachments" and reads
         # the ampersand form as an attachment, which left every 2020 Council

@@ -372,18 +372,6 @@
     "minutes_html_url": null
   },
   {
-    "name": "Cummins Homes Committee",
-    "date": "2025-07-31",
-    "time": null,
-    "location": null,
-    "webpage_url": "https://www.lowereyrepeninsula.sa.gov.au/council/agenda-and-minutes",
-    "download_url": "https://lgasa-web.squiz.cloud/?a=1848151",
-    "agenda_url": null,
-    "minutes_url": "https://lgasa-web.squiz.cloud/?a=1848151",
-    "agenda_html_url": null,
-    "minutes_html_url": null
-  },
-  {
     "name": "Special Council Meeting",
     "date": "2025-07-22",
     "time": null,
@@ -403,7 +391,7 @@
     "webpage_url": "https://www.lowereyrepeninsula.sa.gov.au/council/agenda-and-minutes",
     "download_url": "https://lgasa-web.squiz.cloud/?a=1840116",
     "agenda_url": "https://lgasa-web.squiz.cloud/?a=1840116",
-    "minutes_url": null,
+    "minutes_url": "https://lgasa-web.squiz.cloud/?a=1848151",
     "agenda_html_url": null,
     "minutes_html_url": null
   },

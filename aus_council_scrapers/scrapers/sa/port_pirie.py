@@ -54,5 +54,9 @@ class PortPirieScraper(RelabellingLGASAScraper):
         ),
     )
 
+    # The base class follows the file name when it names a different paper
+    # from the title. One exception here: the 15 December 2021 special meeting agenda, uploaded as "Minutes-Asset-Management-Committee-13-December-2021.pdf", stays the special meeting's, as this module was verified with, so the ordinary meeting that day keeps its own agenda.
+    title_kinds = ((r"^Agenda - Special Meeting of Council 15 December 2021$", "agenda", 0),)
+
     def __init__(self):
         super().__init__("port_pirie", "SA", "https://www.pirie.sa.gov.au")

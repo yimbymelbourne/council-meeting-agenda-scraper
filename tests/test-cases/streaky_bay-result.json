@@ -1375,7 +1375,7 @@
     "webpage_url": "https://www.streakybay.sa.gov.au/council-documents/council-minutes,-reports-and-agenda",
     "download_url": "https://lgasa-web.squiz.cloud/?a=1159697",
     "agenda_url": "https://lgasa-web.squiz.cloud/?a=1159697",
-    "minutes_url": "https://lgasa-web.squiz.cloud/?a=1159040",
+    "minutes_url": null,
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -1615,7 +1615,7 @@
     "webpage_url": "https://www.streakybay.sa.gov.au/council-documents/council-minutes,-reports-and-agenda",
     "download_url": "https://lgasa-web.squiz.cloud/?a=1058739",
     "agenda_url": "https://lgasa-web.squiz.cloud/?a=1058739",
-    "minutes_url": "https://lgasa-web.squiz.cloud/?a=1062169",
+    "minutes_url": null,
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -1909,25 +1909,13 @@
   },
   {
     "name": "Council Meeting",
-    "date": "2020-11-26",
-    "time": null,
-    "location": null,
-    "webpage_url": "https://www.streakybay.sa.gov.au/council-documents/council-minutes,-reports-and-agenda",
-    "download_url": "https://lgasa-web.squiz.cloud/?a=804603",
-    "agenda_url": null,
-    "minutes_url": "https://lgasa-web.squiz.cloud/?a=804603",
-    "agenda_html_url": null,
-    "minutes_html_url": null
-  },
-  {
-    "name": "Council Meeting",
     "date": "2020-11-19",
     "time": null,
     "location": null,
     "webpage_url": "https://www.streakybay.sa.gov.au/council-documents/council-minutes,-reports-and-agenda",
     "download_url": "https://lgasa-web.squiz.cloud/?a=791953",
     "agenda_url": "https://lgasa-web.squiz.cloud/?a=791953",
-    "minutes_url": null,
+    "minutes_url": "https://lgasa-web.squiz.cloud/?a=804603",
     "agenda_html_url": null,
     "minutes_html_url": null
   },

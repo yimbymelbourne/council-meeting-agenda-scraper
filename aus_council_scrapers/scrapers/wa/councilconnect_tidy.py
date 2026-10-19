@@ -152,7 +152,7 @@ class WATidyCouncilConnectScraper(CouncilConnectScraper):
             time and self.earliest_hour is not None and _hour(time) < self.earliest_hour
         )
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         return super()._pick_documents(
             [
                 (group, label, url)

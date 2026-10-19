@@ -167,7 +167,7 @@ class FilteredListingCouncilConnectScraper(CouncilConnectScraper):
             return []
         return super()._summary_meeting(summary, listing_url, labels, year, seen)
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         def filename(url):
             return unquote(urlparse(url).path.rsplit("/", 1)[-1])
 

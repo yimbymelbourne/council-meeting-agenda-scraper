@@ -128,6 +128,7 @@ _ONLY_AN_AGENDA = re.compile(
 )
 _AGENDA = re.compile(r"agenda", re.IGNORECASE)
 _MINUTES = re.compile(r"minut", re.IGNORECASE)
+_SIGNING_SHEET = re.compile(r"signing[\s_-]*sheet", re.IGNORECASE)
 
 _MIDNIGHT = "12:00 AM"
 # "5:00 AM": a start in the small hours, which no shire holds.
@@ -295,14 +296,17 @@ class SmallShireCouncilConnectScraper(CouncilConnectScraper):
         label = _NON_CONFIDENTIAL.sub("", label)
         return re.sub(r"\s*&\s*", " and ", label)
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         # Minutes only: an agenda labelled for a committee has turned out to
         # be a typo for the council meeting's own ("Ordinary Committee
-        # Meeting Agenda 22 May 2024", Tammin).
+        # Meeting Agenda 22 May 2024", Tammin). A minutes signing sheet is
+        # not the minutes, though the base's preference for confirmed minutes
+        # would take Menzies' "Confirmation of Minutes Signing Sheet" (2026).
         links = [
             (group, self._tidy_label(label), url)
             for group, label, url in links
             if not (_OTHER_BODY.search(label or "") and _MINUTES.search(label or ""))
+            and not _SIGNING_SHEET.search(f"{label or ''} {url}")
         ]
         agenda_url, minutes_url = super()._pick_documents(links)
         if agenda_url is None:

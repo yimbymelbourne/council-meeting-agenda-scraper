@@ -146,7 +146,7 @@ class TidyCouncilConnectScraper(CouncilConnectScraper):
                 )
         return kept
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         """The base's choice, with bundled-in tails left out of the file
         test; see the module doc. A link whose filename is trimmed goes to
         the base under a stand-in URL, which is swapped back afterwards."""

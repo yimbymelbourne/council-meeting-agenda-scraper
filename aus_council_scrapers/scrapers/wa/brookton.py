@@ -35,7 +35,7 @@ class BrooktonScraper(WheatbeltCouncilConnectScraper):
     def __init__(self):
         super().__init__("brookton", "WA", "https://www.brookton.wa.gov.au")
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         # The base takes the first amended agenda it meets. Brookton lists
         # revisions oldest first: the 19 February 2026 page has "PUBLIC
         # AGENDA", then "(revised)", then "(updated revised)". So the

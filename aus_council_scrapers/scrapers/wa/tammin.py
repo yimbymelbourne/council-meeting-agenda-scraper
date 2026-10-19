@@ -42,7 +42,7 @@ class TamminScraper(SmallShireCouncilConnectScraper):
     # BaseScraper.expected_seconds.
     expected_seconds = 22
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         return super()._pick_documents(
             [
                 (group, label, url)

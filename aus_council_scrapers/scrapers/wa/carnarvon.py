@@ -54,7 +54,7 @@ class CarnarvonScraper(WATidyCouncilConnectScraper):
     def __init__(self):
         super().__init__("carnarvon", "WA", "https://www.carnarvon.wa.gov.au")
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         links = [
             (group, _LEADING_DOTTED_DATE.sub("", label), url)
             for group, label, url in links

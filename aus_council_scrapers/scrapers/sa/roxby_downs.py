@@ -27,6 +27,10 @@ class RoxbyDownsScraper(LGASAFunnelbackScraper):
         "https://www.roxbydowns.sa.gov.au/council/about-roxby-council/agendasandminutes",
     )
 
+    # The base class follows the file name when it names a different paper
+    # from the title. One exception here: "Audit-Committee-Meeting-Minutes-12.02.21.pdf" is the 12 February 2021 agenda, as this module was verified with; the minutes are filed separately.
+    title_kinds = ((r"^Audit Committee Notice and Agenda - 12 February 2021$", "agenda", 0),)
+
     def __init__(self):
         super().__init__("roxby_downs", "SA", "https://www.roxbydowns.sa.gov.au")
 

@@ -151,7 +151,7 @@ class ShireCouncilConnectScraper(CouncilConnectScraper):
             return None, self.relabelled_documents[url], url
         return group, label, url
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         real = {}
         fixed = []
         for group, label, url in links:

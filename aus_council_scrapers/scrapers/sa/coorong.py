@@ -27,5 +27,9 @@ class CoorongScraper(LGASAFunnelbackScraper):
         }
     )
 
+    # The base class follows the file name when it names a different paper
+    # from the title. One exception here: "Council-Assessment-Panel-CAP-Agenda-Template-7-July-2020.pdf" is the 7 July 2020 minutes, as this module was verified with.
+    title_kinds = ((r"^Council Assessment Panel - Minutes 7 July 2020$", "minutes", 0),)
+
     def __init__(self):
         super().__init__("coorong", "SA", "https://www.coorong.sa.gov.au")

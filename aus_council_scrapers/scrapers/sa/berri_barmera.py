@@ -61,5 +61,9 @@ class BerriBarmeraScraper(RegionalLGASAScraper):
     # dispatch only (slowest first); see BaseScraper.expected_seconds.
     expected_seconds = 22
 
+    # The base class follows the file name when it names a different paper
+    # from the title. One exception here: its "2024-Ordinary-Meeting-of-Council-Minutes-26-March.pdf" opens "AGENDA".
+    title_kinds = ((r"^2024 Ordinary Meeting of Council Agenda - 26 March$", "agenda", 0),)
+
     def __init__(self):
         super().__init__("berri_barmera", "SA", "https://www.berribarmera.sa.gov.au")

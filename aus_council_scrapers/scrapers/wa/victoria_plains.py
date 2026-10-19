@@ -102,7 +102,7 @@ class VictoriaPlainsScraper(WheatbeltCouncilConnectScraper):
             "victoria_plains", "WA", "https://www.victoriaplains.wa.gov.au"
         )
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         return super()._pick_documents(
             [(group, _name_minutes(label), url) for group, label, url in links]
         )

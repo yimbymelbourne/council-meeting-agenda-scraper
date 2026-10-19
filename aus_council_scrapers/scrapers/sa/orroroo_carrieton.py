@@ -28,5 +28,9 @@ class OrrorooCarrietonScraper(TitleCorrectedLGASAScraper):
     # Minutes" but not this.
     committee_names = {"Minutes & Agendas": COUNCIL_MEETING}
 
+    # The base class follows the file name when it names a different paper
+    # from the title. One exception here: its "Council-Meeting-Agenda-23-April-2025-Public.pdf" opens "MINUTES. Council Meeting. Wednesday 23rd April".
+    title_kinds = ((r"^Council Meeting Minutes 23 April 2205$", "minutes", 0),)
+
     def __init__(self):
         super().__init__("orroroo_carrieton", "SA", "https://www.orroroo.sa.gov.au")

@@ -51,7 +51,7 @@ class MerredinScraper(FilteredListingCouncilConnectScraper):
     def __init__(self):
         super().__init__("merredin", "WA", "https://www.merredin.wa.gov.au")
 
-    def _pick_documents(self, links):
+    def _pick_documents(self, links, meeting_name=None, date=None):
         # A notice of meeting is never taken as the agenda. Of the two seen,
         # 6 July 2021 still has its minutes and stays; 4 April 2022 has
         # nothing else and drops out, which also keeps out a date the notice

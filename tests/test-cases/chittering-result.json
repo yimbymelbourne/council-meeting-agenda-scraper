@@ -151,7 +151,7 @@
     "webpage_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/september-ordinary-meeting-of-council/295",
     "download_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/september-ordinary-meeting-of-council/295/documents/ocm-agenda-170925.pdf",
     "agenda_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/september-ordinary-meeting-of-council/295/documents/ocm-agenda-170925.pdf",
-    "minutes_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/september-ordinary-meeting-of-council/295/documents/ocm-minutes-170925.pdf",
+    "minutes_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/september-ordinary-meeting-of-council/295/documents/ocm-confirmed-minutes-170925.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -163,7 +163,7 @@
     "webpage_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/august-ordinary-meeting-of-council/294",
     "download_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/august-ordinary-meeting-of-council/294/documents/ocm-agenda-200825.pdf",
     "agenda_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/august-ordinary-meeting-of-council/294/documents/ocm-agenda-200825.pdf",
-    "minutes_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/august-ordinary-meeting-of-council/294/documents/ocm-minutes-208025.pdf",
+    "minutes_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/august-ordinary-meeting-of-council/294/documents/confirmed-ocm-minutes-208025.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -187,7 +187,7 @@
     "webpage_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/june-ordinary-meeting-of-council/292",
     "download_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/june-ordinary-meeting-of-council/292/documents/ocm-agenda-180625.pdf",
     "agenda_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/june-ordinary-meeting-of-council/292/documents/ocm-agenda-180625.pdf",
-    "minutes_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/june-ordinary-meeting-of-council/292/documents/ocm-minutes-180625.pdf",
+    "minutes_url": "https://www.chittering.wa.gov.au/council-meetings/ordinary-council-meeting/june-ordinary-meeting-of-council/292/documents/ocm-confirmed-minutes-180625.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -996,7 +996,7 @@
     "minutes_html_url": null
   },
   {
-    "name": "Special Meeting of Council (Reconvene)",
+    "name": "Special Council Meeting",
     "date": "2020-07-29",
     "time": "6:00 PM",
     "location": null,
