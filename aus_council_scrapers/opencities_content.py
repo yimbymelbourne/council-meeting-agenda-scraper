@@ -246,6 +246,13 @@ def _dates_in_filename(stem: str) -> list[datetime.date]:
             date = _make_date(int(m["year"]), month, int(m["day"]))
             if date:
                 dates.append(date)
+    # "2022_06_16_council_agenda" (Longreach): `_filename_text` turns the
+    # underscores into spaces, which `_ISO` does not take between year and
+    # month, so read the stem as it is too.
+    for m in _ISO.finditer(stem):
+        date = _make_date(int(m["year"]), int(m["month"]), int(m["day"]))
+        if date and date not in dates:
+            dates.append(date)
     for m in _COMPACT_DMY.finditer(stem):
         date = _make_date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
         if date:
@@ -284,6 +291,11 @@ def _day_in_filename(stem: str, year: int, month: int) -> Optional[datetime.date
                 if date:
                     days.add(date)
     return days.pop() if len(days) == 1 else None
+
+
+# A filename's leading number and the month straight after it: "05-may-...",
+# "001-january-2026-...", "03march2026-...", "011-nov-..." (`numbered_files`).
+_MONTH_SEQUENCE = re.compile(rf"^(\d{{1,3}})[\s_-]*{_MONTH}", re.IGNORECASE)
 
 
 # --- what a link is --------------------------------------------------------
@@ -508,6 +520,27 @@ class OpenCitiesContentScraper(BaseScraper):
         "Meeting Minutes". A heading with a year starts a section with that
         year; one that names only agendas or only minutes sets the kind. Off
         by default: links outside accordions otherwise have no heading.
+    ``numbered_files``
+        For a council whose filenames start with a sequence number:
+        McKinlay's "05-may-confirmed-ordinary-meeting-minutes.pdf",
+        "10-october-unconfirmed-ordinary-meeting-minutes.pdf" and
+        "01-oct-confirmed-minutes.pdf" are ordinary meetings held on none of
+        the 5th, the 10th or the 1st. A leading number followed by a month
+        is then ignored when the file is read for a date, if it is
+        zero-padded ("01-oct"), three digits long ("011-nov") or the month's
+        own number ("05-may"); "17_january_ordinary_meeting_agenda.pdf"
+        still reads as the 17th. Off by default, because elsewhere
+        "04-april-2024-..." can be the 4th of April.
+    ``month_only_fails``
+        For a council whose papers mostly give only their month, so that a
+        year can hold papers and yet no meeting with a day. Winton dates
+        only its special meetings, and none before 26 July in 2024; Temora
+        dated no meeting at all in 2024. Left alone, such a year returns
+        [] with a warning, which main.py counts as a working council. Set,
+        a run whose years hold month-only papers and no meeting raises,
+        naming them. A year with no papers yet (early January) still only
+        warns. Off by default: elsewhere a month-only paper is the odd one
+        out, and its year has dated meetings beside it.
 
     and may override `link_label` where a link's own text does not say what
     it is (a table row's "Agenda", a list's "Business Paper").
@@ -521,6 +554,8 @@ class OpenCitiesContentScraper(BaseScraper):
     year_index: Optional[str] = None
     year_page: Optional[re.Pattern] = None
     page_headings: tuple[str, ...] = ()
+    numbered_files: bool = False
+    month_only_fails: bool = False
 
     # The accordions OpenCities renders for a document list, and the content
     # area that holds them. Links outside an accordion but in the content
@@ -826,7 +861,8 @@ class OpenCitiesContentScraper(BaseScraper):
             )
             return None
 
-        file_dates = _dates_in_filename(stem)
+        dating_stem = self._dating_stem(stem)
+        file_dates = _dates_in_filename(dating_stem)
         found = _date_in_text(label.replace("_", " "), link.section_year)
         if filename in self.misfiled:
             # Checked before anything else, so a label with no date at all
@@ -867,7 +903,7 @@ class OpenCitiesContentScraper(BaseScraper):
                     None,
                 )
                 if date is None and not file_dates and month:
-                    date = _day_in_filename(stem, year, month)
+                    date = _day_in_filename(dating_stem, year, month)
         # A filename with a full date that is not the label's is a sign the
         # label was copied from the row above: Whitsunday lists three files
         # as "10 August 2022 - Ordinary Council Meeting Minutes", named
@@ -895,6 +931,19 @@ class OpenCitiesContentScraper(BaseScraper):
             days=days,
             file_dates=file_dates if disagrees else [],
         )
+
+    def _dating_stem(self, stem: str) -> str:
+        """The filename as it is read for a date (`numbered_files`)."""
+        if not self.numbered_files:
+            return stem
+        m = _MONTH_SEQUENCE.match(stem)
+        if m and (
+            m.group(1).startswith("0")
+            or len(m.group(1)) > 2
+            or int(m.group(1)) == _month_number(m["month"])
+        ):
+            return stem[m.start("month") :]
+        return stem
 
     def _checked_date(self, found: _Found, link: _Link) -> Optional[datetime.date]:
         """The label's date, or the accordion's year where the label's is a typo.
@@ -937,10 +986,17 @@ class OpenCitiesContentScraper(BaseScraper):
         "February Ordinary Council Meeting Minutes - CONFIRMED") and usually
         only one filename carries the day. One body meets once a month, so the
         other paper of the same meeting in the same month fixes the date—but
-        only when exactly one such date exists.
+        only when exactly one such date exists, and only when that meeting
+        has no paper of this kind already. Winton held two special meetings
+        in April 2026 and lists "Special Meeting Business Paper 30 APRIL"
+        and its minutes beside a "Special Meeting Business Paper APRIL" and
+        "Minutes Special Meeting APRIL": the month-only pair is the other
+        meeting, whose day the page never gives.
         """
         dated = [p for p in papers if p.date]
         complete = list(dated)
+        # Kept for `month_only_fails`.
+        self._month_only: list[_Paper] = []
         for paper in papers:
             if paper.date:
                 continue
@@ -952,11 +1008,16 @@ class OpenCitiesContentScraper(BaseScraper):
                 and p.date.year == paper.year
                 and p.date.month == paper.month
                 and _body(p.words) == body
+                and not any(
+                    q.kind == paper.kind and q.date == p.date and _body(q.words) == body
+                    for q in dated
+                )
             }
             if len(days) == 1:
                 paper.date = days.pop()
                 complete.append(paper)
             else:
+                self._month_only.append(paper)
                 self.logger.info(
                     f"{self.council_name}: leaving out {paper.link.label!r}: "
                     f"it gives only {calendar.month_name[paper.month]} "
@@ -972,10 +1033,38 @@ class OpenCitiesContentScraper(BaseScraper):
         this kind there already. Murweh's "13 Council Meeting 17 November
         2023" agenda is "ordinary_council_meeting_16_november_2023" beside
         "13 Council Meeting 16 November 2023" minutes.
+
+        A paper whose file is already there, uploaded twice under one name,
+        is that paper listed again and is dropped. Hope Vale links
+        ".../february/confirmed-council-minutes-21st-january-2026.pdf" as
+        "Confirmed Council Minutes 15th December 2025" beside the copy in
+        ".../january/" labelled as the 21 January minutes; left in, it
+        became the minutes of the 15 December meeting.
         """
+        kept = []
         for paper in papers:
             if not paper.file_dates:
+                kept.append(paper)
                 continue
+            name = paper.link.url.rsplit("/", 1)[-1].lower()
+            copy = next(
+                (
+                    q
+                    for q in papers
+                    if q is not paper
+                    and q.kind == paper.kind
+                    and q.date in paper.file_dates
+                    and q.link.url.rsplit("/", 1)[-1].lower() == name
+                ),
+                None,
+            )
+            if copy is not None:
+                self.logger.info(
+                    f"{self.council_name}: leaving out {paper.link.label!r}: "
+                    f"its file {name!r} is the {copy.date} {paper.kind}"
+                )
+                continue
+            kept.append(paper)
             targets = {
                 d
                 for d in paper.file_dates
@@ -1001,7 +1090,7 @@ class OpenCitiesContentScraper(BaseScraper):
                 )
                 paper.date = target
                 paper.rank -= _DISAGREES
-        return papers
+        return kept
 
     def _drop_sundays(self, papers: list[_Paper]) -> list[_Paper]:
         """Leave out papers dated on a Sunday, when no council meets.
@@ -1118,6 +1207,16 @@ class OpenCitiesContentScraper(BaseScraper):
             raise RuntimeError(
                 f"{self.council_name}: no /files/ PDF links on "
                 f"{[p.url for p in pages]}"
+            )
+        undated = [p for p in self._month_only if p.year in wanted]
+        if not results and undated and self.month_only_fails:
+            # Papers for the years asked, but none that gives its meeting's
+            # day (`month_only_fails`). That is not a quiet year: the
+            # meetings are there and this class cannot date them.
+            raise RuntimeError(
+                f"{self.council_name}: no meeting in {sorted(wanted)} gives its "
+                f"day; {len(undated)} papers give only their month, such as "
+                f"{[p.link.label for p in undated[:3]]}"
             )
         if not results:
             # Papers, but none for the years asked: early January, before
