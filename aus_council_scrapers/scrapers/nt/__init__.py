@@ -1,0 +1,4 @@
+from aus_council_scrapers.scrapers.nt.darwin import DarwinScraper
+from aus_council_scrapers.scrapers.nt.litchfield import LitchfieldScraper
+from aus_council_scrapers.scrapers.nt.palmerston import PalmerstonScraper
+from aus_council_scrapers.scrapers.nt.wagait import WagaitScraper
