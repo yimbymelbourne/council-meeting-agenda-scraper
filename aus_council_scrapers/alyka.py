@@ -4,21 +4,21 @@ Six Perth councils publish their agendas and minutes through Alyka builds, and
 every one of them renders the listing client-side: the HTML page is an empty
 template plus a handful of hidden inputs, and the rows arrive from a search
 endpoint afterwards. Two request protocols sit underneath, and they are the
-part worth sharing. What comes back is different at every council — one
+part worth sharing. What comes back is different at every council—one
 record per meeting at Stirling, per document at Melville and Rockingham, a
-council-specific HTML fragment at the other three — so parsing stays in the
+council-specific HTML fragment at the other three—so parsing stays in the
 subclasses.
 
-`KsearchScraper` — Kendo `aw_ksearch.js` (melville, rockingham, stirling)
+`KsearchScraper`—Kendo `aw_ksearch.js` (melville, rockingham, stirling)
     POST ``{take, skip, page, pageSize}`` to the endpoint named by
     ``input#searchapi``. The filters do not go in the body: they travel as two
     JSON-encoded request *headers*. ``SearchParam`` is built from every
     ``input[data-searchparam]`` (classname, search index, sometimes a node
     path), and without it the server answers 500. ``SearchFilter`` carries the
-    user's choices — a year, a meeting type — in the shape the page's
+    user's choices—a year, a meeting type—in the shape the page's
     multiselects produce. The response is ``{Data: [...], Total}``.
 
-`PageTypeListingScraper` — `aw_pagetypelisting.js` (kwinana, joondalup)
+`PageTypeListingScraper`—`aw_pagetypelisting.js` (kwinana, joondalup)
     POST ``{SI, OB, Q, PS, FS, PG, PR, IncludeFirst}`` to the endpoint named by
     ``div#pageTypeListing[data-api]``. ``PR`` is a list built from every
     ``[data-filter-item]`` in that div: hidden text inputs name the content
@@ -29,7 +29,7 @@ subclasses.
 Both read their parameters from the live page rather than hard-coding them.
 The hidden inputs are what decides which content class and template the
 server renders, so copying today's values into code would work right up until
-the council's next deploy renamed one — and then return nothing, quietly.
+the council's next deploy renamed one—and then return nothing, quietly.
 """
 
 from __future__ import annotations
@@ -61,7 +61,7 @@ _DAY_MONTH_YEAR = re.compile(
     r"(?:\s*(?:,|&|and)\s*\d{1,2}(?:st|nd|rd|th)?)*"
     r"\s+(?P<month>[A-Za-z]{3,10})\.?,?\s+(?P<year>\d{4})\b"
 )
-# "February 2, 2026", "February, 12 2020" and "October 14 ,2026" — all three
+# "February 2, 2026", "February, 12 2020" and "October 14 ,2026"—all three
 # are in Swan's headings.
 _MONTH_DAY_YEAR = re.compile(
     r"\b(?P<month>[A-Za-z]{3,10})\.?\s*,?\s*(?P<day>\d{1,2})(?:st|nd|rd|th)?"
@@ -116,7 +116,7 @@ def find_month(text: str) -> Optional[tuple[int, int]]:
 
 
 def text_without_date(text: str) -> str:
-    """A title with its date removed — what is left names the meeting.
+    """A title with its date removed—what is left names the meeting.
 
     Takes the text before the date when there is any ("Council Meeting 10
     February 2026"), otherwise the text after it ("February 2, 2026 - Annual
@@ -243,8 +243,8 @@ class AlykaScraper(BaseScraper):
         agenda whose file is named as minutes is dropped rather than stored
         as an agenda, minutes named as an agenda likewise, and a file dated
         to some other year is dropped as belonging to some other meeting.
-        What survives goes in the PDF fields only if it is a PDF — Kwinana's
-        10 April 2024 agenda is a Word file — and otherwise in the HTML ones,
+        What survives goes in the PDF fields only if it is a PDF—Kwinana's
+        10 April 2024 agenda is a Word file—and otherwise in the HTML ones,
         as `DocsPublishedScraper` does. Returns None when nothing is left.
         """
         if agenda_url and filename_says_minutes_only(agenda_url):
@@ -371,8 +371,8 @@ class KsearchScraper(AlykaScraper):
         """Every record the endpoint returns for ``filters``.
 
         Stops on the first short page rather than paging until ``Total``.
-        Stirling's ``Total`` counts records it then declines to return — 2026
-        reports 36 and yields 33 however it is paged — so a loop waiting to
+        Stirling's ``Total`` counts records it then declines to return—2026
+        reports 36 and yields 33 however it is paged—so a loop waiting to
         reach it would never end, or would end on a guard and look like a
         failure.
         """
@@ -450,7 +450,7 @@ class PageTypeListingScraper(AlykaScraper):
 
         ``PR`` mirrors ``_setFilterData`` in ``aw_pagetypelisting.js``: every
         filter item is sent, text inputs with their value and checkbox groups
-        with whichever boxes are ticked — none, unless ``chosen`` names them.
+        with whichever boxes are ticked—none, unless ``chosen`` names them.
         """
         parameters = []
         for element in config["filters"]:

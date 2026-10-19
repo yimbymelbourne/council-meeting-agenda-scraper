@@ -15,7 +15,7 @@ _SEARCH_URL = "https://www.canning.wa.gov.au/api/agendas-minutes/search"
 # The listing page is a Preact app over this Umbraco search endpoint, and the
 # page id is the `data-pageId` on its root element. The app never sends a page
 # size, so it gets 12 results a page; `PageSize` is honoured (`ItemsPerPage`,
-# the name the response uses, is ignored), which makes the whole archive —
+# the name the response uses, is ignored), which makes the whole archive—
 # 602 documents back to January 2019—a single request.
 _PAGE_ID = "1196"
 _PAGE_SIZE = 1000
@@ -122,7 +122,7 @@ class CanningScraper(BaseScraper):
     def _document_label(self, name: str) -> str:
         parts = [p.strip() for p in _PART_SEPARATOR.split(name) if p.strip()]
         rest = [p for p in parts if not _DATE.search(p)]
-        # The label is whichever remaining part is not the meeting type —
+        # The label is whichever remaining part is not the meeting type—
         # normally the last, but not always (see _PART_SEPARATOR).
         for part in reversed(rest):
             core = _SECOND_MEETING.sub("", part).lower()

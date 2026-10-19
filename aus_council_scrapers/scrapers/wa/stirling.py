@@ -25,7 +25,7 @@ _LISTING_URL = (
 # The year filter is the site's own (`ArticleReleaseYear`) and is sent on
 # every request, because the unfiltered listing is not the whole history: it
 # returned 157 of the 273 meetings its `Total` claimed. Filtered by year, every
-# year the page offers comes back whole or nearly so — 2026 yields 33 of a
+# year the page offers comes back whole or nearly so—2026 yields 33 of a
 # stated 36, the same 33 however it is paged or sorted.
 
 
@@ -76,7 +76,7 @@ class StirlingScraper(KsearchScraper):
         minutes_url = self._document(record.get("MinutesFile"))
         # The slots are filled by hand, and twice the minutes went into the
         # agenda slot as well; `_meeting` drops an agenda whose filename says
-        # minutes. The display names are not consulted at all — the 1 August
+        # minutes. The display names are not consulted at all—the 1 August
         # 2023 Council Meeting has them swapped over correctly filed PDFs.
         if agenda_url and agenda_url == minutes_url:
             agenda_url = None

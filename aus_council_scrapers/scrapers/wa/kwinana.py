@@ -21,20 +21,20 @@ _LISTING_URL = (
     f"{_BASE_URL}/council/council-and-city-administration/minutes-and-agendas"
 )
 
-# Kwinana's listing is one `li.row` per meeting — "Ordinary Council Meeting -
-# 23 September 2026" — with its files in a collapsed panel: agenda, minutes,
+# Kwinana's listing is one `li.row` per meeting—"Ordinary Council Meeting -
+# 23 September 2026"—with its files in a collapsed panel: agenda, minutes,
 # a separate attachments book since mid-2025, and a video link.
 #
 # The page's year filter (`FileReleaseDate`) is what bounds the cost, and it
 # matters here more than at most councils: the server renders the fragment
 # slowly, so the whole history since 2016 takes 36 s to arrive and one year
-# about 4 s. Its "release date" is the meeting's own — each year's bucket
-# holds exactly that year's meetings, checked for 2024 and 2026 — so asking
+# about 4 s. Its "release date" is the meeting's own—each year's bucket
+# holds exactly that year's meetings, checked for 2024 and 2026—so asking
 # for the wanted years loses nothing at the year boundary.
 #
 # The document links are Kentico `/getattachment/` URLs. They answer 406 to a
-# request whose Accept header does not include `*/*` or `application/pdf` —
-# this project's fetcher sends neither — and 200 `application/pdf` to a
+# request whose Accept header does not include `*/*` or `application/pdf`—
+# this project's fetcher sends neither—and 200 `application/pdf` to a
 # browser, curl, or Node's fetch. The URLs are emitted as they are.
 #
 # The meeting-type column is not reliable (Boola Maara committee meetings are

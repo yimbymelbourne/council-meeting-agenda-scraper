@@ -17,8 +17,8 @@ _LOCATION = (
     "Civic Boulevard, Rockingham"
 )
 
-# Rockingham's ksearch lists one record per document — agenda, minutes,
-# information bulletin, report attachments — and dates none of them to the
+# Rockingham's ksearch lists one record per document—agenda, minutes,
+# information bulletin, report attachments—and dates none of them to the
 # day. Titles read "Ordinary Council Agenda September 2026", and the only
 # date field is the day the file was *published*, which for an agenda is the
 # week before the meeting and for minutes the week after.
@@ -34,8 +34,8 @@ _LOCATION = (
 #     published, but nothing on the site says which day those meetings fell
 #     on, and the agenda PDFs that do say are tens of megabytes each. (The
 #     fetcher returns decoded text, not bytes, so a ranged read of a PDF's
-#     first page is not on offer without changing it.) The council's rule —
-#     Council on the fourth Tuesday, committees the week before — would date
+#     first page is not on offer without changing it.) The council's rule—
+#     Council on the fourth Tuesday, committees the week before—would date
 #     them, but a rule is not a record: December and specials move.
 #   - special meetings, electors' meetings and the smaller committees, which
 #     the dates page does not schedule.

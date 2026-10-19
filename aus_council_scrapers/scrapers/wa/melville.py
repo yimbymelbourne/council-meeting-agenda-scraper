@@ -19,22 +19,22 @@ _LISTING_URL = f"{_BASE_URL}/our-city/our-council/agendas-and-minutes"
 #
 # What the listing does not carry is the agenda of a meeting that already has
 # minutes. Each council meeting is one page on the site, and the listing shows
-# only that page's first file — the agenda until the minutes go up, the
+# only that page's first file—the agenda until the minutes go up, the
 # minutes from then on. Records flagged `MoreInfo` have more files than that,
 # and the agenda is among them, so reading it means fetching the page: one
-# request per meeting. The agenda has to be there — a meeting's papers are the
-# point — so the cost is bounded instead, by meeting type:
+# request per meeting. The agenda has to be there—a meeting's papers are the
+# point—so the cost is bounded instead, by meeting type:
 #
-#   Ordinary and Special Meetings of Council — where decisions are made
-#   Development Advisory Unit — the city's development assessment panel; its
+#   Ordinary and Special Meetings of Council—where decisions are made
+#   Development Advisory Unit—the city's development assessment panel; its
 #     agendas and minutes are separate single-file records, so they cost
 #     nothing extra
-#   Audit Risk & Improvement Committee and the two electors' meetings —
+#   Audit Risk & Improvement Committee and the two electors' meetings—
 #     about five a year between them, each a page fetch for its agenda
 #
 # Left out: the Agenda Briefing Forum. It is a pre-meeting briefing, not a
 # decision-making meeting, its "notes" are not minutes, and with nine or ten a
-# year it would add as many page fetches — about 20 s more at the per-host
+# year it would add as many page fetches—about 20 s more at the per-host
 # delay. A production year is then about seventeen requests rather than
 # forty.
 _MEETING_TYPES = {
@@ -73,7 +73,7 @@ def _document_kind(title: str):
     """Whether a listing record is a meeting's agenda, its minutes, or neither.
 
     Audio notices, "Late Item ..." reports and briefing notes are neither. A
-    DAU record titled only "DAU - <date>" — the form used until 2025 — is the
+    DAU record titled only "DAU - <date>"—the form used until 2025—is the
     unit's reports and recommendations for that sitting, which is its agenda.
     """
     if _MINUTES.search(title):
