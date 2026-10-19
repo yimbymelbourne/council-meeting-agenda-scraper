@@ -35,10 +35,11 @@ and are verified against it rather than guessed at runtime:
 ``papers_by``
     Where a payload says which file is which. ``"heading"`` for councils that
     group files under ``<div class="meeting-document"><h3>Agenda</h3>`` with
-    every link labelled "Download PDF" (Banyule, Kingston, Hobsons Bay).
-    ``"link_text"`` for councils that put every file in one flat "Related
-    Information" list, so the only label is the link's own text (Mornington
-    Peninsula, Frankston, The Hills).
+    every link labelled "Download PDF" (Banyule, Kingston, Hobsons Bay,
+    Maribyrnong, Melton, Stonnington). ``"link_text"`` for councils that put
+    every file in one flat "Related Information" list, so the only label is
+    the link's own text (Mornington Peninsula, Frankston, The Hills, Hume).
+    Monash files neither way and overrides `papers` itself.
 
 Optionally, ``meeting_types``: a pattern a row's meeting type must match before
 its payload is fetched. Since each payload is a request, a council listing a
@@ -120,6 +121,17 @@ _PLAIN_HEADING = re.compile(
     r"^(?:(?:final|open|(?:un)?confirmed|draft)\s+)?(?:agenda|minutes)"
     r"(?:$|\s*[-–—:(])",
     re.IGNORECASE,
+)
+
+# The agenda with its attachments bound into the same file, which is still the
+# agenda: Melton's only agenda heading through 2022 is "Agenda with
+# attachments", and Stonnington's 23 November 2020 one is "Council Agenda and
+# Attachments". Unlike "Agenda - Supporting Attachments" (Frankston) or
+# "Attachments - Part 1 of 2: Main Agenda" (Hobsons Bay), the attachments here
+# come *with* the agenda rather than being the paper. Ranked below a plain
+# "Agenda" on the same meeting, so a separate agenda would still win.
+_WITH_ATTACHMENTS = re.compile(
+    r"^agenda\s+(?:with|and|including|plus)\s+attachments$", re.IGNORECASE
 )
 
 # A heading for one item's paper rather than the meeting's: Kingston files
@@ -219,6 +231,27 @@ def parse_listing_rows(html: str, webpage_url: str) -> list[ListingRow]:
         if cvid and date_str:
             rows.append(ListingRow(date_str, meeting_type, cvid, webpage_url))
     return rows
+
+
+def filtered_rows(html: str, webpage_url: str) -> list[ListingRow]:
+    """The rows the year filter and pager actually apply to.
+
+    Hume puts a "Next Meeting" block (``div.list-meetings-upcoming``) above
+    its "Previous Meetings" list (``div.list-meetings-past``), and the next
+    meeting is in it on every page of every year—the 2020 filter's pages
+    start with 26 October 2026. That row is real and is still collected, but
+    it is no evidence about the filter, nor about whether a page predates the
+    wanted years. So when a page carries both blocks, the upcoming one is left
+    out here. A page holding only an upcoming list—Kingston's and Frankston's
+    separate upcoming pages—is that list, and is read whole.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    pinned = soup.find_all("div", class_="list-meetings-upcoming")
+    if not pinned or not soup.find("div", class_="list-meetings-past"):
+        return parse_listing_rows(html, webpage_url)
+    for block in pinned:
+        block.decompose()
+    return parse_listing_rows(str(soup), webpage_url)
 
 
 def _year_select(soup: BeautifulSoup):
@@ -375,7 +408,9 @@ def papers_by_heading(content: BeautifulSoup, base_url: str) -> dict[str, str]:
         if not h3:
             continue
         heading = _label(h3.get_text(" ", strip=True))
-        if _NOT_THE_PAPER.search(heading) or _ONE_ITEM.search(heading):
+        bound_in = bool(_WITH_ATTACHMENTS.match(heading))
+        not_the_paper = bool(_NOT_THE_PAPER.search(heading)) and not bound_in
+        if not_the_paper or _ONE_ITEM.search(heading):
             continue
         # The paper is the section's own "Download PDF" link. A section can
         # also nest a Related Information list—Kingston's 22 June 2026 links
@@ -396,7 +431,7 @@ def papers_by_heading(content: BeautifulSoup, base_url: str) -> dict[str, str]:
         )
         if not url:
             continue
-        rank = 0 if _PLAIN_HEADING.match(heading) else 1
+        rank = 0 if _PLAIN_HEADING.match(heading) and not bound_in else 1
         if _AGENDA_HEADING.match(heading):
             agendas.append((heading, url, rank))
         elif _MINUTES_HEADING.match(heading):
@@ -462,6 +497,11 @@ class Listing:
 
     url: str
     list_name: Optional[str] = None
+    #: The years the listing holds, when it is one year's archive page—
+    #: Hume keeps 2020 on a page of its own. Such a listing is fetched only
+    #: when one of its years is wanted, and only those years are walked, so
+    #: its generic year filter (Hume's offers 2016–2027) costs no requests.
+    years: Optional[frozenset] = None
 
 
 class OpenCitiesMeetingsScraper(BaseScraper):
@@ -564,7 +604,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
     def _filter_held(self, html: str, listing: Listing, year: int) -> bool:
         stray = [
             row.date
-            for row in parse_listing_rows(html, listing.url)
+            for row in filtered_rows(html, listing.url)
             if _year_of(row.date) != year
         ]
         if stray:
@@ -653,7 +693,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         stops the walk.
         """
         dates = []
-        for row in parse_listing_rows(html, ""):
+        for row in filtered_rows(html, ""):
             try:
                 dates.append(parse_date(row.date, fuzzy=True).date())
             except (ValueError, OverflowError):
@@ -678,6 +718,8 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         # those requests are skipped. Newest first, matching the listing's own
         # order.
         wanted = self._wanted_years()
+        if listing.years:
+            wanted = wanted & listing.years
         years = sorted(
             (y for y in offered or {} if y in wanted and y >= EARLIEST_YEAR),
             reverse=True,
@@ -691,13 +733,15 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         main = Listing(self.listing_url, self.list_name)
         first = self._fetch_listing_page(main.url, required=True)
 
+        wanted = self._wanted_years()
         listings = [(main, first)]
         for extra in self.extra_listings(first):
+            if extra.years and not extra.years & wanted:
+                continue
             extra_first = self._fetch_listing_page(extra.url)
             if extra_first is not None:
                 listings.append((extra, extra_first))
 
-        wanted = self._wanted_years()
         rows: list[ListingRow] = []
         seen: set[str] = set()
         for listing, listing_first in listings:
@@ -737,9 +781,17 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         return BeautifulSoup(html, "html.parser") if html else None
 
     def papers(self, content: BeautifulSoup) -> dict[str, str]:
+        """``{"agenda": url, "minutes": url}``, either or both. An override may
+        also return ``"agenda_html"`` for a council whose agenda is a web page
+        rather than a PDF (Monash)."""
         if self.papers_by == "heading":
             return papers_by_heading(content, self.base_url)
         return papers_by_link_text(content, self.base_url)
+
+    def meeting_name(self, row: ListingRow, content: BeautifulSoup) -> str:
+        """The record's name: the listing's meeting type. Override where that
+        type is missing or is not a meeting type."""
+        return row.meeting_type or self.default_name
 
     def build_return(
         self, content: BeautifulSoup, row: ListingRow
@@ -747,7 +799,8 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         papers = self.papers(content)
         agenda_url = papers.get("agenda")
         minutes_url = papers.get("minutes")
-        if not agenda_url and not minutes_url:
+        agenda_html_url = papers.get("agenda_html")
+        if not agenda_url and not minutes_url and not agenda_html_url:
             # A meeting that was cancelled or rescheduled keeps its listing row
             # and publishes only a notice saying so, and an upcoming meeting
             # has a row long before it has an agenda. Neither is a meeting to
@@ -782,15 +835,25 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         location = clean_location(location_div) if location_div else None
 
         return ScraperReturn(
-            name=row.meeting_type or self.default_name,
+            name=self.meeting_name(row, content),
             date=row.date,
             time=time_value,
             webpage_url=row.webpage_url,
             agenda_url=agenda_url,
             minutes_url=minutes_url,
+            agenda_html_url=agenda_html_url,
             download_url=agenda_url or minutes_url,
             location=location,
         )
+
+    def build_returns(
+        self, content: BeautifulSoup, row: ListingRow
+    ) -> list[ScraperReturn]:
+        """The records one listing row stands for. Almost always one; an
+        override can split a row that holds two meetings' papers
+        (Stonnington, 24 October 2022)."""
+        record = self.build_return(content, row)
+        return [record] if record else []
 
     def scraper(self) -> list[ScraperReturn]:
         self.logger.info(f"Starting {self.council_name} scraper")
@@ -803,9 +866,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             content = self.fetch_payload(row)
             if content is None:
                 continue
-            record = self.build_return(content, row)
-            if record:
-                results.append(record)
+            results.extend(self.build_returns(content, row))
 
         # A meeting can be listed twice, once with its agenda and once with its
         # minutes: Kingston's 13 November 2024 statutory meeting is two rows
