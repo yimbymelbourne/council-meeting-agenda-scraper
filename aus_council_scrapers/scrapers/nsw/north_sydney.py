@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from aus_council_scrapers.constants import EARLIEST_YEAR
 
@@ -16,16 +17,39 @@ _LISTING_URL = f"{_BASE_URL}/council-meetings"
 # /council-meetings/304/24-08-2026-council-meeting. The sidebar of that page
 # links documents under /ecm/download/, while the body links the individual
 # reports that make up the business paper under /ecm/download-meeting-consent/.
-# Only the former are the agenda and the minutes.
+# Only the former are the agenda and the minutes—except on some extraordinary
+# meeting pages, whose sidebar is empty and whose agenda and minutes sit in the
+# body instead (see `_documents`).
 _MEETING_HREF = re.compile(r"^/council-meetings/\d+/")
 
-# "24/08/2026           Council Meeting" — the site pads the anchor text.
+# "24/08/2026           Council Meeting"—the site pads the anchor text.
 _LISTING_TEXT = re.compile(r"^(\d{2}/\d{2}/\d{4})\s*(.*)$")
 
+# Until 2023 the listing titled meetings "Council Reports" and "Extraordinary
+# Council Reports"—the name of the page, not of the meeting. The agendas call
+# them meetings of Council, as the listing has since 2024.
+_REPORTS_SUFFIX = re.compile(r"\bReports$")
+
+# Links filed under an "Agenda" or "Minutes" heading that are not that
+# document. The 14 September 2026 agenda list leads with four "9.1 Addendum
+# QWN" answers to questions with notice before the agenda itself, and a few
+# older lists carry a stray "test" upload after the real one. "Attachment"
+# counts only at the start: the 16 January 2023 agenda is labelled "Agenda
+# Report and Attachment" and is the whole 95-page agenda.
+_NOT_THE_DOCUMENT = re.compile(
+    r"addend|supplementar|^attachment|\blate\b|\btest\b", re.IGNORECASE
+)
+
 # Published on the listing page: "Council meetings start at 7pm and are held
-# in Council Chambers." The meeting pages themselves carry neither, so these
-# stand in for every meeting rather than being scraped per meeting.
-_DEFAULT_TIME = "7:00pm"
+# in Council Chambers." That is true of ordinary meetings since the council
+# elected in September 2024—from 28 October 2024 every agenda says 7.00pm.
+# Before then they said 6.30pm (and 7.30pm in 2022), and extraordinary
+# meetings set their own time (6pm on 30 June 2025, 11am on 1 July 2026). The
+# meeting pages carry no time, so outside the case the council states, the
+# time is left unset rather than guessed.
+_ORDINARY_MEETING = "Council Meeting"
+_SEVEN_PM_SINCE = datetime(2024, 10, 28)
+_ORDINARY_TIME = "7:00pm"
 _DEFAULT_LOCATION = "Council Chambers"
 
 
@@ -45,22 +69,47 @@ def _parse_listing_entry(anchor) -> tuple[datetime, str] | None:
     except ValueError:
         return None
 
-    return date, match.group(2).strip()
+    return date, _REPORTS_SUFFIX.sub("Meeting", match.group(2).strip())
+
+
+def _meeting_time(date: datetime, name: str) -> str | None:
+    if name == _ORDINARY_MEETING and date >= _SEVEN_PM_SINCE:
+        return _ORDINARY_TIME
+    return None
+
+
+def _pick_document(links, label: str):
+    """The link in a heading's list that is the agenda or minutes itself.
+
+    Prefer one whose text starts with the label ("Agenda", "Minutes - 5 July
+    2021"); failing that the first link that is not an addendum or test upload
+    ("Summary Agenda 26 October 2026", "1 March agenda"). If every link is an
+    addendum there is no agenda to report, so return None rather than store
+    one in its place.
+    """
+    candidates = [
+        link
+        for link in links
+        if not _NOT_THE_DOCUMENT.search(link.get_text(" ", strip=True))
+    ]
+    for link in candidates:
+        if link.get_text(" ", strip=True).lower().startswith(label):
+            return link
+    return candidates[0] if candidates else None
 
 
 @register_scraper
 class NorthSydneyScraper(BaseScraper):
-    # One production year, measured Oct 2026 from a home IP: 272 s,
-    # because it does not yet honour years_filter. Lower this to the
-    # new measurement in the change that fixes that. Orders dispatch
-    # only (slowest first); see BaseScraper.expected_seconds.
-    expected_seconds = 272
+    # One production year, measured Oct 2026 from a home IP: 41 s
+    # for 21 requests (was 272 s before it honoured years_filter).
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 41
 
     def __init__(self):
         council = "north_sydney"
         state = "NSW"
         super().__init__(council, state, _BASE_URL)
-        self.default_time = _DEFAULT_TIME
         self.default_location = _DEFAULT_LOCATION
 
     # ------------------------------------------------------------------
@@ -71,15 +120,33 @@ class NorthSydneyScraper(BaseScraper):
         link = soup.select_one("li.pagination__item--next a.pagination__link")
         return urljoin(_BASE_URL, link["href"]) if link and link.get("href") else None
 
+    def _wanted_years(self) -> set[int]:
+        """The years whose meeting pages are worth fetching.
+
+        A meeting page is one request each, and the unfiltered history is
+        ~120 of them, so in production—which asks for a single year—
+        ``years_filter`` is what keeps this scraper from spending four minutes
+        fetching pages ``main.py`` then throws away.
+        """
+        years_filter = getattr(self, "years_filter", None)
+        if years_filter:
+            return set(years_filter)
+        return set(range(EARLIEST_YEAR, clock.current_year() + 3))
+
     def _collect_meetings(self) -> list[tuple[datetime, str, str]]:
         """Return (date, name, meeting page URL) for every meeting worth fetching.
 
-        The listing is one long run of meetings newest first — the site's own
+        The listing is one long run of meetings newest first—the site's own
         year filter is inert (``?year=2024`` returns the unfiltered first page),
         so pagination is the only way through it. Because the order is strictly
-        descending, a page whose every entry predates ``EARLIEST_YEAR`` means
-        the rest of the archive does too, and there is nothing left to page to.
+        descending, a page whose every entry predates the earliest wanted year
+        means the rest of the archive does too, and there is nothing left to
+        page to. Unfiltered that is ``EARLIEST_YEAR``, ~13 listing pages; for a
+        single current year it is the first three or so.
         """
+        wanted = self._wanted_years()
+        earliest_wanted = min(wanted)
+
         meetings: list[tuple[datetime, str, str]] = []
         seen_urls: set[str] = set()
         url: str | None = _LISTING_URL
@@ -89,19 +156,21 @@ class NorthSydneyScraper(BaseScraper):
             soup = BeautifulSoup(self.fetcher.fetch_with_requests(url), "html.parser")
 
             entries = 0
-            in_range = 0
+            recent_enough = 0
             for anchor in soup.find_all("a", class_="listing__link", href=True):
                 parsed = _parse_listing_entry(anchor)
                 if not parsed:
                     continue
                 entries += 1
                 date, name = parsed
-                if date.year < EARLIEST_YEAR:
-                    continue
-                in_range += 1
-                meetings.append((date, name, urljoin(_BASE_URL, anchor["href"])))
+                if date.year >= earliest_wanted:
+                    recent_enough += 1
+                # The listing date is the meeting's own, so it decides whether
+                # the page is fetched at all—not just whether it is kept.
+                if date.year in wanted:
+                    meetings.append((date, name, urljoin(_BASE_URL, anchor["href"])))
 
-            if entries and not in_range:
+            if entries and not recent_enough:
                 break
 
             url = self._next_page_url(soup)
@@ -113,40 +182,75 @@ class NorthSydneyScraper(BaseScraper):
     # ------------------------------------------------------------------
 
     def _documents(self, soup: BeautifulSoup) -> tuple[str | None, str | None]:
-        """Return (agenda URL, minutes URL) from a meeting page's sidebar.
+        """Return (agenda URL, minutes URL) from a meeting page.
 
-        The sidebar is a run of ``<h2>Agenda 24 August 2026</h2>`` followed by a
-        list holding the link. The link text is unreliable — recent meetings
-        label it "Agenda", older ones "Agenda - 28 June 2021" — so the heading
-        above the list is what identifies the document.
+        Normally they are in the sidebar: a run of ``<h2>Agenda 24 August
+        2026</h2>`` followed by a list of links. The link text is unreliable—
+        recent meetings label it "Agenda", older ones "Agenda - 28 June 2021"—
+        so the heading above the list is what says which document it is, and
+        `_pick_document` chooses among the links when the list holds more than
+        the one.
 
-        A meeting page can carry neither: the extraordinary meetings of
-        1 July 2026 and 1 March 2023, among others, have an empty sidebar and
-        no documents anywhere on the page.
+        Some extraordinary meetings (21 January and 1 July 2026, 28 February
+        and 1 March 2023, 5 July 2021) have an empty sidebar and put the agenda
+        and minutes in the body's accordion instead, under "Agenda 01 July
+        2026" and "Minutes 01 July 2026" tabs. Those links go through
+        /ecm/download-meeting-consent/, which serves the PDF directly, the same
+        bytes as /ecm/download/. Ordinary meeting pages use the accordion for
+        "Reports to Council" and "Mayoral Minutes"—individual reports, not the
+        agenda—so the accordion is read only when the sidebar has nothing.
         """
-        agenda_url = minutes_url = None
+        sections: list[tuple[str, list]] = []
 
         for aside in soup.find_all("div", class_="aside--sidebar"):
             for heading in aside.find_all("h2"):
                 # Skip the <h2 class="listing__heading"> wrapping each link.
                 if heading.get("class"):
                     continue
-
-                label = heading.get_text(" ", strip=True).lower()
                 document_list = heading.find_next_sibling("ul")
                 if not document_list:
                     continue
+                sections.append(
+                    (
+                        heading.get_text(" ", strip=True).lower(),
+                        document_list.find_all("a", class_="listing__link", href=True),
+                    )
+                )
 
-                link = document_list.find("a", class_="listing__link", href=True)
+        agenda_url, minutes_url = self._first_of_each(sections)
+        if agenda_url or minutes_url:
+            return agenda_url, minutes_url
+
+        body_sections = []
+        for item in soup.select("li.accordion__item"):
+            heading = item.select_one("span.accordion__tab-heading")
+            if heading:
+                body_sections.append(
+                    (
+                        heading.get_text(" ", strip=True).lower(),
+                        item.select("a.listing__link[href]"),
+                    )
+                )
+        return self._first_of_each(body_sections)
+
+    def _first_of_each(
+        self, sections: list[tuple[str, list]]
+    ) -> tuple[str | None, str | None]:
+        agenda_url = minutes_url = None
+        for label, links in sections:
+            # "Mayoral Minutes 14 September 2026" does not start with
+            # "minutes", so it is passed over here.
+            for word in ("agenda", "minutes"):
+                if not label.startswith(word):
+                    continue
+                link = _pick_document(links, word)
                 if not link:
                     continue
-
                 url = urljoin(_BASE_URL, link["href"])
-                if label.startswith("agenda") and not agenda_url:
+                if word == "agenda" and not agenda_url:
                     agenda_url = url
-                elif label.startswith("minutes") and not minutes_url:
+                elif word == "minutes" and not minutes_url:
                     minutes_url = url
-
         return agenda_url, minutes_url
 
     def scraper(self) -> list[ScraperReturn]:
@@ -176,7 +280,7 @@ class NorthSydneyScraper(BaseScraper):
                     # dd/mm/yyyy reads as a US date to dateutil, so hand it a
                     # form that cannot be misread.
                     date=date.strftime("%d %B %Y"),
-                    time=self.default_time,
+                    time=_meeting_time(date, name),
                     webpage_url=meeting_url,
                     agenda_url=agenda_url,
                     minutes_url=minutes_url,

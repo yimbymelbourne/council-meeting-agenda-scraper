@@ -17,7 +17,7 @@ whenever a fixture changes; CI checks it is current.
 | --- | --- | ---: | --- | ---: | ---: | --- |
 | ❌ | `hunters_hill` | 0 | - | 0 | 0 | returns no meetings |
 | ❌ | `woollahra` | 0 | - | 0 | 0 | returns no meetings |
-| ✅ | `banyule` | 73 | 2022-2026 | 73 | 72 |  |
+| ✅ | `banyule` | 75 | 2022-2026 | 75 | 75 |  |
 | ✅ | `bayside_nsw` | 649 | 2020-2026 | 642 | 557 |  |
 | 🟡 | `bayside_vic` | 121 | 2021-2025 | 121 | 118 | nothing newer than 2025 |
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
@@ -42,7 +42,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `mornington_peninsula` | 145 | 2022-2026 | 145 | 141 |  |
 | ✅ | `mosman` | 203 | 2019-2026 | 203 | 200 |  |
 | ✅ | `nillumbik` | 121 | 2020-2026 | 121 | 119 |  |
-| ✅ | `north_sydney` | 115 | 2020-2026 | 115 | 115 |  |
+| ✅ | `north_sydney` | 124 | 2020-2026 | 124 | 122 |  |
 | ✅ | `northern_beaches` | 143 | 2016-2026 | 143 | 128 |  |
 | ✅ | `parramatta` | 778 | 2008-2026 | 778 | 716 |  |
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |

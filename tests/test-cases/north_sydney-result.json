@@ -1,6 +1,54 @@
 [
   {
     "name": "Council Meeting",
+    "date": "26 October 2026",
+    "time": "7:00pm",
+    "location": "Council Chambers",
+    "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/315/26-10-2026-council-meeting",
+    "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12144777",
+    "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12144777",
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "12 October 2026",
+    "time": "7:00pm",
+    "location": "Council Chambers",
+    "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/314/12-10-2026-council-meeting",
+    "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12138276",
+    "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12138276",
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "28 September 2026",
+    "time": "7:00pm",
+    "location": "Council Chambers",
+    "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/306/28-09-2026-council-meeting",
+    "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12114880",
+    "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12114880",
+    "minutes_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12134964",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "14 September 2026",
+    "time": "7:00pm",
+    "location": "Council Chambers",
+    "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/305/14-09-2026-council-meeting",
+    "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12097613",
+    "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12097613",
+    "minutes_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12102330",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
     "date": "24 August 2026",
     "time": "7:00pm",
     "location": "Council Chambers",
@@ -32,6 +80,18 @@
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12017660",
     "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12017660",
     "minutes_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-12047918",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Extraordinary Council Meeting",
+    "date": "01 July 2026",
+    "time": null,
+    "location": "Council Chambers",
+    "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/310/01-07-2026-extraordinary-council-meeting",
+    "download_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-12019101",
+    "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-12019101",
+    "minutes_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-12019102",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -133,8 +193,20 @@
   },
   {
     "name": "Extraordinary Council Meeting",
+    "date": "21 January 2026",
+    "time": null,
+    "location": "Council Chambers",
+    "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/307/21-01-2026-extraordinary-council-meeting",
+    "download_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-11786400",
+    "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-11786400",
+    "minutes_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-11791503",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Extraordinary Council Meeting",
     "date": "19 January 2026",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/292/19-01-2026-extraordinary-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11775227",
@@ -254,7 +326,7 @@
   {
     "name": "Extraordinary Council Meeting",
     "date": "30 June 2025",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/285/30-06-2025-extraordinary-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11549570",
@@ -422,7 +494,7 @@
   {
     "name": "Extraordinary Council Meeting",
     "date": "08 October 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/270/08-10-2024-extraordinary-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11234664",
@@ -434,7 +506,7 @@
   {
     "name": "Council Meeting",
     "date": "26 August 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/253/26-08-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11185268",
@@ -446,7 +518,7 @@
   {
     "name": "Council Meeting",
     "date": "12 August 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/246/12-08-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11168249",
@@ -458,7 +530,7 @@
   {
     "name": "Council Meeting",
     "date": "22 July 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/255/22-07-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11137367",
@@ -470,7 +542,7 @@
   {
     "name": "Council Meeting",
     "date": "24 June 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/263/24-06-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11105057",
@@ -482,7 +554,7 @@
   {
     "name": "Extraordinary Council Meeting",
     "date": "18 June 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/264/18-06-2024-extraordinary-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11096721",
@@ -494,7 +566,7 @@
   {
     "name": "Council Meeting",
     "date": "27 May 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/256/27-05-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11107830",
@@ -506,7 +578,7 @@
   {
     "name": "Council Meeting",
     "date": "13 May 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/257/13-05-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11050258",
@@ -518,7 +590,7 @@
   {
     "name": "Council Meeting",
     "date": "22 April 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/259/22-04-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11029916",
@@ -530,7 +602,7 @@
   {
     "name": "Council Meeting",
     "date": "08 April 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/260/08-04-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11005883",
@@ -542,7 +614,7 @@
   {
     "name": "Council Meeting",
     "date": "25 March 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/261/25-03-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11001341",
@@ -554,7 +626,7 @@
   {
     "name": "Council Meeting",
     "date": "11 March 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/262/11-03-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10981692",
@@ -566,7 +638,7 @@
   {
     "name": "Council Meeting",
     "date": "26 February 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/258/26-02-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10965444",
@@ -578,7 +650,7 @@
   {
     "name": "Council Meeting",
     "date": "12 February 2024",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/247/12-02-2024-council-meeting",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10949464",
@@ -588,9 +660,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "11 December 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/220/11-12-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10886413",
@@ -600,9 +672,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "27 November 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/219/27-11-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10869171",
@@ -612,9 +684,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "23 October 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/218/23-10-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10813412",
@@ -624,9 +696,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "09 October 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/217/09-10-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10794933",
@@ -636,9 +708,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "25 September 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/216/25-09-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10778604",
@@ -648,9 +720,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "11 September 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/215/11-09-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10772295",
@@ -660,9 +732,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "28 August 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/214/28-08-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10754383",
@@ -672,9 +744,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "14 August 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/213/14-08-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10729439",
@@ -684,9 +756,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "24 July 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/212/24-07-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10714546",
@@ -696,9 +768,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "10 July 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/211/10-07-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10520083",
@@ -708,9 +780,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "26 June 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/210/26-06-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10504081",
@@ -720,9 +792,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "05 June 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/233/05-06-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10481126",
@@ -732,9 +804,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "22 May 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/209/22-05-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10453758",
@@ -744,9 +816,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "08 May 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/208/08-05-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10447260",
@@ -756,9 +828,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "26 April 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/207/26-04-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10423765",
@@ -768,9 +840,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "27 March 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/205/27-03-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10397563",
@@ -780,9 +852,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "13 March 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/204/13-03-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10387979",
@@ -792,9 +864,33 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Extraordinary Council Meeting",
+    "date": "01 March 2023",
+    "time": null,
+    "location": "Council Chambers",
+    "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/225/01-03-2023-extraordinary-council-reports",
+    "download_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-10368600",
+    "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-10368600",
+    "minutes_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-10371463",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Extraordinary Council Meeting",
+    "date": "28 February 2023",
+    "time": null,
+    "location": "Council Chambers",
+    "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/224/28-02-2023-extraordinary-council-reports",
+    "download_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-10366740",
+    "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-10366740",
+    "minutes_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-10371434",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
     "date": "27 February 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/203/27-02-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10342956",
@@ -804,9 +900,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "13 February 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/202/13-02-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10308961",
@@ -816,9 +912,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "30 January 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/206/30-01-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10253701",
@@ -828,9 +924,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "16 January 2023",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/201/16-01-2023-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10343135",
@@ -840,9 +936,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "12 December 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/198/12-12-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10192497",
@@ -852,9 +948,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "28 November 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/192/28-11-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10191291",
@@ -864,9 +960,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "14 November 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/197/14-11-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10164428",
@@ -876,9 +972,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "07 November 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/200/07-11-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10170163",
@@ -888,9 +984,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "10 October 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/196/10-10-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10174449",
@@ -900,9 +996,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Extraordinary Council Reports",
+    "name": "Extraordinary Council Meeting",
     "date": "08 October 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/199/08-10-2022-extraordinary-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10103899",
@@ -912,9 +1008,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "26 September 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/191/26-09-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10104476",
@@ -924,9 +1020,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "12 September 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/195/12-09-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10087021",
@@ -936,9 +1032,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "22 August 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/190/22-08-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10060507",
@@ -948,9 +1044,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "08 August 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/194/08-08-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10034162",
@@ -960,9 +1056,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "25 July 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/189/25-07-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10023470",
@@ -972,9 +1068,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "27 June 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/188/27-06-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9992515",
@@ -984,9 +1080,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "23 May 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/187/23-05-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10175893",
@@ -996,9 +1092,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "26 April 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/186/26-04-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9919923",
@@ -1008,9 +1104,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "28 March 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/185/28-03-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9891519",
@@ -1020,9 +1116,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "21 February 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/184/21-02-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9878470",
@@ -1032,9 +1128,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "24 January 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/193/24-01-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9821448",
@@ -1044,9 +1140,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "10 January 2022",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/183/10-01-2022-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9807939",
@@ -1056,9 +1152,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "08 November 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/179/08-11-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9743571",
@@ -1068,9 +1164,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "25 October 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/178/25-10-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9752854",
@@ -1080,9 +1176,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Extraordinary Council Reports",
+    "name": "Extraordinary Council Meeting",
     "date": "11 October 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/182/11-10-2021-extraordinary-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9711116",
@@ -1092,9 +1188,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "27 September 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/177/27-09-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-10451598",
@@ -1104,9 +1200,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "23 August 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/176/23-08-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9658555",
@@ -1116,9 +1212,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "26 July 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/175/26-07-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9632347",
@@ -1128,9 +1224,21 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Extraordinary Council Meeting",
+    "date": "05 July 2021",
+    "time": null,
+    "location": "Council Chambers",
+    "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/181/05-07-2021-extraordinary-council-reports",
+    "download_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-9611020",
+    "agenda_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-9611020",
+    "minutes_url": "https://www.northsydney.nsw.gov.au/ecm/download-meeting-consent/document-10447141",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
     "date": "28 June 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/174/28-06-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9600278",
@@ -1140,9 +1248,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Extraordinary Council Reports",
+    "name": "Extraordinary Council Meeting",
     "date": "07 June 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/180/07-06-2021-extraordinary-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9588219",
@@ -1152,9 +1260,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "24 May 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/173/24-05-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9564356",
@@ -1164,9 +1272,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "26 April 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/172/26-04-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9533332",
@@ -1176,9 +1284,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "22 March 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/171/22-03-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-11165758",
@@ -1188,9 +1296,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "22 February 2021",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/170/22-02-2021-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9464646",
@@ -1200,9 +1308,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Extraordinary Council Reports",
+    "name": "Extraordinary Council Meeting",
     "date": "21 December 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/169/21-12-2020-extraordinary-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9412043",
@@ -1212,9 +1320,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Extraordinary Council Reports",
+    "name": "Extraordinary Council Meeting",
     "date": "15 December 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/168/15-12-2020-extraordinary-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9402839",
@@ -1224,9 +1332,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "30 November 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/164/30-11-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9387788",
@@ -1236,9 +1344,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "26 October 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/163/26-10-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9347718",
@@ -1248,9 +1356,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "28 September 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/162/28-09-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9322186",
@@ -1260,9 +1368,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "24 August 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/161/24-08-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9278184",
@@ -1272,9 +1380,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "27 July 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/160/27-07-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9248211",
@@ -1284,9 +1392,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "22 June 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/159/22-06-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9204746",
@@ -1296,9 +1404,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Extraordinary Council Reports",
+    "name": "Extraordinary Council Meeting",
     "date": "25 May 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/167/25-05-2020-extraordinary-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9175205",
@@ -1308,9 +1416,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "18 May 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/158/18-05-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9187025",
@@ -1320,9 +1428,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "27 April 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/157/27-04-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9145931",
@@ -1332,9 +1440,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "06 April 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/166/06-04-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9125497",
@@ -1344,9 +1452,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "23 March 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/156/23-03-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9113996",
@@ -1356,9 +1464,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Council Reports",
+    "name": "Council Meeting",
     "date": "24 February 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/155/24-02-2020-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9085356",
@@ -1368,9 +1476,9 @@
     "minutes_html_url": null
   },
   {
-    "name": "Extraordinary Council Reports",
+    "name": "Extraordinary Council Meeting",
     "date": "20 January 2020",
-    "time": "7:00pm",
+    "time": null,
     "location": "Council Chambers",
     "webpage_url": "https://www.northsydney.nsw.gov.au/council-meetings/165/20-01-2020-extraordinary-council-reports",
     "download_url": "https://www.northsydney.nsw.gov.au/ecm/download/document-9054110",
