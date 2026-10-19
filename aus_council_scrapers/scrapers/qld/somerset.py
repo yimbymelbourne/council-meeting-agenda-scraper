@@ -17,6 +17,12 @@ COUNCIL_MEETINGS = "https://www.somerset.qld.gov.au/Your-Council/Council-Meeting
 
 @register_scraper
 class SomersetScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in a full
+    # 135-council run at 10 workers: 43 s, most of it queued behind the
+    # other tenants on api.resolve.red (10 s alone). Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 43
+
     # Somerset moved to Resolve for its 12 November 2025 Ordinary meeting.
     # Earlier papers are direct PDF links on the council's Council-Meetings
     # page (minutes from 2016, agendas from April 2023), read by

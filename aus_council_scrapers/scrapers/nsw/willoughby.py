@@ -6,6 +6,12 @@ from aus_council_scrapers.resolve import ResolveScraper
 
 @register_scraper
 class WilloughbyScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in a full
+    # 135-council run at 10 workers: 38 s, most of it queued behind the
+    # other tenants on api.resolve.red (7 s alone). Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 38
+
     # Willoughby moved to Resolve around October 2024; the tenant's earliest
     # event is 21 October 2024. Meetings from 2015 to August 2024 are on an
     # OpenCities archive page that this scraper does not read, so its history

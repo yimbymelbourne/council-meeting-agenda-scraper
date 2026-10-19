@@ -6,6 +6,12 @@ from aus_council_scrapers.resolve import ResolveScraper
 
 @register_scraper
 class WyndhamScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in a full
+    # 135-council run at 10 workers: 54 s, most of it queued behind the
+    # other tenants on api.resolve.red (11 s alone). Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 54
+
     # Wyndham's own meetings page links out to its Resolve portal; the URL
     # docs/councils.md used to carry is an unpublished Drupal node that 403s
     # for everyone.

@@ -13,6 +13,12 @@ MEETINGS = "https://www.moretonbay.qld.gov.au/Council/Meetings"
 
 @register_scraper
 class MoretonBayScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in a full
+    # 135-council run at 10 workers: 45 s, most of it queued behind the
+    # other tenants on api.resolve.red (11 s alone). Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 45
+
     # Moreton Bay moved to Resolve for its 4 September 2024 General Meeting,
     # and its Council/Meetings page frames the tenant's older /web/ portal.
     # Meetings from 2017 to August 2024 are in that page's OpenCities

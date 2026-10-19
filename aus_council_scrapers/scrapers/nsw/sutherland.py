@@ -17,6 +17,12 @@ SEAMLESS_YEAR = "https://cms.ssc.nsw.gov.au/DXP/Meetings-and-Minutes/{year}"
 
 @register_scraper
 class SutherlandShireScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in a full
+    # 135-council run at 10 workers: 57 s, most of it queued behind the
+    # other tenants on api.resolve.red (13 s alone). Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 57
+
     # Sutherland publishes business papers through Resolve from its 22 June
     # 2026 meetings. Everything before that, from 2016 to 16 June 2026, is
     # on the council's Seamless CMS archive, read by `other_meetings`.

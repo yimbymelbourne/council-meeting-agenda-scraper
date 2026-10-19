@@ -6,6 +6,12 @@ from aus_council_scrapers.resolve import ResolveScraper
 
 @register_scraper
 class HuntersHillScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in a full
+    # 135-council run at 10 workers: 32 s, most of it queued behind the
+    # other tenants on api.resolve.red (6 s alone). Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 32
+
     # Hunters Hill left InfoCouncil for Resolve (#145); the old
     # huntershill.infocouncil.biz now 404s at every path.
     tenant = "huntershill"
