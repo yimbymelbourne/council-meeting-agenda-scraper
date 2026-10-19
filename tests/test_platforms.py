@@ -107,6 +107,78 @@ def test_detects_ionata_meetings_archive():
     assert [p.name for p in detect(html)] == ["Ionata meetings archive"]
 
 
+_OPENCITIES_GENERATOR = (
+    '<meta name="generator" content="OpenCities - '
+    'https://granicus.com/product/opencities" />'
+)
+
+
+def test_detects_opencities_content_pages_by_the_generator_tag():
+    """Hepburn, Boulia and Temora never turned on the meetings module, so
+    nothing but the CMS's generator tag says OpenCities. The tag names
+    granicus.com, hence the Legistar false positive behind it."""
+    html = (
+        _OPENCITIES_GENERATOR + '<a href="/files/assets/public/v/1/council/documents/'
+        'public-agenda-ordinary-meeting-of-council-22-september-2026.pdf">'
+        "Agenda</a>"
+    )
+    assert [p.name for p in detect(html)] == [
+        "OpenCities content pages",
+        "Granicus/Legistar",
+    ]
+
+
+def test_a_meetings_module_page_names_the_module_before_content_pages():
+    html = (
+        _OPENCITIES_GENERATOR
+        + '<div class="accordion-list-item-container" data-cvid="123"></div>'
+    )
+    assert [p.name for p in detect(html)][:2] == [
+        "OpenCities",
+        "OpenCities content pages",
+    ]
+
+
+def test_detects_councilconnect_document_library():
+    """Kojonup and the other library councils publish papers only in
+    CouncilConnect's /documents/ library, not the meetings module."""
+    for html in (
+        '<div class="documentcentre-items"><table class="table dc-items-table">',
+        '<select id="ContentPlaceHolder1_Documents_usercontrol_ddlCategory" '
+        'class="categories-dropdown form-control">',
+    ):
+        assert [p.name for p in detect(html)] == ["CouncilConnect document library"]
+
+
+def test_detects_wp_file_download():
+    """Devonport's page carries both the plugin's hidden root category and
+    its admin-ajax URL."""
+    for html in (
+        '<input type="hidden" id="wpfd_root_category_id" value="4029" />',
+        'var wpfdajaxurl = "https://www.devonport.tas.gov.au/wp-admin/'
+        'admin-ajax.php?juwpfisadmin=false&action=wpfd&"',
+    ):
+        assert [p.name for p in detect(html)] == ["WP File Download"]
+
+
+def test_detects_walker_designs():
+    """Meander Valley's meetings tables, and the footer credit that is all
+    Dorset's card template shares with them."""
+    for html in (
+        '<table class="table table-hover table-meeting"><tr><th>Date</th>',
+        '<a href="http://www.walkerdesigns.com.au" rel="external">Walker Designs</a>',
+    ):
+        assert [p.name for p in detect(html)] == ["Walker Designs"]
+
+
+def test_detects_datascape():
+    html = (
+        '<link href="https://cdn-sites.datascape.cloud/www.manjimup.wa.gov.au/'
+        'transit-styling.css" rel="stylesheet" />'
+    )
+    assert [p.name for p in detect(html)] == ["Datascape"]
+
+
 def test_unknown_platform_returns_nothing():
     assert detect("<html><body><h1>Meetings</h1></body></html>") == []
 

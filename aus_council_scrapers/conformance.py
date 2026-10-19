@@ -55,9 +55,55 @@ KNOWN_GAPS: dict[str, str] = {
         "papers before mid-2025 are Word files, which are not emitted: 6 "
         "meetings in 2020-2023, none in 2024"
     ),
+    "flinders_qld": (
+        "most ordinary meetings of 2020-2023 are labelled by month "
+        "only, with no day in the filename either, and are left out"
+    ),
     "mount_barker": (
         "assessment panel before Sep 2026 not read (council-domain list "
         "behind Cloudflare)"
+    ),
+    "northern_peninsula_area": (
+        "month-only papers with no day anywhere are left out: most of 2021, "
+        "and several special and Trustee meetings each year (Feb, Mar, Apr, "
+        "May and Aug 2025; Jun-Oct 2024)"
+    ),
+    # OpenCities content pages labelled by month only: a meeting whose day
+    # is published nowhere on the page is left out rather than given one.
+    "blackall_tambo": (
+        "about 59 month-only meetings left out: every meeting of 2020-2023, "
+        "and a few a year since"
+    ),
+    "boulia": "every 2020-2023 paper gives only its month, so those years are left out",
+    "mckinlay": (
+        "ordinary meetings are labelled by month only and left out (about "
+        "69); mostly special meetings are emitted"
+    ),
+    "temora": (
+        "about 39 month-only minutes left out, most since 2023; only the "
+        "latest agenda is online"
+    ),
+    "winton": (
+        "ordinary meetings never give their day on the page and are left "
+        "out (about 104); only special meetings are emitted"
+    ),
+    # CouncilConnect document libraries labelled by month only: a meeting
+    # with no published day is left out rather than given one.
+    "yilgarn": (
+        "Ordinary meetings 2021-2024 left out (about 45): papers labelled by "
+        "month only, no day published"
+    ),
+    "murchison": (
+        "Ordinary meetings 2020-2024 left out bar Apr-Jun 2021 (about 50): "
+        "papers labelled by month only, no day published"
+    ),
+    "cuballing": (
+        "Ordinary meetings 2020-2024 left out bar one (about 55): papers "
+        "labelled by month only, no day published"
+    ),
+    "yalgoo": (
+        "most meetings 2020-2022 left out (about 30): papers labelled by "
+        "month only, no day published"
     ),
 }
 
