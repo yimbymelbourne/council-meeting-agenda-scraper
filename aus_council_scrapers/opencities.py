@@ -54,6 +54,20 @@ and ``row_papers`` / ``meeting_name`` where the listing row, not the payload,
 says which paper a row is—Blacktown lists a meeting's agenda and its minutes
 as two rows of their own.
 
+Optionally, ``page_size``: rows per ``dlv_`` listing page, sent as
+``(pagesize=N)``. The meetings module honours it, alongside ``pageindex``,
+so a council listing 80 meetings a year is read in one request instead of
+nine (Gold Coast and West Torrens, October 2026).
+Opt-in, because a subclass whose cassette was recorded without it would ask
+for URLs its cassette never saw.
+
+Optionally, ``detail_pages``: for a council whose listing rows carry no
+``data-cvid``, only a link to a page per meeting—West Torrens, whose
+accordion bodies are inline and say "View full details". The meeting's page
+is then its payload, and its URL the record's ``webpage_url``. The renderer is
+the cheaper choice wherever rows have a cvid: its payload is a couple of KB,
+where a meeting page is the whole themed site (~200 KB) for the same links.
+
 Form control names (``ctl10$ctl00$ctl08`` and so on) are never hard-coded:
 they shift by one between councils depending on what else is on the page, so
 they are found from what the controls are—the select whose options are page
@@ -190,6 +204,12 @@ class ListingRow:
     meeting_type: str
     cvid: str
     webpage_url: str
+    #: The row's own link—the meeting's page—where it has one.
+    detail_url: str = ""
+
+    @property
+    def key(self) -> str:
+        return self.cvid or self.detail_url
 
 
 # --------------------------------------------------------------------------
@@ -247,12 +267,22 @@ def parse_listing_rows(html: str, webpage_url: str) -> list[ListingRow]:
         if not trigger:
             continue
         cvid = trigger.get("data-cvid", "").strip()
+        href = (trigger.get("href") or "").strip()
+        # Some themes put "#" or a javascript: target on the trigger, which is
+        # not a meeting page.
+        detail_url = (
+            urljoin(webpage_url, href)
+            if href and not href.startswith(("#", "javascript:"))
+            else ""
+        )
         date_span = container.find("span", class_="minutes-date")
         type_span = container.find("span", class_="meeting-type")
         date_str = date_span.get_text(strip=True) if date_span else ""
         meeting_type = type_span.get_text(strip=True) if type_span else ""
-        if cvid and date_str:
-            rows.append(ListingRow(date_str, meeting_type, cvid, webpage_url))
+        if (cvid or detail_url) and date_str:
+            rows.append(
+                ListingRow(date_str, meeting_type, cvid, webpage_url, detail_url)
+            )
     return rows
 
 
@@ -596,6 +626,12 @@ class OpenCitiesMeetingsScraper(BaseScraper):
     #: councils have not been checked.
     year_filtered_first_page: bool = False
 
+    #: Rows per ``dlv_`` listing page, or None for the site's own default.
+    page_size: Optional[int] = None
+
+    #: Read each meeting's own page instead of the renderer payload.
+    detail_pages: bool = False
+
     def __init__(self, council_name: str, state: str, listing_url: str):
         parts = urlparse(listing_url)
         super().__init__(council_name, state, f"{parts.scheme}://{parts.netloc}")
@@ -632,6 +668,12 @@ class OpenCitiesMeetingsScraper(BaseScraper):
 
     def _filtering(self) -> bool:
         return bool(getattr(self, "years_filter", None))
+
+    def _year_dlv(self, year: int) -> str:
+        """The ``dlv_`` filter for one year of a listing, with ``page_size``
+        when the subclass sets one."""
+        size = f"(pagesize={self.page_size})" if self.page_size else ""
+        return _year_filter(year) + size
 
     # ------------------------------------------------------------------
     # Walking a listing
@@ -673,7 +715,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         """
         prefetched = getattr(self, "_prefetched", {})
         for year in years:
-            year_filter = _year_filter(year)
+            year_filter = self._year_dlv(year)
             url = listing.dlv_url(year_filter)
             if url in prefetched:
                 page_1 = prefetched.pop(url)
@@ -875,7 +917,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             # A one-year archive listing (Hume's 2020 page) is only walked
             # for its own years, so start from the newest of those.
             wanted = wanted & listing.years
-        url = listing.dlv_url(_year_filter(max(wanted)))
+        url = listing.dlv_url(self._year_dlv(max(wanted)))
         html = self._fetch_listing_page(url, required)
         if html is not None:
             # _walk_dlv takes this as that year's first page rather than
@@ -903,9 +945,13 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             required = listing is main or listing.required
             for html in self._walk(listing, listing_first, required):
                 for row in parse_listing_rows(html, listing.url):
-                    if row.cvid in seen:
+                    if self.detail_pages and not row.detail_url:
                         continue
-                    seen.add(row.cvid)
+                    if not self.detail_pages and not row.cvid:
+                        continue
+                    if row.key in seen:
+                        continue
+                    seen.add(row.key)
                     year = _year_of(row.date)
                     if year is None or year < EARLIEST_YEAR or year not in wanted:
                         continue
@@ -921,8 +967,18 @@ class OpenCitiesMeetingsScraper(BaseScraper):
     # ------------------------------------------------------------------
 
     def fetch_payload(self, row: ListingRow) -> BeautifulSoup | None:
-        """The meeting's document payload. Override for a council whose papers
-        sit on a page per meeting instead of behind the renderer."""
+        """The meeting's document payload: the renderer's HTML, or with
+        ``detail_pages`` the meeting's own page."""
+        if self.detail_pages:
+            try:
+                html = self.fetcher.fetch_with_requests(row.detail_url)
+            except Exception as e:
+                self.logger.warning(
+                    f"Error fetching meeting page {row.detail_url}: {e}"
+                )
+                return None
+            return BeautifulSoup(html, "html.parser")
+
         url = self.base_url + _RENDERER_PATH.format(cvid=row.cvid)
         try:
             raw = self.fetcher.fetch_with_requests(url)
@@ -1005,7 +1061,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             name=self.meeting_name(row, content, papers),
             date=row.date,
             time=time_value,
-            webpage_url=row.webpage_url,
+            webpage_url=row.detail_url if self.detail_pages else row.webpage_url,
             agenda_url=agenda_url,
             minutes_url=minutes_url,
             agenda_html_url=agenda_html_url,
