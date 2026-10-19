@@ -55,7 +55,8 @@ logged when it fires:
   ("Special Council Meeting - Agenda", "Ordinary Council Meeting - Confirmed
   Minutes" on the same day) is one meeting (`_join_split_council_meetings`).
 - A label and filename that agree and are both wrong can only be caught
-  from the PDF; a subclass lists those in `misfiled`.
+  from the PDF, and a paper that gives no day anywhere can only be dated
+  from it; a subclass lists those in `misfiled`.
 """
 
 from __future__ import annotations
@@ -63,11 +64,12 @@ from __future__ import annotations
 import calendar
 import datetime
 import re
+import warnings
 from dataclasses import dataclass, field
 from typing import Callable, Optional
 from urllib.parse import unquote, urljoin, urlparse
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Tag, XMLParsedAsHTMLWarning
 
 from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn
@@ -308,8 +310,15 @@ _NOT_THE_PAPER = re.compile(
 # for `_minutes_misfiled_as_late`.
 _LATE = re.compile(r"\b(?:supp?lement\w*|suppliment\w*|late)\b", re.IGNORECASE)
 # "Agenda with Appendices" is the agenda, appendices bound in (Flinders,
-# 2020); only a paper that is the appendices is not.
-_WITH_APPENDICES = re.compile(r"\b(agenda|minutes)\s+with\s+appendi\w*", re.IGNORECASE)
+# 2020), and so is "Agenda with Attachments" (Torres), "Agenda (incl
+# Attachments)" and "Agenda and Attachments" (Armidale, one file each); only
+# a paper that is the appendices or attachments is not. A supplementary
+# agenda with its attachments is still refused for being supplementary.
+_WITH_APPENDICES = re.compile(
+    r"\b(agenda|minutes)\s*\(?\s*(?:with|incl(?:uding|\.)?|and|&)\s+"
+    r"(?:appendi\w*|attachments?)\b\s*\)?",
+    re.IGNORECASE,
+)
 _NOTICE_AND_AGENDA = re.compile(
     r"\bnotice\s+(?:and|&)\s+agenda\b|\bagenda\s+(?:and|&)\s+notice\b", re.IGNORECASE
 )
@@ -473,16 +482,37 @@ class OpenCitiesContentScraper(BaseScraper):
         A further pattern of labels that are not agendas or minutes, on top
         of `_NOT_THE_PAPER`.
     ``misfiled``
-        Papers whose label and filename agree and are both wrong, by
-        filename: the meeting date the PDF itself gives, or None to leave the
-        paper out. Nothing on the page can catch these, so each entry should
-        say what the PDF reads.
+        Papers whose label and filename agree and are both wrong, or give
+        no day at all, by filename: the meeting date the PDF itself gives,
+        or None to leave the paper out. Nothing on the page can catch or
+        date these, so each entry should say what the PDF reads.
+    ``year_index`` and ``year_page``
+        For a council with a page per year ("Council-Meetings-2026",
+        "Business-Papers-and-Minutes-2026"): the page that links them, and a
+        pattern with a ``year`` group that picks the year pages out of its
+        links. The index costs one request and saves guessing at a page that
+        does not exist yet, which is every January. It may be a sitemap.xml,
+        whose ``<loc>`` entries are read as links. Each year page holds its
+        own year only, so until the new year's page exists a run for that
+        year finds no page (`_no_year_page`).
+    ``page_headings``
+        Tag names that head sections on a page with no accordions, such as
+        Boulia's ``h2`` "2026 Meeting Agendas & Minutes" over ``strong``
+        "Meeting Minutes". A heading with a year starts a section with that
+        year; one that names only agendas or only minutes sets the kind. Off
+        by default: links outside accordions otherwise have no heading.
+
+    and may override `link_label` where a link's own text does not say what
+    it is (a table row's "Agenda", a list's "Business Paper").
     """
 
     pages: list[ContentPage] = []
     agenda_words: str = _DEFAULT_AGENDA
     not_the_paper: Optional[re.Pattern] = None
     misfiled: dict[str, Optional[datetime.date]] = {}
+    year_index: Optional[str] = None
+    year_page: Optional[re.Pattern] = None
+    page_headings: tuple[str, ...] = ()
 
     # The accordions OpenCities renders for a document list, and the content
     # area that holds them. Links outside an accordion but in the content
@@ -504,10 +534,44 @@ class OpenCitiesContentScraper(BaseScraper):
         return set(range(EARLIEST_YEAR, clock.current_year() + 3))
 
     def _pages_for(self, wanted: set[int]) -> list[ContentPage]:
+        pages = list(self.pages)
+        if self.year_index:
+            pages.extend(self._year_pages())
         return [
             page
-            for page in self.pages
+            for page in pages
             if page.holds is None or any(page.holds(year) for year in wanted)
+        ]
+
+    def _year_pages(self) -> list[ContentPage]:
+        """The per-year pages `year_index` links, each holding its own year.
+
+        An index that links none is a page this class no longer
+        understands, not a council with no meetings, so it raises.
+        """
+        html = self.fetcher.fetch_with_requests(self.year_index)
+        with warnings.catch_warnings():
+            # A sitemap is XML; html.parser reads its <loc> tags well enough.
+            warnings.simplefilter("ignore", XMLParsedAsHTMLWarning)
+            soup = BeautifulSoup(html, "html.parser")
+        hrefs = [a["href"] for a in soup.find_all("a", href=True)]
+        # The index may be the site's sitemap.xml: Goondiwindi's per-year
+        # minutes pages ("Previous-Meeting-Minutes/2021-Minutes") are linked
+        # from no menu or page, only listed there.
+        hrefs += [loc.get_text(strip=True) for loc in soup.find_all("loc")]
+        found: dict[str, int] = {}
+        for href in hrefs:
+            url = urljoin(self.year_index, href).split("#")[0]
+            m = self.year_page.search(url)
+            if m:
+                found.setdefault(url, int(m["year"]))
+        if not found:
+            raise RuntimeError(
+                f"{self.council_name}: no year pages on {self.year_index}"
+            )
+        return [
+            ContentPage(url, holds=lambda y, page_year=year: y == page_year)
+            for url, year in found.items()
         ]
 
     # --- reading a page -----------------------------------------------------
@@ -536,7 +600,25 @@ class OpenCitiesContentScraper(BaseScraper):
             info.extract()
         label = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
         label = _SIZE.sub("", label).strip()
+        # Labels typed as the filename end in ".pdf" ("10. 30 October
+        # 2024.pdf", Goondiwindi), which a sequence number then swallows.
+        label = re.sub(r"\.pdf$", "", label, flags=re.IGNORECASE).strip()
+        label = self.link_label(a, label)
+        if label is None:
+            return None
+        label = re.sub(r"\s+", " ", label).strip()
         return _Link(label, urljoin(page_url, href), _kib(size), page_url, year, kind)
+
+    def link_label(self, a: Tag, label: str) -> Optional[str]:
+        """The label to read a link by; by default its own text.
+
+        A subclass whose links say only "Agenda" or "Business Paper"
+        returns the meeting and date they sit under as well, from the table
+        row or heading the page puts them in. None leaves the link out: a
+        link the page files under the wrong meeting, whose file is also
+        listed under the right one.
+        """
+        return label
 
     def _links(self, html: str, page_url: str) -> list[_Link]:
         soup = BeautifulSoup(html, "html.parser")
@@ -553,10 +635,21 @@ class OpenCitiesContentScraper(BaseScraper):
                 if link:
                     links.append(link)
             section.decompose()
-        for a in content.find_all("a", href=True):
-            link = self._link(a, page_url, None, None)
-            if link:
-                links.append(link)
+        # Links outside any accordion. With `page_headings` set, the
+        # headings passed on the way down give each its year and kind.
+        year = kind = None
+        for el in content.find_all(True):
+            if el.name in self.page_headings and not el.find_parent("a"):
+                heading = el.get_text(" ", strip=True)
+                found = _YEAR.search(heading)
+                if found:
+                    year, kind = int(found.group(1)), self._section_kind(heading)
+                elif self._section_kind(heading):
+                    kind = self._section_kind(heading)
+            elif el.name == "a" and el.get("href"):
+                link = self._link(el, page_url, year, kind)
+                if link:
+                    links.append(link)
         return links
 
     # --- what a link is -----------------------------------------------------
@@ -653,6 +746,9 @@ class OpenCitiesContentScraper(BaseScraper):
         name = re.sub(r"\s+", " ", name).strip(" -")
         name = re.sub(r"(?:\s+-)+$", "", name)
         name = re.sub(r"^(?:of|for|the)\s+", "", name, flags=re.IGNORECASE).strip()
+        # "Special Meeting Agenda and Business Papers" (Burke) leaves the
+        # "and" that joined the two kinds of paper.
+        name = re.sub(r"(?:\s+(?:and|&))+$", "", name, flags=re.IGNORECASE).strip()
         if not name:
             return "Council Meeting"
         if not re.search(r"\b(?:mee\w*ng|committee)\b", name, re.IGNORECASE):
@@ -723,7 +819,20 @@ class OpenCitiesContentScraper(BaseScraper):
 
         file_dates = _dates_in_filename(stem)
         found = _date_in_text(label.replace("_", " "), link.section_year)
-        if found is None:
+        if filename in self.misfiled:
+            # Checked before anything else, so a label with no date at all
+            # can be dated too: Boulia's "2026-2027 Budget Meeting of
+            # Council" names neither day nor month, in its text or its file.
+            date = self.misfiled[filename]
+            self.logger.info(
+                f"{self.council_name}: {label!r} is file {filename!r}; "
+                + (f"dating it {date}" if date else "leaving it out")
+            )
+            if date is None:
+                return None
+            year, month, file_dates = date.year, date.month, [date]
+            days = found.days if found else 1
+        elif found is None:
             # No date in the label at all ("2024 Post Election Confirmed
             # Minutes", NPARC): the filename's, when it has exactly one in
             # the accordion's year.
@@ -750,15 +859,6 @@ class OpenCitiesContentScraper(BaseScraper):
                 )
                 if date is None and not file_dates and month:
                     date = _day_in_filename(stem, year, month)
-        if filename in self.misfiled:
-            date = self.misfiled[filename]
-            self.logger.info(
-                f"{self.council_name}: {label!r} is file {filename!r}; "
-                + (f"dating it {date}" if date else "leaving it out")
-            )
-            if date is None:
-                return None
-            year, month, file_dates = date.year, date.month, [date]
         # A filename with a full date that is not the label's is a sign the
         # label was copied from the row above: Whitsunday lists three files
         # as "10 August 2022 - Ordinary Council Meeting Minutes", named
@@ -944,7 +1044,12 @@ class OpenCitiesContentScraper(BaseScraper):
         wanted = self._wanted_years()
 
         links: list[_Link] = []
-        for page in self._pages_for(wanted):
+        pages = self._pages_for(wanted)
+        if not pages:
+            # Only a council with a page per year gets here: the index was
+            # read and linked year pages, but none for the years asked.
+            return self._no_year_page(wanted)
+        for page in pages:
             # A page is the whole of what it holds, so a failed fetch is not
             # a short year but a missing one. Raise rather than return
             # whatever the other page had; main.py would count an empty or
@@ -1003,7 +1108,7 @@ class OpenCitiesContentScraper(BaseScraper):
             # council, so fail instead.
             raise RuntimeError(
                 f"{self.council_name}: no /files/ PDF links on "
-                f"{[p.url for p in self._pages_for(wanted)]}"
+                f"{[p.url for p in pages]}"
             )
         if not results:
             # Papers, but none for the years asked: early January, before
@@ -1014,6 +1119,33 @@ class OpenCitiesContentScraper(BaseScraper):
             )
         self.logger.info(f"{self.council_name} scraper found {len(results)} meetings")
         return results
+
+    def _no_year_page(self, wanted: set[int]) -> list[ScraperReturn]:
+        """No page can hold the years asked for.
+
+        Every January, until the council makes the new year's page: Bulloo,
+        Snowy Monaro and Torres each name a page by its year, and their
+        archives hold only past years. That is a quiet start to the year,
+        not a broken scraper, so it warns and returns nothing, as an empty
+        page would. But only for a while. A past year with no page, or a
+        year three months old with none, means the index no longer leads
+        to the papers, and main.py would count an empty list as a working
+        council, so that raises.
+        """
+        today = clock.today()
+        overdue = sorted(
+            y for y in wanted if y < today.year or (y == today.year and today.month > 3)
+        )
+        if overdue:
+            raise RuntimeError(
+                f"{self.council_name}: no page holds {overdue} "
+                f"(index {self.year_index})"
+            )
+        self.logger.warning(
+            f"{self.council_name}: no page for {sorted(wanted)} yet "
+            f"(index {self.year_index})"
+        )
+        return []
 
     def _join_split_council_meetings(
         self, results: list[ScraperReturn]
