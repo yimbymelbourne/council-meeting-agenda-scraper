@@ -122,8 +122,10 @@ _WEEKDAY = r"(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*,?"
 _MONTH = r"(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*"
 # Strips "16 December 2025 - ", "7 July - " and "- 12 November 2025" from a
 # heading, leaving the meeting's name.
+# The weekday is matched as a whole word, or "Swearing in Ceremony 25 October
+# 2023" loses "mony" as if it were "Monday" (Mundaring).
 _HEADING_DATE = re.compile(
-    rf"(?:{_WEEKDAY}\s*)?\b\d{{1,2}}(?:st|nd|rd|th)?\s+{_MONTH}\b(?:\s+\d{{4}})?",
+    rf"(?:\b{_WEEKDAY}\s*)?\b\d{{1,2}}(?:st|nd|rd|th)?\s+{_MONTH}\b(?:\s+\d{{4}})?",
     re.IGNORECASE,
 )
 

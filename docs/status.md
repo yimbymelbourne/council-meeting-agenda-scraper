@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**132 of 134 councils complete (98%)** — 1 partial, 0 broken, 1 not started.
+**133 of 135 councils complete (98%)** — 1 partial, 0 broken, 1 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -98,6 +98,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `mosman` | 203 | 2019-2026 | 203 | 200 |  |
 | ✅ | `mosman_park` | 208 | 2020-2026 | 208 | 165 |  |
 | ✅ | `mount_barker` | 106 | 2020-2026 | 106 | 104 |  |
+| ✅ | `mundaring` | 114 | 2020-2026 | 114 | 112 |  |
 | ✅ | `murray` | 67 | 2021-2026 | 67 | 66 |  |
 | ✅ | `nedlands` | 148 | 2020-2026 | 148 | 144 |  |
 | ✅ | `nillumbik` | 121 | 2020-2026 | 121 | 119 |  |
