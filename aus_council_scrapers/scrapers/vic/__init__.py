@@ -1,6 +1,7 @@
 from aus_council_scrapers.scrapers.vic.banyule import BanyuleScraper
 from aus_council_scrapers.scrapers.vic.bayside import BaysideVicScraper
 from aus_council_scrapers.scrapers.vic.brimbank import BrimbankScraper
+from aus_council_scrapers.scrapers.vic.cardinia import CardiniaScraper
 from aus_council_scrapers.scrapers.vic.boroondara import BoroondaraScraper
 from aus_council_scrapers.scrapers.vic.darebin import DarebinScraper
 from aus_council_scrapers.scrapers.vic.glen_eira import GlenEiraScraper

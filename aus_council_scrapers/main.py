@@ -88,6 +88,7 @@ def _failure(
         "state": scraper.state.upper(),
         "error": {"type": error_type, "message": message},
         "elapsed_s": elapsed_s,
+        "egress": scraper.egress,
     }
 
 
@@ -353,7 +354,10 @@ def run_scraper(
     # Reported per council so a slow scraper can be named from the adapter's
     # output alone; nothing else times scrapers in production. council-alerts'
     # zod schema strips keys it does not declare, so ingest ignores the field
-    # until it chooses to read it.
+    # until it chooses to read it. `egress` rides along the same way: it says
+    # which councils depended on the home proxy, so a night when only those
+    # failed can be read off the output (packages/scraper-adapter/src/schema.ts,
+    # checked 19 Oct 2026: plain z.object, unknown keys stripped).
     started = time.monotonic()
     try:
         scraper.logger.info("Scraper started")
@@ -407,6 +411,7 @@ def run_scraper(
                 "state": scraper.state.upper(),
                 "meetings": meetings,  # Changed from "meeting" to "meetings" (array)
                 "elapsed_s": round(time.monotonic() - started, 1),
+                "egress": scraper.egress,
             }
 
         # Legacy mode: process only the first meeting (backward compatibility)
@@ -489,6 +494,7 @@ def run_scraper(
             "location": getattr(result, "location", None)
             or getattr(result, "cleaned_location", None),
             "elapsed_s": round(time.monotonic() - started, 1),
+            "egress": scraper.egress,
         }
 
     except Exception as e:
@@ -515,6 +521,7 @@ def run_scraper(
                 "message": str(e),
             },
             "elapsed_s": round(time.monotonic() - started, 1),
+            "egress": scraper.egress,
         }
 
 

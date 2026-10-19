@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**36 of 60 councils complete (60%)** — 1 partial, 2 broken, 21 not started.
+**38 of 60 councils complete (63%)** — 0 partial, 2 broken, 20 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -19,7 +19,7 @@ whenever a fixture changes; CI checks it is current.
 | ❌ | `woollahra` | 0 | - | 0 | 0 | returns no meetings |
 | ✅ | `banyule` | 75 | 2022-2026 | 75 | 75 |  |
 | ✅ | `bayside_nsw` | 649 | 2020-2026 | 642 | 557 |  |
-| 🟡 | `bayside_vic` | 121 | 2021-2025 | 121 | 118 | nothing newer than 2025 |
+| ✅ | `bayside_vic` | 132 | 2021-2026 | 132 | 128 |  |
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
 | ✅ | `burwood` | 166 | 2020-2026 | 162 | 139 |  |
@@ -27,6 +27,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `campbelltown` | 95 | 2020-2026 | 95 | 95 |  |
 | ✅ | `canada_bay` | 101 | 2018-2026 | 101 | 100 |  |
 | ✅ | `canterbury_bankstown` | 152 | 2020-2026 | 152 | 150 |  |
+| ✅ | `cardinia` | 122 | 2020-2026 | 121 | 120 |  |
 | ✅ | `cumberland` | 329 | 2020-2026 | 311 | 229 |  |
 | ✅ | `darebin` | 84 | 2022-2026 | 84 | 79 |  |
 | ✅ | `georges_river` | 632 | 2020-2026 | 630 | 571 |  |
@@ -60,4 +61,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`blacktown` `cardinia` `casey` `fairfield` `frankston` `greater_dandenong` `hobsons_bay` `hume` `kingston` `knox` `maribyrnong` `melton` `monash` `moonee_valley` `stonnington` `sutherland` `sydney` `the_hills` `whittlesea` `willoughby` `wyndham`
+`blacktown` `casey` `fairfield` `frankston` `greater_dandenong` `hobsons_bay` `hume` `kingston` `knox` `maribyrnong` `melton` `monash` `moonee_valley` `stonnington` `sutherland` `sydney` `the_hills` `whittlesea` `willoughby` `wyndham`

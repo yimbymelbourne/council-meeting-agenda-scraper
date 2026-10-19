@@ -5,6 +5,7 @@ import os
 import random
 import re
 import signal
+import socket
 import subprocess
 import threading
 import time
@@ -95,6 +96,102 @@ class BlockedByWAF(requests.HTTPError):
             f"{USER_AGENT_ISSUE}"
         )
         super().__init__(f"403 for {url}\n\nSent as: {user_agent}\n\n{browser_hint}")
+
+
+# Residential egress: a few councils refuse GitHub's runners however we
+# identify ourselves (see AGENTS.md, "Councils that block GitHub's runners").
+# A scraper opts in with `egress = "residential"`, and its requests then go
+# through the proxy named here. council-alerts sets it each night to a
+# tinyproxy on a home machine, reached over Tailscale.
+#
+# Deliberately not HTTP(S)_PROXY: requests applies those to every session in
+# the process, which would send every council through one home connection.
+RESIDENTIAL_PROXY_ENV = "RESIDENTIAL_PROXY_URL"
+
+# The value that means "this machine already has a residential IP": recording
+# a cassette from home, or a local adapter run. Requests go direct.
+RESIDENTIAL_PROXY_DIRECT = "direct"
+
+EGRESS_MODES = ("direct", "residential")
+
+
+class EgressUnavailable(Exception):
+    """A residential-egress council was asked for with no way to reach it.
+
+    Raised on the first fetch, not at construction, because every scraper is
+    built at import time. It is an ordinary exception on purpose, so
+    `run_scraper` reports it as `ok: false` with this type name and the
+    council's stored meetings are left alone. The alternative—fetching
+    direct and being refused—used to come back as an ok council with 0
+    meetings.
+    """
+
+    def __init__(self, council: Optional[str], reason: str):
+        self.council = council
+        who = council or "this scraper"
+        super().__init__(
+            f"{who} needs residential egress, but {reason}. Set "
+            f"{RESIDENTIAL_PROXY_ENV} to the proxy URL, or to "
+            f"'{RESIDENTIAL_PROXY_DIRECT}' on a machine with a residential IP."
+        )
+
+
+# One TCP check per proxy per process, shared by every fetcher. main.py runs
+# scrapers on worker threads, so the cache is guarded; the check itself runs
+# under the lock too, which only ever holds up other residential councils
+# waiting on the same answer.
+_PROXY_PREFLIGHT_TIMEOUT_S = 5.0
+_proxy_preflight_lock = threading.Lock()
+_proxy_preflight_results: dict[str, Optional[str]] = {}
+
+
+def _preflight_proxy(proxy_url: str) -> Optional[str]:
+    """Return None if the proxy accepts a TCP connection, else why not.
+
+    Without this a sleeping home machine costs each residential council a
+    10 s connect timeout and surfaces as a bare `ConnectTimeout`. With it the
+    failure is one short wait and a named `EgressUnavailable`.
+    """
+    with _proxy_preflight_lock:
+        if proxy_url in _proxy_preflight_results:
+            return _proxy_preflight_results[proxy_url]
+        parsed = urllib.parse.urlparse(proxy_url)
+        try:
+            host = parsed.hostname
+            port = parsed.port or (443 if parsed.scheme == "https" else 80)
+            if not host:
+                raise ValueError("no host in the URL")
+            socket.create_connection((host, port), _PROXY_PREFLIGHT_TIMEOUT_S).close()
+            problem = None
+        except (OSError, ValueError) as e:
+            problem = (
+                f"the proxy at {parsed.hostname}:{parsed.port} did not accept a "
+                f"connection ({type(e).__name__}: {e})"
+            )
+        _proxy_preflight_results[proxy_url] = problem
+        return problem
+
+
+def resolve_egress_proxy(egress: str, council: Optional[str] = None) -> Optional[str]:
+    """The proxy URL for a fetcher's traffic, or None to go direct.
+
+    Raises `EgressUnavailable` for a residential council when no proxy is
+    configured or the configured one cannot be reached.
+    """
+    if egress == "direct":
+        return None
+    if egress != "residential":
+        raise ValueError(f"unknown egress {egress!r}; expected one of {EGRESS_MODES}")
+
+    proxy_url = os.environ.get(RESIDENTIAL_PROXY_ENV, "").strip()
+    if not proxy_url:
+        raise EgressUnavailable(council, f"{RESIDENTIAL_PROXY_ENV} is not set")
+    if proxy_url == RESIDENTIAL_PROXY_DIRECT:
+        return None
+    problem = _preflight_proxy(proxy_url)
+    if problem:
+        raise EgressUnavailable(council, problem)
+    return proxy_url
 
 
 def register_scraper(cls):
@@ -369,10 +466,23 @@ class DefaultFetcher(Fetcher):
         fetch_delay: Optional[float] = None,
         user_agent: Optional[str] = None,
         strip_headless_user_agent: bool = False,
+        egress: str = "direct",
+        council: Optional[str] = None,
     ):
         self.__session = requests.Session()
         self.user_agent = resolve_user_agent(user_agent)
         self.strip_headless_user_agent = strip_headless_user_agent
+        if egress not in EGRESS_MODES:
+            raise ValueError(f"unknown egress {egress!r}; expected one of {EGRESS_MODES}")
+        self.egress = egress
+        # Only used to name the council in an EgressUnavailable message.
+        self.council = council
+        # Resolved on the first fetch, not here: scrapers are constructed at
+        # import time, long before anyone has decided whether this run needs
+        # the proxy, and a run that never touches this council must not fail
+        # for lack of one.
+        self.__egress_resolved = False
+        self.__proxy_url: Optional[str] = None
         self.__set_headers({**self.DEFAULTHEADERS, "User-Agent": self.user_agent})
         self.__driver = None
         self.__logger = logging.getLogger(self.__class__.__name__)
@@ -434,9 +544,31 @@ class DefaultFetcher(Fetcher):
         self.__session.headers.clear()
         self.__session.headers.update(headers)
 
+    def __ensure_egress(self) -> Optional[str]:
+        """Route this fetcher through the residential proxy if it needs one.
+
+        Runs before every fetch and does work only the first time. A failure
+        is not cached on the instance, so it raises again on every later
+        fetch too—a scraper that swallows one fetch error cannot then carry
+        on direct and come back with a quiet 0 meetings.
+        """
+        if not self.__egress_resolved:
+            self.__proxy_url = resolve_egress_proxy(self.egress, self.council)
+            if self.__proxy_url:
+                # Both schemes: an http:// link on a residential council's
+                # site is as blocked as the https:// ones.
+                self.__session.proxies.update(
+                    {"http": self.__proxy_url, "https": self.__proxy_url}
+                )
+            self.__egress_resolved = True
+        return self.__proxy_url
+
     def __setup_selenium_driver(self):
+        proxy_url = self.__ensure_egress()
         chrome_options = Options()
         chrome_options.add_argument("--headless")
+        if proxy_url:
+            chrome_options.add_argument(f"--proxy-server={proxy_url}")
         # Suppress automation signals that bot-detection (e.g. Akamai) checks for
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -491,6 +623,11 @@ class DefaultFetcher(Fetcher):
         # passes, so adding it any higher would change every key and make
         # every recorded fixture miss. A scraper may still pass its own.
         kwargs.setdefault("timeout", self.__timeout)
+        if self.__ensure_egress():
+            # Passed per request as well as set on the session, because
+            # requests lets an HTTPS_PROXY in the environment override the
+            # session's proxies but not a request's own.
+            kwargs.setdefault("proxies", dict(self.__session.proxies))
         last_error = None
         for attempt in range(self.MAX_RETRIES):
             self.__throttle(url)
@@ -607,6 +744,13 @@ class BaseScraper(ABC):
     # and comparing meetings returned — it costs banyule most of its history.
     strip_headless_user_agent: bool = False
 
+    # "residential" for a council that refuses GitHub's runners whatever we
+    # send: its requests then go through RESIDENTIAL_PROXY_URL, and with that
+    # unset it fails by name with EgressUnavailable. Set it only after probing
+    # the council from a runner—a home connection proves nothing. See
+    # AGENTS.md, "Councils that block GitHub's runners".
+    egress: str = "direct"
+
     # Roughly how long one production run (a single `--years` year, from the
     # runner) takes, in seconds. main.py uses it only to order dispatch:
     # longest first, so a slow scraper starts at t=0 rather than after the
@@ -634,6 +778,8 @@ class BaseScraper(ABC):
         self.fetcher = DefaultFetcher(
             user_agent=self.user_agent,
             strip_headless_user_agent=self.strip_headless_user_agent,
+            egress=self.egress,
+            council=self.council_name,
         )
 
         self.default_name: str = f"{self.council_name.capitalize()} Council Meeting"
@@ -859,6 +1005,11 @@ class InfoCouncilScraper(BaseScraper):
                     )
                     results.append(scraper_return)
 
+            except EgressUnavailable:
+                # Not a bad year page: no year can be fetched, and wrapping
+                # it in the every-year-failed RuntimeError below would hide
+                # the one error type that says what to fix.
+                raise
             except Exception as e:
                 # One bad year should not cost the others: a full-history
                 # walk asks for years the site may not serve. But this used

@@ -80,10 +80,17 @@ def _record(scraper: BaseScraper, slug: str, result_path: str, replay_path: str)
     # User-Agent — or headless Chrome's marker stripped, as melbourne does —
     # records against a firewall page while the same scraper works in
     # production, which is a very confusing way to find out.
+    #
+    # Egress too: a residential council records only with
+    # RESIDENTIAL_PROXY_URL set—`direct` when recording from a home
+    # connection—and otherwise fails with EgressUnavailable rather than
+    # recording whatever the current IP is served.
     recorder = RecordingFetcher(
         DefaultFetcher(
             user_agent=scraper.user_agent,
             strip_headless_user_agent=scraper.strip_headless_user_agent,
+            egress=scraper.egress,
+            council=scraper.council_name,
         )
     )
     scraper.fetcher = recorder
