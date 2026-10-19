@@ -236,7 +236,7 @@ class BanyuleScraper(BaseScraper):
             if not all_items:
                 all_items = _parse_listing_items(initial_soup)
 
-        # Drop unwanted years before their documents are fetched — that fetch
+        # Drop unwanted years before their documents are fetched—that fetch
         # is the expensive half, and main.py would discard them anyway.
         return [item for item in all_items if _year_of(item[0]) in wanted]
 

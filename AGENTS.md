@@ -367,7 +367,7 @@ Production runs on a GitHub-hosted runner, which has an Azure datacentre IP. Som
 | `cardinia` | The same, and shuck passed 0 of 6. | 122 meetings |
 | `bayside_vic` | 403 or a reset connection | 132 meetings |
 
-So these councils go through a proxy on a home machine. Each night council-alerts joins a Tailscale tailnet and sets `RESIDENTIAL_PROXY_URL` to a tinyproxy on Jonathan's Mac. The proxy carries HTTPS `CONNECT` only, and only to an allowlist of council hosts. The infrastructure side is in council-alerts [`docs/residential-egress.md`](https://github.com/yimbymelbourne/council-alerts/blob/main/docs/residential-egress.md).
+So these councils go through a proxy on a home machine. Each night council-alerts joins a Tailscale tailnet and sets `RESIDENTIAL_PROXY_URL` to a tinyproxy on that machine. The proxy carries HTTPS `CONNECT` only, and only to an allowlist of council hosts. The infrastructure side is in council-alerts [`docs/residential-egress.md`](https://github.com/yimbymelbourne/council-alerts/blob/main/docs/residential-egress.md).
 
 **Opting a scraper in** is one class attribute, like `user_agent`:
 
