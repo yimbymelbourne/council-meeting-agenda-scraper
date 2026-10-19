@@ -3,7 +3,7 @@ import re
 
 from aus_council_scrapers.base import ScraperReturn, register_scraper
 from aus_council_scrapers.resolve import ResolveScraper
-from aus_council_scrapers.resolve_archives import opencities_meetings
+from aus_council_scrapers.opencities import OpenCitiesArchive
 
 # The council's OpenCities meetings listing, which still carries the
 # Council Assessment Panel and the Council meetings from before Resolve.
@@ -42,25 +42,24 @@ class BurnsideScraper(ResolveScraper):
         # So a production year costs one listing page and then a request per
         # panel meeting—about ten—and the Council rows are asked for only in
         # the years before Resolve.
-        results = []
-        for year in sorted(wanted):
-            results += opencities_meetings(
-                self, AGENDAS_MINUTES, year, _ANY, _name, meeting_type=PANEL
-            )
-        for year in self.before_resolve(wanted):
-            results += opencities_meetings(
+        results = OpenCitiesArchive(
+            self, AGENDAS_MINUTES, _name, meeting_type=PANEL
+        ).read(wanted)
+        before = self.before_resolve(wanted)
+        if before:
+            results += OpenCitiesArchive(
                 self,
                 AGENDAS_MINUTES,
-                year,
-                _ANY,
                 _name,
                 meeting_type="Council",
-                before=self.resolve_from,
-            )
+                heading_prefix=_COUNCIL_PREFIX,
+            ).read(set(before), before=self.resolve_from)
         return results
 
 
-_ANY = re.compile("")
+# Burnside headed its 2021 Council papers "Council Agenda - 9 March 2021" and
+# "Council Minutes - 23/02/2021".
+_COUNCIL_PREFIX = re.compile(r"^Council\s+", re.IGNORECASE)
 
 
 def _name(meeting_type: str, title: str) -> str:

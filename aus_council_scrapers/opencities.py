@@ -76,6 +76,7 @@ numbers, the select offering "Any Year", the "Go" button.
 
 from __future__ import annotations
 
+import datetime
 import json
 import re
 from dataclasses import dataclass
@@ -1114,3 +1115,117 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             self.logger.info(f"Found {len(results)} {self.council_name} meetings")
 
         return results
+
+
+# --------------------------------------------------------------------------
+# A listing read for another scraper
+# --------------------------------------------------------------------------
+
+
+class OpenCitiesArchive(OpenCitiesMeetingsScraper):
+    """One OpenCities meeting listing, read on behalf of another scraper.
+
+    For a council whose meetings moved to another platform (Resolve, at
+    Burnside and Moreton Bay) and whose older papers, or a body that never
+    moved, are still in its OpenCities meetings module. It borrows the
+    owner's fetcher, so its requests are made, recorded and replayed as the
+    owner's, and returns records in the owner's terms: ISO dates, times as
+    "7:00 PM", and the meeting's own page as `webpage_url` where the listing
+    row links one.
+
+    `meeting_type` filters the listing itself to one type through the dlv
+    URL—Burnside's panel is a page or two a year where the whole listing is
+    six. `meeting_types` (a pattern, as on the base class) instead skips rows
+    before their payload is fetched. `name(meeting_type, title)` names a
+    record from the row's type and the payload's opening line, which is the
+    only place some councils say a meeting was special.
+
+    `heading_prefix` is stripped from the front of each paper's heading
+    before `papers_by_heading` reads it. Heading mode anchors "Agenda" and
+    "Minutes" at the start, and these archives put the body first: "Council
+    Agenda - 9 March 2021" (Burnside), "General agenda", "Special Meeting
+    agenda" and "9.30am Post-election Meeting - Agenda" (Moreton Bay).
+    """
+
+    list_name = "OC CL Public Meetings"
+    papers_by = "heading"
+
+    # `read` always sets `years_filter`, so the first page fetched is the
+    # newest wanted year's, which carries the year dropdown too.
+    year_filtered_first_page = True
+
+    def __init__(
+        self,
+        owner: BaseScraper,
+        listing_url: str,
+        name,
+        meeting_type: Optional[str] = None,
+        meeting_types: Optional[re.Pattern] = None,
+        heading_prefix: Optional[re.Pattern] = None,
+    ):
+        super().__init__(owner.council_name, owner.state, listing_url)
+        self.fetcher = owner.fetcher
+        self.logger = owner.logger
+        self.name = name
+        self.meeting_type = meeting_type
+        self.meeting_types = meeting_types
+        self.heading_prefix = heading_prefix
+        self.before: Optional[datetime.date] = None
+
+    def main_listing(self) -> Listing:
+        filters = (
+            f"(dd_OC%20Meeting%20Type={quote(self.meeting_type)})"
+            if self.meeting_type
+            else ""
+        )
+        return Listing(self.listing_url, self.list_name, filters=filters)
+
+    def read(
+        self, years: set[int], before: Optional[datetime.date] = None
+    ) -> list[ScraperReturn]:
+        """The wanted years' meetings, less any on or after `before` (the day
+        the council moved them elsewhere). A failed listing raises."""
+        self.years_filter = sorted(years)
+        self.before = before
+        return self.scraper()
+
+    def _rows(self) -> list[ListingRow]:
+        # Rows on or after `before` are dropped before their payloads are
+        # fetched: those meetings come from the other platform.
+        rows = super()._rows()
+        if self.before is None:
+            return rows
+        return [
+            row
+            for row in rows
+            if parse_date(row.date, dayfirst=True).date() < self.before
+        ]
+
+    def papers(self, content: BeautifulSoup) -> dict[str, str]:
+        if self.heading_prefix:
+            for heading in content.select("div.meeting-document > h3"):
+                text = heading.get_text(" ", strip=True)
+                stripped = self.heading_prefix.sub("", text, count=1)
+                if stripped != text:
+                    heading.string = stripped
+        return super().papers(content)
+
+    def meeting_name(
+        self, row: ListingRow, content: BeautifulSoup, papers: dict[str, str]
+    ) -> str:
+        title = content.find("p")
+        return self.name(
+            row.meeting_type, title.get_text(" ", strip=True) if title else ""
+        )
+
+    def build_return(
+        self, content: BeautifulSoup, row: ListingRow
+    ) -> ScraperReturn | None:
+        record = super().build_return(content, row)
+        if record is None:
+            return None
+        record.date = parse_date(row.date, dayfirst=True).date().isoformat()
+        if record.time:
+            record.time = parse_date(record.time).strftime("%I:%M %p").lstrip("0")
+        record.webpage_url = row.detail_url or row.webpage_url
+        return record
