@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Council Meeting",
+    "date": "2026-07-06",
+    "time": "7:00 PM",
+    "location": "6 Dutton Road, Mount Barker SA",
+    "webpage_url": "https://mountbarker.resolve.red/portal/meeting/7",
+    "download_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=57&p=1",
+    "agenda_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=57&p=1",
+    "minutes_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=57&m=1",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "2026-08-03",
+    "time": "7:00 PM",
+    "location": "6 Dutton Road, Mount Barker SA",
+    "webpage_url": "https://mountbarker.resolve.red/portal/meeting/8",
+    "download_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=58&p=1",
+    "agenda_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=58&p=1",
+    "minutes_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=58&m=1",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "2026-09-07",
+    "time": "7:00 PM",
+    "location": "6 Dutton Road, Mount Barker SA",
+    "webpage_url": "https://mountbarker.resolve.red/portal/meeting/9",
+    "download_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=91&p=1",
+    "agenda_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=91&p=1",
+    "minutes_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=91&m=1",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "2026-10-06",
+    "time": "7:00 PM",
+    "location": "6 Dutton Road, Mount Barker SA",
+    "webpage_url": "https://mountbarker.resolve.red/portal/meeting/10",
+    "download_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=97&p=1",
+    "agenda_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=97&p=1",
+    "minutes_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=97&m=1",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Assessment Panel",
+    "date": "2026-10-21",
+    "time": "9:30 AM",
+    "location": "Council Chambers",
+    "webpage_url": "https://mountbarker.resolve.red/portal/meeting/77",
+    "download_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=105&p=1",
+    "agenda_url": "https://mountbarker.resolve.red/web/UserControls/DocPreview.aspx?aoid=105&p=1",
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  }
+]

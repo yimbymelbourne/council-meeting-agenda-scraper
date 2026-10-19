@@ -7,13 +7,15 @@ range—so it is pinned down here against a fetcher that serves only what
 the one-year run should need.
 """
 
+import datetime
 import json
 import logging
+import re
 
 import pytest
 
 from aus_council_scrapers import clock
-from aus_council_scrapers.base import Fetcher
+from aus_council_scrapers.base import Fetcher, ScraperReturn
 from aus_council_scrapers.resolve import ResolveScraper
 
 API = "https://api.resolve.red/public/Events"
@@ -169,20 +171,146 @@ def test_unpublished_past_meetings_are_probed_only_where_the_tenant_shows_them()
     assert fetcher.requested == [PAST_2026, FUTURE]
 
 
-def test_a_failed_listing_is_reported_not_swallowed(caplog):
+def test_a_failed_listing_fails_the_council_but_a_failed_future_query_does_not():
     """A council blocked from the runner must not look like one with no
-    meetings: InfoCouncil's DEBUG-level swallow hid exactly that."""
+    meetings: production counts an empty list as a council that worked, which
+    is how InfoCouncil's DEBUG-level swallow hid bayside_nsw. The extra
+    'future' query adds nothing the ranged listing lacks, so it may fail."""
+    blocked = _ServesOnly({PAST_2026: ConnectionError("reset"), FUTURE: _page()})
+    with pytest.raises(RuntimeError, match="could not read Resolve listing"):
+        _one_year_run(blocked)
+
+    meeting = _event(1, "2026-08-04")
+    flaky_future = _ServesOnly(
+        {
+            PAST_2026: _page(meeting),
+            FUTURE: ConnectionError("reset"),
+            f"{API}/1": _detail("packet", "minutes"),
+        }
+    )
+    assert [r.date for r in _one_year_run(flaky_future)] == ["2026-08-04"]
+
+
+def test_a_new_council_term_does_not_drop_meetings_from_an_anchored_type():
+    """Tenants re-create their types each term ("Council Meeting 2024-2028"),
+    and SA councils go to the polls in November 2026. A subclass anchors its
+    pattern on the type's name, so the term must not be part of what it sees,
+    or every meeting after the election silently drops out."""
+
+    class Anchored(_Example):
+        meeting_types = re.compile(r"^Ordinary Council Meeting$")
+
+    next_term = _event(1, "2026-11-24")
+    next_term["meetingTypeName"] = "Ordinary Council Meeting 2026-2030"
     fetcher = _ServesOnly(
         {
-            PAST_2026: ConnectionError("reset"),
+            PAST_2026: _page(next_term),
             FUTURE: _page(),
+            f"{API}/1": _detail("agenda"),
         }
     )
 
-    with caplog.at_level(logging.WARNING):
-        assert _one_year_run(fetcher) == []
+    results = _one_year_run(fetcher, Anchored)
 
-    assert any(
-        "could not read Resolve listing" in r.message and r.levelno == logging.WARNING
-        for r in caplog.records
+    assert [(r.date, r.name) for r in results] == [
+        ("2026-11-24", "Ordinary Council Meeting")
+    ]
+
+
+class _MovedMidYear(_Example):
+    """A council that moved to Resolve on 22 June 2026 and keeps its earlier
+    meetings elsewhere; the tenant also holds copies of some of them."""
+
+    resolve_from = datetime.date(2026, 6, 22)
+    archive_error = None
+    asked_for = None
+
+    def other_meetings(self, wanted):
+        type(self).asked_for = sorted(wanted)
+        if self.archive_error:
+            raise self.archive_error
+        return [
+            ScraperReturn(
+                name="Council Meeting",
+                date="2026-03-23",
+                time=None,
+                webpage_url="https://example.nsw.gov.au/meetings/2026",
+                agenda_url="https://example.nsw.gov.au/2026-03-23-agenda.pdf",
+            )
+        ]
+
+
+FROM_MOVE = f"{API}?type=past&startDate=2026-06-22&endDate=2026-12-31&page=1"
+
+
+def test_a_council_that_moved_mid_year_reads_each_source_for_its_own_part():
+    """In the year of the move, the listing starts at the move, so the
+    tenant's copies of earlier meetings cost neither listing pages nor
+    detail calls; those meetings come from the other source instead."""
+    copy_of_archived = _event(1, "2026-03-23")
+    after_move = _event(2, "2026-07-27")
+    fetcher = _ServesOnly(
+        {
+            FROM_MOVE: _page(after_move, copy_of_archived),
+            FUTURE: _page(),
+            f"{API}/2": _detail("packet", "minutes"),
+        }
     )
+
+    results = _one_year_run(fetcher, _MovedMidYear)
+
+    assert [(r.date, r.agenda_url) for r in results] == [
+        ("2026-03-23", "https://example.nsw.gov.au/2026-03-23-agenda.pdf"),
+        ("2026-07-27", f"{DOC}?aoid=1002&p=1"),
+    ]
+    assert _MovedMidYear.asked_for == [2026]
+    assert f"{API}/1" not in fetcher.requested
+
+
+def test_a_failed_second_source_fails_the_council_only_when_nothing_else_came_back(
+    caplog,
+):
+    """The archive failing must not discard what Resolve returned, and must
+    not hide behind an empty Resolve year either: then it was the only
+    source, and its failure is the council's."""
+
+    class ArchiveDown(_MovedMidYear):
+        archive_error = ConnectionError("reset")
+
+    with_resolve = _ServesOnly(
+        {
+            FROM_MOVE: _page(_event(2, "2026-07-27")),
+            FUTURE: _page(),
+            f"{API}/2": _detail("agenda"),
+        }
+    )
+    with caplog.at_level(logging.WARNING):
+        assert [r.date for r in _one_year_run(with_resolve, ArchiveDown)] == [
+            "2026-07-27"
+        ]
+    assert any("other source, which failed" in r.message for r in caplog.records)
+
+    nothing_on_resolve = _ServesOnly({FROM_MOVE: _page(), FUTURE: _page()})
+    with pytest.raises(ConnectionError):
+        _one_year_run(nothing_on_resolve, ArchiveDown)
+
+
+def test_a_cancelled_meeting_is_dropped_without_asking_for_its_documents():
+    """A cancelled meeting's packet is the notice of cancellation (Mount
+    Barker, 16 September 2026), so it is not a meeting with an agenda, and
+    learning that should cost nothing."""
+    held = _event(1, "2026-08-19")
+    cancelled = _event(2, "2026-09-16")
+    cancelled["name"] = "Cancelled - Council Assessment Panel 16 September 2026"
+    fetcher = _ServesOnly(
+        {
+            PAST_2026: _page(cancelled, held),
+            FUTURE: _page(),
+            f"{API}/1": _detail("packet", "minutes"),
+        }
+    )
+
+    results = _one_year_run(fetcher)
+
+    assert [r.date for r in results] == ["2026-08-19"]
+    assert f"{API}/2" not in fetcher.requested

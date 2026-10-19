@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Ordinary Council",
+    "date": "2026-09-22",
+    "time": "7:00 PM",
+    "location": "571 Montague Road, Modbury",
+    "webpage_url": "https://teatreegully.resolve.red/portal/meeting/13",
+    "download_url": "https://teatreegully.resolve.red/web/UserControls/DocPreview.aspx?aoid=26&p=1",
+    "agenda_url": "https://teatreegully.resolve.red/web/UserControls/DocPreview.aspx?aoid=26&p=1",
+    "minutes_url": "https://teatreegully.resolve.red/web/UserControls/DocPreview.aspx?aoid=26&m=1",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Council",
+    "date": "2026-10-13",
+    "time": "7:00 PM",
+    "location": null,
+    "webpage_url": "https://teatreegully.resolve.red/portal/meeting/10",
+    "download_url": "https://teatreegully.resolve.red/web/UserControls/DocPreview.aspx?aoid=45&p=1",
+    "agenda_url": "https://teatreegully.resolve.red/web/UserControls/DocPreview.aspx?aoid=45&p=1",
+    "minutes_url": "https://teatreegully.resolve.red/web/UserControls/DocPreview.aspx?aoid=45&m=1",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  }
+]
