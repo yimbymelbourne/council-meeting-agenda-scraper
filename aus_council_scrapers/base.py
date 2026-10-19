@@ -426,8 +426,8 @@ class DefaultFetcher(Fetcher):
 
     The spacing is per host *across the whole process*, not per fetcher.
     Every scraper builds its own fetcher, and many councils share one vendor
-    host—a dozen Resolve tenants all call `api.resolve.red`, seven LGA SA
-    councils call one Funnelback endpoint. A per-instance throttle let all of
+    host—a dozen Resolve tenants all call `api.resolve.red`, seven
+    DocsPublished councils call DocAssembler. A per-instance throttle let all of
     them hit that host at once, so `FETCH_DELAY` limited each council and
     nothing limited the vendor. Different hosts still run fully in parallel.
 
