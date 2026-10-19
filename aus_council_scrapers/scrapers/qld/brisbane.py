@@ -137,6 +137,11 @@ def _council_meeting_name(texts: list[str]) -> str:
 
 @register_scraper
 class BrisbaneScraper(BaseScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in full
+    # 135-council runs: 9.3 s at both 10 and 6 workers. Orders dispatch only
+    # (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 9
+
     def __init__(self):
         super().__init__("brisbane", "QLD", "https://www.brisbane.qld.gov.au")
 
