@@ -44,6 +44,11 @@ class HoldfastBayScraper(CraftArchiveScraper):
     # From a GitHub-hosted runner, plain requests get the AWS WAF challenge
     # whatever the User-Agent; headless Chrome passes unmodified.
 
+    # One production year, measured 19 Oct 2026 from a home IP: 22-27 s
+    # (about 6 Selenium page loads). Orders dispatch only (slowest first);
+    # see BaseScraper.expected_seconds.
+    expected_seconds = 27
+
     def __init__(self):
         super().__init__("holdfast_bay", "SA", "https://www.holdfast.sa.gov.au")
 

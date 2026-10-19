@@ -19,5 +19,10 @@ class CityOfAdelaideScraper(ModernGovScraper):
         177: "Council Assessment Panel",
     }
 
+    # One production year, measured 19 Oct 2026 from a home IP: 94-110 s (33
+    # requests: 2 listings and 31 meeting pages). Orders dispatch only
+    # (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 110
+
     def __init__(self):
         super().__init__("adelaide", "SA", "https://meetings.cityofadelaide.com.au")

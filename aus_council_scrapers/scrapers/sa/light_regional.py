@@ -22,5 +22,10 @@ class LightRegionalScraper(LGASAFunnelbackScraper):
         "https://www.light.sa.gov.au/yourcouncil/meetings/cap",
     )
 
+    # One production year, measured 19 Oct 2026 from a home IP: 23 s (2
+    # Selenium page loads and one 20 s crawl delay between them). Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 23
+
     def __init__(self):
         super().__init__("light_regional", "SA", "https://www.light.sa.gov.au")

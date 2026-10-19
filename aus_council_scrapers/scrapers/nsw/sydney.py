@@ -23,5 +23,10 @@ class CityOfSydneyScraper(ModernGovScraper):
         186: "Local Planning Panel",
     }
 
+    # One production year, measured 19 Oct 2026 from a home IP: 107-115 s (30
+    # requests: 3 listings and 27 meeting pages). Orders dispatch only
+    # (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 115
+
     def __init__(self):
         super().__init__("sydney", "NSW", "https://meetings.cityofsydney.nsw.gov.au")
