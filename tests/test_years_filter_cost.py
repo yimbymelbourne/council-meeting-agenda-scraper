@@ -1,8 +1,8 @@
-"""`years_filter` bounds what North Sydney and Banyule fetch, not just what
-they return.
+"""`years_filter` bounds what North Sydney, Banyule and Port Phillip fetch, not
+just what they return.
 
 Production passes one year, and `main.py` filters the results afterwards, so
-a scraper that ignores the filter returns exactly the same meetings — it just
+a scraper that ignores the filter returns exactly the same meetings—it just
 spends minutes of the shared nightly budget fetching pages that get thrown
 away. Nothing in the cassette replay notices, because cassettes are recorded
 unfiltered. These tests replay the same recordings with a filter set and
@@ -20,6 +20,7 @@ from dateutil.parser import parse as parse_date
 
 from aus_council_scrapers import clock
 from aus_council_scrapers.scrapers.nsw.north_sydney import NorthSydneyScraper
+from aus_council_scrapers.scrapers.vic.port_phillip import PortPhilipScraper
 from aus_council_scrapers.scrapers.vic.banyule import (
     BanyuleScraper,
     _parse_listing_items,
@@ -125,7 +126,7 @@ class _ListingDriver:
     """Stands in for Banyule's listing page, built from the recorded one.
 
     The cassette's driver calls replay strictly in recorded order, so a run
-    that drives the page differently — which is the point of the filter —
+    that drives the page differently—which is the point of the filter—
     cannot replay them. The recorded page sources are still the real pages,
     though: grouped by the year filter that produced them, they are enough
     to answer "next page" and "apply year" the way the site did.
@@ -192,3 +193,26 @@ def test_banyule_posts_back_and_fetches_only_the_wanted_year():
         if "OCServiceHandler" in url
     }
     assert fetched_years == {_YEAR}
+
+
+# --------------------------------------------------------------------------
+# Port Phillip: InfoCouncil, plus an archive page that holds 2022 and 2023
+# --------------------------------------------------------------------------
+
+
+def test_port_phillip_skips_its_archive_for_a_year_infocouncil_carries():
+    """The archive page answered 429 in a full nightly run, and in a one-year
+    run it could add nothing anyway."""
+    replay, expected = _load("port_phillip")
+    fetcher = _CountingPlayback(replay, "port_phillip")
+    scraper = PortPhilipScraper()
+    scraper.fetcher = fetcher
+    year = int(_recorded_date(replay)[:4])
+    scraper.years_filter = [year]
+
+    with clock.frozen(_recorded_date(replay)):
+        results = [r.to_dict() for r in scraper.scraper()]
+
+    assert _meetings_in(results, year) == _meetings_in(expected, year)
+    assert _meetings_in(expected, year), "the recording has no meetings that year"
+    assert not [url for url in fetcher.requested if "portphillip.vic.gov.au" in url]
