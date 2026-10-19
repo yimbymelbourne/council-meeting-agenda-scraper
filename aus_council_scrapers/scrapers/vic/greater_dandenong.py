@@ -40,6 +40,11 @@ _NOT_THE_AGENDA = re.compile(r"item timings|supplementary|attachment", re.IGNORE
 
 @register_scraper
 class GreaterDandenongScraper(BaseScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 27 s
+    # (15 requests—2 listing pages and a page per meeting). Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 27
+
     def __init__(self):
         super().__init__("greater_dandenong", "VIC", _BASE_URL)
 
