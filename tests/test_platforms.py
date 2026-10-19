@@ -34,6 +34,14 @@ def test_detects_docspublished():
     assert [p.name for p in found] == ["docspublished"]
 
 
+def test_detects_resolve():
+    """Resolve tenants live on their own subdomain, and councils usually frame
+    the portal rather than link to it, so the iframe src is what shows."""
+    html = '<iframe src="https://woollahra.resolve.red/web/"></iframe>'
+    assert [p.name for p in detect(html)] == ["Resolve"]
+    assert platform_links(html) == {"woollahra.resolve.red"}
+
+
 def test_unknown_platform_returns_nothing():
     assert detect("<html><body><h1>Meetings</h1></body></html>") == []
 

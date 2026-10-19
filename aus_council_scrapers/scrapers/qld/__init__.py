@@ -1,0 +1,2 @@
+from aus_council_scrapers.scrapers.qld.moreton_bay import MoretonBayScraper
+from aus_council_scrapers.scrapers.qld.somerset import SomersetScraper

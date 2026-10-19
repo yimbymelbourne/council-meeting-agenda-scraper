@@ -80,10 +80,7 @@ gh run view <run-id> --repo yimbymelbourne/council-alerts --log | grep -E "Scrap
 gh run view <run-id> --repo yimbymelbourne/council-alerts --log | grep "0 meetings"
 ```
 
-**That run's `okCouncils` count is not a count of working councils.** It
-counts councils that did not raise, and a scraper returning an empty list
-does not raise — so `hunters_hill` and `woollahra`, both broken, are inside
-it. A council *blocked from the runner's IP* used to land there too: `InfoCouncilScraper` logged per-year fetch failures at DEBUG, so `bayside_nsw` returned 76 meetings for 2026 from a home IP and 0 in production. InfoCouncil now raises when every year fails, and `bayside_nsw` goes through the residential proxy (see "Councils that block GitHub's runners"), but any scraper that catches its own fetch errors can still do the same. Always read the per-council meeting counts, never the summary.
+**That run's `okCouncils` count is not a count of working councils.** It counts councils that did not raise, and a scraper returning an empty list does not raise—so `hunters_hill` and `woollahra` sat inside it for months while returning nothing, after both left InfoCouncil. A council *blocked from the runner's IP* used to land there too: `InfoCouncilScraper` logged per-year fetch failures at DEBUG, so `bayside_nsw` returned 76 meetings for 2026 from a home IP and 0 in production. InfoCouncil now raises when every year fails, and `bayside_nsw` goes through the residential proxy (see "Councils that block GitHub's runners"), but any scraper that catches its own fetch errors can still do the same. Always read the per-council meeting counts, never the summary.
 
 Prefer a code default that is correct unattended over a knob someone has to
 set in the other repo. The User-Agent decision is deliberately shaped that
@@ -281,6 +278,7 @@ work into a ten-line subclass. Fetch the meeting page and look for:
 | `*.infocouncil.biz`, `bpsGridPDFLink`, `grdMenu` | `InfoCouncilScraper` |
 | `docspublished.com.au` | `DocsPublishedScraper` — needs only the publishing slug; everything else is resolved from `/api/organisation/<slug>` at runtime |
 | `OCServiceHandler.axd`, `accordion-list-item-container` | OpenCities; see `aus_council_scrapers/scrapers/vic/banyule.py` |
+| `*.resolve.red`, `Resolve Public`, `boardsync-theme` | `ResolveScraper` (`aus_council_scrapers/resolve.py`)—needs the portal subdomain as `tenant` and a `meeting_types` pattern. Documents are the tokenless `DocPreview.aspx?aoid=` links, which never expire. The agenda is the packet (`&p=1`), because the bare agenda is now an order of business with no reports in it. Each kept meeting costs one detail call to learn which documents exist. A council that moved to Resolve recently sets `resolve_from` and reads its older papers in `other_meetings` |
 | `cf-mitigated: challenge`, `server: cloudflare` | Cloudflare interstitial — needs Selenium, no header will get past it |
 
 Note that InfoCouncil is not forever: three councils have left the platform

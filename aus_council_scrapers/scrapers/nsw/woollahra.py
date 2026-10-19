@@ -6,6 +6,11 @@ from aus_council_scrapers.resolve import ResolveScraper
 
 @register_scraper
 class WoollahraScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 32 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 32
+
     # Woollahra left InfoCouncil for Resolve (#145). Its website still frames
     # the older DevExpress portal at /web/, but the documents and the API are
     # the same tenant.

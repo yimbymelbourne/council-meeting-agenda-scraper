@@ -14,6 +14,11 @@ PANEL = "Council Assessment Panel"
 
 @register_scraper
 class BurnsideScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 29 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 29
+
     # Burnside's Public Meetings page frames its Resolve portal for Council
     # meetings from the tenant's first event, 29 November 2022. Two things
     # stayed on the OpenCities Agendas-Minutes listing: Council meetings
