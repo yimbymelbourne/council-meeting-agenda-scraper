@@ -25,6 +25,15 @@ _API_URL = f"{_BASE_URL}/api/meetings?_format=json&year={{year}}"
 
 @register_scraper
 class CaseyScraper(BaseScraper):
+    # The JSON view answers a GitHub-hosted runner with an empty body, which
+    # json.loads cannot read, while a home connection gets the full JSON
+    # (measured 20 Oct 2026 with the whole adapter run from a runner). The
+    # front end is Varnish and sends no challenge header we recognise, so
+    # rather than guess at a browser route, it goes through the residential
+    # egress that already carries Cardinia and the two Baysides. See AGENTS.md,
+    # "Councils that block GitHub's runners".
+    egress = "residential"
+
     def __init__(self):
         super().__init__("casey", "VIC", _BASE_URL)
 

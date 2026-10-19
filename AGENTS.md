@@ -367,6 +367,7 @@ Production runs on a GitHub-hosted runner, which has an Azure datacentre IP. Som
 | `bayside_nsw` (`infoweb.bayside.nsw.gov.au`) | Cloudflare challenge for requests with either User-Agent, Selenium with and without the headless marker, and Cloudflare WARP. shuck passed about 1 page load in 3. | 669 meetings |
 | `cardinia` | The same, and shuck passed 0 of 6. | 122 meetings |
 | `bayside_vic` | 403 or a reset connection | 132 meetings |
+| `casey` (`/api/meetings?_format=json`) | An empty body where the JSON should be, behind Varnish with no challenge header we recognise. Measured 20 Oct 2026 by running the whole adapter from a runner. | 100 meetings |
 
 So these councils go through a proxy on a home machine. Each night council-alerts joins a Tailscale tailnet and sets `RESIDENTIAL_PROXY_URL` to a tinyproxy on that machine. The proxy carries HTTPS `CONNECT` only, and only to an allowlist of council hosts. The infrastructure side is in council-alerts [`docs/residential-egress.md`](https://github.com/yimbymelbourne/council-alerts/blob/main/docs/residential-egress.md).
 
