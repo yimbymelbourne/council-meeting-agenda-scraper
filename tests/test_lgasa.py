@@ -18,7 +18,9 @@ from aus_council_scrapers.base import Fetcher
 from aus_council_scrapers.lgasa import (
     CRAWL_DELAY_SECONDS,
     DOCUMENT_ROOT,
+    ArchiveListing,
     LGASAFunnelbackScraper,
+    ResolveWithLGASAArchive,
 )
 from tests.cassette import PlaybackFetcher, encode_failure
 
@@ -674,3 +676,83 @@ def test_a_run_where_every_request_failed_raises_instead_of_returning_nothing():
     )
     with pytest.raises(RuntimeError, match="every listing page request failed"):
         scraper.scraper()
+
+
+# --- A Resolve council's archive on LGA SA listing pages ------------------
+
+COUNCIL_PAGE = "https://www.example.sa.gov.au/council-meetings"
+PANEL_PAGE = "https://www.example.sa.gov.au/council-assessment-panel"
+
+
+class _MovedToResolve(ResolveWithLGASAArchive):
+    """Council moved to Resolve on 22 September 2026; the panel never did."""
+
+    tenant = "example"
+    resolve_from = datetime.date(2026, 9, 22)
+    archive_listings = (
+        ArchiveListing(COUNCIL_PAGE, until=resolve_from),
+        ArchiveListing(PANEL_PAGE, keep=re.compile(r"Assessment Panel")),
+    )
+
+    def __init__(self):
+        super().__init__("example_sa", "SA")
+
+
+class _ResolveAndListings(_ListingSite):
+    """Listing pages through Chrome, and a Resolve tenant with no events."""
+
+    def fetch_with_requests(self, url, method="GET", **kwargs):
+        assert url.startswith("https://api.resolve.red/"), url
+        return '{"results": [], "totalPages": 1}'
+
+
+def _archive_run(year, pages):
+    scraper = _MovedToResolve()
+    scraper.years_filter = [year]
+    site = _ResolveAndListings(pages)
+    scraper.fetcher = site
+    return scraper.scraper(), site
+
+
+def test_a_resolve_council_reads_each_archive_listing_only_while_it_is_needed():
+    # Production asks for one year. In the year of the move both listings
+    # are read, 20 s apart, and the copy of a Council meeting held after the
+    # move—Resolve's to report—is dropped, as is a Council agenda filed on
+    # the panel's page.
+    council = [
+        doc(1, "2026-10-13", "Council Agenda 13 October 2026"),
+        doc(2, "2026-09-08", "Council Agenda 8 September 2026"),
+        doc(3, "2025-12-09", "Council Agenda 9 December 2025"),
+    ]
+    panel = [
+        doc(
+            4, "2026-09-23", "CAP Agenda 23 September 2026", "Council Assessment Panel"
+        ),
+        doc(
+            5,
+            "2026-09-23",
+            "Agenda - Ordinary Council Meeting 23 September 2026",
+            "Council Assessment Panel",
+        ),
+        doc(6, "2025-12-01", "CAP Agenda 1 December 2025", "Council Assessment Panel"),
+    ]
+    pages = {
+        f"{COUNCIL_PAGE}?num_ranks=500": as_listing_page(council, total=900),
+        f"{PANEL_PAGE}?num_ranks=500": as_listing_page(panel, total=900),
+    }
+
+    meetings, site = _archive_run(2026, pages)
+
+    assert [(m.date, m.name, m.agenda_url) for m in meetings] == [
+        ("2026-09-08", "Council Meeting", url(2)),
+        ("2026-09-23", "Council Assessment Panel", url(4)),
+    ]
+    assert site.requested == [
+        f"{COUNCIL_PAGE}?num_ranks=500",
+        f"{PANEL_PAGE}?num_ranks=500",
+    ]
+    assert site.slept == [pytest.approx(CRAWL_DELAY_SECONDS, abs=1)]
+
+    # The year after the move, the Council page is not opened at all.
+    _, site = _archive_run(2027, pages)
+    assert site.requested == [f"{PANEL_PAGE}?num_ranks=500"]

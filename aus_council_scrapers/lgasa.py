@@ -12,9 +12,11 @@ URL, the committee it was filed under and its meeting date.
 Derwent Valley in Tasmania is hosted on the same platform and publishes into
 the same shape of collection, which is why a TAS council lives here too.
 
-**robots.txt.** All seven council hosts served byte-identical robots.txt
-files when checked on 19 Oct 2026 (the Matrix default). The lines that bind
-this scraper:
+**robots.txt.** All ten council hosts read here—the seven
+`LGASAFunnelbackScraper` councils', and Charles Sturt's, Tea Tree Gully's
+and Mount Barker's, whose older papers `ResolveWithLGASAArchive` reads—served
+byte-identical robots.txt files when checked on 19 Oct 2026 (the Matrix
+default). The lines that bind this scraper:
 
     User-agent: *
     Crawl-delay: 20
@@ -94,6 +96,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn
 from aus_council_scrapers.constants import EARLIEST_YEAR
+from aus_council_scrapers.resolve import ResolveScraper
 
 # The Matrix origin every LGA SA council site is served from. `?a=<assetId>`
 # answers with the document itself—no redirect, no challenge—and asset ids
@@ -1093,3 +1096,106 @@ class LGASAFunnelbackScraper(BaseScraper):
                 f"agendas or minutes for {wanted}"
             )
         return records
+
+
+# ----------------------------------------------------------------------
+# Councils that moved to Resolve and left the rest here
+# ----------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class ArchiveListing:
+    """One LGA SA listing page that a Resolve council still needs.
+
+    A council that moved its meetings to Resolve leaves two things behind in
+    its collection: the meetings from before the move, and any body it did not
+    move (Charles Sturt's assessment panel). Each sits on a listing page of
+    its own—the per-committee pages the council links, read exactly as
+    `LGASAFunnelbackScraper` reads any listing.
+    """
+
+    #: The council's own listing page for this body, bare: no query string.
+    url: str
+
+    #: The first day this body's meetings are published on Resolve instead.
+    #: Records dated on or after it are dropped, so a meeting is never
+    #: returned from both sources, and a run wanting only later years does
+    #: not read this listing at all. None for a body that never moved.
+    until: Optional[datetime.date] = None
+
+    #: Keep only records whose name matches: a listing filed under one body
+    #: can carry a document whose title names another (see
+    #: `_COUNCIL_TITLE`), and that body's meetings come from elsewhere.
+    keep: Optional[re.Pattern] = None
+
+    def wanted(self, years: set[int]) -> set[int]:
+        if self.until is None:
+            return set(years)
+        return {year for year in years if year <= self.until.year}
+
+    def holds(self, record: ScraperReturn) -> bool:
+        if self.until is not None and record.date >= self.until.isoformat():
+            return False
+        return not self.keep or bool(self.keep.search(record.name or ""))
+
+
+class _ListingReader(LGASAFunnelbackScraper):
+    """Reads `ArchiveListing`s on behalf of another scraper.
+
+    It borrows that scraper's fetcher, so its Selenium requests are made,
+    recorded and replayed as the owner's, and one reader serves every listing
+    in a run so `CRAWL_DELAY_SECONDS` spaces them all.
+    """
+
+    def __init__(self, owner: BaseScraper):
+        super().__init__(owner.council_name, owner.state, owner.base_url)
+        self.fetcher = owner.fetcher
+        self.logger = owner.logger
+
+    def read(self, listing: ArchiveListing, years: set[int]) -> list[ScraperReturn]:
+        self.listing_urls = (listing.url,)
+        self.years_filter = sorted(years)
+        return [record for record in self.scraper() if listing.holds(record)]
+
+
+class ResolveWithLGASAArchive(ResolveScraper):
+    """A Resolve council whose other meetings are on LGA SA listing pages.
+
+    A subclass sets the Resolve attributes as usual and lists its
+    `archive_listings`. Each listing is read only for the wanted years up to
+    its `until`, so production, which asks for one year, opens Chrome only
+    while the current year still reaches back before the move, or for a body
+    that never moved.
+    """
+
+    # The listing pages are fetched through Chrome, which Cloudflare
+    # challenges from GitHub's runners unless "HeadlessChrome" is stripped;
+    # see the module docstring. The Resolve API calls go through requests,
+    # which this flag does not touch.
+    strip_headless_user_agent = True
+
+    archive_listings: tuple[ArchiveListing, ...] = ()
+
+    def other_meetings(self, wanted: set[int]) -> list[ScraperReturn]:
+        reader = _ListingReader(self)
+        results: list[ScraperReturn] = []
+        read, failures = 0, []
+        for listing in self.archive_listings:
+            years = listing.wanted(wanted)
+            if not years:
+                continue
+            read += 1
+            try:
+                results += reader.read(listing, years)
+            except Exception as error:
+                # One listing lost is a warning, as in the base scraper; every
+                # listing lost raises, and `ResolveScraper.scraper` then keeps
+                # what Resolve returned or fails the council if that is empty.
+                failures.append(error)
+                self.logger.warning(
+                    f"{self.council_name}: could not read {listing.url}: "
+                    f"{type(error).__name__}: {error}"
+                )
+        if failures and len(failures) == read:
+            raise failures[-1]
+        return results
