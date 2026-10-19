@@ -314,3 +314,28 @@ def test_a_cancelled_meeting_is_dropped_without_asking_for_its_documents():
 
     assert [r.date for r in results] == ["2026-08-19"]
     assert f"{API}/2" not in fetcher.requested
+
+
+def test_serpentine_library_year_fails_when_no_meeting_page_can_be_read():
+    """The pre-Resolve library is a listing plus a page per meeting. If every
+    meeting page fails, the year must not come back empty as a success."""
+    from aus_council_scrapers.scrapers.wa.serpentine_jarrahdale import (
+        SerpentineJarrahdaleScraper,
+    )
+    from tests.cassette import PlaybackFetcher, cassette_paths
+
+    class _MeetingPagesFail(PlaybackFetcher):
+        def fetch_with_requests(self, url, method="GET", **kwargs):
+            if "/past/" not in url:
+                raise ConnectionError("unreachable")
+            return super().fetch_with_requests(url, method, **kwargs)
+
+    _, replay_path = cassette_paths("serpentine_jarrahdale")
+    with open(replay_path) as f:
+        replay = json.load(f)
+    recorded = next(v for k, v in replay if k == ["meta", "recorded_date"])
+    scraper = SerpentineJarrahdaleScraper()
+    scraper.fetcher = _MeetingPagesFail(replay, "serpentine_jarrahdale")
+
+    with clock.frozen(recorded), pytest.raises(RuntimeError, match="2020"):
+        scraper.other_meetings({2020})

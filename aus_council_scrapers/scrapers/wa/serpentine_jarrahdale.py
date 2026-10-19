@@ -23,6 +23,12 @@ ARCHIVE_TYPES = {
 
 @register_scraper
 class SerpentineJarrahdaleScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in a full
+    # 135-council run at 10 workers: 20 s, most of it queued behind the
+    # other tenants on api.resolve.red (9 s alone). Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 20
+
     # Serpentine-Jarrahdale's council page links its Resolve portal (the
     # older DevExpress one, at /web/) for meetings from 21 July 2025, and a
     # CouncilConnect library at sjshire.wa.gov.au/council-meetings/past/<year>
@@ -59,13 +65,30 @@ class SerpentineJarrahdaleScraper(ResolveScraper):
         for year in self.before_resolve(wanted):
             if year < EARLIEST_YEAR:
                 continue
+            listed, unreadable = 0, []
             for slug, name in ARCHIVE_TYPES.items():
                 for summary in self._listing(slug, year):
                     if summary["date"] >= self.resolve_from:
                         continue
-                    record = self._meeting(summary, name)
+                    listed += 1
+                    try:
+                        record = self._meeting(summary, name)
+                    except Exception as e:
+                        # One meeting lost is a warning.
+                        self.logger.warning(
+                            f"{self.council_name}: could not read {summary['url']}: {e}"
+                        )
+                        unreadable.append(summary["url"])
+                        continue
                     if record:
                         results.append(record)
+            if listed and len(unreadable) == listed:
+                # Every meeting page failed, so the year would come back
+                # empty while the council reported success.
+                raise RuntimeError(
+                    f"{self.council_name}: none of the {listed} meeting pages "
+                    f"listed for {year} could be read"
+                )
         return results
 
     def _listing(self, slug: str, year: int) -> list[dict]:
@@ -96,13 +119,7 @@ class SerpentineJarrahdaleScraper(ResolveScraper):
 
     def _meeting(self, summary: dict, name: str) -> Optional[ScraperReturn]:
         url = summary["url"]
-        try:
-            html = self.fetcher.fetch_with_requests(url)
-        except Exception as e:
-            # One meeting lost is a warning; the base class raises if the
-            # council ends up with no meetings at all.
-            self.logger.warning(f"{self.council_name}: could not read {url}: {e}")
-            return None
+        html = self.fetcher.fetch_with_requests(url)
         agenda_url, minutes_url = _papers(html, url)
         if not (agenda_url or minutes_url):
             self.logger.warning(
