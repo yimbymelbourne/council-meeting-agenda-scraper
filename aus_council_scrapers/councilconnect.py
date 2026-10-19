@@ -38,9 +38,11 @@ import datetime
 import difflib
 import re
 from typing import Optional
-from urllib.parse import urljoin, urlparse
+from urllib.parse import unquote, urljoin, urlparse
 
+import requests
 from bs4 import BeautifulSoup
+from requests.utils import requote_uri
 from dateutil.parser import parse as parse_date
 
 from aus_council_scrapers import clock
@@ -64,6 +66,9 @@ _LONG_DATE = re.compile(
 )
 # The upcoming page's buttons: "Tue 27 Oct 2026".
 _SHORT_DATE = re.compile(r"\b\d{1,2}\s+[A-Z][a-z]{2}\s+\d{4}\b")
+# Or, where the button is undated, the link title: "... - 22/10/2026".
+_TITLE_DATE = re.compile(r"\b\d{1,2}/\d{1,2}/\d{4}\b")
+_BUTTON_TIME = re.compile(r"\b\d{1,2}:\d{2}\s*[AP]M\b", re.IGNORECASE)
 
 # A meeting page groups its documents under headings: "Agenda", "Minutes",
 # "Minutes (Confirmed)", "Attachment", and now and then something vaguer
@@ -122,10 +127,57 @@ _HEADING_DATE = re.compile(
     re.IGNORECASE,
 )
 
+# A document that bundles its attachments, or says it leaves them out, as
+# opposed to being one. Nedlands labels its minutes "Council Meeting -
+# MINUTES - 25 February 2025 PUBLIC (Excluding Attachments)", which without
+# the "exclud" form would be read as an attachment and dropped.
+_PACKET = re.compile(
+    r"\b(?:with(?:out)?|and|incl\w*|excl\w*)[\s(-]+(?:all[\s-]+)?attachments?\b",
+    re.IGNORECASE,
+)
+
+# A revised agenda, which is the one the meeting actually worked from when
+# both it and the original are up (Victoria Park, 13 December 2022).
+_AMENDED = re.compile(r"amended|revised", re.IGNORECASE)
+
+# A full date in a heading or a filename: "21 December 2021", "ocm 21
+# december minutes" (year optional in a filename).
+_FULL_DATE = re.compile(
+    rf"\b(\d{{1,2}})(?:st|nd|rd|th)?\s+({_MONTH})\b(?:\s+(\d{{4}}))?",
+    re.IGNORECASE,
+)
+
+# A label that is a meeting's name and nothing else, once its date is gone.
+_ONLY_A_MEETING_NAME = re.compile(r"(?:\w+\s+){0,3}meeting", re.IGNORECASE)
+
+_HEADING_NOISE = re.compile(
+    r"^\s*(?:final|draft)\b|\b(?:agenda|minutes)\s*$"
+    r"|\bat\s+\d{1,2}(?:[.:]\d{2})?\s*[ap]\.?m\.?",
+    re.IGNORECASE,
+)
+
+# Bodies a council files under its Council meeting types now and then:
+# Peppermint Grove an Agenda Briefing Forum under "Ordinary Council Meeting",
+# Nedlands its Agenda Forums and Audit Committee there too. Where a scraper
+# reads only Council meetings (`meeting_types`), a listing entry whose
+# heading names one of these is skipped before its page is fetched.
+_NOT_A_COUNCIL_MEETING = re.compile(
+    r"forum|briefing|committee|working\s+group|advisory\s+group", re.IGNORECASE
+)
+
 # How far ahead an upcoming meeting is worth a request. Agendas go up about a
 # week before the meeting; a meeting further out than this has never had
 # papers, and it will be fetched on a later night once it is close.
 UPCOMING_WINDOW_DAYS = 28
+
+
+def _is_not_found(error: requests.HTTPError) -> bool:
+    # A replayed failure is rebuilt from its message alone, with no response
+    # attached, so the status is read from the message as well.
+    response = getattr(error, "response", None)
+    if response is not None:
+        return response.status_code == 404
+    return str(error).startswith("404")
 
 
 class CouncilConnectScraper(BaseScraper):
@@ -138,13 +190,29 @@ class CouncilConnectScraper(BaseScraper):
     `meeting_types`
         `{type-slug: "Display Name"}` to read only those types, through the
         per-type year pages. None reads every type through one listing.
+        A per-type page for a year with no meetings of that type is an empty
+        200, not a 404, so a type that skipped a year costs one request.
     `upcoming_path`
-        Where upcoming meetings are listed; None if the site has no such page.
+        Where upcoming meetings are listed—a path, or a tuple of paths for a
+        site whose `/council-meetings/` is a landing page and lists upcoming
+        meetings only per type (`/council-meetings/<type>`). None if the site
+        has no such page.
+    `first_year`
+        The first year the site's /past index lists. A year before it 404s,
+        which would otherwise fail the whole scrape.
+    `wrong_documents`
+        `{url: why}` for documents a council has posted against the wrong
+        meeting, checked by reading them. They are never emitted. A filename
+        date alone is not enough to judge this—Murray and Nedlands both have
+        correct minutes under filenames dated a month off—so each entry is a
+        document whose contents were read.
     """
 
     inline_documents: bool = False
     meeting_types: Optional[dict[str, str]] = None
-    upcoming_path: Optional[str] = "/council-meetings/"
+    upcoming_path: Optional[str | tuple[str, ...]] = "/council-meetings/"
+    first_year: int = EARLIEST_YEAR
+    wrong_documents: dict[str, str] = {}
 
     # --- years -------------------------------------------------------------
 
@@ -194,16 +262,35 @@ class CouncilConnectScraper(BaseScraper):
 
     @staticmethod
     def _next_page_target(soup: BeautifulSoup, page: int) -> Optional[str]:
+        """The postback target for the page after `page`, or None if last.
+
+        The pager shows at most five numbers, in blocks: "1 2 3 4 5 ...",
+        then "... 6 7". The "..." after the numbers posts back to the first
+        page of the next block. Victoria Park listed 62 meetings in 2025, and
+        following only numbered links stopped every year at 50. The current
+        page is a plain span, so a "..." before it—back to the previous
+        block—is never followed.
+        """
         pager = soup.find(id=re.compile(r"dpMeetings$"))
         if pager is None:
             return None
-        for link in pager.find_all("a", href=True):
-            if link.get_text(strip=True) != str(page + 1):
+        forward = None
+        past_current = False
+        for element in pager.find_all(["a", "span"]):
+            text = element.get_text(strip=True)
+            if element.name == "span":
+                past_current = past_current or text == str(page)
                 continue
-            match = re.search(r"__doPostBack\('([^']+)'", link["href"])
-            if match:
-                return match.group(1)
-        return None
+            if text == str(page + 1) or (
+                past_current and text in ("...", "…") and forward is None
+            ):
+                forward = element
+                if text == str(page + 1):
+                    break
+        if forward is None:
+            return None
+        match = re.search(r"__doPostBack\('([^']+)'", forward.get("href", ""))
+        return match.group(1) if match else None
 
     @staticmethod
     def _form_fields(form) -> dict[str, str]:
@@ -239,6 +326,16 @@ class CouncilConnectScraper(BaseScraper):
         return labels
 
     @staticmethod
+    def _link_date(link) -> Optional[datetime.date]:
+        short = _SHORT_DATE.search(link.get_text(" ", strip=True))
+        if short:
+            return parse_date(short.group()).date()
+        numeric = _TITLE_DATE.search(link.get("title") or "")
+        if numeric:
+            return parse_date(numeric.group(), dayfirst=True).date()
+        return None
+
+    @staticmethod
     def _parse_when(text: str) -> tuple[Optional[datetime.date], Optional[str]]:
         match = _LONG_DATE.search(text or "")
         if not match:
@@ -263,14 +360,38 @@ class CouncilConnectScraper(BaseScraper):
         # "(rescheduled from 1 May 2020)" is about the date, not the meeting.
         cleaned = re.sub(r"\([^)]*\d{4}[^)]*\)", "", heading or "")
         cleaned = _HEADING_DATE.sub("", cleaned)
+        # "Final Ordinary Council Meeting Agenda", "Special Council Meeting -
+        # at 5.30pm": the document's status, its kind and the hour are not
+        # part of the meeting's name.
+        cleaned = _HEADING_NOISE.sub("", cleaned)
         cleaned = re.sub(r"\s+", " ", cleaned).strip(" -–—,:")
         label = labels.get(type_slug) if type_slug else None
         if label and label.lower() not in _GENERIC_HEADINGS:
+            # "Special Meeting of Council" is the same meeting as "Special
+            # Council Meeting", worded the other way round, and too far from
+            # it letter by letter for the similarity test.
+            def comparable(name: str) -> str:
+                return re.sub(
+                    r"^(\w+)\s+meeting\s+of\s+(?:the\s+)?council$",
+                    r"\1 council meeting",
+                    name.lower(),
+                )
+
             similar = (
-                difflib.SequenceMatcher(None, cleaned.lower(), label.lower()).ratio()
+                difflib.SequenceMatcher(
+                    None, comparable(cleaned), comparable(label)
+                ).ratio()
                 >= 0.85
             )
-            if not cleaned or cleaned.lower() in _GENERIC_HEADINGS or similar:
+            # "Ordinary Council Meeting - April 2025 - Reconvened": the type
+            # with words after it is still that type.
+            extends = cleaned.lower().startswith(label.lower())
+            if (
+                not cleaned
+                or cleaned.lower() in _GENERIC_HEADINGS
+                or similar
+                or extends
+            ):
                 return label
         return cleaned or label or "Council Meeting"
 
@@ -282,14 +403,19 @@ class CouncilConnectScraper(BaseScraper):
         Only PDFs count: the inline listings put MP3 recordings labelled "OCM
         Minutes ... Audio Recording" next to the minutes.
         """
-        agendas, minutes = [], []
+        agendas, minutes, unnamed = [], [], []
         for group, label, url in links:
+            if url in self.wrong_documents:
+                continue
             path = urlparse(url).path
             if not path.lower().endswith(".pdf"):
                 continue
             filename = path.rsplit("/", 1)[-1]
             text = f"{label} {filename}"
-            if _NOT_THE_MEETINGS.search(label):
+            # "Agenda - 23 July 2024 with attachments" is the agenda packet,
+            # not an attachment—and at Nedlands, whose bare agendas are Word
+            # files, often the only PDF agenda there is.
+            if _NOT_THE_MEETINGS.search(_PACKET.sub("", label)):
                 continue
             # Filenames such as "with-all-attachments" describe a packet, not
             # an attachment, when the label names the agenda or minutes; see
@@ -297,24 +423,44 @@ class CouncilConnectScraper(BaseScraper):
             # spaces in filenames, so \b-anchored terms still match.
             label_names_it = _AGENDA.search(label) or _MINUTES.search(label)
             file_test = _NOT_THE_MEETINGS_FILE if label_names_it else _NOT_THE_MEETINGS
-            if file_test.search(filename.replace("_", " ")):
+            if file_test.search(_PACKET.sub("", filename.replace("_", " "))):
                 continue
             if group and _ATTACHMENT_GROUP.search(group):
                 continue
-            if group and _MINUTES_GROUP.search(group):
+            # The group is trusted, except where the label plainly names the
+            # other document: Bassendean has filed a meeting's agenda
+            # ("Special-Council-Agenda-31-January-2023") under "Minutes".
+            names_agenda = _AGENDA.search(label) and not _MINUTES.search(label)
+            names_minutes = _MINUTES.search(label) and not _AGENDA.search(label)
+            if group and _MINUTES_GROUP.search(group) and not names_agenda:
                 minutes.append((text, url))
-            elif group and _AGENDA_GROUP.search(group):
+            elif group and _AGENDA_GROUP.search(group) and not names_minutes:
                 agendas.append((text, url))
             elif _MINUTES.search(text):
                 minutes.append((text, url))
             elif _AGENDA.search(text):
                 agendas.append((text, url))
+            elif group and _ONLY_A_MEETING_NAME.fullmatch(
+                _HEADING_DATE.sub("", re.sub(r"[_-]+", " ", label)).strip(" ,-–—")
+            ):
+                unnamed.append(url)
 
         # Within a group, the document actually called the agenda wins over a
         # stray report filed beside it, and the bare agenda over a packet
-        # bundled with its attachments when the council posts both.
+        # bundled with its attachments when the council posts both. An
+        # amended agenda beats the original it replaced.
         agenda_url = (
             next(
+                (
+                    u
+                    for t, u in agendas
+                    if _AGENDA.search(t)
+                    and _AMENDED.search(t)
+                    and not _ATTACHMENT_GROUP.search(t)
+                ),
+                None,
+            )
+            or next(
                 (
                     u
                     for t, u in agendas
@@ -325,6 +471,14 @@ class CouncilConnectScraper(BaseScraper):
             or next((u for t, u in agendas if _AGENDA.search(t)), None)
             or (agendas[0][1] if agendas else None)
         )
+        # A vague group ("Downloads") holding the minutes, an attachments
+        # bundle and one PDF labelled with nothing but the meeting and its
+        # date ("Ordinary Council Meeting Tuesday 25 July 2023"): that one is
+        # the agenda. A label with anything more ("Special Council Meeting 21
+        # Feb_Adverse Possession Claim") could be a report, and with two such
+        # PDFs nothing says which, so neither case is read this way.
+        if agenda_url is None and len(unnamed) == 1:
+            agenda_url = unnamed[0]
         # Confirmed minutes supersede unconfirmed ones when both are up.
         minutes_url = (
             next(
@@ -344,7 +498,14 @@ class CouncilConnectScraper(BaseScraper):
         """(group, label, url) for each document on a meeting page."""
         own_path = urlparse(page_url).path.rstrip("/") + "/documents/"
         links = []
-        for container in soup.find_all(class_=re.compile(r"documents$", re.I)):
+        # Most sites wrap the groups in a "...documents" block. Victoria Park's
+        # template has none: its groups ("Documents", "Attachments") are h3s
+        # straight inside div.cm-plugin-content, which is read only when the
+        # usual block is missing so no other site's links are read twice.
+        containers = soup.find_all(class_=re.compile(r"documents$", re.I)) or (
+            soup.find_all(class_="cm-plugin-content")
+        )
+        for container in containers:
             group = ""
             for element in container.find_all(["h3", "a"]):
                 if element.name == "h3":
@@ -353,8 +514,10 @@ class CouncilConnectScraper(BaseScraper):
                 href = element.get("href")
                 if not href:
                     continue
-                url = urljoin(page_url, href)
-                if not urlparse(url).path.startswith(own_path):
+                # Victoria Park's filenames can carry raw spaces ("ordinary
+                # council meeting - 20 august 2024.pdf"); a URL must not.
+                url = requote_uri(urljoin(page_url, href))
+                if not unquote(urlparse(url).path).startswith(unquote(own_path)):
                     continue
                 links.append(
                     (
@@ -380,6 +543,10 @@ class CouncilConnectScraper(BaseScraper):
         date, time = self._parse_when(when.get_text(" ", strip=True) if when else "")
         if date is None and fallback_when:
             date, time = fallback_when
+        # Bassendean's meeting pages give the date alone; its listing gives
+        # the time as well.
+        elif time is None and fallback_when and fallback_when[0] == date:
+            time = fallback_when[1]
         if date is None:
             self.logger.warning(f"No date on {url}")
             return None
@@ -394,6 +561,12 @@ class CouncilConnectScraper(BaseScraper):
         )
         if not agenda_url and not minutes_url:
             return None
+
+        date = self._heading_date_if_documents_agree(
+            heading.get_text(" ", strip=True) if heading else "",
+            date,
+            [u for u in (agenda_url, minutes_url) if u],
+        )
 
         location = soup.select_one(".meeting-location")
         location_text = None
@@ -418,6 +591,56 @@ class CouncilConnectScraper(BaseScraper):
             download_url=agenda_url or minutes_url,
             location=location_text,
         )
+
+    @staticmethod
+    def _names_date(text: str, date: datetime.date) -> bool:
+        """Whether `text` names `date`'s day and month (and year, if any)."""
+        for day, month, year in _FULL_DATE.findall(text):
+            try:
+                named = parse_date(f"{day} {month} {year or date.year}").date()
+            except (ValueError, OverflowError):
+                continue
+            if named == date:
+                return True
+        return False
+
+    def _heading_date_if_documents_agree(
+        self, heading: str, date: datetime.date, document_urls: list[str]
+    ) -> datetime.date:
+        """The heading's date where the documents back it over the date field.
+
+        The structured date field is right almost everywhere, and the heading
+        is hand-typed: Nedlands' 28 January 2026 meeting is headed "28
+        January 2025". But Peppermint Grove's 21 December 2021 meeting has
+        14 December in the date field, while its heading, agenda and minutes
+        all say the 21st. The URL slug is made from the heading, so it is no
+        second witness; the document filenames are. The heading wins only
+        when a filename names its date and none names the field's.
+        """
+        match = re.search(
+            rf"\b\d{{1,2}}(?:st|nd|rd|th)?\s+{_MONTH}\s+\d{{4}}", heading, re.I
+        )
+        if not match:
+            return date
+        try:
+            headed = parse_date(match.group()).date()
+        except (ValueError, OverflowError):
+            return date
+        if headed == date:
+            return date
+        filenames = [
+            re.sub(r"[-_.]+", " ", unquote(urlparse(u).path.rsplit("/", 1)[-1]))
+            for u in document_urls
+        ]
+        if any(self._names_date(f, headed) for f in filenames) and not any(
+            self._names_date(f, date) for f in filenames
+        ):
+            self.logger.info(
+                f"Date field says {date}, heading and documents say {headed}: "
+                f"using {headed}"
+            )
+            return headed
+        return date
 
     @staticmethod
     def _stable_document_url(detail_url: str, href: str) -> str:
@@ -502,7 +725,18 @@ class CouncilConnectScraper(BaseScraper):
             for listing_url in self._listing_urls(year):
                 # A failed listing page is not caught: it would drop the whole
                 # year (production asks for one) and still report success.
-                pages = list(self._listing_pages(listing_url))
+                # The one exception is a 404 for this year. A year with no
+                # meetings in the module has no listing at all (Nedlands'
+                # /past/2027 404s in October 2026), and that is what the new
+                # year looks like every January until its first meeting is
+                # entered; the upcoming page is then all there is.
+                try:
+                    pages = list(self._listing_pages(listing_url))
+                except requests.HTTPError as e:
+                    if year == clock.current_year() and _is_not_found(e):
+                        self.logger.info(f"No listing yet for {year}: {listing_url}")
+                        continue
+                    raise
 
                 labels = {}
                 for soup in pages:
@@ -527,6 +761,10 @@ class CouncilConnectScraper(BaseScraper):
                 seen.add(meeting.webpage_url)
             return [meeting] if parse_date(meeting.date).year == year else []
 
+        heading = summary.find(["h2", "h3"])
+        if self.meeting_types is not None and heading:
+            if _NOT_A_COUNCIL_MEETING.search(heading.get_text(" ", strip=True)):
+                return []
         for link in summary.find_all("a", href=True):
             url = urljoin(listing_url, link["href"])
             if not _MEETING_PATH.match(urlparse(url).path) or url in seen:
@@ -536,18 +774,50 @@ class CouncilConnectScraper(BaseScraper):
             fallback = self._parse_when(when.get_text(" ", strip=True) if when else "")
             if fallback[0] and fallback[0].year != year:
                 return []
-            try:
-                meeting = self._meeting_from_detail(url, labels, fallback)
-            except Exception as e:
-                self.logger.warning(f"Could not read {url}: {e}")
-                return []
+            meeting = self._read_meeting(url, labels, fallback)
             return [meeting] if meeting else []
         return []
+
+    def _read_meeting(self, url, labels, fallback) -> Optional[ScraperReturn]:
+        """One meeting page, or None where the page is gone or unreadable.
+
+        A failed fetch is not caught, like a failed listing: after the
+        fetcher's retries, a 5xx or a timeout means the site is in trouble,
+        and carrying on would report success with meetings missing. Two
+        failures are one meeting's alone and are skipped with a warning: a
+        404 (the listing links a meeting page that has since been deleted)
+        and a page this code cannot parse.
+        """
+        try:
+            return self._meeting_from_detail(url, labels, fallback)
+        except requests.HTTPError as e:
+            if not _is_not_found(e):
+                raise
+            self.logger.warning(f"Meeting page gone (404): {url}")
+        except requests.RequestException:
+            raise
+        except Exception as e:
+            self.logger.warning(f"Could not parse {url}: {e!r}")
+        return None
 
     def _upcoming_meetings(
         self, wanted: set[int], seen: set[str]
     ) -> list[ScraperReturn]:
-        url = urljoin(self.base_url, self.upcoming_path)
+        paths = (
+            (self.upcoming_path,)
+            if isinstance(self.upcoming_path, str)
+            else self.upcoming_path
+        )
+        results = []
+        for path in paths:
+            results.extend(
+                self._upcoming_from(urljoin(self.base_url, path), wanted, seen)
+            )
+        return results
+
+    def _upcoming_from(
+        self, url: str, wanted: set[int], seen: set[str]
+    ) -> list[ScraperReturn]:
         # Not caught, like the year listings: losing this page loses every
         # meeting whose agenda is out but whose date has not yet passed.
         soup = BeautifulSoup(self.fetcher.fetch_with_requests(url), "html.parser")
@@ -572,17 +842,19 @@ class CouncilConnectScraper(BaseScraper):
 
             # The button text carries the date ("Tue 27 Oct 2026"), which is
             # enough to skip meetings outside the wanted years or too far off
-            # to have papers, without spending a request on them.
-            short = _SHORT_DATE.search(link.get_text(" ", strip=True))
-            if short:
-                date = parse_date(short.group()).date()
-                if date.year not in wanted or date > horizon:
-                    continue
-            try:
-                meeting = self._meeting_from_detail(meeting_url, labels)
-            except Exception as e:
-                self.logger.warning(f"Could not read {meeting_url}: {e}")
+            # to have papers, without spending a request on them. Murray's
+            # all-types upcoming page has no dated button; its link title ends
+            # with the date instead ("View details for ... - 22/10/2026").
+            date = self._link_date(link)
+            if date and (date.year not in wanted or date > horizon):
                 continue
+            # The button's time, for a meeting page that gives only the date.
+            time = _BUTTON_TIME.search(link.get_text(" ", strip=True))
+            fallback = (
+                date,
+                time and parse_date(time.group()).strftime("%I:%M %p").lstrip("0"),
+            )
+            meeting = self._read_meeting(meeting_url, labels, fallback)
             if meeting and parse_date(meeting.date).year in wanted:
                 results.append(meeting)
         return results
@@ -595,7 +867,9 @@ class CouncilConnectScraper(BaseScraper):
         # Year listings only ever hold meetings that have happened, so a year
         # past this one has nothing to list; its meetings are on the upcoming
         # page until their dates pass.
-        past_years = sorted((y for y in wanted if y <= this_year), reverse=True)
+        past_years = sorted(
+            (y for y in wanted if self.first_year <= y <= this_year), reverse=True
+        )
 
         # Past first: the year listings name the meeting types, which the
         # upcoming page does not, and a meeting that has just happened can
