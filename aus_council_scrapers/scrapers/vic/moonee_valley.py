@@ -68,6 +68,11 @@ _TIME = re.compile(r"\b\d{1,2}(?:[.:]\d{2})?\s*[ap]\.?m\b", re.I)
 class MooneeValleyScraper(DocsPublishedScraper):
     publishing_slug = "mvcc"
 
+    # Measured 19 Oct 2026 in one --years 2026 run with the other six
+    # DocsPublished councils. They share DocAssembler's API, portal and blob
+    # hosts, so they queue on one per-host spacing: 21 s, against 5 s run alone.
+    expected_seconds = 21
+
     # No `strip_headless_user_agent`. Incapsula refused plain headless Chrome
     # once when the platform was scouted, but run both ways when this was
     # built it made no difference—198 archive meetings each way, twice—and

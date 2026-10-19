@@ -15,6 +15,7 @@ from aus_council_scrapers.scrapers.vic.melbourne import MelbourneScraper
 from aus_council_scrapers.scrapers.vic.melton import MeltonScraper
 from aus_council_scrapers.scrapers.vic.merribek import MerribekScraper
 from aus_council_scrapers.scrapers.vic.monash import MonashScraper
+from aus_council_scrapers.scrapers.vic.moonee_valley import MooneeValleyScraper
 from aus_council_scrapers.scrapers.vic.mornington_peninsula import (
     MorningtonPeninsulaScraper,
 )
@@ -25,7 +26,3 @@ from aus_council_scrapers.scrapers.vic.whitehorse import WhitehorseScraper
 from aus_council_scrapers.scrapers.vic.wyndham import WyndhamScraper
 from aus_council_scrapers.scrapers.vic.yarra import YarraScraper
 from aus_council_scrapers.scrapers.vic.yarra_ranges import YarraRangesScraper
-
-# UNIMPLEMENTED SCRAPERS
-# from council_scrapers.scrapers.vic.manningham import ManninghamScraper
-# from council_scrapers.scrapers.vic.moonee_valley import MooneeValleyScraper

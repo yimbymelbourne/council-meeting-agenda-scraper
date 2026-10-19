@@ -28,6 +28,11 @@ class GosnellsScraper(DocsPublishedScraper):
     # so older meetings come out as minutes-only records.
     publishing_slug = "gosnellscitycouncil"
 
+    # Measured 19 Oct 2026 in one --years 2026 run with the other six
+    # DocsPublished councils. They share DocAssembler's API, portal and blob
+    # hosts, so they queue on one per-host spacing: 36 s, against 8 s run alone.
+    expected_seconds = 36
+
     def __init__(self):
         super().__init__("gosnells", "WA")
 

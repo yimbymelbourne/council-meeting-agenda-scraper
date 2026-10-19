@@ -11,5 +11,10 @@ class HobartScraper(DocsPublishedScraper):
     # Portion" because the closed portion is never published.
     publishing_slug = "hobartcity"
 
+    # Measured 19 Oct 2026 in one --years 2026 run with the other six
+    # DocsPublished councils. They share DocAssembler's API, portal and blob
+    # hosts, so they queue on one per-host spacing: 33 s, against 6 s run alone.
+    expected_seconds = 33
+
     def __init__(self):
         super().__init__("hobart", "TAS")

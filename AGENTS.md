@@ -529,3 +529,5 @@ class ExampleInfoCouncilScraper(InfoCouncilScraper):
 ```
 
 Check existing NSW scrapers to see if a council uses InfoCouncil before writing custom parsing logic.
+
+Set `tidy_meeting_rows = True` on every new InfoCouncil subclass. Without it the venue in the committee cell runs into the meeting name ("Ordinary Council Chambers 82 Brisbane Street ..."), and each supplementary agenda's grid row becomes a meeting of its own with the supplementary paper as its agenda. With it, the venue goes to `location` and supplementary rows (named "Supplementary"/"Late Items", or filed as `_SUP` or `_CHAIRMANS`) fold onto their parent meeting. It is off by default only because turning it on rewrites the output of the scrapers recorded before it existed (`inner_west`, `liverpool`, `cumberland`, `hornsby` and others); the seven WA and QLD councils use it.
