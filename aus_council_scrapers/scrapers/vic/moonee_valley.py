@@ -98,7 +98,10 @@ class MooneeValleyScraper(DocsPublishedScraper):
             results.extend(super().scraper())
 
         if min(wanted) <= ARCHIVE_LAST_YEAR:
-            archive = self._scrape_archive()
+            # When the archive is the only source asked for, losing it is
+            # losing the council, so it raises; otherwise docspublished's
+            # meetings still stand and the gap is a warning.
+            archive = self._scrape_archive(required=max(wanted) <= ARCHIVE_LAST_YEAR)
             # Unfiltered, keep the whole page as the base class keeps the
             # whole document list: it was one load either way.
             if getattr(self, "years_filter", None):
@@ -113,7 +116,7 @@ class MooneeValleyScraper(DocsPublishedScraper):
     # The 2018–2025 WordPress archive
     # ------------------------------------------------------------------
 
-    def _scrape_archive(self) -> list[ScraperReturn]:
+    def _scrape_archive(self, required: bool = False) -> list[ScraperReturn]:
         try:
             html = self.fetcher.fetch_with_selenium(
                 ARCHIVE_URL,
@@ -123,6 +126,8 @@ class MooneeValleyScraper(DocsPublishedScraper):
                 ),
             )
         except Exception as error:
+            if required:
+                raise
             self.logger.warning(
                 f"Could not load the 2018-2025 archive at {ARCHIVE_URL} "
                 f"(Incapsula?): {type(error).__name__}: {error}"

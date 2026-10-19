@@ -4,9 +4,12 @@ The cassette shows today's page; these pin the two rules that keep a wrong
 link off a meeting when the editors next add an attachment or misdate a row.
 """
 
+import pytest
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import TimeoutException
 
 from aus_council_scrapers.scrapers.vic.moonee_valley import MooneeValleyScraper
+from tests.cassette import PlaybackFetcher
 
 UPLOADS = "https://mvcc.vic.gov.au/wp-content/uploads/2024/09/"
 
@@ -59,3 +62,19 @@ def test_one_misfiled_paper_does_not_move_the_meeting():
 
     assert meeting.date == "2024-03-26"
     assert meeting.agenda_url is None
+
+
+class _BrowserBlocked(PlaybackFetcher):
+    def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
+        raise TimeoutException("Incapsula challenge never cleared")
+
+
+def test_an_archive_year_fails_the_council_when_the_archive_will_not_load():
+    """Asked only for years the archive holds, a failed archive is the whole
+    answer, so it raises rather than returning no meetings as a success."""
+    scraper = MooneeValleyScraper()
+    scraper.fetcher = _BrowserBlocked([])
+    scraper.years_filter = [2024]
+
+    with pytest.raises(TimeoutException):
+        scraper.scraper()
