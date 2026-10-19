@@ -11,6 +11,12 @@ SITE = "https://www.mundaring.wa.gov.au"
 
 @register_scraper
 class MundaringScraper(ResolveScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 7.8 s alone,
+    # 17.7 s in a full 135-council run at 10 workers, queued with the other
+    # tenants on api.resolve.red. Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 18
+
     # The Shire's council-meetings page says Resolve holds every agenda from
     # 1 July 2025 and frames the tenant's /web/ portal; the tenant's first
     # event is the 8 July 2025 Ordinary Council Meeting. Meetings from 2016

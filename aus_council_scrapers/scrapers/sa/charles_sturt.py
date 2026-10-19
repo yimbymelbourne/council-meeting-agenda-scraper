@@ -11,11 +11,13 @@ LISTINGS = (
 
 @register_scraper
 class CharlesSturtScraper(ResolveWithLGASAArchive):
-    # One production year (2026), measured 19 Oct 2026 from a home IP: 16 s,
-    # of which the panel's listing page through Chrome is one request; the
-    # rest is Resolve. Cloudflare's challenge adds 6-9 s on a runner. Orders
-    # dispatch only (slowest first); see BaseScraper.expected_seconds.
-    expected_seconds = 16
+    # One production year (2026), measured 19 Oct 2026 from a home IP: 16 s
+    # alone, of which the panel's listing page through Chrome is one request;
+    # the rest is Resolve. 42-43 s in full 135-council runs, queued with the
+    # other tenants on api.resolve.red. Cloudflare's challenge adds 6-9 s on a
+    # runner. Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 42
 
     # Charles Sturt's agendas-and-minutes page frames its Resolve portal for
     # meetings from 8 July 2025; the tenant's first event is the 14 July 2025

@@ -7,11 +7,13 @@ from aus_council_scrapers.lgasa import ArchiveListing, ResolveWithLGASAArchive
 
 @register_scraper
 class MountBarkerScraper(ResolveWithLGASAArchive):
-    # One production year (2026), measured 19 Oct 2026 from a home IP: 10 s,
-    # including the Council listing page through Chrome, which is not read
-    # from 2027. Cloudflare's challenge adds 6-9 s on a runner. Orders
-    # dispatch only (slowest first); see BaseScraper.expected_seconds.
-    expected_seconds = 10
+    # One production year (2026), measured 19 Oct 2026 from a home IP: 10 s
+    # alone, including the Council listing page through Chrome, which is not
+    # read from 2027; 17-18 s in full 135-council runs, queued with the other
+    # tenants on api.resolve.red. Cloudflare's challenge adds 6-9 s on a
+    # runner. Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 17
 
     # Mount Barker moved Council and its assessment panel to Resolve from 1
     # July 2026. Council meetings before that, back to 2016, are in the
