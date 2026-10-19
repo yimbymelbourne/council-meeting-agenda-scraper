@@ -26,5 +26,10 @@ class NedlandsScraper(CouncilConnectScraper):
         "special-council-meeting": "Special Council Meeting",
     }
 
+    # One production year, measured 19 Oct 2026 from a home IP: 48 s (25
+    # requests, one per Council meeting). Orders dispatch only (slowest
+    # first); see BaseScraper.expected_seconds.
+    expected_seconds = 48
+
     def __init__(self):
         super().__init__("nedlands", "WA", "https://www.nedlands.wa.gov.au")

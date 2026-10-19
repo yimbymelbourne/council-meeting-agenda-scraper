@@ -93,6 +93,11 @@ _MINUTES_RANK = {
 
 @register_scraper
 class BelmontScraper(BaseScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 16 s (3
+    # requests, each slow to answer). Orders dispatch only (slowest first);
+    # see BaseScraper.expected_seconds.
+    expected_seconds = 16
+
     def __init__(self):
         council = "belmont"
         state = "WA"

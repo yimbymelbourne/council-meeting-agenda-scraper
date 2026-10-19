@@ -89,6 +89,11 @@ _MAX_PAGES = 10
 
 @register_scraper
 class PerthScraper(BaseScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 26 s (14
+    # requests: the landing page and 13 meeting pages). Orders dispatch only
+    # (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 26
+
     def __init__(self):
         council = "perth"
         state = "WA"

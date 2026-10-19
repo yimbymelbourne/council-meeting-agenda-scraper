@@ -89,6 +89,11 @@ def _document_kind(title: str):
 class MelvilleScraper(KsearchScraper):
     listing_url = _LISTING_URL
 
+    # One production year, measured 19 Oct 2026 from a home IP: 33 s (about 18
+    # requests). Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 33
+
     def __init__(self):
         super().__init__("melville", "WA", _BASE_URL)
 

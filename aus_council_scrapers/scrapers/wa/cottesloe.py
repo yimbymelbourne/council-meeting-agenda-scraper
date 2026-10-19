@@ -12,5 +12,10 @@ class CottesloeScraper(CouncilConnectScraper):
     page and whichever upcoming meeting is close enough to have an agenda.
     """
 
+    # One production year, measured 19 Oct 2026 from a home IP: 34 s (17
+    # requests, one per meeting page). Orders dispatch only (slowest first);
+    # see BaseScraper.expected_seconds.
+    expected_seconds = 34
+
     def __init__(self):
         super().__init__("cottesloe", "WA", "https://www.cottesloe.wa.gov.au")

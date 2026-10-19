@@ -48,5 +48,10 @@ class BassendeanScraper(CouncilConnectScraper):
         ),
     }
 
+    # One production year, measured 19 Oct 2026 from a home IP: 31 s (16
+    # requests). Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 31
+
     def __init__(self):
         super().__init__("bassendean", "WA", "https://www.bassendean.wa.gov.au")

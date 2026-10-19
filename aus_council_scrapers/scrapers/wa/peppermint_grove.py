@@ -22,6 +22,11 @@ class PeppermintGroveScraper(CouncilConnectScraper):
         "special-council-meeting": "Special Council Meeting",
     }
 
+    # One production year, measured 19 Oct 2026 from a home IP: 26 s (13
+    # requests). Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 26
+
     def __init__(self):
         super().__init__(
             "peppermint_grove", "WA", "https://www.peppermintgrove.wa.gov.au"
