@@ -481,6 +481,13 @@ class OpenCitiesContentScraper(BaseScraper):
     ``not_the_paper``
         A further pattern of labels that are not agendas or minutes, on top
         of `_NOT_THE_PAPER`.
+    ``meeting_words``
+        A pattern for words in a meeting's own name that `_NOT_THE_PAPER`
+        would otherwise read as a paper that is not the agenda or minutes.
+        Hepburn held a "Confidential Meeting of Council" and published its
+        public minutes; "confidential" refuses a confidential paper filed
+        beside the real ones, not a meeting that is named that way. The
+        words are ignored only for that check: the name keeps them.
     ``misfiled``
         Papers whose label and filename agree and are both wrong, or give
         no day at all, by filename: the meeting date the PDF itself gives,
@@ -509,6 +516,7 @@ class OpenCitiesContentScraper(BaseScraper):
     pages: list[ContentPage] = []
     agenda_words: str = _DEFAULT_AGENDA
     not_the_paper: Optional[re.Pattern] = None
+    meeting_words: Optional[re.Pattern] = None
     misfiled: dict[str, Optional[datetime.date]] = {}
     year_index: Optional[str] = None
     year_page: Optional[re.Pattern] = None
@@ -794,7 +802,8 @@ class OpenCitiesContentScraper(BaseScraper):
         # neither is anything else `_NOT_THE_PAPER` names.
         forced_kind = None
         label = _WITH_APPENDICES.sub(r"\1", label)
-        if _NOT_THE_PAPER.search(_NOTICE_AND_AGENDA.sub(" agenda ", label)):
+        checked = self.meeting_words.sub(" ", label) if self.meeting_words else label
+        if _NOT_THE_PAPER.search(_NOTICE_AND_AGENDA.sub(" agenda ", checked)):
             rest = self._minutes_misfiled_as_late(label, stem)
             if rest is None:
                 return None
