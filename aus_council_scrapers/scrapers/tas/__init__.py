@@ -1,15 +1,23 @@
 from aus_council_scrapers.scrapers.tas.brighton import BrightonTasScraper
 from aus_council_scrapers.scrapers.tas.central_coast_tas import CentralCoastTasScraper
+from aus_council_scrapers.scrapers.tas.circular_head import CircularHeadScraper
 from aus_council_scrapers.scrapers.tas.clarence import ClarenceScraper
 from aus_council_scrapers.scrapers.tas.derwent_valley import DerwentValleyScraper
 from aus_council_scrapers.scrapers.tas.devonport import DevonportScraper
 from aus_council_scrapers.scrapers.tas.dorset import DorsetScraper
 from aus_council_scrapers.scrapers.tas.george_town import GeorgeTownScraper
+from aus_council_scrapers.scrapers.tas.glamorgan_spring_bay import (
+    GlamorganSpringBayScraper,
+)
 from aus_council_scrapers.scrapers.tas.glenorchy import GlenorchyScraper
 from aus_council_scrapers.scrapers.tas.hobart import HobartScraper
+from aus_council_scrapers.scrapers.tas.kentish import KentishScraper
 from aus_council_scrapers.scrapers.tas.kingborough import KingboroughScraper
+from aus_council_scrapers.scrapers.tas.latrobe_tas import LatrobeTasScraper
+from aus_council_scrapers.scrapers.tas.launceston import LauncestonScraper
 from aus_council_scrapers.scrapers.tas.meander_valley import MeanderValleyScraper
 from aus_council_scrapers.scrapers.tas.northern_midlands import NorthernMidlandsScraper
 from aus_council_scrapers.scrapers.tas.sorell import SorellScraper
 from aus_council_scrapers.scrapers.tas.waratah_wynyard import WaratahWynyardScraper
 from aus_council_scrapers.scrapers.tas.west_coast import WestCoastTasScraper
+from aus_council_scrapers.scrapers.tas.west_tamar import WestTamarScraper
