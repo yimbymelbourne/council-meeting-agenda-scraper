@@ -1,9 +1,9 @@
 import datetime
 import re
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
-from aus_council_scrapers.councilconnect import _MEETING_PATH, CouncilConnectScraper
+from aus_council_scrapers.councilconnect import CouncilConnectScraper
 from aus_council_scrapers.resolve import ResolveScraper
 
 SITE = "https://www.mundaring.wa.gov.au"
@@ -81,13 +81,8 @@ class _Library(CouncilConnectScraper):
 
     def _summary_meeting(self, summary, listing_url, labels, year, seen):
         types = {
-            match.group("type")
+            self.meeting_type_of(urljoin(listing_url, link["href"]))
             for link in summary.find_all("a", href=True)
-            if (
-                match := _MEETING_PATH.match(
-                    urlparse(urljoin(listing_url, link["href"])).path
-                )
-            )
         }
         if not types & set(self.meeting_types):
             return []
