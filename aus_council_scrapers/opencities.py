@@ -976,6 +976,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
                 self.logger.warning(
                     f"Error fetching meeting page {row.detail_url}: {e}"
                 )
+                self._payload_failures += 1
                 return None
             return BeautifulSoup(html, "html.parser")
 
@@ -984,6 +985,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             raw = self.fetcher.fetch_with_requests(url)
         except Exception as e:
             self.logger.warning(f"Error fetching meeting {row.cvid}: {e}")
+            self._payload_failures += 1
             return None
         try:
             html = json.loads(raw).get("html", "")
@@ -1084,6 +1086,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         rows = self._rows()
         self.logger.info(f"Found {len(rows)} meeting entries to process")
 
+        self._payload_failures = 0
         results: list[ScraperReturn] = []
         for row in rows:
             content = self.fetch_payload(row)
@@ -1097,6 +1100,14 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         # papers conflict are two real meetings and are both kept.
         results = _merge_split_meetings(results)
 
+        if not results and self._payload_failures:
+            # Every listed meeting's documents are a request of their own, and
+            # those failed: the site is unreachable, not empty. Returning []
+            # would report the council as a success with 0 meetings.
+            raise RuntimeError(
+                f"{self.council_name}: {self._payload_failures} of {len(rows)} "
+                f"meeting fetch(es) failed and no meeting was read"
+            )
         if not results:
             self.logger.warning(f"No meetings found for {self.council_name}")
         else:

@@ -250,3 +250,33 @@ def test_a_wanted_years_listing_failing_raises_too():
 
     with pytest.raises(requests.HTTPError):
         scraper.scraper()
+
+
+class _RendererFails(PlaybackFetcher):
+    """Replays a council's recording, but every meeting's document request
+    fails, as it would with the renderer down."""
+
+    def fetch_with_requests(self, url, method="GET", **kwargs):
+        if "OCServiceHandler" in url:
+            raise requests.ConnectionError("unreachable")
+        return super().fetch_with_requests(url, method, **kwargs)
+
+
+def test_every_meeting_fetch_failing_raises_rather_than_returning_no_meetings():
+    """The listing loads but no meeting's documents do. That is an unreachable
+    site, not a council with no meetings, and must not report as ok: true."""
+    from aus_council_scrapers import clock
+    from aus_council_scrapers.scrapers.vic.kingston import KingstonScraper
+    from tests.cassette import cassette_paths
+
+    _, replay_path = cassette_paths("kingston")
+    with open(replay_path) as f:
+        replay = json.load(f)
+    fetcher = _RendererFails(replay, "kingston")
+    scraper = KingstonScraper()
+    scraper.fetcher = fetcher
+    scraper.years_filter = [int(fetcher.recorded_date[:4])]
+
+    with clock.frozen(fetcher.recorded_date):
+        with pytest.raises(RuntimeError, match="meeting fetch"):
+            scraper.scraper()
