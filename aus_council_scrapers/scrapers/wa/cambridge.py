@@ -63,6 +63,11 @@ _AGENDA_WITH_REPORTS = re.compile(r"^agenda\b.*\breports\b", re.IGNORECASE)
 
 @register_scraper
 class CambridgeScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 34 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 34
+
     list_name = "OC CL Public Meetings"
     papers_by = "heading"
     # Each year-filtered page carries the full year dropdown, so production

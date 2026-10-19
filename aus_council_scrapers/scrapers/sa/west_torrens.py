@@ -193,6 +193,11 @@ def _page_location(page: BeautifulSoup) -> str | None:
 
 @register_scraper
 class WestTorrensScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 32 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 32
+
     list_name = "CWT CL Public Meetings"
     page_size = 100
     detail_pages = True

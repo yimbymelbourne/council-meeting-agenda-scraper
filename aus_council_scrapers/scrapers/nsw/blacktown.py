@@ -116,6 +116,11 @@ def _type_listing(meeting_type: str) -> Listing:
 
 @register_scraper
 class BlacktownScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 55 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 55
+
     list_name = _LIST_NAME
 
     def __init__(self):

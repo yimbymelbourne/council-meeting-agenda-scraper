@@ -1,4 +1,5 @@
 from aus_council_scrapers.scrapers.nsw.bayside_nsw import BaysideNSWScraper
+from aus_council_scrapers.scrapers.nsw.blacktown import BlacktownScraper
 from aus_council_scrapers.scrapers.nsw.burwood import BurwoodNSWScraper
 from aus_council_scrapers.scrapers.nsw.camden import CamdenScraper
 from aus_council_scrapers.scrapers.nsw.campbelltown import CampbelltownScraper
@@ -23,12 +24,11 @@ from aus_council_scrapers.scrapers.nsw.randwick import RandwickScraper
 from aus_council_scrapers.scrapers.nsw.ryde import RydeScraper
 from aus_council_scrapers.scrapers.nsw.strathfield import StrathfieldNSWScraper
 from aus_council_scrapers.scrapers.nsw.sutherland import SutherlandShireScraper
+from aus_council_scrapers.scrapers.nsw.the_hills import TheHillsScraper
 from aus_council_scrapers.scrapers.nsw.waverley import WaverleyScraper
 from aus_council_scrapers.scrapers.nsw.willoughby import WilloughbyScraper
 from aus_council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
 
 # NOT IMPLEMENTED
-# from council_scrapers.scrapers.nsw.blacktown import BlacktownScraper
 # from council_scrapers.scrapers.nsw.fairfield_city import FairfieldCityScraper
 # from council_scrapers.scrapers.nsw.sydney import SydneyScraper
-# from council_scrapers.scrapers.nsw.the_hills import TheHillsScraper

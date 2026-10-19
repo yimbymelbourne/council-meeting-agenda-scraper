@@ -116,6 +116,11 @@ def _title(section) -> str:
 
 @register_scraper
 class GoldCoastScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 54 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 54
+
     list_name = "OC CL Public Meetings"
     page_size = 200
     meeting_types = _COUNCIL_AND_PLANNING

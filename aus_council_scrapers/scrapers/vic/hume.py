@@ -73,6 +73,11 @@ _AGENDAS_FOLDER = re.compile(r"/council-meetings/agendas/", re.IGNORECASE)
 
 @register_scraper
 class HumeScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 42 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 42
+
     list_name = "HCC CL Public Past Meetings"
     papers_by = "link_text"
 

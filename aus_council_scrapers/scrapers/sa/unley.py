@@ -52,6 +52,11 @@ _SPECIAL = re.compile(r"special", re.IGNORECASE)
 
 @register_scraper
 class UnleyScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 59 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 59
+
     list_name = _LIST_NAME
     papers_by = "heading"
     # Each year-filtered page carries the full year dropdown, so production

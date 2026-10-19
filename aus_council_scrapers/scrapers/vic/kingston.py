@@ -48,6 +48,11 @@ _BASE_URL = "https://www.kingston.vic.gov.au/council/your-council/council-meetin
 
 @register_scraper
 class KingstonScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 40 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 40
+
     list_name = "OC CL Public Past Meetings"
     papers_by = "heading"
 

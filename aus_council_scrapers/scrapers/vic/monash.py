@@ -110,6 +110,11 @@ def _is_whole_agenda(label: str, url: str) -> bool:
 
 @register_scraper
 class MonashScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 21 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 21
+
     list_name = "OC CL Public Meetings"
 
     def __init__(self):

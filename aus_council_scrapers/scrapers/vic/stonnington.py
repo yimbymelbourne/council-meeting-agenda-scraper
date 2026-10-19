@@ -69,6 +69,11 @@ _SCHEDULED_MINUTES = re.compile(r"^scheduled\b.*\bminutes$", re.IGNORECASE)
 
 @register_scraper
 class StonningtonScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 33 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 33
+
     list_name = "CL Public Meetings"
     papers_by = "heading"
 

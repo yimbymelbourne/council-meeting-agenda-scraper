@@ -61,10 +61,15 @@ PLATFORMS: tuple[Platform, ...] = (
             r"accordion-list-item-container",
         ),
         guidance=(
-            "Meeting detail comes from the OCServiceHandler AJAX endpoint, "
-            "keyed by a cvid found on the listing page."
+            "Subclass OpenCitiesMeetingsScraper (aus_council_scrapers/"
+            "opencities.py) with the listing URL, its dlv_ list name and "
+            "papers_by. Meeting detail comes from the OCServiceHandler "
+            "endpoint, keyed by the cvid on each listing row; rows with no "
+            "cvid, only a link to a page per meeting, use detail_pages = True. "
+            "Each kept meeting costs a request, so cut a council with many "
+            "committees down with meeting_types."
         ),
-        reference="aus_council_scrapers/scrapers/vic/banyule.py",
+        reference="aus_council_scrapers/scrapers/vic/kingston.py",
     ),
     Platform(
         name="Granicus/Legistar",

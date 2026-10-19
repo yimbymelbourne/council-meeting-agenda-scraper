@@ -26,6 +26,11 @@ from aus_council_scrapers.opencities import OpenCitiesMeetingsScraper
 
 @register_scraper
 class TheHillsScraper(OpenCitiesMeetingsScraper):
+    # One production year, measured 19 Oct 2026 from a home IP: 38 s.
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 38
+
     list_name = "OC CL Public Meetings"
     papers_by = "link_text"
     meeting_types = re.compile(
