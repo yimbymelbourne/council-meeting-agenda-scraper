@@ -109,6 +109,16 @@ _SPECIAL = re.compile(r"\b(extraordinary|special)\b", re.IGNORECASE)
 _CANCELLED = re.compile(r"\s*cancell?ed\b", re.IGNORECASE)
 
 
+class SoleSourceFailed(RuntimeError):
+    """A second source failed for a body Resolve does not carry.
+
+    `ResolveScraper.scraper` keeps Resolve's meetings when `other_meetings`
+    fails, because those are usually older years of bodies that moved. This
+    is the exception: the body is not on Resolve, so its meetings for the
+    wanted years exist nowhere else, and the council fails rather than drop
+    them quietly."""
+
+
 class ResolveScraper(BaseScraper):
     """Base class for a Resolve tenant. A subclass sets `tenant` and calls
     `super().__init__(council_name, state)`."""
@@ -194,6 +204,8 @@ class ResolveScraper(BaseScraper):
         # with meetings in range, its failure is the council's.
         try:
             others = self.other_meetings(wanted)
+        except SoleSourceFailed:
+            raise
         except Exception as e:
             if not results:
                 raise

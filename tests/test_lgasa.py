@@ -22,6 +22,7 @@ from aus_council_scrapers.lgasa import (
     LGASAFunnelbackScraper,
     ResolveWithLGASAArchive,
 )
+from aus_council_scrapers.resolve import SoleSourceFailed
 from tests.cassette import PlaybackFetcher, encode_failure
 
 YEAR = 2025
@@ -756,3 +757,14 @@ def test_a_resolve_council_reads_each_archive_listing_only_while_it_is_needed():
     # The year after the move, the Council page is not opened at all.
     _, site = _archive_run(2027, pages)
     assert site.requested == [f"{PANEL_PAGE}?num_ranks=500"]
+
+
+def test_a_body_that_never_moved_fails_the_council_when_its_listing_fails():
+    # The Council page loads, so before this the panel was dropped with a
+    # warning and the council reported success. The panel is on no other
+    # source, so its listing failing is the council failing.
+    council = [doc(2, "2026-09-08", "Council Agenda 8 September 2026")]
+    pages = {f"{COUNCIL_PAGE}?num_ranks=500": as_listing_page(council, total=900)}
+
+    with pytest.raises(SoleSourceFailed, match="council-assessment-panel"):
+        _archive_run(2026, pages)

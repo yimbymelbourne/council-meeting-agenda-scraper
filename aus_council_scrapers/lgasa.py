@@ -96,7 +96,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn
 from aus_council_scrapers.constants import EARLIEST_YEAR
-from aus_council_scrapers.resolve import ResolveScraper
+from aus_council_scrapers.resolve import ResolveScraper, SoleSourceFailed
 
 # The Matrix origin every LGA SA council site is served from. `?a=<assetId>`
 # answers with the document itself—no redirect, no challenge—and asset ids
@@ -1133,6 +1133,11 @@ class ArchiveListing:
             return set(years)
         return {year for year in years if year <= self.until.year}
 
+    def sole_source(self, today: datetime.date) -> bool:
+        """Whether this body has not moved to Resolve (yet), so this listing
+        is the only place its current meetings are published."""
+        return self.until is None or self.until > today
+
     def holds(self, record: ScraperReturn) -> bool:
         if self.until is not None and record.date >= self.until.isoformat():
             return False
@@ -1188,9 +1193,19 @@ class ResolveWithLGASAArchive(ResolveScraper):
             try:
                 results += reader.read(listing, years)
             except Exception as error:
-                # One listing lost is a warning, as in the base scraper; every
-                # listing lost raises, and `ResolveScraper.scraper` then keeps
-                # what Resolve returned or fails the council if that is empty.
+                if listing.sole_source(clock.today()):
+                    # Charles Sturt's assessment panel never moved: dropping
+                    # this listing would drop the body for the night while
+                    # the council reported success.
+                    raise SoleSourceFailed(
+                        f"{self.council_name}: could not read {listing.url}, "
+                        f"the only source for that body: "
+                        f"{type(error).__name__}: {error}"
+                    ) from error
+                # A lost listing for a body that moved is a warning, as in the
+                # base scraper; every listing lost raises, and
+                # `ResolveScraper.scraper` then keeps what Resolve returned or
+                # fails the council if that is empty.
                 failures.append(error)
                 self.logger.warning(
                     f"{self.council_name}: could not read {listing.url}: "
