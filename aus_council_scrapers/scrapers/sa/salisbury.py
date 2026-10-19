@@ -18,6 +18,11 @@ from aus_council_scrapers.craft import CraftMeetingsModuleScraper
 
 @register_scraper
 class SalisburyScraper(CraftMeetingsModuleScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in full
+    # 135-council runs: 17.3 s at 10 workers, 15.5 s at 6. Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 17
+
     listing_url = "https://www.salisbury.sa.gov.au/council/meeting-agendas-and-minutes"
 
     # From a GitHub-hosted runner, plain requests get the AWS WAF challenge
