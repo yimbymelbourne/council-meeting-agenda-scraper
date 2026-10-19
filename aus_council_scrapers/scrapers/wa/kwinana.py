@@ -59,6 +59,11 @@ def _release_year(value: str):
 
 @register_scraper
 class KwinanaScraper(PageTypeListingScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in full
+    # 135-council runs: 9.5 s at 10 workers, 15.1 s at 6. Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 12
+
     listing_url = _LISTING_URL
     # A cassette asks for the whole history in one fragment (275 meetings
     # since 2020), so the page is sized to hold it with room to grow.

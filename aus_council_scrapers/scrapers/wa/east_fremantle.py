@@ -14,6 +14,11 @@ class EastFremantleScraper(CouncilConnectScraper):
     page, and reading it would cost a request per meeting.
     """
 
+    # One production year, measured 19 Oct 2026 from a home IP in full
+    # 135-council runs: 11.3 s at 10 workers, 13.4 s at 6. Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 12
+
     inline_documents = True
 
     def __init__(self):

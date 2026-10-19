@@ -63,6 +63,11 @@ _TITLE_NOISE = re.compile(
 
 @register_scraper
 class CockburnScraper(BaseScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in full
+    # 135-council runs: 13.3 s at 10 workers, 10.0 s at 6. Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 13
+
     def __init__(self):
         super().__init__("cockburn", "WA", _BASE_URL)
 

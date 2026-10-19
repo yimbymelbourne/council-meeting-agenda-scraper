@@ -82,6 +82,11 @@ def _meeting_name(meeting_type: str) -> str:
 
 @register_scraper
 class ArmadaleScraper(BaseScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in full
+    # 135-council runs: 19.5 s at 10 workers, 13.7 s at 6. Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 20
+
     def __init__(self):
         super().__init__("armadale", "WA", "https://my.armadale.wa.gov.au")
 

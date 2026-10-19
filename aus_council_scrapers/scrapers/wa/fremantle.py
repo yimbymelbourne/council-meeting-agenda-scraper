@@ -36,6 +36,11 @@ _SECTIONS = {"agenda": "agenda", "minutes": "minutes"}
 
 @register_scraper
 class FremantleScraper(BaseScraper):
+    # One production year, measured 19 Oct 2026 from a home IP in full
+    # 135-council runs: 12.3 s at 10 workers, 13.0 s at 6. Orders dispatch
+    # only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 12
+
     def __init__(self):
         super().__init__("fremantle", "WA", _BASE_URL)
 
