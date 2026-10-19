@@ -365,6 +365,8 @@ class ModernGovScraper(BaseScraper):
         listings_tried = 0
         last_listing_error: Optional[Exception] = None
         listings_failed = 0
+        pages_failed = 0
+        last_page_error: Optional[Exception] = None
 
         for committee_id, committee in self.committees.items():
             offered: Optional[set[int]] = None
@@ -403,6 +405,8 @@ class ModernGovScraper(BaseScraper):
                         page = self.fetcher.fetch_with_requests(meeting["url"])
                     except Exception as e:
                         self.logger.warning(f"Could not read {meeting['url']}: {e}")
+                        pages_failed += 1
+                        last_page_error = e
                         continue
 
                     documents = self._documents(page)
@@ -434,6 +438,14 @@ class ModernGovScraper(BaseScraper):
                 f"{self.council_name}: all {listings_tried} Modern.Gov listing "
                 f"requests failed"
             ) from last_listing_error
+
+        if not results and pages_failed:
+            # The listings loaded but no meeting page did: documents are only
+            # on those pages, so the site is unreachable, not empty.
+            raise RuntimeError(
+                f"{self.council_name}: {pages_failed} Modern.Gov meeting page "
+                f"request(s) failed and no meeting was read"
+            ) from last_page_error
 
         if not results:
             self.logger.warning(f"{self.council_name} scraper found no meetings")

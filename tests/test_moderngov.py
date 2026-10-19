@@ -225,3 +225,34 @@ def test_every_listing_failing_is_an_error_not_an_empty_council():
     scraper.fetcher = Failing()
     with pytest.raises(RuntimeError, match="listing requests failed"):
         ModernGovScraper.scraper(scraper)
+
+
+def test_every_meeting_page_failing_is_an_error_not_an_empty_council():
+    """The listings load but no meeting page does. Documents are only on
+    those pages, so that is an unreachable site, not a council with no
+    meetings."""
+    import json
+
+    import requests
+
+    from aus_council_scrapers import clock
+    from aus_council_scrapers.scrapers.nsw.sydney import CityOfSydneyScraper
+    from tests.cassette import PlaybackFetcher, cassette_paths
+
+    class _MeetingPagesFail(PlaybackFetcher):
+        def fetch_with_requests(self, url, method="GET", **kwargs):
+            if "ieListDocuments" in url:
+                raise requests.ConnectionError("unreachable")
+            return super().fetch_with_requests(url, method, **kwargs)
+
+    _, replay_path = cassette_paths("sydney")
+    with open(replay_path) as f:
+        replay = json.load(f)
+    fetcher = _MeetingPagesFail(replay, "sydney")
+    scraper = CityOfSydneyScraper()
+    scraper.fetcher = fetcher
+    scraper.years_filter = [int(fetcher.recorded_date[:4])]
+
+    with clock.frozen(fetcher.recorded_date):
+        with pytest.raises(RuntimeError, match="meeting page"):
+            scraper.scraper()
