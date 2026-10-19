@@ -49,6 +49,11 @@ from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn
 from aus_council_scrapers.constants import EARLIEST_YEAR
 
+# One type's year listing: /council-meetings/<type>/past/<year>.
+_TYPE_LISTING_PATH = re.compile(
+    r"^/council-meetings/(?P<type>[a-z0-9-]+)/past/\d{4}/?$"
+)
+
 # A meeting's own page: /council-meetings/<type>/<slug>/<id>. Listing and
 # per-type paths have "past" or no numeric id, so the trailing id is what
 # tells a meeting apart from navigation.
@@ -97,10 +102,17 @@ _UNCONFIRMED = re.compile(r"unconfir", re.IGNORECASE)
 # East Fremantle also lists papers tabled at a meeting ("OCM Agenda 150322
 # Report 14.4 Tabled Documents") and single reports ("... Report No 14.1.1
 # Attach 3") beside the agenda, both named after it.
+#
+# Nannup files the earlier meetings' minutes that an agenda asks Council to
+# receive among that agenda's papers, numbered as agenda items: "Att 5.1 -
+# 28 July 2022 OCM Minutes", "Agenda Item 5.3 - Minutes 27 June 2024
+# Ordinary Council Meeting", "Attatchment 11.13.3 Shire of Bridgetown
+# Minutes ..." (25 August 2022, 25 July 2024, 28 August 2025). Each sits
+# before the meeting's own minutes on the page and would be taken for them.
 _NOT_THE_MEETINGS = re.compile(
-    r"attach|\blate\b|supplement|addend|presentation|notice.of.motion|forum"
-    r"|tabled|\breport\s+(?:no\.?\s*)?\d"
-    r"|^\s*item\b|^\s*\d+(?:\.\d+)+",
+    r"attach|attatch|\blate\b|supplement|addend|presentation|notice.of.motion"
+    r"|forum|tabled|\breport\s+(?:no\.?\s*)?\d"
+    r"|^\s*item\b|^\s*\d+(?:\.\d+)+|^\s*att\.?\s*\d|^\s*agenda\s+item\b",
     re.IGNORECASE,
 )
 # The same test without "attach", for a filename whose link label already
@@ -132,9 +144,12 @@ _HEADING_DATE = re.compile(
 # A document that bundles its attachments, or says it leaves them out, as
 # opposed to being one. Nedlands labels its minutes "Council Meeting -
 # MINUTES - 25 February 2025 PUBLIC (Excluding Attachments)", which without
-# the "exclud" form would be read as an attachment and dropped.
+# the "exclud" form would be read as an attachment and dropped. Nannup
+# shortens it: "Agenda & Attachment" (9 April 2020), "20 January 2022 OCM
+# Agenda with Attach", each that meeting's only agenda.
 _PACKET = re.compile(
-    r"\b(?:with(?:out)?|and|incl\w*|excl\w*)[\s(-]+(?:all[\s-]+)?attachments?\b",
+    r"(?:\b(?:with(?:out)?|and|incl\w*|excl\w*)|&)[\s(-]+(?:all[\s-]+)?"
+    r"attach(?:ments?)?\b",
     re.IGNORECASE,
 )
 
@@ -771,7 +786,11 @@ class CouncilConnectScraper(BaseScraper):
             return [meeting] if parse_date(meeting.date).year == year else []
 
         heading = summary.find(["h2", "h3"])
-        if self.meeting_types is not None and heading:
+        if (
+            self.meeting_types is not None
+            and heading
+            and self._screens_committees(listing_url)
+        ):
             if _NOT_A_COUNCIL_MEETING.search(heading.get_text(" ", strip=True)):
                 return []
         for link in summary.find_all("a", href=True):
@@ -786,6 +805,12 @@ class CouncilConnectScraper(BaseScraper):
             meeting = self._read_meeting(url, labels, fallback)
             return [meeting] if meeting else []
         return []
+
+    def _screens_committees(self, listing_url: str) -> bool:
+        """Whether entries on this listing whose heading names a committee or
+        forum are skipped (see `_NOT_A_COUNCIL_MEETING`). Always, here: with
+        `meeting_types` set, the types read are Council meetings."""
+        return True
 
     def _read_meeting(self, url, labels, fallback) -> Optional[ScraperReturn]:
         """One meeting page, or None where the page is gone or unreadable.
@@ -898,3 +923,104 @@ class CouncilConnectScraper(BaseScraper):
             )
         self.logger.info(f"{self.council_name} scraper found {len(results)} meetings")
         return results
+
+
+class CouncilConnectArchive(CouncilConnectScraper):
+    """A CouncilConnect meetings module read on behalf of another scraper.
+
+    For a council that moved its meetings to another platform (Resolve at
+    East Pilbara and Alice Springs, DocsPublished at Nannup) and left its
+    older papers in the module, which the site still serves. It borrows the
+    owner's fetcher, so its requests are made, recorded and replayed as the
+    owner's, like `OpenCitiesArchive` and Mundaring's library.
+
+    `meeting_types` is as on the base class: per-type year listings, or None
+    for the all-types one. `before` in `read` is the day the council moved:
+    a meeting the listing dates on or after it is skipped before its page is
+    fetched, because the other platform has it, and the archive's copy is
+    often the half-finished one (East Pilbara's late-2024 pages have the
+    minutes and not the agenda). Upcoming meetings are on the other platform,
+    so the upcoming page is never read.
+    """
+
+    upcoming_path = None
+
+    def __init__(
+        self,
+        owner: BaseScraper,
+        origin: str,
+        meeting_types: Optional[dict[str, str]] = None,
+        wrong_documents: Optional[dict[str, str]] = None,
+        untimed_before: Optional[datetime.date] = None,
+    ):
+        super().__init__(owner.council_name, owner.state, origin)
+        self.fetcher = owner.fetcher
+        self.logger = owner.logger
+        self.meeting_types = meeting_types
+        self.wrong_documents = wrong_documents or {}
+        # Meetings before this day are emitted without a time. The module's
+        # time field is free-typed by whoever uploads the papers, and some
+        # councils left it at a default (6:00 PM on every Alice Springs
+        # entry) or stamped the upload time in it (Nannup's 2020 entries say
+        # 8:35 or 9:15 AM for 5.30pm meetings). A missing time is honest; a
+        # wrong one sends people to the chamber at the wrong hour. Set from
+        # checking the field against the agendas.
+        self.untimed_before = untimed_before
+        self.before: Optional[datetime.date] = None
+
+    def _screens_committees(self, listing_url: str) -> bool:
+        # A committee's own per-type listing names every entry after the
+        # committee ("Development Committee Meeting - 07 December 2020", Alice
+        # Springs), and the owner asked for it by type, so its entries are
+        # not screened out as committees filed under a Council type.
+        match = _TYPE_LISTING_PATH.match(urlparse(listing_url).path)
+        if match and self.meeting_types:
+            label = self.meeting_types.get(match.group("type"), "")
+            if _NOT_A_COUNCIL_MEETING.search(label):
+                return False
+        return True
+
+    def read(
+        self,
+        years: set[int],
+        before: Optional[datetime.date] = None,
+        allow_empty: bool = False,
+    ) -> list[ScraperReturn]:
+        """The wanted years' meetings, less any on or after `before`.
+
+        A failed listing or meeting page raises, as in the base class, and so
+        does a read that finds nothing, unless `allow_empty`: for a body that
+        may simply not have met in the years asked for, where the owner's
+        other reads carry the council."""
+        self.years_filter = sorted(years)
+        self.before = before
+        self._labels = dict(self.meeting_types or {})
+        this_year = clock.current_year()
+        results = self._past_meetings(
+            sorted(
+                (y for y in years if self.first_year <= y <= this_year), reverse=True
+            ),
+            set(),
+        )
+        if not results and not allow_empty:
+            raise RuntimeError(
+                f"{self.council_name}: no meetings with documents in the "
+                f"CouncilConnect archive at {self.base_url} for {sorted(years)}"
+            )
+        if before:
+            # The listing's date decides what is fetched; the meeting page's
+            # own date, which can differ, decides what is kept.
+            results = [r for r in results if r.date < before.isoformat()]
+        for record in results:
+            # Older entries carry a date and no time, which the module stores
+            # as midnight; "12:00 AM" would claim a time nobody published.
+            if record.time == "12:00 AM":
+                record.time = None
+            if self.untimed_before and record.date < self.untimed_before.isoformat():
+                record.time = None
+        return results
+
+    def _read_meeting(self, url, labels, fallback) -> Optional[ScraperReturn]:
+        if self.before and fallback[0] and fallback[0] >= self.before:
+            return None
+        return super()._read_meeting(url, labels, fallback)
