@@ -19,12 +19,7 @@ from aus_council_scrapers.base import SCRAPER_REGISTRY
 # one leaves this list in the change that imports it. The test below fails on
 # a stale entry, so the list cannot outlive its fix.
 KNOWN_UNIMPORTED = {
-    "HobsonsBayScraper",
-    "KingstonScraper",
-    "MaribyrnongScraper",
-    "MonashScraper",
     "MooneeValleyScraper",
-    "StonningtonScraper",
 }
 
 
