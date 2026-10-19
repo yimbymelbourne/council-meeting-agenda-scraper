@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**98 of 108 councils complete (90%)** — 4 partial, 0 broken, 6 not started.
+**97 of 108 councils complete (89%)** — 4 partial, 0 broken, 7 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -102,7 +102,6 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `subiaco` | 165 | 2021-2026 | 165 | 108 |  |
 | ✅ | `sunshine_coast` | 98 | 2020-2026 | 98 | 98 |  |
 | ✅ | `sutherland` | 290 | 2020-2026 | 290 | 288 |  |
-| ✅ | `swan` | 358 | 2020-2026 | 358 | 347 |  |
 | 🟡 | `tea_tree_gully` | 2 | 2026-2026 | 2 | 2 | only 1 year(s) |
 | ✅ | `the_hills` | 232 | 2021-2026 | 232 | 231 |  |
 | ✅ | `unley` | 173 | 2020-2026 | 173 | 172 |  |
@@ -123,4 +122,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`casey` `fairfield` `greater_dandenong` `knox` `sydney` `whittlesea`
+`casey` `fairfield` `greater_dandenong` `knox` `swan` `sydney` `whittlesea`

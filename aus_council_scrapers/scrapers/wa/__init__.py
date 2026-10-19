@@ -27,7 +27,6 @@ from aus_council_scrapers.scrapers.wa.serpentine_jarrahdale import (
 from aus_council_scrapers.scrapers.wa.south_perth import SouthPerthScraper
 from aus_council_scrapers.scrapers.wa.stirling import StirlingScraper
 from aus_council_scrapers.scrapers.wa.subiaco import SubiacoScraper
-from aus_council_scrapers.scrapers.wa.swan import SwanScraper
 from aus_council_scrapers.scrapers.wa.victoria_park import VictoriaParkScraper
 from aus_council_scrapers.scrapers.wa.vincent import VincentScraper
 from aus_council_scrapers.scrapers.wa.wanneroo import WannerooScraper

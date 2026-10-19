@@ -305,6 +305,8 @@ Also check the URL in `docs/councils.md` actually *is* the meeting listing.
 Several are landing pages that link to it, and detection run against one of
 those sees a page with no meetings on it.
 
+**Check robots.txt before writing a scraper.** Read `/robots.txt` on every host the scraper will request, and request no path it disallows, even one the council's own page calls from JavaScript. Honour any `Crawl-delay` in it as that host's spacing. If the only listing is disallowed, the council gets no scraper: `swan` is the example, whose listing API sits under a disallowed `/v1/` while Joondalup's identical platform serves it from an allowed path.
+
 ### How we identify ourselves, and what a 403 means now
 
 Settled in [#142](https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142):
