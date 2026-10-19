@@ -148,7 +148,9 @@ class MonashScraper(OpenCitiesMeetingsScraper):
             papers["agenda_html"] = urljoin(self.base_url, page["href"].strip())
         return papers
 
-    def meeting_name(self, row: ListingRow, content: BeautifulSoup) -> str:
+    def meeting_name(
+        self, row: ListingRow, content: BeautifulSoup, papers: dict[str, str]
+    ) -> str:
         intro = content.find("p")
         text = intro.get_text(" ", strip=True) if intro else ""
         if re.search(r"\bcommittee\s+meeting\s+of\s+council\b", text, re.IGNORECASE):

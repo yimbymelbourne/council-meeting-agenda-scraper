@@ -46,6 +46,14 @@ its payload is fetched. Since each payload is a request, a council listing a
 dozen committees should be cut down to Council meetings and planning bodies—
 the meetings this project exists to watch.
 
+A council whose layout differs gets hooks rather than a fork:
+``extra_listings`` for further lists (a separate upcoming list, a planning
+panel's page), ``main_listing`` with ``Listing.filters`` to filter a list by
+meeting type, ``Listing.by_year=False`` where the year filter drops meetings,
+and ``row_papers`` / ``meeting_name`` where the listing row, not the payload,
+says which paper a row is—Blacktown lists a meeting's agenda and its minutes
+as two rows of their own.
+
 Form control names (``ctl10$ctl00$ctl08`` and so on) are never hard-coded:
 they shift by one between councils depending on what else is on the page, so
 they are found from what the controls are—the select whose options are page
@@ -95,8 +103,10 @@ _MINUTES = re.compile(r"\bminutes\b", re.IGNORECASE)
 # books ("Agenda - Supporting Information Attachments", "Agenda - appendices"),
 # and the second documents a meeting can grow—an addendum or supplementary
 # agenda is real, but storing it as *the* agenda would lose the main paper.
+# "Minutes without attachments" is the opposite of an attachment book: it is
+# the minutes, beside "Minutes with Attachments" (Cambridge, 25 February 2025).
 _NOT_THE_PAPER = re.compile(
-    r"\b(?:attachments?|appendi(?:x|ces)|supporting|addendum|supplementary"
+    r"\b(?:(?<!without )attachments?|appendi(?:x|ces)|supporting|addendum|supplementary"
     r"|late\s+items?|errata)\b",
     re.IGNORECASE,
 )
@@ -113,12 +123,20 @@ _PROVISIONAL = re.compile(r"\b(?:draft|unconfirmed|amended|revised)\b", re.IGNOR
 # bare qualifier after it—"Agenda 6:30pm", "Minutes Property Matter",
 # "Minutes 7pm COVID 19"—and those are the only papers those meetings have,
 # so they count too, ranked below a plain heading on the same meeting.
-_AGENDA_HEADING = re.compile(r"^(?:(?:final|open)\s+)?agenda\b", re.IGNORECASE)
+# "Public Minutes" sits beside "Confidential Minutes" at Cambridge (8 April
+# 2024); "public" is a qualifier like "final", and "confidential" is not.
+# Onkaparinga's panel names itself first—"CAP Agenda 21 March 2024", "CAP
+# Minutes 5 May 2022"—so a planning panel's initials may lead.
+_BODY = r"(?:(?:cap|dap|lpp)\s+)?"
+_AGENDA_HEADING = re.compile(
+    rf"^{_BODY}(?:(?:final|open|public)\s+)?agenda\b", re.IGNORECASE
+)
 _MINUTES_HEADING = re.compile(
-    r"^(?:(?:un)?confirmed\s+|draft\s+|final\s+)?minutes\b", re.IGNORECASE
+    rf"^{_BODY}(?:(?:un)?confirmed\s+|draft\s+|final\s+|public\s+)?minutes\b",
+    re.IGNORECASE,
 )
 _PLAIN_HEADING = re.compile(
-    r"^(?:(?:final|open|(?:un)?confirmed|draft)\s+)?(?:agenda|minutes)"
+    rf"^{_BODY}(?:(?:final|open|public|(?:un)?confirmed|draft)\s+)?(?:agenda|minutes)"
     r"(?:$|\s*[-–—:(])",
     re.IGNORECASE,
 )
@@ -153,6 +171,11 @@ def _label(text: str) -> str:
 def _year_of(date_str: str) -> int | None:
     match = _YEAR.search(date_str)
     return int(match.group(1)) if match else None
+
+
+def _year_filter(year: int) -> str:
+    """The ``dlv_`` filter for one year of the listing."""
+    return f"(dd_OC%20Year={year})"
 
 
 def _is_pdf(href: str) -> bool:
@@ -260,6 +283,18 @@ def _year_select(soup: BeautifulSoup):
             "option", string=re.compile(r"^\s*Any Year\s*$", re.IGNORECASE)
         ):
             return select
+    # Onkaparinga's filter has no "Any Year" option, only a blank one ahead of
+    # the years. A select whose every labelled option is a year is the same
+    # control; the pager's select (1..N) never has four-digit labels.
+    for select in soup.find_all("select"):
+        labels = [o.get_text(strip=True) for o in select.find_all("option")]
+        labels = [label for label in labels if label]
+        if (
+            select.get("name")
+            and len(labels) >= 2
+            and all(re.fullmatch(r"(?:19|20)\d\d", label) for label in labels)
+        ):
+            return select
     return None
 
 
@@ -365,6 +400,12 @@ def papers_by_link_text(content: BeautifulSoup, base_url: str) -> dict[str, str]
     return _papers(_pick(agendas), _pick(minutes))
 
 
+def _is_minutes_file(url: str) -> bool:
+    """A file whose own name says minutes and not agenda."""
+    name = _label(urlparse(url).path.rsplit("/", 1)[-1].replace("-", " "))
+    return bool(_MINUTES.search(name)) and not _AGENDA.search(name)
+
+
 def _in_nested_attachments(anchor, section) -> bool:
     for parent in anchor.parents:
         if parent is section:
@@ -433,6 +474,12 @@ def papers_by_heading(content: BeautifulSoup, base_url: str) -> dict[str, str]:
             continue
         rank = 0 if _PLAIN_HEADING.match(heading) and not bound_in else 1
         if _AGENDA_HEADING.match(heading):
+            if _is_minutes_file(url):
+                # Filed under the wrong heading: Cambridge's 8 April 2024
+                # Special Council Meeting and 20 September 2022 Development
+                # Committee put the minutes PDF under "Agenda". Storing it as
+                # the agenda would report a document that is not one.
+                continue
             agendas.append((heading, url, rank))
         elif _MINUTES_HEADING.match(heading):
             minutes.append((heading, url, rank))
@@ -503,6 +550,31 @@ class Listing:
     #: its generic year filter (Hume's offers 2016–2027) costs no requests.
     years: Optional[frozenset] = None
 
+    #: Extra ``dlv_`` filters, already encoded—e.g.
+    #: ``"(dd_OC%20Meeting%20Type=Minutes%20of%20the%20Ordinary%20Meeting)"``
+    #: —applied to every page of this listing, the first included. Needs
+    #: ``list_name``.
+    filters: str = ""
+
+    #: False for a council whose year filter cannot be trusted. Blacktown's
+    #: leaves out most meetings: 2 of the 11 "Minutes of the Ordinary
+    #: Meeting" rows its listing shows for 2025, and nothing after 7 October
+    #: 2026. Such a listing is paged newest first instead, stopping once a
+    #: page reaches back before the earliest wanted year. Needs ``list_name``.
+    by_year: bool = True
+
+    #: Raise rather than warn if this listing's first page fails. The main
+    #: listing always is; set it on an extra listing that carries papers the
+    #: main one does not, as Blacktown's minutes listings do.
+    required: bool = False
+
+    def dlv_url(self, extra: str = "") -> str:
+        """This listing's URL with its filters, plus ``extra`` (a year or a
+        page index). The bare URL when there is nothing to filter by."""
+        if not self.list_name or not (self.filters or extra):
+            return self.url
+        return f"{self.url}?dlv_{quote(self.list_name)}={self.filters}{extra}"
+
 
 class OpenCitiesMeetingsScraper(BaseScraper):
     #: The listing's internal name for the ``dlv_`` filter URL, or None to
@@ -515,6 +587,15 @@ class OpenCitiesMeetingsScraper(BaseScraper):
     #: When set, only rows whose meeting type matches are fetched.
     meeting_types: Optional[re.Pattern] = None
 
+    #: With ``years_filter`` set, fetch a dlv listing's first page already
+    #: filtered to the newest wanted year. The bare first page is otherwise
+    #: fetched only to read the year dropdown, then that year's page is
+    #: fetched anyway—a request a listing, every night. The filtered page
+    #: carries the same dropdown, offering every year, on Unley, Onkaparinga
+    #: and Cambridge (checked October 2026); opt-in because the other
+    #: councils have not been checked.
+    year_filtered_first_page: bool = False
+
     def __init__(self, council_name: str, state: str, listing_url: str):
         parts = urlparse(listing_url)
         super().__init__(council_name, state, f"{parts.scheme}://{parts.netloc}")
@@ -524,6 +605,11 @@ class OpenCitiesMeetingsScraper(BaseScraper):
     # ------------------------------------------------------------------
     # Which listings, which years
     # ------------------------------------------------------------------
+
+    def main_listing(self) -> Listing:
+        """The listing whose first page must load. Override to filter it, as
+        Blacktown does by meeting type."""
+        return Listing(self.listing_url, self.list_name)
 
     def extra_listings(self, first_page_html: str) -> list[Listing]:
         """Listings besides the main one, e.g. a separate upcoming-meetings
@@ -580,12 +666,19 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         wanted, so a recorded cassette exercises the same requests production
         makes for its one year. Measured on The Hills, Frankston, Kingston and
         Hobsons Bay (October 2026), the per-year listings add up to exactly
-        the unfiltered listing—no meeting is filed under the wrong year.
+        the unfiltered listing—no meeting is filed under the wrong year—and
+        so do 2025 and 2026 on Unley and Onkaparinga, and 2026 on Cambridge
+        (checked October 2026). Not on
+        Blacktown, which is why ``Listing.by_year`` exists.
         """
-        base = f"{listing.url}?dlv_{quote(listing.list_name)}="
+        prefetched = getattr(self, "_prefetched", {})
         for year in years:
-            year_filter = f"(dd_OC%20Year={year})"
-            page_1 = self._fetch_listing_page(base + year_filter, required)
+            year_filter = _year_filter(year)
+            url = listing.dlv_url(year_filter)
+            if url in prefetched:
+                page_1 = prefetched.pop(url)
+            else:
+                page_1 = self._fetch_listing_page(url, required)
             if page_1 is None:
                 continue
             yield page_1
@@ -596,10 +689,44 @@ class OpenCitiesMeetingsScraper(BaseScraper):
                 continue
             for page in range(2, page_count(page_1) + 1):
                 html = self._fetch_listing_page(
-                    base + f"{year_filter}(pageindex={page})"
+                    listing.dlv_url(f"{year_filter}(pageindex={page})")
                 )
                 if html is not None:
                     yield html
+
+    def _walk_dlv_pages(self, listing: Listing, first: str) -> Iterator[str]:
+        """Yield a ``by_year=False`` listing's pages, newest first, until one
+        reaches back before the earliest wanted year.
+
+        Production's one-year run therefore reads only the first page or two
+        of each listing. A recorded cassette reads them all back to
+        EARLIEST_YEAR, which is more listing pages than production makes—but
+        the same URLs, so replay exercises the code production runs.
+        """
+        yield first
+        latest = first
+        for page in range(2, page_count(first) + 1):
+            if self._reaches_before_wanted(latest):
+                break
+            html = self._fetch_listing_page(listing.dlv_url(f"(pageindex={page})"))
+            if html is not None:
+                latest = html
+                yield html
+
+    def _reaches_before_wanted(self, html: str) -> bool:
+        """True once a newest-first page ends before the earliest wanted year:
+        every later page is older still. Stopping there rather than at the
+        first page wholly older saves a request a listing—Blacktown's
+        ordinary agendas for 2026 fit on page 1 beside two from 2025."""
+        dates = []
+        for row in parse_listing_rows(html, ""):
+            try:
+                dates.append(parse_date(row.date, fuzzy=True).date())
+            except (ValueError, OverflowError):
+                continue
+        if not dates or dates[0] < dates[-1]:
+            return False
+        return min(dates).year < min(self._wanted_years())
 
     def _filter_held(self, html: str, listing: Listing, year: int) -> bool:
         stray = [
@@ -703,6 +830,10 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         return max(dates).year < min(self._wanted_years())
 
     def _walk(self, listing: Listing, first: str, required: bool) -> Iterator[str]:
+        if listing.list_name and not listing.by_year:
+            yield from self._walk_dlv_pages(listing, first)
+            return
+
         offered = offered_years(first)
         if listing.list_name and offered is None:
             # Nothing to filter by, so page through everything the slow way;
@@ -729,23 +860,48 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         else:
             yield from self._walk_postback(listing, first, years, required)
 
+    def _first_page(self, listing: Listing, required: bool) -> str | None:
+        """The page a listing's walk starts from, which is also where its
+        year dropdown is read. See ``year_filtered_first_page``."""
+        if not (
+            self.year_filtered_first_page
+            and self._filtering()
+            and listing.list_name
+            and listing.by_year
+        ):
+            return self._fetch_listing_page(listing.dlv_url(), required)
+        wanted = self._wanted_years()
+        if listing.years:
+            # A one-year archive listing (Hume's 2020 page) is only walked
+            # for its own years, so start from the newest of those.
+            wanted = wanted & listing.years
+        url = listing.dlv_url(_year_filter(max(wanted)))
+        html = self._fetch_listing_page(url, required)
+        if html is not None:
+            # _walk_dlv takes this as that year's first page rather than
+            # fetching it again.
+            self._prefetched[url] = html
+        return html
+
     def _rows(self) -> list[ListingRow]:
-        main = Listing(self.listing_url, self.list_name)
-        first = self._fetch_listing_page(main.url, required=True)
+        self._prefetched: dict[str, str] = {}
+        main = self.main_listing()
+        first = self._first_page(main, required=True)
 
         wanted = self._wanted_years()
         listings = [(main, first)]
         for extra in self.extra_listings(first):
             if extra.years and not extra.years & wanted:
                 continue
-            extra_first = self._fetch_listing_page(extra.url)
+            extra_first = self._first_page(extra, extra.required)
             if extra_first is not None:
                 listings.append((extra, extra_first))
 
         rows: list[ListingRow] = []
         seen: set[str] = set()
         for listing, listing_first in listings:
-            for html in self._walk(listing, listing_first, listing is main):
+            required = listing is main or listing.required
+            for html in self._walk(listing, listing_first, required):
                 for row in parse_listing_rows(html, listing.url):
                     if row.cvid in seen:
                         continue
@@ -788,15 +944,26 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             return papers_by_heading(content, self.base_url)
         return papers_by_link_text(content, self.base_url)
 
-    def meeting_name(self, row: ListingRow, content: BeautifulSoup) -> str:
+    def row_papers(self, content: BeautifulSoup, row: ListingRow) -> dict[str, str]:
+        """The papers for one listing row. Override when the row itself says
+        which paper its payload holds—Blacktown lists a meeting's agenda and
+        its minutes as two rows, each with one unlabelled file."""
+        return self.papers(content)
+
+    def meeting_name(
+        self, row: ListingRow, content: BeautifulSoup, papers: dict[str, str]
+    ) -> str:
         """The record's name: the listing's meeting type. Override where that
-        type is missing or is not a meeting type."""
+        type is missing or is not a meeting type—Monash names a meeting from
+        the payload's opening line, Blacktown's "Minutes of the Ordinary
+        Meeting" names a paper, and Unley names a special meeting from its
+        paper filenames."""
         return row.meeting_type or self.default_name
 
     def build_return(
         self, content: BeautifulSoup, row: ListingRow
     ) -> ScraperReturn | None:
-        papers = self.papers(content)
+        papers = self.row_papers(content, row)
         agenda_url = papers.get("agenda")
         minutes_url = papers.get("minutes")
         agenda_html_url = papers.get("agenda_html")
@@ -835,7 +1002,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         location = clean_location(location_div) if location_div else None
 
         return ScraperReturn(
-            name=self.meeting_name(row, content),
+            name=self.meeting_name(row, content, papers),
             date=row.date,
             time=time_value,
             webpage_url=row.webpage_url,

@@ -15,7 +15,7 @@ import re
 import pytest
 import requests
 
-from aus_council_scrapers.opencities import OpenCitiesMeetingsScraper
+from aus_council_scrapers.opencities import Listing, OpenCitiesMeetingsScraper
 from tests.cassette import PlaybackFetcher
 
 LISTING = "https://council.example/meetings"
@@ -157,6 +157,83 @@ def test_blocked_listing_raises_rather_than_returning_no_meetings():
 
     with pytest.raises(requests.HTTPError):
         scraper.scraper()
+
+
+def test_untrusted_year_filter_pages_newest_first_and_stops_at_older_years():
+    # Blacktown's year filter drops most meetings, so its listings are
+    # filtered by meeting type only and paged until a page predates the
+    # wanted year. Production asks for one year: walking all five pages
+    # would cost the whole history every night, and stopping after the first
+    # would lose the rest of the year. Cassettes are recorded unfiltered, so
+    # none of them exercises the stop.
+    type_filter = "(dd_OC%20Meeting%20Type=Minutes%20of%20the%20Ordinary%20Meeting)"
+    pages = {
+        1: [("10 February 2026", "a"), ("10 December 2025", "b")],
+        2: [("12 November 2025", "c"), ("10 January 2024", "d")],
+        3: [("06 December 2023", "e"), ("08 November 2023", "f")],
+        4: [("11 October 2023", "g")],
+        5: [("13 September 2023", "h")],
+    }
+
+    def routes(url, method, data):
+        assert type_filter in url, url
+        match = re.search(r"\(pageindex=(\d+)\)", url)
+        return _page(LISTING, 5, pages[int(match.group(1)) if match else 1])
+
+    class _ByType(_Dlv):
+        def main_listing(self):
+            return Listing(LISTING, self.list_name, filters=type_filter, by_year=False)
+
+    scraper = _ByType()
+    fetcher = _Council(routes)
+    scraper.fetcher = fetcher
+    scraper.years_filter = [2025]
+
+    dates = [m.date for m in scraper.scraper()]
+
+    assert dates == ["10 December 2025", "12 November 2025"]
+    paged = [
+        re.search(r"pageindex=(\d+)", url).group(1)
+        for url in fetcher.requested
+        if "pageindex" in url
+    ]
+    # Page 2 ends in 2024, so nothing after it can be from 2025.
+    assert paged == ["2"]
+
+
+def test_year_filtered_first_page_is_fetched_once_and_bare_page_never():
+    # Unley, Onkaparinga and Cambridge read the year dropdown off the
+    # year-filtered page, which carries it too. Fetching the bare page as
+    # well, or the filtered page twice, costs a request a listing every
+    # night. Cassettes are recorded unfiltered, so none of them sees this.
+    filtered_2 = FILTERED.replace("2025)", "2025)(pageindex=2)")
+
+    def routes(url, method, data):
+        assert url != LISTING, "the bare first page should not be fetched"
+        if url == FILTERED:
+            return _page(FILTERED, 2, FILTERED_1, year="2025")
+        if url == filtered_2:
+            return _page(FILTERED, 2, FILTERED_2, year="2025")
+        raise AssertionError(url)
+
+    class _YearFirst(_Dlv):
+        year_filtered_first_page = True
+
+    scraper = _YearFirst()
+    fetcher = _Council(routes)
+    scraper.fetcher = fetcher
+    scraper.years_filter = [2025]
+
+    dates = [m.date for m in scraper.scraper()]
+
+    assert dates == [
+        "02 December 2025",
+        "04 November 2025",
+        "07 October 2025",
+        "09 September 2025",
+    ]
+    listing = [u for u in fetcher.requested if "cvid=" not in u]
+    assert listing == [FILTERED, filtered_2]
 
 
 def test_a_wanted_years_listing_failing_raises_too():
