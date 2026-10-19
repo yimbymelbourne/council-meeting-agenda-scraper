@@ -13,7 +13,7 @@ from aus_council_scrapers.constants import EARLIEST_YEAR
 _BASE_URL = "https://www.brighton.tas.gov.au"
 _LISTING_URL = f"{_BASE_URL}/council/meeting-minutes/"
 
-# Brighton Council (Tasmania — not Brighton in Victoria, hence the slug). Its
+# Brighton Council (Tasmania—not Brighton in Victoria, hence the slug). Its
 # whole history since 2018 is on one page, in CSS tabs: one tab per meeting
 # body, one table per year inside it, a row per meeting with the date in the
 # first cell and "View" links in columns headed Agenda, Attachments, Minutes
@@ -23,7 +23,7 @@ _LISTING_URL = f"{_BASE_URL}/council/meeting-minutes/"
 #
 # One request covers everything, so every body with documents is kept. The
 # other tabs are the meeting schedule, committee membership, and "Council
-# Meeting Outcomes" — summaries of decisions rather than minutes.
+# Meeting Outcomes"—summaries of decisions rather than minutes.
 _BODIES = {
     "ordinary council": "Ordinary Council Meeting",
     "planning authority": "Planning Authority Meeting",

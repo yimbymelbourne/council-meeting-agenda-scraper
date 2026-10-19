@@ -19,7 +19,7 @@ _ARCHIVE_URL = f"{_BASE_URL}/council/council-meetings/meetings-archive/"
 # form: the archive ignores `f_year`. Meetings are boxes of day/month/year
 # spans with "Agenda", "Minutes" and "Audio" buttons, in two places:
 #
-#   /council/council-meetings/   the current schedule — about a year back plus
+#   /council/council-meetings/   the current schedule—about a year back plus
 #                                every meeting still to come, the future ones
 #                                as empty boxes until their agenda is up
 #   /meetings-archive/page/N/    twelve a page, newest first, to December 2019
@@ -49,7 +49,7 @@ _MINUTES_LABEL = re.compile(r"^\s*minutes\s*$", re.IGNORECASE)
 # When an agenda is too large for one file the Agenda button points at a page
 # listing its parts, often beside reports tabled with it ("LCZ Review and
 # Findings Report", a flood study's appendices). The agenda is the link that
-# says so, or failing that its first part — Part A runs from the start of the
+# says so, or failing that its first part—Part A runs from the start of the
 # agenda, so it carries the order of business.
 _AGENDA_DOCUMENT = re.compile(r"agenda|\bpart[\s-]*(a|1)\b", re.IGNORECASE)
 

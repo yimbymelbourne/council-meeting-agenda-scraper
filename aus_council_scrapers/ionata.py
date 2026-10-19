@@ -113,7 +113,7 @@ def reconcile_date(
     dated 28 June, the night of the next meeting, which has its own card.
     Clarence and Sorell each have one card a day off its title and files.
 
-    So each source gets a vote — the field, the title, each dated filename —
+    So each source gets a vote—the field, the title, each dated filename—
     and the date most of them name wins, the field winning a tie.
 
     A document outvoted at least two to one is returned as disputed, with the
@@ -168,7 +168,7 @@ class IonataMeetingsScraper(BaseScraper):
     def document_url(self, href: str) -> Optional[str]:
         """A link the card labels Agenda or Minutes, as a URL worth storing.
 
-        Hrefs are hand-pasted, and a trailing space survives as `%20` — Sorell
+        Hrefs are hand-pasted, and a trailing space survives as `%20`—Sorell
         has one, and the asset host 403s it. Anything not ending in `.pdf` is
         refused by default: a council that links a viewer page instead of the
         document is not giving us the document.
@@ -203,7 +203,7 @@ class IonataMeetingsScraper(BaseScraper):
         if meeting_date.year != year:
             # The listing was asked for one year. A card from another means the
             # filter stopped being honoured, and every year would then fetch
-            # the whole archive — say so rather than paying for it quietly.
+            # the whole archive—say so rather than paying for it quietly.
             self.logger.warning(
                 f"{self.council_name}: f_year={year} returned a {meeting_date.year} "
                 f"meeting ({title!r}); the year filter may have stopped working"
@@ -228,7 +228,7 @@ class IonataMeetingsScraper(BaseScraper):
             elif _MINUTES_LABEL.match(label):
                 kind = "minutes"
             else:
-                # Livestream, Attachments, Audio — and on Clarence the
+                # Livestream, Attachments, Audio—and on Clarence the
                 # quarterly report or annual plan tabled at that meeting.
                 continue
             url = self.document_url(link["href"])
@@ -277,7 +277,7 @@ class IonataMeetingsScraper(BaseScraper):
         """Remove documents that belong to another meeting in the same year.
 
         A disputed document (see `reconcile_date`) is only taken off its card
-        when the listing has a meeting on the date its filename names — then
+        when the listing has a meeting on the date its filename names—then
         it is that meeting's, and leaving it here would put one agenda on two
         meetings, as Clarence's 9 June 2020 card does with the 29 June agenda.
         Without such a meeting it is most likely this meeting's under an old

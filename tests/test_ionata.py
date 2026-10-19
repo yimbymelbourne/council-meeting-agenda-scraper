@@ -4,7 +4,7 @@ The card's date field, its title and its documents' filenames are typed
 separately and disagree often enough (Glenorchy most of all) that the base
 class votes between them, and takes a document off a card only when it names
 a meeting the listing actually has. The recorded fixtures exercise this on
-real cards, but a re-record would accept a regression silently — these pin
+real cards, but a re-record would accept a regression silently—these pin
 the rules themselves, through the scraper's own entry point.
 """
 

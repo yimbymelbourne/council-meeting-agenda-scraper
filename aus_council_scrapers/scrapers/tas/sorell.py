@@ -8,9 +8,9 @@ from aus_council_scrapers.ionata import IonataMeetingsScraper
 # Sorell Council. A filtered year fits on one page (24-36 cards), oldest
 # first, and the current year includes the next meeting once its agenda is up.
 #
-# Titles are typed by hand and drift from year to year — "Council Meeting
+# Titles are typed by hand and drift from year to year—"Council Meeting
 # January", "Sorell Planning Authority (SPA) Agenda – Tuesday 12 November
-# 2024", "Sorell Planning Planning Authority 4 March 2021" — so the meeting
+# 2024", "Sorell Planning Planning Authority 4 March 2021"—so the meeting
 # type is read from keywords. Development Assessment Special Committee is
 # checked before "special", which it also contains.
 _NAME_RULES = (

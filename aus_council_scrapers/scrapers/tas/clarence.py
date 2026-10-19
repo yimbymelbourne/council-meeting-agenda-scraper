@@ -7,7 +7,7 @@ from aus_council_scrapers.base import register_scraper
 from aus_council_scrapers.ionata import IonataMeetingsScraper
 
 # Clarence City Council, on Hobart's eastern shore. Not to be confused with
-# Clarence Valley (NSW), which is the `clarence` tenant on api.resolve.red —
+# Clarence Valley (NSW), which is the `clarence` tenant on api.resolve.red—
 # its agendas are headed "Grafton" and its ordinary meetings fall on Thursday
 # mornings, where Clarence City meets on Monday evenings.
 #
@@ -19,7 +19,7 @@ from aus_council_scrapers.ionata import IonataMeetingsScraper
 # not the PDF, and the file behind it is only reachable through a logged-in
 # session whose download links expire within the hour. Those meetings keep
 # their minutes and go without an agenda, rather than store a viewer page as
-# if it were the document — `document_url` refuses anything not ending .pdf.
+# if it were the document—`document_url` refuses anything not ending .pdf.
 #
 # Titles are typed by hand ("Clarence City Council Meeting – 12 October 2026",
 # "Special Council Meeting (Planning Authority)", "Clarence City Council – AGM"),
