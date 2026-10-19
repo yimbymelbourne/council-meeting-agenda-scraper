@@ -302,9 +302,13 @@ class BrisbaneScraper(BaseScraper):
         prefixes = self._year_prefixes(wanted)
         if prefixes is None:
             return None
+        unlisted = 0
         for prefix in prefixes:
             pages = self._list(prefix=prefix)
-            for page in pages or []:
+            if pages is None:
+                unlisted += 1
+                continue
+            for page in pages:
                 for item in page.iter(f"{_S3_NS}Contents"):
                     key = item.findtext(f"{_S3_NS}Key") or ""
                     filename = key.rsplit("/", 1)[-1]
@@ -338,6 +342,10 @@ class BrisbaneScraper(BaseScraper):
                     candidates.setdefault((body, date.isoformat()), []).append(
                         (rank, {"url": url, "label": stem})
                     )
+        if prefixes and unlisted == len(prefixes):
+            # Every wanted year's folder failed to list: that is a bucket
+            # that could not be read, not a year with no agendas.
+            return None
 
         agendas = {}
         for meeting, found in sorted(candidates.items()):
@@ -385,12 +393,18 @@ class BrisbaneScraper(BaseScraper):
 
         minutes = self._minutes(wanted)
         agendas = self._agendas(wanted)
-        if minutes is None and agendas is None:
-            # Both sources failed. An empty list would read downstream as "no
-            # meetings", not "scraper broken".
+        if (minutes is None or agendas is None) and not (minutes or agendas):
+            # A source failed and the other found nothing. An empty list would
+            # read downstream as "no meetings", not "scraper broken".
             raise RuntimeError(
-                "brisbane: neither the meetings page nor the document bucket "
-                "could be read"
+                "brisbane: found no meetings, and "
+                + (
+                    "neither the meetings page nor the document bucket"
+                    if minutes is None and agendas is None
+                    else "the meetings page" if minutes is None
+                    else "the document bucket"
+                )
+                + " could be read"
             )
         minutes = minutes or {}
         agendas = agendas or {}
