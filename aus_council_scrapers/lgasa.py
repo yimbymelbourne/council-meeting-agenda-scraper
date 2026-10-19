@@ -16,7 +16,10 @@ the same shape of collection, which is why a TAS council lives here too.
 `LGASAFunnelbackScraper` councils', and Charles Sturt's, Tea Tree Gully's
 and Mount Barker's, whose older papers `ResolveWithLGASAArchive` reads—served
 byte-identical robots.txt files when checked on 19 Oct 2026 (the Matrix
-default). The lines that bind this scraper:
+default). Franklin Harbour's, Kangaroo Island's, Ceduna's and Peterborough's
+served the same lines on 20 Oct 2026 (Peterborough's only through Chrome:
+it challenges a plain request even for robots.txt). The lines that bind
+this scraper:
 
     User-agent: *
     Crawl-delay: 20
@@ -58,6 +61,13 @@ its meeting fills whichever of the two that meeting lacks (`_fill`). On the
 recordings of 19 Oct 2026 this reproduces the JSON-based output exactly for
 Port Adelaide Enfield, Prospect, Campbelltown and Derwent Valley.
 
+A council whose labels or titles defeat those rules says so with class
+attributes rather than an override: `body_from_title` when one label holds
+several bodies (Kangaroo Island), `title_kinds` for titles that name neither
+paper (Peterborough's "Council Report"), and `restate_lone_dates` when
+papers are filed under the day they were published. Titles that give only
+the month are joined in `_rejoin_misdated` (Franklin Harbour).
+
 **Cloudflare.** From GitHub's runners the council domains answer a Cloudflare
 JS challenge (`cf-mitigated: challenge`) to any requests client, whatever its
 User-Agent. Headless Chrome is challenged too, while Chrome with the
@@ -82,6 +92,7 @@ listing, 20 s apart.
 
 from __future__ import annotations
 
+import collections
 import datetime
 import re
 import time
@@ -155,8 +166,17 @@ _MINUTES_WORD = re.compile(r"\bminutes?\b", re.IGNORECASE)
 # were. Excluding them lost that meeting outright. Only a *notice* of
 # rescheduling ("Notice - Rescheduling of CAP Meeting ...") is excluded; the
 # words themselves are `_WEAKER` marks, so a clean sibling still wins.
+#
+# A notice of meeting adjournment is excluded the same way: Franklin Harbour
+# filed "September 2022 Notice of Meeting Adjournment" under 14 September,
+# the night the meeting was adjourned, and the agenda and minutes under the
+# 19th, when it resumed. Taken as an agenda, the notice made a meeting of its
+# own on the 14th. Only that wording: Tea Tree Gully's "Notice of
+# Adjournment, Notice, Agenda and Reports - Special Meeting of Council"
+# carries the agenda itself.
 _EXCLUDE = re.compile(
-    r"cancel|postpone|notice\W+(?:of\W+)?reschedul|\blate\b|supplementary|"
+    r"cancel|postpone|notice\W+(?:of\W+)?reschedul|"
+    r"notice\W+of\W+meeting\W+adjourn|\blate\b|supplementary|"
     r"addendum|audio|recording",
     re.IGNORECASE,
 )
@@ -168,14 +188,26 @@ _EXCLUDE = re.compile(
 _RELEASED = re.compile(r"releas", re.IGNORECASE)
 _NAMES_ITEM = re.compile(r"\bit(?:e)?ms?\b[-\s]*\d", re.IGNORECASE)
 
+# Ceduna files the confidential part of a meeting's minutes, once released,
+# under the day it was released: "Released from Confidence Minutes - 21
+# August 2024" sits under 21 August 2025, a day with no meeting. Filed under
+# the meeting's own date it is a weaker candidate for that meeting; filed
+# more than `_NEARBY_DAYS` from the date its title states, it is dropped (see
+# `LGASAFunnelbackScraper._assemble`).
+_FROM_CONFIDENCE = re.compile(r"releas\w*\s+(?:from|for)\s+confidence", re.IGNORECASE)
+
 # Attachments are filed beside the agenda—"28 May 2026 - Council Agenda
 # Attachments", "Attachments1-3 Agenda Item 9.11"—and are never it. The
-# exception is an agenda published with its attachments in one file
-# ("Council Agenda & Attachments", "Agenda including Attachment 2"), which is
-# the agenda, and is kept as a weaker candidate.
+# exception is an agenda or minutes published with its attachments in one
+# file ("Council Agenda & Attachments", "Agenda including Attachment 2"),
+# which is the agenda or minutes, and is kept as a weaker candidate. Franklin
+# Harbour publishes every council meeting's minutes that way ("September 2026
+# Minutes & Attachments", "2022 January Minutes, Reports & Attachments"), and
+# excluding them dropped all its ordinary-meeting minutes.
 _ATTACHMENT = re.compile(r"attachment", re.IGNORECASE)
-_AGENDA_WITH_ATTACHMENTS = re.compile(
-    r"agenda\s*(?:and|&|with|including|plus)\s*(?:the\s*)?attachment",
+_WITH_ATTACHMENTS = re.compile(
+    r"(?:agenda|minutes?)[\s,]*(?:(?:and|&)?\s*reports?[\s,]*)?"
+    r"(?:and|&|with|including|plus)\s*(?:the\s*)?attachment",
     re.IGNORECASE,
 )
 
@@ -210,6 +242,10 @@ _WEAKER = (
 _MEETING_NOTICE = re.compile(
     r"\bnotice of (?:[\w&]+ ){0,3}meeting\b|\bmeeting notice\b", re.IGNORECASE
 )
+# Peterborough's abbreviation: "Council NOM 17/03/25", "Special Council
+# Meeting NOM 11/08/25". Capitals only, so it is never part of a word or a
+# name.
+_NOM = re.compile(r"\bNOM\b")
 
 _NOTICE_WORD = re.compile(r"\bnotice\b", re.IGNORECASE)
 
@@ -232,6 +268,9 @@ _FILE_AGENDA = re.compile(r"(?<![a-z])agn(?![a-z])", re.IGNORECASE)
 _FILE_MINUTES = re.compile(r"(?<![a-z])min(?![a-z])", re.IGNORECASE)
 
 _SPECIAL = re.compile(r"\bspecial\b", re.IGNORECASE)
+# Peterborough's abbreviation: "Sp Council Minutes 25/07/22". Capitalised
+# only, so "SP" (a site plan) and "sp" in a file name are not it.
+_SP = re.compile(r"\bSp\b")
 _AGM = re.compile(r"\bannual general meeting\b|\bAGM\b", re.IGNORECASE)
 _SECOND = re.compile(r"\bsecond\b", re.IGNORECASE)
 
@@ -245,7 +284,7 @@ def _sitting(title: str) -> str:
     """
     if _AGM.search(title):
         kind = "agm"
-    elif _SPECIAL.search(title):
+    elif _SPECIAL.search(title) or _SP.search(title):
         kind = "special"
     else:
         kind = "ordinary"
@@ -293,6 +332,12 @@ class _Document:
     # The listed file name's extension, lower-cased ("" when the listing
     # gives no file name).
     file_type: str = "pdf"
+    # The uploaded file's name; see `_meeting_day`.
+    filename: str = ""
+    # Filed under Matrix's 1 January placeholder with a title that names
+    # only the month, so the day of its meeting is unknown and must come
+    # from the paper it is joined with; see `_undated_date`.
+    undated: bool = False
 
 
 @dataclass
@@ -430,7 +475,11 @@ _TITLE_DATE_WORDS = re.compile(
     rf"\b(\d{{1,2}})(?:st|nd|rd|th)?[\s-]+({_MONTHS})\.?,?[\s-]+(\d{{4}})\b",
     re.IGNORECASE,
 )
-_TITLE_DATE_DIGITS = re.compile(r"\b(\d{1,2})[-./](\d{1,2})[-./](\d{4})\b")
+# Day first, with a four- or two-digit year: Peterborough titles its papers
+# "Council Minutes 17/03/25" and "Council Meeting Agenda 19.10.2026".
+_TITLE_DATE_DIGITS = re.compile(r"\b(\d{1,2})[-./](\d{1,2})[-./](\d{4}|\d{2})\b")
+# Year first: Kangaroo Island's "Council Agenda 2026-10-13".
+_TITLE_DATE_ISO = re.compile(r"(?<!\d)(\d{4})-(\d{2})-(\d{2})(?!\d)")
 
 
 def _title_date(title: str) -> Optional[datetime.date]:
@@ -442,13 +491,67 @@ def _title_date(title: str) -> Optional[datetime.date]:
             return datetime.datetime.strptime(
                 f"{day} {month[:3]} {year}", "%d %b %Y"
             ).date()
+        match = _TITLE_DATE_ISO.search(title)
+        if match:
+            year, month, day = (int(g) for g in match.groups())
+            return datetime.date(year, month, day)
         match = _TITLE_DATE_DIGITS.search(title)
         if match:
             day, month, year = (int(g) for g in match.groups())
+            if year < 100:
+                year += 2000
             return datetime.date(year, month, day)
     except ValueError:
         return None
     return None
+
+
+# A file name's compact date: Franklin Harbour's "120826-Notice-of-Meeting-
+# and-Agenda.pdf" (DDMMYY), Kangaroo Island's "20261013-Council-Agenda.pdf"
+# (YYYYMMDD) and "11052022-..." (DDMMYYYY). Bounded by anything but a digit,
+# so an asset number is never read as one.
+_FILE_DATE_COMPACT = (
+    (re.compile(r"(?<!\d)(20\d\d)(\d\d)(\d\d)(?!\d)"), (3, 2, 1)),
+    (re.compile(r"(?<!\d)(\d\d)(\d\d)(20\d\d)(?!\d)"), (1, 2, 3)),
+    (re.compile(r"(?<!\d)(\d\d)(\d\d)(\d\d)(?!\d)"), (1, 2, 3)),
+)
+
+
+def _filename_date(filename: str) -> Optional[datetime.date]:
+    """The date an uploaded file's name states, if it states one."""
+    stated = _title_date(filename)
+    if stated:
+        return stated
+    for pattern, (d, m, y) in _FILE_DATE_COMPACT:
+        match = pattern.search(filename)
+        if not match:
+            continue
+        day, month, year = (int(match.group(i)) for i in (d, m, y))
+        try:
+            return datetime.date(year + 2000 if year < 100 else year, month, day)
+        except ValueError:
+            continue
+    return None
+
+
+# A title that gives only the month: Franklin Harbour's "October 2026 Notice
+# of Meeting & Agenda" and "2021 July Minutes, Reports & Attachments".
+_TITLE_MONTH = re.compile(
+    rf"\b(?:({_MONTHS})\.?,?\s+(\d{{4}})|(\d{{4}})\s+({_MONTHS}))\b",
+    re.IGNORECASE,
+)
+
+
+def _title_month(title: str) -> Optional[tuple[int, int]]:
+    """The (year, month) a title names when it names no day."""
+    if _title_date(title):
+        return None
+    match = _TITLE_MONTH.search(title)
+    if not match:
+        return None
+    month = match.group(1) or match.group(4)
+    year = match.group(2) or match.group(3)
+    return int(year), datetime.datetime.strptime(month[:3], "%b").month
 
 
 # How far apart an agenda-only and a minutes-only meeting may be filed and
@@ -480,7 +583,18 @@ def _rejoin_misdated(meetings: list[_Chosen]) -> list[_Chosen]:
     meeting of the same name that are `_NEARBY_DAYS` apart or less, when each
     is the other's only candidate and no other meeting of that name falls
     between them. The agenda's date wins, because an agenda is filed before
-    the meeting and its date is the one the council announced.
+    the meeting and its date is the one the council announced—unless the
+    agenda's or the minutes' file name states a day between the two (see
+    `_meeting_day`).
+
+    A third pass does the same for titles that give only the month, which
+    the first pass cannot read and which may be filed more than
+    `_NEARBY_DAYS` apart: Franklin Harbour filed its "December 2023 Minutes
+    & Attachments" under 1 December and the agenda under the 13th. An
+    agenda-only and a minutes-only meeting of the same name are joined when
+    both titles name the month both are filed in, each is the other's only
+    candidate in that month, and no other meeting of that name falls between
+    them.
     """
     agenda_only = [m for m in meetings if m.agenda and not m.minutes]
     minutes_only = [m for m in meetings if m.minutes and not m.agenda]
@@ -534,10 +648,128 @@ def _rejoin_misdated(meetings: list[_Chosen]) -> list[_Chosen]:
             if other is not agenda_meeting and other is not minutes_meeting
         ):
             continue
+        agenda_meeting.date = _meeting_day(agenda_meeting, minutes_meeting)
+        agenda_meeting.minutes = minutes_meeting.minutes
+        joined.add(id(minutes_meeting))
+
+    def month(meeting: _Chosen, document: _Document) -> Optional[tuple[int, int]]:
+        named = _title_month(document.title)
+        filed = day(meeting)
+        return named if named == (filed.year, filed.month) else None
+
+    def same_month(
+        meeting: _Chosen, document: _Document, pool: list[_Chosen], kind: str
+    ):
+        key = month(meeting, document)
+        return [
+            other
+            for other in pool
+            if key is not None
+            and id(other) not in joined
+            and other.name == meeting.name
+            and month(other, getattr(other, kind)) == key
+        ]
+
+    agenda_only = [m for m in agenda_only if not m.minutes]
+    minutes_only = [m for m in minutes_only if id(m) not in joined]
+    for agenda_meeting in agenda_only:
+        nearby = same_month(
+            agenda_meeting, agenda_meeting.agenda, minutes_only, "minutes"
+        )
+        if len(nearby) != 1:
+            continue
+        minutes_meeting = nearby[0]
+        if (
+            len(
+                same_month(
+                    minutes_meeting, minutes_meeting.minutes, agenda_only, "agenda"
+                )
+            )
+            != 1
+        ):
+            continue
+        low, high = sorted((day(agenda_meeting), day(minutes_meeting)))
+        if any(
+            other.name == agenda_meeting.name and low < day(other) < high
+            for other in meetings
+            if other is not agenda_meeting and other is not minutes_meeting
+        ):
+            continue
+        agenda_meeting.date = _meeting_day(agenda_meeting, minutes_meeting)
         agenda_meeting.minutes = minutes_meeting.minutes
         joined.add(id(minutes_meeting))
 
     return [m for m in meetings if id(m) not in joined]
+
+
+# How far a lone document's title and file name may move it from the date it
+# is filed under; see `_restated_date`. Ceduna filed its 24 November 2022
+# EPRAP agenda under 24 December.
+_RESTATED_DAYS = 31
+
+
+def _restated_date(document: _Document, filed: str, year: int) -> Optional[str]:
+    """The date a lone document's title and file name agree on, if they
+    agree on one other than the date it is filed under.
+
+    The filed date is typed by hand, and is sometimes the day a paper was
+    published rather than the day of the meeting: Kangaroo Island filed its
+    "Special Council Meeting Agenda 2022-05-24" ("20220524-Special-
+    Council.pdf") under 20 May, and Peterborough its "Council NOM 18/08/2025"
+    ("Council-NOM-18.08.25.pdf") under 12 August. Grouped on the filed date,
+    each made a meeting on a day with none. Two independent statements of
+    the meeting's date outvote the one filed, so the document is moved.
+
+    Only a document with nothing else filed under its body and date, so a
+    paper attached to another meeting stays with it (Derwent Valley's LGAT
+    AGM agenda, filed with its 16 July 2020 council meeting); only when the
+    title is not just the file name, which would be one statement counted
+    twice; and only within `_RESTATED_DAYS` and the same year. When the file
+    name agrees with the filed date instead, the title is the mistake
+    (Kangaroo Island's "Special Informal Gathering Agenda 13-6-2021",
+    "20210713-Special-Informal-Gathering.pdf", filed 13 July) and nothing
+    moves.
+    """
+    stated = _title_date(document.title)
+    if stated is None or stated.isoformat() == filed or stated.year != year:
+        return None
+    stem = document.filename.rsplit(".", 1)[0]
+    if _words(stem).strip().lower() in _words(document.title).strip().lower():
+        return None
+    if _filename_date(document.filename) != stated:
+        return None
+    if abs((stated - datetime.date.fromisoformat(filed)).days) > _RESTATED_DAYS:
+        return None
+    return stated.isoformat()
+
+
+def _meeting_day(agenda_meeting: _Chosen, minutes_meeting: _Chosen) -> str:
+    """The date of a meeting joined from an agenda and minutes filed apart.
+
+    The agenda's filed date, unless the agenda's or else the minutes' file
+    name states a day between the two filed dates. A meeting falls after its
+    agenda is published and before its minutes are, so a day in that window
+    is the one the papers were named for: Franklin Harbour filed its August
+    2026 agenda under the 7th and the minutes under the 14th, and the agenda
+    is "120826-Notice-of-Meeting-and-Agenda.pdf", for the 12th; its June 2020
+    agenda is filed under the 4th, the day it was published, and the minutes
+    are "100620.Minutes.Reports-and-Attachments.pdf", for the 10th. A file
+    name outside the window ("04062021-June-Notice-..." for a 9 June
+    meeting) is the day the notice was written, and is ignored.
+
+    An undated agenda (see `_undated_date`) has no date of its own to win,
+    so the minutes' filed date is used: Franklin Harbour's "January 2024
+    Notice of Meeting & Agenda" sits on the placeholder, and its minutes are
+    filed under the 17th, the day the minutes say the meeting was held.
+    """
+    low, high = sorted((agenda_meeting.date, minutes_meeting.date))
+    for document in (agenda_meeting.agenda, minutes_meeting.minutes):
+        named = _filename_date(document.filename)
+        if named and low <= named.isoformat() <= high:
+            return named.isoformat()
+    if agenda_meeting.agenda.undated:
+        return minutes_meeting.date
+    return agenda_meeting.date
 
 
 def _best(documents: list[_Document]) -> Optional[_Document]:
@@ -571,7 +803,7 @@ def _not_the_document(text: str) -> bool:
         return True
     if _RELEASED.search(text) and _NAMES_ITEM.search(text):
         return True
-    return bool(_ATTACHMENT.search(text) and not _AGENDA_WITH_ATTACHMENTS.search(text))
+    return bool(_ATTACHMENT.search(text) and not _WITH_ATTACHMENTS.search(text))
 
 
 def _names_kind(text: str, filename: bool = False) -> Optional[str]:
@@ -593,7 +825,10 @@ _UNNAMED = 2
 
 
 def _classify(
-    title: str, filename: str = "", notices_are_agendas: bool = False
+    title: str,
+    filename: str = "",
+    notices_are_agendas: bool = False,
+    title_kinds: tuple[tuple[str, Optional[str], int], ...] = (),
 ) -> Optional[tuple[str, int]]:
     """Whether a document is an agenda or minutes, and how good a candidate.
 
@@ -609,21 +844,42 @@ def _classify(
     title carrying a `_WEAKER` mark ranks behind one that does not, so a
     weaker candidate is chosen only when nothing better was filed for that
     meeting.
+
+    A title naming one kind over a file name naming the other is the title's
+    mistake, as far as anyone has checked: Kangaroo Island's "Council Agenda
+    2025-07-08" is "20250708-Council-Minutes.pdf" and opens on the record of
+    the meeting; Ceduna's "Ordinary Council Meeting Agenda - 25 June 2025" is
+    a minutes amendment, while the document it titled "Released from
+    Confidence Agenda" is the 776-page agenda. So the file name's kind wins,
+    one step down.
+
+    `title_kinds` are a council's own rules, tried first: (pattern, kind,
+    rank), where a kind of None drops the document.
     """
     if _not_the_document(title):
         return None
+    for pattern, rule_kind, rule_rank in title_kinds:
+        if re.search(pattern, title):
+            return (rule_kind, rule_rank) if rule_kind else None
 
     rank = sum(1 for pattern in _WEAKER if pattern.search(title))
     kind = _names_kind(title)
-    if kind is not None:
-        return kind, rank
     name = _words(filename)
+    if kind is not None:
+        named = _names_kind(name)
+        if named is not None and named != kind:
+            return named, rank + _FROM_FILENAME
+        return kind, rank
     if _not_the_document(name):
         return None
     kind = _names_kind(name, filename=True)
     if kind is not None:
         return kind, rank + _FROM_FILENAME
-    if _MEETING_NOTICE.search(title) or _MEETING_NOTICE.search(name):
+    if (
+        _MEETING_NOTICE.search(title)
+        or _MEETING_NOTICE.search(name)
+        or _NOM.search(title)
+    ):
         return "agenda", rank + _FROM_NOTICE
     if notices_are_agendas and (
         _SITTING_WORDS.search(title) or _NOTICE_WORD.search(f"{title} {name}")
@@ -751,6 +1007,28 @@ class LGASAFunnelbackScraper(BaseScraper):
     # that session's agenda however it is titled ("Informal Gathering 1 March
     # 2021", "1-March-2021-workshop-notice.pdf").
     notice_committees: frozenset[str] = frozenset()
+
+    # Bodies a document's title names, ahead of the committee it is filed
+    # under: (pattern, body name) pairs, searched case-insensitively in
+    # order, first match wins. For a council that files several bodies under
+    # one label—Kangaroo Island files its audit committee and briefing
+    # sessions under "Council Meetings"—or misfiles one, as Ceduna filed an
+    # EPRAP meeting's minutes under "Council". A body named here may also be
+    # listed in `notice_committees`.
+    body_from_title: tuple[tuple[str, str], ...] = ()
+
+    # A council's own rules for which documents are the agenda or minutes,
+    # tried before the general ones: (pattern, kind, rank) triples, matched
+    # against the title case-sensitively. A kind of None drops the document.
+    # See `_classify` for what the ranks mean.
+    title_kinds: tuple[tuple[str, Optional[str], int], ...] = ()
+
+    # Move a document filed alone under a date its title and file name both
+    # contradict to the date they agree on; see `_restated_date`. Off by
+    # default only because it rejoins several split meetings in the
+    # collections recorded before it existed (Walkerville, Gawler,
+    # Campbelltown, Mount Barker) and so rewrites their fixtures.
+    restate_lone_dates: bool = False
 
     def __init__(self, council_name: str, state: str, base_url: str):
         super().__init__(council_name, state, base_url)
@@ -919,6 +1197,34 @@ class LGASAFunnelbackScraper(BaseScraper):
             return stated.isoformat()
         return None
 
+    def _undated_date(self, filed: str, title: str, year: int) -> Optional[str]:
+        """Where to hold a placeholder-dated paper whose title names only
+        the month, or None to drop it as `_meeting_date` does.
+
+        Franklin Harbour filed its "January 2024 Notice of Meeting & Agenda"
+        under 1 January, and its titles never give the day, so
+        `_meeting_date` has nothing to move it to. It is held under the 1st
+        of the month its title names, marked undated, so the month join in
+        `_rejoin_misdated` can pair it with that month's minutes, which then
+        give the date (`_meeting_day`). One that finds no partner is dropped
+        in `_records` rather than emitted on a day nobody met. Only for a
+        council that sets `restate_lone_dates`, so the collections recorded
+        before this existed are read as they were.
+        """
+        if not self.restate_lone_dates or not filed.endswith("-01-01"):
+            return None
+        named = _title_month(title)
+        if named is None or named[0] != year:
+            return None
+        return datetime.date(named[0], named[1], 1).isoformat()
+
+    def _body_from_title(self, title: str) -> Optional[str]:
+        """The body `body_from_title` names for this title, if any."""
+        for pattern, body in self.body_from_title:
+            if re.search(pattern, title, re.IGNORECASE):
+                return body
+        return None
+
     def _title_body(self, title: str, bodies: set[str]) -> str:
         """The body a document with no committee label belongs to.
 
@@ -938,6 +1244,9 @@ class LGASAFunnelbackScraper(BaseScraper):
         """Group one year's listed documents into meetings."""
         meetings: dict[tuple[str, str], _Meeting] = {}
         bodies = {self._body_name(d.committee) for d in documents if d.committee}
+        # (body, filed date, kind, document), grouped once every document's
+        # neighbours are known; see `_restated_date`.
+        placed: list[tuple[str, str, str, _Document]] = []
 
         for listed in documents:
             if not listed.asset_id.isdigit() or listed.date is None:
@@ -957,12 +1266,39 @@ class LGASAFunnelbackScraper(BaseScraper):
                 continue
 
             date = self._meeting_date(listed.date, listed.title, year)
+            undated = False
+            if date is None:
+                date = self._undated_date(listed.date, listed.title, year)
+                undated = date is not None
             if date is None:
                 continue
+            stated = _title_date(listed.title)
+            if (
+                stated is not None
+                and _FROM_CONFIDENCE.search(listed.title)
+                and abs((stated - datetime.date.fromisoformat(date)).days)
+                > _NEARBY_DAYS
+            ):
+                continue
+
+            titled = self._body_from_title(listed.title)
+            if titled is not None:
+                body = titled
+            elif _COUNCIL_TITLE.search(listed.title):
+                body = COUNCIL_MEETING
+            elif listed.committee:
+                body = self._body_name(listed.committee)
+            else:
+                body = self._title_body(listed.title, bodies)
+
             classified = _classify(
                 listed.title,
                 listed.filename,
-                notices_are_agendas=listed.committee in self.notice_committees,
+                notices_are_agendas=(
+                    listed.committee in self.notice_committees
+                    or body in self.notice_committees
+                ),
+                title_kinds=self.title_kinds,
             )
             if not classified:
                 continue
@@ -974,23 +1310,29 @@ class LGASAFunnelbackScraper(BaseScraper):
             # Association of Tasmania's AGM agenda. It still stands in when
             # nothing else was filed, as Campbelltown's 21 July 2025 agenda
             # misfiled under the 20th does (see `_rejoin_misdated`).
-            stated = _title_date(listed.title)
             if stated is not None and stated.isoformat() != date:
                 rank += 1
 
-            if _COUNCIL_TITLE.search(listed.title):
-                body = COUNCIL_MEETING
-            elif listed.committee:
-                body = self._body_name(listed.committee)
-            else:
-                body = self._title_body(listed.title, bodies)
-            meeting = meetings.setdefault((body, date), _Meeting(body=body, date=date))
             document = _Document(
                 asset_id=listed.asset_id,
                 title=listed.title,
                 rank=rank,
                 file_type=file_type,
+                filename=listed.filename,
+                undated=undated,
             )
+            placed.append((body, date, kind, document))
+
+        filed_together = collections.Counter(
+            (body, date) for body, date, _, _ in placed
+        )
+        for body, date, kind, document in placed:
+            if self.restate_lone_dates and filed_together[(body, date)] == 1:
+                moved = _restated_date(document, date, year)
+                if moved is not None:
+                    date = moved
+                    document.rank -= 1
+            meeting = meetings.setdefault((body, date), _Meeting(body=body, date=date))
             getattr(meeting, {"agenda": "agendas"}.get(kind, kind)).append(document)
 
         return list(meetings.values())
@@ -1020,6 +1362,19 @@ class LGASAFunnelbackScraper(BaseScraper):
 
         records = []
         for meeting in _rejoin_misdated(chosen):
+            # An undated paper left without a dated partner would be emitted
+            # on the 1st of its month, a day nobody met; see `_undated_date`.
+            dated = [
+                d for d in (meeting.agenda, meeting.minutes) if d and not d.undated
+            ]
+            if not dated:
+                self.logger.warning(
+                    f"{self.council_name}: dropping {meeting.name} "
+                    f"({', '.join(d.title for d in (meeting.agenda, meeting.minutes) if d)}): "
+                    "filed under the 1 January placeholder with no day, and "
+                    "no paper of that month to date it by"
+                )
+                continue
             agenda_url = (
                 self._document_url(meeting.agenda.asset_id) if meeting.agenda else None
             )
