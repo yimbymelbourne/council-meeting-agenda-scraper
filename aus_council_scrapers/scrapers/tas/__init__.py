@@ -1,2 +1,7 @@
+from aus_council_scrapers.scrapers.tas.brighton import BrightonTasScraper
+from aus_council_scrapers.scrapers.tas.clarence import ClarenceScraper
 from aus_council_scrapers.scrapers.tas.derwent_valley import DerwentValleyScraper
+from aus_council_scrapers.scrapers.tas.glenorchy import GlenorchyScraper
 from aus_council_scrapers.scrapers.tas.hobart import HobartScraper
+from aus_council_scrapers.scrapers.tas.kingborough import KingboroughScraper
+from aus_council_scrapers.scrapers.tas.sorell import SorellScraper

@@ -136,6 +136,29 @@ PLATFORMS: tuple[Platform, ...] = (
         reference="aus_council_scrapers/scrapers/sa/salisbury.py",
     ),
     Platform(
+        name="eScribe",
+        # The domain, not the bare word: "escribe" matches "Subscribe".
+        signatures=(r"escribemeetings\.com", r"GetCalendarMeetings"),
+        guidance=(
+            "Subclass EScribeScraper (aus_council_scrapers/escribe.py) and "
+            "pass the portal root. One POST per year returns every meeting "
+            "with its documents attached; set former_names if the council "
+            "renamed its committees in place."
+        ),
+        reference="aus_council_scrapers/scrapers/qld/logan.py",
+    ),
+    Platform(
+        name="Ionata meetings archive",
+        signatures=(r'name="f_year"',),
+        guidance=(
+            "Tasmanian WordPress build with f_year/f_month/f_cat GET filters. "
+            "Subclass IonataMeetingsScraper (aus_council_scrapers/ionata.py) "
+            "with the listing URL and the card selectors. Kingborough's older "
+            "Ionata theme has no f_year and is bespoke."
+        ),
+        reference="aus_council_scrapers/scrapers/tas/clarence.py",
+    ),
+    Platform(
         name="Granicus/Legistar",
         signatures=(r"granicus\.com", r"legistar"),
         guidance="No base class yet — first council on this platform gets to write one.",
@@ -164,7 +187,8 @@ PLATFORMS: tuple[Platform, ...] = (
 
 #: Platform links pointing off the council's own domain.
 _EXTERNAL_PLATFORM = re.compile(
-    r"https?://([a-z0-9-]+\.(?:infocouncil\.biz|docspublished\.com\.au|resolve\.red))",
+    r"https?://([a-z0-9-]+\.(?:infocouncil\.biz|docspublished\.com\.au"
+    r"|resolve\.red|escribemeetings\.com))",
     re.I,
 )
 

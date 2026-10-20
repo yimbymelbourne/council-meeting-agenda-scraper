@@ -92,6 +92,21 @@ def test_detects_moderngov_from_the_url_alone():
     assert [p.name for p in found] == ["Modern.Gov"]
 
 
+def test_detects_escribe_but_not_the_word_subscribe():
+    """Logan's portal is its own subdomain of the vendor, and a council page
+    links out to it; the bare word "escribe" would match every "Subscribe"."""
+    html = '<a href="https://pub-logancity.escribemeetings.com/">Meetings</a>'
+    assert [p.name for p in detect(html)] == ["eScribe"]
+    assert platform_links(html) == {"pub-logancity.escribemeetings.com"}
+    assert detect("<button>Subscribe to updates</button>") == []
+
+
+def test_detects_ionata_meetings_archive():
+    """Clarence, Glenorchy and Sorell filter their meeting cards by year."""
+    html = '<select name="f_year"><option value="2026">2026</option></select>'
+    assert [p.name for p in detect(html)] == ["Ionata meetings archive"]
+
+
 def test_unknown_platform_returns_nothing():
     assert detect("<html><body><h1>Meetings</h1></body></html>") == []
 

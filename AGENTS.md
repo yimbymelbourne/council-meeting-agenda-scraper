@@ -103,8 +103,11 @@ way: the honest default and the per-council overrides are both in code, so
 |------|---------|
 | `aus_council_scrapers/base.py` | `BaseScraper`, `ScraperReturn`, `register_scraper`, fetcher classes |
 | `aus_council_scrapers/constants.py` | `EARLIEST_YEAR`, regex patterns, timezones |
-| `aus_council_scrapers/scrapers/vic/` | Victoria scrapers |
-| `aus_council_scrapers/scrapers/nsw/` | NSW scrapers |
+| `aus_council_scrapers/scrapers/<state>/` | One folder per state and territory: `act`, `nsw`, `nt`, `qld`, `sa`, `tas`, `vic`, `wa` |
+| `aus_council_scrapers/resolve.py`, `opencities.py`, `alyka.py`, `councilconnect.py`, `lgasa.py`, `craft.py`, `moderngov.py`, `escribe.py`, `ionata.py` | One base class per shared platform; see the platform table under Step 3. `InfoCouncilScraper` and `DocsPublishedScraper` are in `base.py` |
+| `aus_council_scrapers/resolve_archives.py` | Where councils that moved to Resolve keep their older papers |
+| `aus_council_scrapers/meeting_documents.py` | Groups a flat register of individually titled documents into meetings (`cockburn`, `bayswater`) |
+| `aus_council_scrapers/platforms.py` | Platform signatures, read by `scripts/detect_platform.py` |
 | `aus_council_scrapers/clock.py` | `current_year()` / `today()` — use instead of `datetime` |
 | `aus_council_scrapers/conformance.py` | What a scraper must produce, and how coverage is measured |
 | `tests/scraper_test.py` | Replays each scraper against its cassette |
@@ -285,6 +288,8 @@ work into a ten-line subclass. Fetch the meeting page and look for:
 | `lgasa-search.lga.sa.gov.au`, `<council>-council-minutes-and-agenda-push`, `lgasa-web.squiz.cloud` | `LGASAFunnelbackScraper` (`aus_council_scrapers/lgasa.py`)—LGA SA's shared Squiz sites (and Derwent Valley, TAS). Needs only `listing_urls`, the council's agendas-and-minutes page. robots.txt disallows the `search.json` API (`/s/` on lgasa-search) and `query=`/facet parameters on the council sites, and sets `Crawl-delay: 20`, so it reads the listing page with only `num_ranks` and `start_rank` added, 20 s apart per host, through Selenium with `strip_headless_user_agent` (Cloudflare). Document URLs are `lgasa-web.squiz.cloud/?a=<assetId>`, which is not behind Cloudflare. See `scrapers/sa/port_adelaide_enfield.py` |
 | `/assets/meetings/`, `/assets/agendas-minutes/`, `table--agendasMinutes`, `accordion--minutes`, `simple.com.au/gov` | `CraftMeetingsModuleScraper` or `CraftArchiveScraper` (`aus_council_scrapers/craft.py`)—SimpleGov's Craft CMS sites in SA. Needs `listing_url` and a row parser; the folder a PDF sits in decides agenda or minutes. The custom date filter takes ISO dates only (DD/MM answers 500), so a year is one paged query. AWS WAF: Selenium unless plain requests are measured to pass (`playford`). See `scrapers/sa/salisbury.py` |
 | `ieListMeetings.aspx`, `ieListDocuments.aspx`, `mgWebService.asmx` | `ModernGovScraper` (`aus_council_scrapers/moderngov.py`)—Civica Modern.Gov. Needs the base URL and a committee allowlist. Documents are only on per-meeting pages, so each allowed committee costs one request per meeting. See `scrapers/nsw/sydney.py` |
+| `*.escribemeetings.com`, `GetCalendarMeetings` | `EScribeScraper` (`aus_council_scrapers/escribe.py`)—needs only the portal root. One POST per year to `GetCalendarMeetings` returns every meeting with its documents attached, so a production year is one request. PDFs go in `agenda_url`/`minutes_url` and the `Meeting.aspx` HTML renditions in the `*_html_url` fields. eScribe names a meeting after its current meeting type, so set `former_names` if the council renamed committees in place. See `scrapers/qld/logan.py` |
+| `name="f_year"` | `IonataMeetingsScraper` (`aus_council_scrapers/ionata.py`)—Ionata's Tasmanian WordPress meetings archive, cards filtered server-side by `f_year` and paged with `a.next`. Needs the listing URL and the card selectors; the card date is reconciled against the title and dated filenames, which outvote it when it is wrong. See `scrapers/tas/clarence.py`. Kingborough's older Ionata theme has no `f_year` and is bespoke |
 | `cf-mitigated: challenge`, `server: cloudflare` | Cloudflare interstitial—needs Selenium, no header will get past it |
 
 Note that InfoCouncil is not forever: three councils have left the platform

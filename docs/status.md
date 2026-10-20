@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**114 of 123 councils complete (92%)** — 4 partial, 0 broken, 5 not started.
+**125 of 134 councils complete (93%)** — 4 partial, 0 broken, 5 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -27,7 +27,9 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `belmont` | 115 | 2021-2026 | 115 | 114 |  |
 | ✅ | `blacktown` | 92 | 2021-2026 | 92 | 87 |  |
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
+| ✅ | `brighton_tas` | 146 | 2020-2026 | 146 | 144 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
+| ✅ | `brisbane` | 72 | 2020-2026 | 72 | 66 |  |
 | ✅ | `burnside` | 209 | 2020-2026 | 209 | 206 |  |
 | ✅ | `burwood` | 166 | 2020-2026 | 162 | 139 |  |
 | ✅ | `cambridge` | 166 | 2020-2026 | 166 | 165 |  |
@@ -40,10 +42,12 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `cardinia` | 122 | 2020-2026 | 121 | 120 |  |
 | 🟡 | `charles_sturt` | 29 | 2025-2026 | 29 | 29 | only 2 year(s) |
 | ✅ | `claremont` | 234 | 2020-2026 | 234 | 229 |  |
+| ✅ | `clarence` | 135 | 2020-2026 | 135 | 135 |  |
 | ✅ | `cockburn` | 160 | 2020-2026 | 160 | 158 |  |
 | ✅ | `cottesloe` | 116 | 2020-2026 | 116 | 116 |  |
 | ✅ | `cumberland` | 329 | 2020-2026 | 311 | 229 |  |
 | ✅ | `darebin` | 84 | 2022-2026 | 84 | 79 |  |
+| ✅ | `darwin` | 390 | 2020-2026 | 390 | 378 |  |
 | ✅ | `derwent_valley` | 102 | 2020-2026 | 102 | 98 |  |
 | ✅ | `east_fremantle` | 190 | 2020-2026 | 190 | 187 |  |
 | ✅ | `fairfield` | 259 | 2020-2026 | 259 | 258 |  |
@@ -52,6 +56,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `gawler` | 416 | 2020-2026 | 416 | 400 |  |
 | ✅ | `georges_river` | 632 | 2020-2026 | 630 | 571 |  |
 | ✅ | `glen_eira` | 130 | 2020-2026 | 130 | 130 |  |
+| ✅ | `glenorchy` | 164 | 2020-2026 | 164 | 164 |  |
 | ✅ | `gold_coast` | 180 | 2020-2026 | 180 | 176 |  |
 | ✅ | `gosnells` | 651 | 2001-2026 | 651 | 650 |  |
 | ✅ | `hobart` | 996 | 2016-2026 | 996 | 967 |  |
@@ -64,13 +69,16 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `ipswich` | 691 | 2020-2026 | 549 | 655 |  |
 | ✅ | `joondalup` | 184 | 2020-2026 | 184 | 108 |  |
 | ✅ | `kalamunda` | 202 | 2020-2026 | 202 | 123 |  |
+| ✅ | `kingborough` | 165 | 2020-2026 | 165 | 163 |  |
 | ✅ | `kingston` | 147 | 2020-2026 | 147 | 144 |  |
 | ✅ | `kuringgai` | 313 | 2020-2026 | 296 | 259 |  |
 | ✅ | `kwinana` | 188 | 2020-2026 | 188 | 186 |  |
 | ✅ | `lane_cove` | 161 | 2020-2026 | 159 | 150 |  |
 | ✅ | `light_regional` | 168 | 2020-2026 | 168 | 167 |  |
+| ✅ | `litchfield` | 123 | 2020-2026 | 123 | 120 |  |
 | ✅ | `liverpool` | 200 | 2020-2026 | 194 | 135 |  |
 | ✅ | `lockyer_valley` | 104 | 2020-2026 | 103 | 103 |  |
+| ✅ | `logan` | 458 | 2020-2026 | 458 | 454 |  |
 | ✅ | `mandurah` | 159 | 2020-2026 | 159 | 158 |  |
 | ✅ | `manningham` | 53 | 2021-2026 | 53 | 37 |  |
 | ✅ | `maribyrnong` | 133 | 2020-2026 | 133 | 132 |  |
@@ -94,6 +102,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `northern_beaches` | 143 | 2016-2026 | 143 | 128 |  |
 | ✅ | `norwood_payneham_st_peters` | 126 | 2024-2026 | 126 | 123 |  |
 | ✅ | `onkaparinga` | 197 | 2020-2026 | 197 | 197 |  |
+| ✅ | `palmerston` | 159 | 2020-2026 | 159 | 158 |  |
 | ✅ | `parramatta` | 778 | 2008-2026 | 778 | 716 |  |
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |
 | ✅ | `peppermint_grove` | 85 | 2020-2026 | 85 | 84 |  |
@@ -110,6 +119,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `scenic_rim` | 140 | 2020-2026 | 140 | 140 |  |
 | ✅ | `serpentine_jarrahdale` | 117 | 2020-2026 | 117 | 116 |  |
 | ✅ | `somerset` | 157 | 2020-2026 | 157 | 157 |  |
+| ✅ | `sorell` | 214 | 2020-2026 | 214 | 209 |  |
 | ✅ | `south_perth` | 136 | 2020-2026 | 136 | 135 |  |
 | ✅ | `stirling` | 226 | 2021-2026 | 226 | 225 |  |
 | ✅ | `stonnington` | 142 | 2020-2026 | 142 | 137 |  |
@@ -123,6 +133,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `unley` | 173 | 2020-2026 | 173 | 172 |  |
 | ✅ | `victoria_park` | 119 | 2020-2026 | 119 | 118 |  |
 | ✅ | `vincent` | 199 | 2020-2026 | 181 | 132 |  |
+| ✅ | `wagait` | 81 | 2020-2026 | 81 | 79 |  |
 | ✅ | `walkerville` | 452 | 2020-2026 | 452 | 316 |  |
 | ✅ | `wanneroo` | 215 | 2020-2026 | 215 | 138 |  |
 | ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
