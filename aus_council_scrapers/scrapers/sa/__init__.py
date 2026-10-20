@@ -2,4 +2,7 @@ from aus_council_scrapers.scrapers.sa.burnside import BurnsideScraper
 from aus_council_scrapers.scrapers.sa.charles_sturt import CharlesSturtScraper
 from aus_council_scrapers.scrapers.sa.mitcham import MitchamScraper
 from aus_council_scrapers.scrapers.sa.mount_barker import MountBarkerScraper
+from aus_council_scrapers.scrapers.sa.onkaparinga import OnkaparingaScraper
 from aus_council_scrapers.scrapers.sa.tea_tree_gully import TeaTreeGullyScraper
+from aus_council_scrapers.scrapers.sa.unley import UnleyScraper
+from aus_council_scrapers.scrapers.sa.west_torrens import WestTorrensScraper

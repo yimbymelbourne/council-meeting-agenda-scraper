@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**48 of 68 councils complete (70%)** — 3 partial, 0 broken, 17 not started.
+**63 of 73 councils complete (86%)** — 3 partial, 0 broken, 7 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -18,10 +18,12 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `banyule` | 75 | 2022-2026 | 75 | 75 |  |
 | ✅ | `bayside_nsw` | 649 | 2020-2026 | 642 | 557 |  |
 | ✅ | `bayside_vic` | 132 | 2021-2026 | 132 | 128 |  |
+| ✅ | `blacktown` | 92 | 2021-2026 | 92 | 87 |  |
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
 | ✅ | `burnside` | 209 | 2020-2026 | 209 | 206 |  |
 | ✅ | `burwood` | 166 | 2020-2026 | 162 | 139 |  |
+| ✅ | `cambridge` | 166 | 2020-2026 | 166 | 165 |  |
 | ✅ | `camden` | 76 | 2020-2026 | 76 | 75 |  |
 | ✅ | `campbelltown` | 95 | 2020-2026 | 95 | 95 |  |
 | ✅ | `canada_bay` | 101 | 2018-2026 | 101 | 100 |  |
@@ -30,18 +32,26 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `charles_sturt` | 29 | 2025-2026 | 29 | 29 | only 2 year(s) |
 | ✅ | `cumberland` | 329 | 2020-2026 | 311 | 229 |  |
 | ✅ | `darebin` | 84 | 2022-2026 | 84 | 79 |  |
+| ✅ | `frankston` | 123 | 2020-2026 | 123 | 123 |  |
 | ✅ | `georges_river` | 632 | 2020-2026 | 630 | 571 |  |
 | ✅ | `glen_eira` | 130 | 2020-2026 | 130 | 130 |  |
+| ✅ | `gold_coast` | 180 | 2020-2026 | 180 | 176 |  |
+| ✅ | `hobsons_bay` | 53 | 2022-2026 | 53 | 51 |  |
 | ✅ | `hornsby` | 291 | 2020-2026 | 288 | 143 |  |
+| ✅ | `hume` | 153 | 2020-2026 | 153 | 151 |  |
 | ✅ | `hunters_hill` | 90 | 2020-2026 | 90 | 85 |  |
 | ✅ | `inner_west` | 306 | 2020-2026 | 297 | 203 |  |
+| ✅ | `kingston` | 147 | 2020-2026 | 147 | 144 |  |
 | ✅ | `kuringgai` | 313 | 2020-2026 | 296 | 259 |  |
 | ✅ | `lane_cove` | 161 | 2020-2026 | 159 | 150 |  |
 | ✅ | `liverpool` | 200 | 2020-2026 | 194 | 135 |  |
 | ✅ | `manningham` | 53 | 2021-2026 | 53 | 37 |  |
+| ✅ | `maribyrnong` | 133 | 2020-2026 | 133 | 132 |  |
 | ✅ | `melbourne` | 224 | 2020-2026 | 224 | 220 |  |
+| ✅ | `melton` | 92 | 2020-2026 | 92 | 89 |  |
 | ✅ | `merri_bek` | 142 | 2016-2026 | 128 | 110 |  |
 | ✅ | `mitcham` | 248 | 2020-2026 | 248 | 236 |  |
+| ✅ | `monash` | 72 | 2021-2026 | 72 | 70 |  |
 | ✅ | `moreton_bay` | 154 | 2020-2026 | 154 | 154 |  |
 | ✅ | `mornington_peninsula` | 145 | 2022-2026 | 145 | 141 |  |
 | ✅ | `mosman` | 203 | 2019-2026 | 203 | 200 |  |
@@ -49,6 +59,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `nillumbik` | 121 | 2020-2026 | 121 | 119 |  |
 | ✅ | `north_sydney` | 124 | 2020-2026 | 124 | 122 |  |
 | ✅ | `northern_beaches` | 143 | 2016-2026 | 143 | 128 |  |
+| ✅ | `onkaparinga` | 197 | 2020-2026 | 197 | 197 |  |
 | ✅ | `parramatta` | 778 | 2008-2026 | 778 | 716 |  |
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |
 | ✅ | `port_phillip` | 128 | 2022-2026 | 128 | 121 |  |
@@ -56,10 +67,14 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `ryde` | 96 | 2020-2026 | 96 | 94 |  |
 | ✅ | `serpentine_jarrahdale` | 117 | 2020-2026 | 117 | 116 |  |
 | ✅ | `somerset` | 157 | 2020-2026 | 157 | 157 |  |
+| ✅ | `stonnington` | 142 | 2020-2026 | 142 | 137 |  |
 | ✅ | `strathfield` | 97 | 2020-2026 | 97 | 90 |  |
 | ✅ | `sutherland` | 290 | 2020-2026 | 290 | 288 |  |
 | 🟡 | `tea_tree_gully` | 2 | 2026-2026 | 2 | 2 | only 1 year(s) |
+| ✅ | `the_hills` | 232 | 2021-2026 | 232 | 231 |  |
+| ✅ | `unley` | 173 | 2020-2026 | 173 | 172 |  |
 | ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
+| ✅ | `west_torrens` | 127 | 2020-2026 | 127 | 124 |  |
 | ✅ | `whitehorse` | 160 | 2020-2026 | 160 | 150 |  |
 | ✅ | `willoughby` | 25 | 2024-2026 | 25 | 24 |  |
 | ✅ | `woollahra` | 634 | 2020-2026 | 634 | 628 |  |
@@ -72,4 +87,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`blacktown` `casey` `fairfield` `frankston` `greater_dandenong` `hobsons_bay` `hume` `kingston` `knox` `maribyrnong` `melton` `monash` `moonee_valley` `stonnington` `sydney` `the_hills` `whittlesea`
+`casey` `fairfield` `greater_dandenong` `knox` `moonee_valley` `sydney` `whittlesea`

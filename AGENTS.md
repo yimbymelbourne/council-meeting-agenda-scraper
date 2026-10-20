@@ -276,10 +276,10 @@ work into a ten-line subclass. Fetch the meeting page and look for:
 | Signature in the page or URL | Use |
 |---|---|
 | `*.infocouncil.biz`, `bpsGridPDFLink`, `grdMenu` | `InfoCouncilScraper` |
-| `docspublished.com.au` | `DocsPublishedScraper` — needs only the publishing slug; everything else is resolved from `/api/organisation/<slug>` at runtime |
-| `OCServiceHandler.axd`, `accordion-list-item-container` | OpenCities; see `aus_council_scrapers/scrapers/vic/banyule.py` |
+| `docspublished.com.au` | `DocsPublishedScraper`—needs only the publishing slug; everything else is resolved from `/api/organisation/<slug>` at runtime |
+| `OCServiceHandler.axd`, `accordion-list-item-container` | `OpenCitiesMeetingsScraper` (`aus_council_scrapers/opencities.py`)—needs the listing URL, its `dlv_` list name and whether papers are labelled by heading or link text; see `scrapers/vic/kingston.py`. Rows with no `data-cvid`, only a link to a page per meeting, use `detail_pages = True` (`west_torrens`); `page_size` makes a busy year one listing request (`gold_coast`). Each kept meeting costs one request, so cut a council with many committees down with `meeting_types`. `banyule` is OpenCities too but drives the page with Selenium and has not moved to the base class |
 | `*.resolve.red`, `Resolve Public`, `boardsync-theme` | `ResolveScraper` (`aus_council_scrapers/resolve.py`)—needs the portal subdomain as `tenant` and a `meeting_types` pattern. Documents are the tokenless `DocPreview.aspx?aoid=` links, which never expire. The agenda is the packet (`&p=1`), because the bare agenda is now an order of business with no reports in it. Each kept meeting costs one detail call to learn which documents exist. A council that moved to Resolve recently sets `resolve_from` and reads its older papers in `other_meetings` |
-| `cf-mitigated: challenge`, `server: cloudflare` | Cloudflare interstitial — needs Selenium, no header will get past it |
+| `cf-mitigated: challenge`, `server: cloudflare` | Cloudflare interstitial—needs Selenium, no header will get past it |
 
 Note that InfoCouncil is not forever: three councils have left the platform
 and their old `*.infocouncil.biz` subdomains now 404.
@@ -329,17 +329,7 @@ loads its listing page fine and then fails on the interaction.
 **A 403 now means we identified ourselves and were refused anyway**, which is a
 different thing from the old blanket deferral. Four outcomes, in order:
 
-1. **The council wants a browser-shaped client.** Rare but real — set
-   `user_agent = BROWSER_USER_AGENT` on the scraper class, verified against
-   that council alone. `manningham` is the only current case (200 as a
-   browser, 403 identifying). `scripts/detect_platform.py` reports this as
-   `browser-only`. **Never widen it to the project default** — 13 councils are
-   reachable *because* the default identifies us: `ryde`, which had a scraper
-   but was blocked, plus `blacktown`, `frankston`, `hume`, `kingston`,
-   `maribyrnong`, `melton`, `monash`, `mornington_peninsula`, `nillumbik`,
-   `stonnington`, `whittlesea` and `yarra_ranges`, which have none yet.
-   (`hobsons_bay` also answers now, with a 404 and a real page — its URL in
-   `docs/councils.md` is stale.)
+1. **The council wants a browser-shaped client.** Rare but real—set `user_agent = BROWSER_USER_AGENT` on the scraper class, verified against that council alone. `manningham` is the only current case (200 as a browser, 403 identifying). `scripts/detect_platform.py` reports this as `browser-only`. **Never widen it to the project default**—13 councils are reachable *because* the default identifies us: `ryde`, which had a scraper but was blocked; `blacktown`, `frankston`, `hume`, `kingston`, `maribyrnong`, `melton`, `monash`, `mornington_peninsula` and `stonnington`, which are on `OpenCitiesMeetingsScraper` now; `nillumbik` and `yarra_ranges`, which have scrapers of their own; and `whittlesea`, which has none yet. (`hobsons_bay` answers too, and has a scraper on the same base class.)
 2. **A JS challenge**, not a header problem: `cf-mitigated: challenge` (Cloudflare) or `x-amzn-waf-action: challenge` (AWS, e.g. `melbourne`). Needs Selenium. Note the AWS variant answers **202 with an empty body**, not 403, so it never raises `BlockedByWAF`—a scraper built on `fetch_with_requests` there silently finds nothing. Some Cloudflare sites challenge only GitHub's runners and nothing gets past it from there; see the next section.
 3. **Refused from GitHub's runners only.** `bayside_vic` is here: 403 as a browser and a reset connection when identifying, from a runner, and a normal page from a home connection. See the next section.
 4. **Genuinely refused, from everywhere.** Leave it alone and say so.
