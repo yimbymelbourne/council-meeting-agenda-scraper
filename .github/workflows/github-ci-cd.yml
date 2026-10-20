@@ -42,7 +42,10 @@ jobs:
       # - name: Lint with flake8
       - name: Test with pytest
         run: |
-          poetry run pytest --timeout=30
+          # Replay runs in parallel and with a longer per-test limit: the
+          # largest cassettes (30+ MB) take close to 30 s to replay serially on
+          # a runner, and with 500+ councils a serial run was flaking on time.
+          poetry run pytest -n auto --timeout=120
       # Coverage against the target is reported, never gated. A scraper that
       # reaches only two years of history is unfinished, not broken, and a
       # build that goes red for unfinished work is a build people learn to
