@@ -1,5 +1,6 @@
 from aus_council_scrapers.scrapers.sa.adelaide import CityOfAdelaideScraper
 from aus_council_scrapers.scrapers.sa.adelaide_hills import AdelaideHillsScraper
+from aus_council_scrapers.scrapers.sa.adelaide_plains import AdelaidePlainsScraper
 from aus_council_scrapers.scrapers.sa.alexandrina import AlexandrinaScraper
 from aus_council_scrapers.scrapers.sa.barossa import BarossaScraper
 from aus_council_scrapers.scrapers.sa.barunga_west import BarungaWestScraper
@@ -37,6 +38,7 @@ from aus_council_scrapers.scrapers.sa.marion import MarionScraper
 from aus_council_scrapers.scrapers.sa.mid_murray import MidMurrayScraper
 from aus_council_scrapers.scrapers.sa.mitcham import MitchamScraper
 from aus_council_scrapers.scrapers.sa.mount_barker import MountBarkerScraper
+from aus_council_scrapers.scrapers.sa.mount_gambier import MountGambierScraper
 from aus_council_scrapers.scrapers.sa.mount_remarkable import MountRemarkableScraper
 from aus_council_scrapers.scrapers.sa.murray_bridge import MurrayBridgeScraper
 from aus_council_scrapers.scrapers.sa.naracoorte_lucindale import (
@@ -75,3 +77,4 @@ from aus_council_scrapers.scrapers.sa.west_torrens import WestTorrensScraper
 from aus_council_scrapers.scrapers.sa.whyalla import WhyallaScraper
 from aus_council_scrapers.scrapers.sa.wudinna import WudinnaScraper
 from aus_council_scrapers.scrapers.sa.yankalilla import YankalillaScraper
+from aus_council_scrapers.scrapers.sa.yorke_peninsula import YorkePeninsulaScraper

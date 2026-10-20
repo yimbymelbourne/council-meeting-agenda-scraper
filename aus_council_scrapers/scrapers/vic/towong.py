@@ -13,6 +13,12 @@ from aus_council_scrapers.datascape import DatascapeMeetingsScraper
 
 @register_scraper
 class TowongScraper(DatascapeMeetingsScraper):
+    # Refused from GitHub-hosted runners (403, 405 or a connection timeout,
+    # measured 20 Oct 2026 by running every state shard from a runner) and
+    # reachable from a home connection, so it goes through the residential
+    # egress. See AGENTS.md, "Councils that block GitHub's runners".
+    egress = "residential"
+
     listing_url = (
         "https://www.towong.vic.gov.au/1-council/meetings-and-public-question-time"
         "/council-meetings"

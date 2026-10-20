@@ -24,6 +24,12 @@ def _d(year: int, month: int, day: int) -> datetime.date:
 
 @register_scraper
 class SandstoneScraper(DatascapeMeetingsScraper):
+    # Refused from GitHub-hosted runners (403, 405 or a connection timeout,
+    # measured 20 Oct 2026 by running every state shard from a runner) and
+    # reachable from a home connection, so it goes through the residential
+    # egress. See AGENTS.md, "Councils that block GitHub's runners".
+    egress = "residential"
+
     listing_url = "https://www.sandstone.wa.gov.au/council/meetings"
     category = "council-meetings"
     # Its own share is about 100 s (15 requests at the 7 s crawl delay)

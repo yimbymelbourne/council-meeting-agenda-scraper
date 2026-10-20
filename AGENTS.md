@@ -373,6 +373,7 @@ Production runs on a GitHub-hosted runner, which has an Azure datacentre IP. Som
 | `cardinia` | The same, and shuck passed 0 of 6. | 122 meetings |
 | `bayside_vic` | 403 or a reset connection | 132 meetings |
 | `casey` (`/api/meetings?_format=json`) | An empty body where the JSON should be, behind Varnish with no challenge header we recognise. Measured 20 Oct 2026 by running the whole adapter from a runner. | 100 meetings |
+| 18 regional councils: `balranald`, `blayney`, `buloke`, `cairns`, `eurobodalla`, `flinders_tas`, `glamorgan_spring_bay`, `greater_geelong`, `greater_shepparton`, `halls_creek`, `hawkesbury`, `latrobe_vic`, `launceston`, `manjimup`, `port_stephens`, `sandstone`, `towong`, `warrnambool` | 403 from a firewall, 405 from the Datascape host, a connection timeout, or (Balranald) a Selenium timeout. Measured 20 Oct 2026 by running every state shard once from a runner. | Built and recorded from a home connection |
 
 So these councils go through a proxy on a home machine. Each night council-alerts joins a Tailscale tailnet and sets `RESIDENTIAL_PROXY_URL` to a tinyproxy on that machine. The proxy carries HTTPS `CONNECT` only, and only to an allowlist of council hosts. The infrastructure side is in council-alerts [`docs/residential-egress.md`](https://github.com/yimbymelbourne/council-alerts/blob/main/docs/residential-egress.md).
 

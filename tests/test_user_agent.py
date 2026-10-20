@@ -171,6 +171,13 @@ def test_stripping_the_headless_marker_stays_opt_in():
         "EllistonScraper",
         "KaroondaEastMurrayScraper",
         "OrrorooCarrietonScraper",
+        # Adelaide Plains is on the same platform and Cloudflare zone but reads a
+        # static document table instead of the collection.
+        "AdelaidePlainsScraper",
+        # balranald: Kinsta's bot check served headless Chrome a 102-byte block
+        # page and the stripped string the full listing (88 meetings), from a
+        # home IP on 20 Oct 2026.
+        "BalranaldScraper",
     }, opted_in
     assert SCRAPER_REGISTRY["BanyuleScraper"].strip_headless_user_agent is False
 

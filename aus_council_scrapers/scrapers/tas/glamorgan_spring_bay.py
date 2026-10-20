@@ -49,6 +49,12 @@ def _description(card: Tag) -> list[str]:
 
 @register_scraper
 class GlamorganSpringBayScraper(IonataYearCheck, IonataMeetingsScraper):
+    # Refused from GitHub-hosted runners (403, 405 or a connection timeout,
+    # measured 20 Oct 2026 by running every state shard from a runner) and
+    # reachable from a home connection, so it goes through the residential
+    # egress. See AGENTS.md, "Councils that block GitHub's runners".
+    egress = "residential"
+
     # An empty listing for a year from here on, three months in, raises
     # (see `ionata_year_check.py`).
     archive_starts = 2026
