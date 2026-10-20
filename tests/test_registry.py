@@ -15,12 +15,11 @@ from collections import Counter
 import aus_council_scrapers.scrapers  # noqa: F401  (fills the registry)
 from aus_council_scrapers.base import SCRAPER_REGISTRY
 
-# Decorated, but no `__init__.py` imports them, so they have never run. Each
-# one leaves this list in the change that imports it. The test below fails on
-# a stale entry, so the list cannot outlive its fix.
-KNOWN_UNIMPORTED = {
-    "MooneeValleyScraper",
-}
+# Decorated, but no `__init__.py` imports them, so they have never run. Empty
+# since Moonee Valley was imported; a class added here leaves it in the change
+# that imports it. The test below fails on a stale entry, so the list cannot
+# outlive its fix.
+KNOWN_UNIMPORTED: set[str] = set()
 
 
 def _decorated_classes() -> list[tuple[str, str]]:

@@ -866,6 +866,45 @@ def _merge_split_meetings(results: list[ScraperReturn]) -> list[ScraperReturn]:
 
 
 class InfoCouncilScraper(BaseScraper):
+    # Read the committee cell as InfoCouncil lays it out rather than as one
+    # string. Opt-in, because switching it on rewrites the names in most of
+    # the cassettes recorded before it existed.
+    #
+    # The cell holds the meeting type as bare text and the venue in a <span>
+    # after a <br>, so `cell.text` runs them together: Scenic Rim's meetings
+    # all come out named "Ordinary Council Chambers 82 Brisbane Street
+    # BEAUDESERT QLD 4285". And every supplementary agenda gets a grid row of
+    # its own—14 of Scenic Rim's 26 rows in 2026—named after its parent
+    # with "Supplementary" appended, sometimes with an upload timestamp
+    # ("Council - Supplementary uploaded 12/10/2026 16:27"). Left alone, each
+    # becomes a meeting whose "agenda" is the supplementary paper.
+    #
+    # With this set, the name is the bare text only, the venue goes to
+    # `location`, and a supplementary row loses its agenda (it is not the
+    # agenda) but keeps anything else it carries, which then merges onto the
+    # parent meeting through `_merge_split_meetings` now the names agree.
+    tidy_meeting_rows: bool = False
+
+    # The marker InfoCouncil appends to a supplementary row's committee text,
+    # with the upload stamp and item numbers some councils add after it.
+    # Vincent labels the same thing "Late Items".
+    SUPPLEMENTARY_NAME_REGEX = re.compile(
+        r"\s*-?\s*\b(?:Supplementary|Late Items)\b"
+        r"(?:\s+uploaded\s+\d{1,2}/\d{1,2}/\d{4}\s+\d{1,2}:\d{2})?"
+        r"(?:\s+[\d,]+\b)?",
+        re.IGNORECASE,
+    )
+    # InfoCouncil names supplementary papers <committee>_<date>_AGN_<id>[_AT]
+    # _SUP[_<suffix>], the suffix being item numbers, EXTRA or EMBEDDED. This
+    # catches the rows whose text omits the word: Redland's "Previously
+    # Confidential Information" rows are nothing but these. The chair's copy
+    # of an agenda (_CHAIRMANS[_<suffix>]) is a variant of the real one, not
+    # the agenda itself: Ipswich gives its 5 Nov 2020 Extraordinary Council
+    # one a row of its own, which otherwise becomes a second meeting.
+    SUPPLEMENTARY_FILE_REGEX = re.compile(
+        r"_(?:SUP|CHAIRMANS)(?:_\w*)?\.(?:PDF|HTML?)$", re.I
+    )
+
     def __init__(self, council, state, base_url, infocouncil_url):
         self.infocouncil_url = infocouncil_url
         super().__init__(council, state, base_url)
@@ -1015,6 +1054,15 @@ class InfoCouncilScraper(BaseScraper):
 
                     name = location.text if location else None
 
+                    if self.tidy_meeting_rows:
+                        name, supplementary = self._tidy_committee_name(location)
+                        location_text = self._tidy_location(location_text)
+                        if supplementary or any(
+                            url and self.SUPPLEMENTARY_FILE_REGEX.search(url)
+                            for url in (agenda_url, agenda_html_url)
+                        ):
+                            agenda_url = agenda_html_url = None
+
                     if not agenda_url and not minutes_url:
                         continue
 
@@ -1065,13 +1113,54 @@ class InfoCouncilScraper(BaseScraper):
         results = _merge_split_meetings(results)
 
         if not results:
-            self.logger.info(f"{self.council_name} scraper found no meetings")
+            self.logger.warning(f"{self.council_name} scraper found no meetings")
         else:
             self.logger.info(
                 f"{self.council_name} scraper found {len(results)} meetings"
             )
 
         return results
+
+    def _tidy_committee_name(self, cell) -> tuple[Optional[str], bool]:
+        """The meeting type from a grid committee cell, and whether the row is
+        a supplementary paper rather than the meeting itself.
+
+        Only the cell's own text is the name; the venue sits in a child
+        <span>. Two councils' quirks are smoothed here too, since a name is
+        what lets a supplementary row merge onto its parent: the
+        "Supplementary" marker and its upload stamp come off, and a doubled
+        word goes. Redland's budget meeting is "Special Special Budget
+        Meeting" because InfoCouncil prefixes "Special" to a committee
+        already called "Special Budget Meeting".
+        """
+        if cell is None:
+            return None, False
+
+        own_text = " ".join(
+            part.strip() for part in cell.find_all(string=True, recursive=False)
+        )
+        # A cell with no bare text keeps the old reading rather than no name.
+        name = " ".join((own_text or cell.get_text(" ")).split())
+
+        supplementary = bool(self.SUPPLEMENTARY_NAME_REGEX.search(name))
+        name = self.SUPPLEMENTARY_NAME_REGEX.sub("", name)
+        name = re.sub(r"\b(\w+)(?:\s+\1\b)+", r"\1", name)
+        name = name.strip(" -")
+
+        return name or None, supplementary
+
+    @staticmethod
+    def _tidy_location(location: Optional[str]) -> Optional[str]:
+        """Venue lines joined into one line: "Council Chambers, 82 Brisbane
+        Street, BEAUDESERT QLD 4285", not three lines with raw newlines."""
+        if not location:
+            return None
+        lines = [
+            " ".join(line.split()).rstrip(",")
+            for line in location.splitlines()
+            if line.strip()
+        ]
+        return ", ".join(lines) or None
 
     def _scrape_responsive_rows(self, soup, year: int) -> list[ScraperReturn]:
         """Parse the redesigned InfoCouncil template.
