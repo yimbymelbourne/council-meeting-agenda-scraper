@@ -127,7 +127,15 @@ def test_scraper(scraper_instance: BaseScraper):
     result_path, replay_path = cassette_paths(slug)
     have_cassette = os.path.exists(result_path) and os.path.exists(replay_path)
 
-    if have_cassette and not should_record(slug):
-        _replay(scraper_instance, slug, result_path, replay_path)
-    else:
-        _record(scraper_instance, slug, result_path, replay_path)
+    # The registry holds one shared instance per scraper, and _replay/_record
+    # swap its fetcher. Put the real one back afterwards: other tests read the
+    # registry too (test_user_agent checks Manningham's fetcher), and under
+    # pytest-xdist the order they run in is not fixed.
+    original_fetcher = scraper_instance.fetcher
+    try:
+        if have_cassette and not should_record(slug):
+            _replay(scraper_instance, slug, result_path, replay_path)
+        else:
+            _record(scraper_instance, slug, result_path, replay_path)
+    finally:
+        scraper_instance.fetcher = original_fetcher
