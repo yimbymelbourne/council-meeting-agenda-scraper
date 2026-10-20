@@ -105,6 +105,17 @@ KNOWN_GAPS: dict[str, str] = {
         "most meetings 2020-2022 left out (about 30): papers labelled by "
         "month only, no day published"
     ),
+    # Queensland Resolve tenants whose record starts when the council moved
+    # to Resolve; the earlier papers are on the council's own site.
+    "bundaberg": "2020 to Jul 2022 not read (per-year accordions on the council site)",
+    "charters_towers": "2020 to Oct 2022 not read (council-site archive page)",
+    "gympie": "2020 to Apr 2024 not read (council-site Meetings-Archive)",
+    "hinchinbrook": "2020-2023 minutes not read (council-site Archived-Minutes; no agendas)",
+    "noosa": "2020 to Mar 2023 not read (council-site OpenCities archive)",
+    "toowoomba": (
+        "20 of 22 Ordinary meetings Jun 2020-Mar 2022 and nine 2020-21 specials "
+        "are unpublished in the Resolve API; the tenant host is robots-disallowed"
+    ),
 }
 
 

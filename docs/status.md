@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**195 of 218 councils complete (89%)** — 19 partial, 0 broken, 4 not started.
+**381 of 426 councils complete (89%)** — 41 partial, 0 broken, 4 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -18,215 +18,423 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `adelaide` | 241 | 2020-2026 | 241 | 239 |  |
 | ✅ | `adelaide_hills` | 392 | 2020-2026 | 392 | 309 |  |
 | ✅ | `albany` | 93 | 2020-2026 | 93 | 92 |  |
+| ✅ | `albury` | 86 | 2024-2026 | 86 | 61 |  |
+| ✅ | `alexandrina` | 224 | 2020-2026 | 224 | 221 |  |
 | ✅ | `alice_springs` | 141 | 2020-2026 | 141 | 118 |  |
 | ✅ | `armadale` | 472 | 2020-2026 | 472 | 470 |  |
 | ✅ | `armidale` | 60 | 2022-2026 | 60 | 60 |  |
+| ✅ | `ashburton` | 92 | 2020-2026 | 92 | 91 |  |
+| ✅ | `augusta_margaret_river` | 130 | 2020-2026 | 130 | 128 |  |
+| ✅ | `ballina` | 180 | 2022-2026 | 180 | 179 |  |
+| ✅ | `balonne` | 47 | 2023-2026 | 47 | 45 |  |
+| 🟡 | `banana` | 10 | 2026-2026 | 10 | 10 | only 1 year(s) |
 | ✅ | `banyule` | 75 | 2022-2026 | 75 | 75 |  |
+| 🟡 | `barcaldine` | 19 | 2025-2026 | 19 | 18 | only 2 year(s) |
 | ✅ | `barossa` | 224 | 2022-2026 | 224 | 216 |  |
+| ✅ | `barunga_west` | 145 | 2020-2026 | 145 | 143 |  |
+| ✅ | `bass_coast` | 89 | 2020-2026 | 89 | 87 |  |
 | ✅ | `bassendean` | 100 | 2020-2026 | 100 | 96 |  |
+| ✅ | `baw_baw` | 144 | 2020-2026 | 144 | 144 |  |
 | ✅ | `bayside_nsw` | 649 | 2020-2026 | 642 | 557 |  |
 | ✅ | `bayside_vic` | 132 | 2021-2026 | 132 | 128 |  |
 | ✅ | `bayswater` | 339 | 2020-2026 | 339 | 332 |  |
+| 🟡 | `bega_valley` | 12 | 2026-2026 | 12 | 6 | only 1 year(s) |
+| ✅ | `bellingen` | 90 | 2020-2026 | 90 | 89 |  |
 | ✅ | `belmont` | 115 | 2021-2026 | 115 | 114 |  |
+| ✅ | `berri_barmera` | 172 | 2020-2026 | 172 | 171 |  |
+| ✅ | `berrigan` | 30 | 2024-2026 | 30 | 25 |  |
+| ✅ | `beverley` | 68 | 2021-2026 | 68 | 68 |  |
 | 🟡 | `blackall_tambo` | 27 | 2024-2026 | 27 | 27 | about 59 month-only meetings left out: every meeting of 2020-2023, and a few a year since |
 | ✅ | `blacktown` | 92 | 2021-2026 | 92 | 87 |  |
 | ✅ | `bland` | 81 | 2020-2026 | 81 | 79 |  |
+| ✅ | `boddington` | 67 | 2022-2026 | 67 | 67 |  |
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
 | 🟡 | `boulia` | 38 | 2024-2026 | 38 | 38 | every 2020-2023 paper gives only its month, so those years are left out |
 | ✅ | `boyup_brook` | 117 | 2020-2026 | 117 | 116 |  |
+| ✅ | `bridgetown_greenbushes` | 125 | 2020-2026 | 125 | 120 |  |
 | ✅ | `brighton_tas` | 146 | 2020-2026 | 146 | 144 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
 | 🟡 | `brisbane` | 72 | 2020-2026 | 72 | 66 | papers before mid-2025 are Word files, which are not emitted: 6 meetings in 2020-2023, none in 2024 |
 | ✅ | `broken_hill` | 96 | 2020-2026 | 96 | 86 |  |
+| ✅ | `brookton` | 96 | 2020-2026 | 96 | 96 |  |
+| ✅ | `broome` | 148 | 2020-2026 | 147 | 147 |  |
+| ✅ | `broomehill_tambellup` | 90 | 2020-2026 | 90 | 87 |  |
+| ✅ | `bruce_rock` | 93 | 2020-2026 | 93 | 91 |  |
 | ✅ | `bulloo` | 84 | 2021-2026 | 84 | 82 |  |
+| 🟡 | `bundaberg` | 55 | 2022-2026 | 55 | 55 | 2020 to Jul 2022 not read (per-year accordions on the council site) |
 | ✅ | `burdekin` | 152 | 2020-2026 | 152 | 151 |  |
 | ✅ | `burke` | 111 | 2020-2026 | 111 | 110 |  |
 | ✅ | `burnside` | 209 | 2020-2026 | 209 | 206 |  |
 | ✅ | `burwood` | 166 | 2020-2026 | 162 | 139 |  |
+| 🟡 | `busselton` | 100 | 2025-2026 | 100 | 99 | only 2 year(s) |
+| ✅ | `byron` | 129 | 2020-2026 | 129 | 129 |  |
+| ✅ | `cabonne` | 42 | 2020-2026 | 42 | 40 |  |
 | ✅ | `cambridge` | 166 | 2020-2026 | 166 | 165 |  |
 | ✅ | `camden` | 76 | 2020-2026 | 76 | 75 |  |
+| ✅ | `campaspe` | 98 | 2020-2026 | 98 | 97 |  |
 | ✅ | `campbelltown` | 95 | 2020-2026 | 95 | 95 |  |
 | ✅ | `campbelltown_sa` | 462 | 2020-2026 | 462 | 459 |  |
 | ✅ | `canada_bay` | 101 | 2018-2026 | 101 | 100 |  |
 | ✅ | `canning` | 213 | 2020-2026 | 213 | 137 |  |
 | ✅ | `canterbury_bankstown` | 152 | 2020-2026 | 152 | 150 |  |
 | ✅ | `cardinia` | 122 | 2020-2026 | 121 | 120 |  |
+| ✅ | `carnarvon` | 126 | 2020-2026 | 126 | 124 |  |
 | ✅ | `casey` | 100 | 2020-2026 | 100 | 99 |  |
+| ✅ | `cassowary_coast` | 120 | 2020-2026 | 120 | 117 |  |
 | ✅ | `ceduna` | 153 | 2020-2026 | 153 | 141 |  |
+| ✅ | `central_coast_nsw` | 266 | 2021-2026 | 266 | 264 |  |
 | ✅ | `central_coast_tas` | 109 | 2020-2026 | 109 | 108 |  |
 | ✅ | `central_darling` | 64 | 2021-2026 | 64 | 63 |  |
 | ✅ | `central_goldfields` | 64 | 2022-2026 | 64 | 59 |  |
+| ✅ | `cessnock` | 78 | 2020-2026 | 78 | 73 |  |
+| ✅ | `chapman_valley` | 82 | 2020-2026 | 82 | 80 |  |
 | ✅ | `charles_sturt` | 256 | 2020-2026 | 256 | 252 |  |
+| 🟡 | `charters_towers` | 54 | 2022-2026 | 54 | 54 | 2020 to Oct 2022 not read (council-site archive page) |
+| ✅ | `chittering` | 86 | 2020-2026 | 86 | 85 |  |
+| ✅ | `circular_head` | 92 | 2020-2026 | 92 | 90 |  |
+| ✅ | `clare_gilbert_valleys` | 267 | 2020-2026 | 267 | 260 |  |
 | ✅ | `claremont` | 234 | 2020-2026 | 234 | 229 |  |
 | ✅ | `clarence` | 135 | 2020-2026 | 135 | 135 |  |
+| ✅ | `clarence_valley` | 96 | 2020-2026 | 96 | 95 |  |
+| ✅ | `cleve` | 137 | 2020-2026 | 137 | 130 |  |
+| ✅ | `cloncurry` | 94 | 2021-2026 | 94 | 94 |  |
 | ✅ | `cockburn` | 160 | 2020-2026 | 160 | 158 |  |
+| ✅ | `coffs_harbour` | 65 | 2023-2026 | 65 | 64 |  |
+| ✅ | `colac_otway` | 155 | 2020-2026 | 155 | 154 |  |
+| ✅ | `coober_pedy` | 133 | 2020-2026 | 133 | 126 |  |
+| ✅ | `cook` | 82 | 2022-2026 | 82 | 81 |  |
+| ✅ | `coolgardie` | 106 | 2020-2026 | 106 | 106 |  |
+| ✅ | `coorong` | 233 | 2020-2026 | 233 | 231 |  |
+| ✅ | `coorow` | 72 | 2022-2026 | 70 | 69 |  |
+| ✅ | `cootamundra_gundagai` | 107 | 2020-2026 | 105 | 106 |  |
+| ✅ | `copper_coast` | 158 | 2020-2026 | 158 | 152 |  |
+| ✅ | `corangamite` | 90 | 2020-2026 | 90 | 89 |  |
+| ✅ | `corrigin` | 41 | 2022-2026 | 41 | 31 |  |
 | ✅ | `cottesloe` | 116 | 2020-2026 | 116 | 116 |  |
+| 🟡 | `cowra` | 75 | 2024-2026 | 75 | 0 | no minutes on any past meeting |
 | ✅ | `croydon` | 93 | 2020-2026 | 93 | 93 |  |
 | 🟡 | `cuballing` | 29 | 2020-2026 | 29 | 27 | Ordinary meetings 2020-2024 left out bar one (about 55): papers labelled by month only, no day published |
+| ✅ | `cue` | 96 | 2020-2026 | 96 | 93 |  |
 | ✅ | `cumberland` | 329 | 2020-2026 | 311 | 229 |  |
+| ✅ | `cunderdin` | 87 | 2020-2026 | 87 | 86 |  |
+| ✅ | `dalwallinu` | 89 | 2020-2026 | 89 | 88 |  |
+| ✅ | `dardanup` | 107 | 2020-2026 | 107 | 106 |  |
 | ✅ | `darebin` | 84 | 2022-2026 | 84 | 79 |  |
 | ✅ | `darwin` | 390 | 2020-2026 | 390 | 378 |  |
+| ✅ | `denmark` | 105 | 2020-2026 | 105 | 103 |  |
+| ✅ | `derby_west_kimberley` | 91 | 2020-2026 | 91 | 90 |  |
 | ✅ | `derwent_valley` | 102 | 2020-2026 | 102 | 98 |  |
 | ✅ | `devonport` | 115 | 2020-2026 | 115 | 114 |  |
 | ✅ | `diamantina` | 99 | 2020-2026 | 99 | 99 |  |
+| ✅ | `donnybrook_balingup` | 114 | 2020-2026 | 114 | 114 |  |
 | ✅ | `dorset` | 81 | 2021-2026 | 81 | 80 |  |
+| ✅ | `dowerin` | 105 | 2020-2026 | 105 | 103 |  |
+| 🟡 | `dubbo` | 23 | 2025-2026 | 23 | 23 | only 2 year(s) |
 | ✅ | `dundas` | 104 | 2020-2026 | 104 | 102 |  |
 | ✅ | `dungog` | 94 | 2020-2026 | 94 | 93 |  |
 | ✅ | `east_fremantle` | 190 | 2020-2026 | 190 | 187 |  |
 | ✅ | `east_pilbara` | 89 | 2020-2026 | 89 | 86 |  |
+| ✅ | `edward_river` | 93 | 2020-2026 | 93 | 92 |  |
+| ✅ | `elliston` | 122 | 2020-2026 | 122 | 117 |  |
+| ✅ | `esperance` | 188 | 2020-2026 | 188 | 187 |  |
+| ✅ | `exmouth` | 81 | 2020-2026 | 81 | 80 |  |
 | ✅ | `fairfield` | 259 | 2020-2026 | 259 | 258 |  |
+| ✅ | `federation` | 67 | 2022-2026 | 67 | 66 |  |
 | 🟡 | `flinders_qld` | 50 | 2020-2026 | 50 | 49 | most ordinary meetings of 2020-2023 are labelled by month only, with no day in the filename either, and are left out |
+| ✅ | `flinders_ranges` | 107 | 2020-2026 | 107 | 103 |  |
 | ✅ | `franklin_harbour` | 120 | 2020-2026 | 120 | 118 |  |
 | ✅ | `frankston` | 123 | 2020-2026 | 123 | 123 |  |
 | ✅ | `fremantle` | 260 | 2020-2026 | 260 | 258 |  |
+| ✅ | `gannawarra` | 89 | 2020-2026 | 89 | 87 |  |
 | ✅ | `gawler` | 416 | 2020-2026 | 416 | 400 |  |
 | ✅ | `george_town` | 75 | 2021-2026 | 75 | 73 |  |
 | ✅ | `georges_river` | 632 | 2020-2026 | 630 | 571 |  |
 | ✅ | `gilgandra` | 83 | 2020-2026 | 83 | 81 |  |
 | ✅ | `gladstone` | 67 | 2024-2026 | 67 | 67 |  |
+| 🟡 | `glamorgan_spring_bay` | 9 | 2026-2026 | 9 | 8 | only 1 year(s) |
 | ✅ | `glen_eira` | 130 | 2020-2026 | 130 | 130 |  |
+| ✅ | `glen_innes_severn` | 49 | 2023-2026 | 49 | 48 |  |
+| ✅ | `glenelg` | 88 | 2020-2026 | 88 | 87 |  |
 | ✅ | `glenorchy` | 164 | 2020-2026 | 164 | 164 |  |
+| ✅ | `gnowangerup` | 95 | 2020-2026 | 95 | 95 |  |
 | ✅ | `gold_coast` | 180 | 2020-2026 | 180 | 176 |  |
 | ✅ | `goondiwindi` | 91 | 2020-2026 | 91 | 91 |  |
 | ✅ | `gosnells` | 651 | 2001-2026 | 651 | 650 |  |
+| 🟡 | `goulburn_mulwaree` | 24 | 2025-2026 | 24 | 23 | only 2 year(s) |
+| ✅ | `goyder` | 94 | 2020-2026 | 94 | 91 |  |
+| ✅ | `grant` | 180 | 2020-2026 | 180 | 177 |  |
 | ✅ | `greater_dandenong` | 144 | 2020-2026 | 144 | 143 |  |
+| ✅ | `greater_geraldton` | 90 | 2020-2026 | 90 | 90 |  |
+| ✅ | `greater_hume` | 82 | 2020-2026 | 82 | 81 |  |
+| ✅ | `griffith` | 471 | 2020-2026 | 419 | 465 |  |
+| 🟡 | `groote_archipelago` | 39 | 2025-2026 | 39 | 36 | only 2 year(s) |
+| ✅ | `gunnedah` | 63 | 2023-2026 | 63 | 62 |  |
 | ✅ | `gwydir` | 91 | 2020-2026 | 91 | 88 |  |
+| 🟡 | `gympie` | 39 | 2024-2026 | 39 | 39 | 2020 to Apr 2024 not read (council-site Meetings-Archive) |
 | ✅ | `halls_creek` | 83 | 2020-2026 | 83 | 73 |  |
 | ✅ | `hepburn` | 102 | 2020-2026 | 102 | 101 |  |
+| 🟡 | `hilltops` | 13 | 2025-2026 | 13 | 13 | only 2 year(s) |
+| 🟡 | `hinchinbrook` | 40 | 2024-2026 | 40 | 40 | 2020-2023 minutes not read (council-site Archived-Minutes; no agendas) |
+| ✅ | `hindmarsh` | 91 | 2020-2026 | 91 | 90 |  |
 | ✅ | `hobart` | 996 | 2016-2026 | 996 | 967 |  |
 | ✅ | `hobsons_bay` | 53 | 2022-2026 | 53 | 51 |  |
 | ✅ | `holdfast_bay` | 437 | 2020-2026 | 437 | 429 |  |
 | ✅ | `hope_vale` | 94 | 2020-2026 | 94 | 93 |  |
 | ✅ | `hornsby` | 291 | 2020-2026 | 288 | 143 |  |
+| ✅ | `horsham` | 99 | 2020-2026 | 99 | 99 |  |
 | ✅ | `hume` | 153 | 2020-2026 | 153 | 151 |  |
 | ✅ | `hunters_hill` | 90 | 2020-2026 | 90 | 85 |  |
+| 🟡 | `indigo` | 21 | 2025-2026 | 21 | 21 | only 2 year(s) |
 | ✅ | `inner_west` | 306 | 2020-2026 | 297 | 203 |  |
+| ✅ | `inverell` | 25 | 2024-2026 | 25 | 24 |  |
 | ✅ | `ipswich` | 691 | 2020-2026 | 549 | 655 |  |
+| ✅ | `isaac` | 159 | 2020-2026 | 159 | 155 |  |
+| ✅ | `jerramungup` | 80 | 2020-2026 | 80 | 79 |  |
 | ✅ | `joondalup` | 184 | 2020-2026 | 184 | 108 |  |
 | ✅ | `kalamunda` | 202 | 2020-2026 | 202 | 123 |  |
+| ✅ | `kalgoorlie_boulder` | 124 | 2020-2026 | 124 | 120 |  |
 | ✅ | `kangaroo_island` | 269 | 2020-2026 | 269 | 120 |  |
+| ✅ | `karoonda_east_murray` | 179 | 2020-2026 | 179 | 111 |  |
+| ✅ | `katanning` | 97 | 2020-2026 | 97 | 94 |  |
+| ✅ | `katherine` | 135 | 2020-2026 | 135 | 123 |  |
+| ✅ | `kellerberrin` | 68 | 2020-2026 | 68 | 66 |  |
 | ✅ | `kempsey` | 78 | 2020-2026 | 78 | 76 |  |
+| ✅ | `kentish` | 94 | 2020-2026 | 94 | 92 |  |
+| ✅ | `kiama` | 108 | 2020-2026 | 108 | 107 |  |
+| ✅ | `kimba` | 155 | 2020-2026 | 155 | 150 |  |
 | ✅ | `kingborough` | 165 | 2020-2026 | 165 | 163 |  |
 | ✅ | `kingston` | 147 | 2020-2026 | 147 | 144 |  |
+| ✅ | `kingston_sa` | 119 | 2020-2026 | 119 | 116 |  |
 | ✅ | `knox` | 165 | 2020-2026 | 165 | 163 |  |
 | ✅ | `kojonup` | 104 | 2020-2026 | 104 | 101 |  |
+| ✅ | `kondinin` | 65 | 2022-2026 | 65 | 60 |  |
 | ✅ | `koorda` | 97 | 2020-2026 | 97 | 96 |  |
+| ✅ | `kulin` | 83 | 2020-2026 | 83 | 81 |  |
 | ✅ | `kuringgai` | 313 | 2020-2026 | 296 | 259 |  |
 | ✅ | `kwinana` | 188 | 2020-2026 | 188 | 186 |  |
+| 🟡 | `kyogle` | 16 | 2025-2026 | 16 | 16 | only 2 year(s) |
+| ✅ | `lachlan` | 81 | 2020-2026 | 81 | 81 |  |
+| ✅ | `lake_grace` | 87 | 2020-2026 | 87 | 87 |  |
 | 🟡 | `lake_macquarie` | 272 | 2020-2026 | 272 | 0 | no minutes on any past meeting |
 | ✅ | `lane_cove` | 161 | 2020-2026 | 159 | 150 |  |
+| ✅ | `latrobe_tas` | 99 | 2020-2026 | 99 | 99 |  |
+| ✅ | `launceston` | 164 | 2020-2026 | 164 | 163 |  |
+| ✅ | `leeton` | 72 | 2021-2026 | 72 | 72 |  |
 | ✅ | `leonora` | 89 | 2020-2026 | 89 | 88 |  |
 | ✅ | `light_regional` | 168 | 2020-2026 | 168 | 167 |  |
+| ✅ | `lismore` | 182 | 2020-2026 | 181 | 160 |  |
 | ✅ | `litchfield` | 123 | 2020-2026 | 123 | 120 |  |
+| ✅ | `lithgow` | 90 | 2020-2026 | 90 | 89 |  |
 | ✅ | `liverpool` | 200 | 2020-2026 | 194 | 135 |  |
+| ✅ | `liverpool_plains` | 33 | 2024-2026 | 33 | 33 |  |
 | ✅ | `livingstone` | 183 | 2020-2026 | 183 | 183 |  |
 | ✅ | `lockyer_valley` | 104 | 2020-2026 | 103 | 103 |  |
 | ✅ | `loddon` | 92 | 2020-2026 | 92 | 91 |  |
 | ✅ | `logan` | 458 | 2020-2026 | 458 | 454 |  |
 | ✅ | `longreach` | 61 | 2022-2026 | 61 | 60 |  |
+| ✅ | `lower_eyre_peninsula` | 183 | 2020-2026 | 183 | 178 |  |
+| ✅ | `loxton_waikerie` | 142 | 2020-2026 | 142 | 138 |  |
+| ✅ | `macdonnell` | 48 | 2020-2026 | 48 | 48 |  |
 | ✅ | `macedon_ranges` | 78 | 2022-2026 | 78 | 78 |  |
+| 🟡 | `mackay` | 10 | 2026-2026 | 10 | 10 | only 1 year(s) |
+| ✅ | `maitland` | 129 | 2020-2026 | 128 | 128 |  |
 | ✅ | `mandurah` | 159 | 2020-2026 | 159 | 158 |  |
 | ✅ | `manjimup` | 102 | 2020-2026 | 102 | 102 |  |
 | ✅ | `manningham` | 53 | 2021-2026 | 53 | 37 |  |
+| ✅ | `maranoa` | 246 | 2020-2026 | 244 | 245 |  |
 | ✅ | `maribyrnong` | 133 | 2020-2026 | 133 | 132 |  |
 | ✅ | `marion` | 345 | 2020-2026 | 345 | 345 |  |
+| ✅ | `maroondah` | 84 | 2020-2026 | 84 | 83 |  |
 | 🟡 | `mckinlay` | 49 | 2020-2026 | 49 | 49 | ordinary meetings are labelled by month only and left out (about 69); mostly special meetings are emitted |
 | ✅ | `meander_valley` | 92 | 2020-2026 | 92 | 91 |  |
+| ✅ | `meekatharra` | 118 | 2020-2026 | 118 | 114 |  |
 | ✅ | `melbourne` | 224 | 2020-2026 | 224 | 220 |  |
 | ✅ | `melton` | 92 | 2020-2026 | 92 | 89 |  |
 | ✅ | `melville` | 224 | 2020-2026 | 224 | 136 |  |
+| ✅ | `menzies` | 102 | 2020-2026 | 102 | 101 |  |
+| ✅ | `merredin` | 109 | 2020-2026 | 109 | 106 |  |
 | ✅ | `merri_bek` | 142 | 2016-2026 | 128 | 110 |  |
+| ✅ | `mid_coast` | 101 | 2020-2026 | 101 | 101 |  |
+| ✅ | `mid_murray` | 137 | 2020-2026 | 137 | 135 |  |
+| ✅ | `mid_western` | 89 | 2020-2026 | 89 | 88 |  |
+| ✅ | `mildura` | 118 | 2020-2026 | 118 | 117 |  |
 | ✅ | `mitcham` | 248 | 2020-2026 | 248 | 236 |  |
+| ✅ | `mitchell` | 163 | 2020-2026 | 163 | 160 |  |
+| ✅ | `moira` | 96 | 2020-2026 | 96 | 96 |  |
 | ✅ | `monash` | 72 | 2021-2026 | 72 | 70 |  |
 | ✅ | `moonee_valley` | 211 | 2018-2026 | 211 | 204 |  |
 | 🟡 | `moora` | 24 | 2025-2026 | 24 | 22 | only 2 year(s) |
 | ✅ | `morawa` | 98 | 2020-2026 | 98 | 97 |  |
+| ✅ | `moree_plains` | 53 | 2023-2026 | 53 | 52 |  |
 | ✅ | `moreton_bay` | 154 | 2020-2026 | 154 | 154 |  |
 | ✅ | `mornington_peninsula` | 145 | 2022-2026 | 145 | 141 |  |
 | ✅ | `mosman` | 203 | 2019-2026 | 203 | 200 |  |
 | ✅ | `mosman_park` | 208 | 2020-2026 | 208 | 165 |  |
+| ✅ | `mount_alexander` | 84 | 2020-2026 | 84 | 83 |  |
 | 🟡 | `mount_barker` | 106 | 2020-2026 | 106 | 104 | assessment panel before Sep 2026 not read (council-domain list behind Cloudflare) |
 | ✅ | `mount_isa` | 54 | 2023-2026 | 54 | 52 |  |
+| ✅ | `mount_remarkable` | 122 | 2020-2026 | 122 | 119 |  |
+| ✅ | `moyne` | 36 | 2024-2026 | 36 | 36 |  |
+| ✅ | `mukinbudin` | 71 | 2021-2026 | 71 | 69 |  |
 | ✅ | `mundaring` | 114 | 2020-2026 | 114 | 112 |  |
 | 🟡 | `murchison` | 29 | 2020-2026 | 29 | 27 | Ordinary meetings 2020-2024 left out bar Apr-Jun 2021 (about 50): papers labelled by month only, no day published |
 | ✅ | `murray` | 67 | 2021-2026 | 67 | 66 |  |
+| ✅ | `murray_bridge` | 178 | 2020-2026 | 178 | 174 |  |
+| ✅ | `murray_river` | 102 | 2020-2026 | 102 | 101 |  |
+| ✅ | `murrindindi` | 101 | 2020-2026 | 101 | 101 |  |
 | ✅ | `murrumbidgee` | 44 | 2023-2026 | 44 | 44 |  |
 | ✅ | `murweh` | 66 | 2022-2026 | 66 | 65 |  |
+| ✅ | `nambucca_valley` | 158 | 2020-2026 | 158 | 134 |  |
 | ✅ | `nannup` | 120 | 2020-2026 | 120 | 116 |  |
+| ✅ | `napranum` | 73 | 2022-2026 | 73 | 71 |  |
+| ✅ | `naracoorte_lucindale` | 249 | 2020-2026 | 249 | 248 |  |
+| ✅ | `narembeen` | 87 | 2020-2026 | 87 | 85 |  |
+| ✅ | `narrabri` | 91 | 2020-2026 | 91 | 89 |  |
 | ✅ | `narrandera` | 27 | 2024-2026 | 27 | 26 |  |
 | ✅ | `narrogin` | 85 | 2020-2026 | 85 | 85 |  |
 | ✅ | `nedlands` | 148 | 2020-2026 | 148 | 144 |  |
+| ✅ | `newcastle` | 105 | 2022-2026 | 105 | 99 |  |
 | ✅ | `nillumbik` | 121 | 2020-2026 | 121 | 119 |  |
+| 🟡 | `noosa` | 134 | 2023-2026 | 134 | 134 | 2020 to Mar 2023 not read (council-site OpenCities archive) |
 | ✅ | `north_sydney` | 124 | 2020-2026 | 124 | 122 |  |
 | ✅ | `northam` | 120 | 2020-2026 | 120 | 119 |  |
 | ✅ | `northampton` | 93 | 2020-2026 | 93 | 91 |  |
+| ✅ | `northern_areas` | 142 | 2020-2026 | 142 | 141 |  |
 | ✅ | `northern_beaches` | 143 | 2016-2026 | 143 | 128 |  |
+| ✅ | `northern_grampians` | 100 | 2020-2026 | 100 | 100 |  |
 | ✅ | `northern_midlands` | 101 | 2020-2026 | 101 | 100 |  |
 | 🟡 | `northern_peninsula_area` | 87 | 2020-2026 | 87 | 84 | month-only papers with no day anywhere are left out: most of 2021, and several special and Trustee meetings each year (Feb, Mar, Apr, May and Aug 2025; Jun-Oct 2024) |
 | ✅ | `norwood_payneham_st_peters` | 126 | 2024-2026 | 126 | 123 |  |
 | ✅ | `onkaparinga` | 197 | 2020-2026 | 197 | 197 |  |
+| ✅ | `orange` | 544 | 2020-2026 | 544 | 537 |  |
+| ✅ | `orroroo_carrieton` | 106 | 2020-2026 | 106 | 104 |  |
+| 🟡 | `palm_island` | 10 | 2026-2026 | 10 | 10 | only 1 year(s) |
 | ✅ | `palmerston` | 159 | 2020-2026 | 159 | 158 |  |
+| ✅ | `parkes` | 153 | 2020-2026 | 144 | 133 |  |
 | ✅ | `paroo` | 107 | 2020-2026 | 107 | 107 |  |
 | ✅ | `parramatta` | 778 | 2008-2026 | 778 | 716 |  |
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |
 | ✅ | `peppermint_grove` | 85 | 2020-2026 | 85 | 84 |  |
+| ✅ | `perenjori` | 102 | 2020-2026 | 102 | 101 |  |
 | ✅ | `perth` | 199 | 2020-2026 | 199 | 133 |  |
 | ✅ | `peterborough` | 147 | 2020-2026 | 147 | 135 |  |
+| ✅ | `pingelly` | 95 | 2020-2026 | 95 | 92 |  |
+| ✅ | `plantagenet` | 95 | 2020-2026 | 95 | 95 |  |
 | ✅ | `playford` | 461 | 2020-2026 | 461 | 358 |  |
+| 🟡 | `pormpuraaw` | 12 | 2026-2026 | 12 | 11 | only 1 year(s) |
 | ✅ | `port_adelaide_enfield` | 204 | 2020-2026 | 204 | 203 |  |
+| ✅ | `port_augusta` | 339 | 2020-2026 | 339 | 179 |  |
+| ✅ | `port_hedland` | 105 | 2020-2026 | 105 | 103 |  |
+| ✅ | `port_lincoln` | 294 | 2020-2026 | 294 | 218 |  |
+| ✅ | `port_macquarie_hastings` | 184 | 2020-2026 | 184 | 183 |  |
 | ✅ | `port_phillip` | 128 | 2022-2026 | 128 | 121 |  |
+| ✅ | `port_pirie` | 417 | 2020-2026 | 417 | 305 |  |
 | ✅ | `prospect` | 452 | 2020-2026 | 452 | 293 |  |
 | ✅ | `pyrenees` | 94 | 2020-2026 | 94 | 93 |  |
+| ✅ | `queanbeyan_palerang` | 158 | 2020-2026 | 158 | 157 |  |
 | ✅ | `queenscliffe` | 105 | 2020-2026 | 105 | 93 |  |
 | ✅ | `randwick` | 429 | 2020-2026 | 424 | 360 |  |
+| ✅ | `ravensthorpe` | 100 | 2020-2026 | 100 | 99 |  |
 | ✅ | `redland` | 110 | 2020-2026 | 86 | 109 |  |
+| ✅ | `renmark_paringa` | 183 | 2020-2026 | 183 | 181 |  |
+| ✅ | `richmond` | 51 | 2023-2026 | 51 | 37 |  |
+| ✅ | `robe` | 158 | 2020-2026 | 158 | 156 |  |
+| ✅ | `rockhampton` | 211 | 2020-2026 | 211 | 211 |  |
 | 🟡 | `rockingham` | 26 | 2026-2026 | 26 | 24 | only 1 year(s) |
+| ✅ | `roxby_downs` | 132 | 2020-2026 | 132 | 131 |  |
 | ✅ | `ryde` | 96 | 2020-2026 | 96 | 94 |  |
 | ✅ | `salisbury` | 820 | 2020-2026 | 820 | 803 |  |
 | ✅ | `sandstone` | 85 | 2020-2026 | 85 | 83 |  |
 | ✅ | `scenic_rim` | 140 | 2020-2026 | 140 | 140 |  |
 | ✅ | `serpentine_jarrahdale` | 117 | 2020-2026 | 117 | 116 |  |
+| ✅ | `shellharbour` | 101 | 2020-2026 | 101 | 101 |  |
+| ✅ | `shoalhaven` | 581 | 2020-2026 | 579 | 575 |  |
+| ✅ | `singleton` | 90 | 2020-2026 | 89 | 87 |  |
 | ✅ | `snowy_monaro` | 103 | 2020-2026 | 103 | 101 |  |
 | ✅ | `snowy_valleys` | 92 | 2020-2026 | 92 | 90 |  |
 | ✅ | `somerset` | 157 | 2020-2026 | 157 | 157 |  |
 | ✅ | `sorell` | 214 | 2020-2026 | 214 | 209 |  |
 | ✅ | `south_burnett` | 219 | 2020-2026 | 219 | 218 |  |
 | ✅ | `south_perth` | 136 | 2020-2026 | 136 | 135 |  |
+| ✅ | `southern_downs` | 139 | 2020-2026 | 139 | 139 |  |
+| ✅ | `southern_grampians` | 94 | 2020-2026 | 94 | 93 |  |
+| ✅ | `southern_mallee` | 101 | 2020-2026 | 101 | 100 |  |
 | ✅ | `stirling` | 226 | 2021-2026 | 226 | 225 |  |
 | ✅ | `stonnington` | 142 | 2020-2026 | 142 | 137 |  |
 | ✅ | `strathfield` | 97 | 2020-2026 | 97 | 90 |  |
+| ✅ | `streaky_bay` | 187 | 2020-2026 | 187 | 177 |  |
 | ✅ | `subiaco` | 165 | 2021-2026 | 165 | 108 |  |
 | ✅ | `sunshine_coast` | 98 | 2020-2026 | 98 | 98 |  |
+| ✅ | `surf_coast` | 112 | 2020-2026 | 112 | 112 |  |
 | ✅ | `sutherland` | 290 | 2020-2026 | 290 | 288 |  |
+| ✅ | `swan_hill` | 107 | 2020-2026 | 107 | 105 |  |
 | ✅ | `sydney` | 247 | 2020-2026 | 247 | 246 |  |
+| ✅ | `tammin` | 89 | 2020-2026 | 89 | 82 |  |
+| ✅ | `tatiara` | 114 | 2020-2026 | 114 | 112 |  |
 | ✅ | `tea_tree_gully` | 136 | 2022-2026 | 136 | 132 |  |
 | 🟡 | `temora` | 37 | 2020-2026 | 37 | 33 | about 39 month-only minutes left out, most since 2023; only the latest agenda is online |
 | ✅ | `the_hills` | 232 | 2021-2026 | 232 | 231 |  |
+| ✅ | `tiwi_islands` | 83 | 2020-2026 | 83 | 79 |  |
+| ✅ | `toodyay` | 136 | 2020-2026 | 136 | 136 |  |
+| 🟡 | `toowoomba` | 211 | 2020-2026 | 211 | 211 | 20 of 22 Ordinary meetings Jun 2020-Mar 2022 and nine 2020-21 specials are unpublished in the Resolve API; the tenant host is robots-disallowed |
 | ✅ | `torres` | 123 | 2020-2026 | 123 | 123 |  |
+| ✅ | `townsville` | 149 | 2020-2026 | 149 | 149 |  |
 | ✅ | `towong` | 97 | 2021-2026 | 97 | 97 |  |
+| ✅ | `trayning` | 82 | 2020-2026 | 82 | 78 |  |
+| ✅ | `tumby_bay` | 191 | 2020-2026 | 191 | 185 |  |
+| ✅ | `tweed` | 201 | 2020-2026 | 201 | 198 |  |
 | ✅ | `unley` | 173 | 2020-2026 | 173 | 172 |  |
+| ✅ | `upper_gascoyne` | 80 | 2020-2026 | 80 | 74 |  |
+| ✅ | `upper_hunter` | 67 | 2021-2026 | 67 | 61 |  |
+| ✅ | `uralla` | 105 | 2020-2026 | 105 | 105 |  |
+| ✅ | `victor_harbor` | 788 | 2020-2026 | 788 | 492 |  |
 | ✅ | `victoria_park` | 119 | 2020-2026 | 119 | 118 |  |
+| ✅ | `victoria_plains` | 96 | 2020-2026 | 96 | 95 |  |
 | ✅ | `vincent` | 199 | 2020-2026 | 181 | 132 |  |
 | ✅ | `wagait` | 81 | 2020-2026 | 81 | 79 |  |
+| ✅ | `wagga_wagga` | 226 | 2020-2026 | 188 | 223 |  |
+| ✅ | `wakefield` | 129 | 2020-2026 | 129 | 123 |  |
+| ✅ | `walgett` | 25 | 2024-2026 | 25 | 23 |  |
 | ✅ | `walkerville` | 452 | 2020-2026 | 452 | 316 |  |
+| ✅ | `wandering` | 94 | 2020-2026 | 94 | 90 |  |
+| ✅ | `wangaratta` | 90 | 2020-2026 | 90 | 89 |  |
 | ✅ | `wanneroo` | 215 | 2020-2026 | 215 | 138 |  |
 | ✅ | `waratah_wynyard` | 80 | 2021-2026 | 80 | 78 |  |
+| ✅ | `waroona` | 88 | 2020-2026 | 88 | 87 |  |
+| ✅ | `warrumbungle` | 70 | 2021-2026 | 70 | 69 |  |
+| ✅ | `wattle_range` | 165 | 2020-2026 | 165 | 163 |  |
 | ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
+| ✅ | `weddin` | 65 | 2022-2026 | 65 | 65 |  |
 | 🟡 | `west_coast` | 12 | 2026-2026 | 12 | 12 | only 1 year(s) |
+| ✅ | `west_daly` | 93 | 2023-2026 | 93 | 80 |  |
+| ✅ | `west_tamar` | 36 | 2024-2026 | 36 | 35 |  |
 | ✅ | `west_torrens` | 127 | 2020-2026 | 127 | 124 |  |
+| ✅ | `west_wimmera` | 107 | 2020-2026 | 107 | 103 |  |
+| ✅ | `western_downs` | 101 | 2020-2026 | 101 | 98 |  |
 | ✅ | `westonia` | 78 | 2020-2026 | 78 | 75 |  |
 | ✅ | `whitehorse` | 160 | 2020-2026 | 160 | 150 |  |
 | ✅ | `whitsunday` | 136 | 2020-2026 | 136 | 135 |  |
 | ✅ | `whittlesea` | 44 | 2024-2026 | 44 | 43 |  |
+| ✅ | `whyalla` | 299 | 2020-2026 | 299 | 173 |  |
+| ✅ | `williams` | 63 | 2021-2026 | 63 | 59 |  |
 | ✅ | `willoughby` | 25 | 2024-2026 | 25 | 24 |  |
+| ✅ | `wingecarribee` | 113 | 2020-2026 | 113 | 112 |  |
 | 🟡 | `winton` | 7 | 2024-2026 | 7 | 7 | ordinary meetings never give their day on the page and are left out (about 104); only special meetings are emitted |
+| ✅ | `wollondilly` | 324 | 2015-2026 | 324 | 288 |  |
+| ✅ | `wongan_ballidu` | 75 | 2021-2026 | 75 | 75 |  |
 | ✅ | `woollahra` | 634 | 2020-2026 | 634 | 628 |  |
+| 🟡 | `woorabinda` | 24 | 2025-2026 | 24 | 23 | only 2 year(s) |
+| ✅ | `wudinna` | 160 | 2020-2026 | 160 | 152 |  |
 | 🟡 | `wujal_wujal` | 13 | 2026-2026 | 13 | 11 | only 1 year(s) |
+| ✅ | `wyalkatchem` | 102 | 2020-2026 | 102 | 99 |  |
 | ✅ | `wyndham` | 151 | 2020-2026 | 151 | 149 |  |
+| ✅ | `wyndham_east_kimberley` | 91 | 2020-2026 | 91 | 90 |  |
 | 🟡 | `yalgoo` | 60 | 2020-2026 | 60 | 57 | most meetings 2020-2022 left out (about 30): papers labelled by month only, no day published |
+| ✅ | `yankalilla` | 173 | 2020-2026 | 173 | 171 |  |
 | ✅ | `yarra` | 120 | 2020-2026 | 120 | 119 |  |
 | ✅ | `yarra_ranges` | 129 | 2021-2026 | 129 | 128 |  |
 | 🟡 | `yarriambiack` | 13 | 2025-2026 | 13 | 13 | only 2 year(s) |
+| ✅ | `yass_valley` | 191 | 2020-2026 | 191 | 132 |  |
 | 🟡 | `yilgarn` | 35 | 2021-2026 | 35 | 33 | Ordinary meetings 2021-2024 left out (about 45): papers labelled by month only, no day published |
 | ✅ | `york` | 112 | 2020-2026 | 112 | 111 |  |
 

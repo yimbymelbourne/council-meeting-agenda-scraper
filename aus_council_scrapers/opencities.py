@@ -278,7 +278,11 @@ _LEADING_DATE = re.compile(
     rf"^(?:\d{{1,2}}(?:st|nd|rd|th)?\s+)?{_MONTH}\s+\d{{4}}\s*(?:[-–—:]\s*)?",
     re.IGNORECASE,
 )
-_LEADING_MEETING = re.compile(r"^(?:[a-z]+\s+){0,3}meeting\s*[-–—:]\s*", re.IGNORECASE)
+# Never "Minutes of Meeting - 15 April 2020" (Greater Hume, 2020): the words
+# before "meeting" there say what the paper is, so they are not a meeting name.
+_LEADING_MEETING = re.compile(
+    r"^(?:(?!(?:minutes|agenda)\b)[a-z]+\s+){0,3}meeting\s*[-–—:]\s*", re.IGNORECASE
+)
 
 # A heading that is only the meeting's title, which is the agenda: Kempsey
 # files its agenda under "Ordinary Council Meeting - 20 October 2026" beside
