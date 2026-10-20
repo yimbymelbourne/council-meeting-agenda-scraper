@@ -28,6 +28,10 @@ _DOCUMENT_TITLES = {"agenda": "agenda_url", "minutes": "minutes_url"}
 
 @register_scraper
 class RydeScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 20 s. Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 20
+
     def __init__(self):
         council = "ryde"
         state = "NSW"

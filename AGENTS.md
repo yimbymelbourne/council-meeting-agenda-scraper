@@ -38,26 +38,38 @@ looks fine locally and breaks production:
    and relies on whatever the runner image happens to ship. It works today
    (`banyule`, `campbelltown`, `darebin`, `melbourne` and `strathfield` all
    drive Selenium in production), but nothing pins it.
-2. **One process for every council, and a hard kill.** The adapter is invoked
-   **once** for all councils, and the Node side `SIGKILL`s it at
-   `SCRAPE_TIMEOUT_MS` — **600 s**, both as the workflow's `env:` value and as
-   `ingestCouncils.ts`'s own fallback. A slow scraper does not just fail
-   itself — the kill discards stdout, so the run ends in `Python adapter did
-   not produce valid JSON on stdout` and **nothing at all is persisted, for
-   any council**. The nightly run currently takes around 340 s of that, so
-   treat per-scraper wall time as a scarce shared resource and say what a new
-   scraper costs. Concurrency is `main.py`'s own `--workers` default of 6: the
-   adapter passes no flag for it, so unlike the fetcher's env vars it cannot
-   be tuned from the other repo at all.
-3. **Env vars are the deployment lever, and they live in the other repo.**
-   The adapter spawns Python with `env: {...process.env}`, so anything in
-   that workflow's `env:` block reaches the fetcher — `FETCH_DELAY`,
-   `SCRAPE_TIMEOUT_MS`, and any future `USER_AGENT`. The corollary: a
-   mechanism that is only configurable by editing this repo cannot be tuned
-   in production without a PR to `council-alerts`, and a default chosen here
-   is what production gets until someone changes that workflow.
+2. **One process for every council, and a hard kill.** The adapter is invoked **once** for all councils, and the Node side `SIGKILL`s it at `SCRAPE_TIMEOUT_MS`—**600 s**, both as the workflow's `env:` value and as `ingestCouncils.ts`'s own fallback. A slow scraper does not just fail itself—the kill discards stdout, so the run ends in `Python adapter did not produce valid JSON on stdout` and **nothing at all is persisted, for any council**. The nightly run currently takes around 340 s of that, so treat per-scraper wall time as a scarce shared resource and say what a new scraper costs. main.py now stops itself before the kill (see "What keeps a run inside 600 s" below), but a council that runs past that budget still gets no update that night. Concurrency is `main.py`'s own `--workers` default, now 10: the adapter passes no flag for it, so unlike the fetcher's env vars it cannot be tuned from the other repo at all.
+3. **Env vars are the deployment lever, and they live in the other repo.** The adapter spawns Python with `env: {...process.env}`, so anything in that workflow's `env:` block reaches the fetcher—`FETCH_DELAY`, `FETCH_TIMEOUT`, `ADAPTER_BUDGET_S`, `SCRAPE_TIMEOUT_MS`, `RESIDENTIAL_PROXY_URL`, and any future `USER_AGENT`. The corollary: a mechanism that is only configurable by editing this repo cannot be tuned in production without a PR to `council-alerts`, and a default chosen here is what production gets until someone changes that workflow.
 4. **Python 3.11 in production**, 3.10 in CI here, `>=3.10,<3.13` in
    `pyproject.toml`.
+
+### What keeps a run inside 600 s
+
+Five mechanisms, all code defaults here, so none needs a change to `council-alerts`:
+
+| Mechanism | Where | What it prevents |
+|---|---|---|
+| Request timeout, `(10, 60)` s connect/read | `DefaultFetcher.fetch_with_requests` | A server that accepts the connection and then sends nothing. `api.docassembler.com.au` once held a local run for 12+ minutes at 0% CPU. The read timeout bounds the gap between bytes, not the whole download. `FETCH_TIMEOUT` overrides the read half. |
+| Selenium page-load timeout, 60 s | `DefaultFetcher.__setup_selenium_driver` | `driver.get` has no limit by default and waits for the load event forever. |
+| Per-host throttle shared across the whole process | `DefaultFetcher.__throttle` | Each scraper builds its own fetcher, so the old per-instance throttle spaced one council's requests and nothing spaced a vendor host. About 12 Resolve tenants share `api.resolve.red` and 7 LGA SA councils share one Funnelback host. Now `FETCH_DELAY` is a real per-host limit: councils on one vendor host take turns, and different hosts still run in parallel. |
+| Adapter budget, 480 s | `main.py` `_dispatch` | Councils still running (or still queued) when the budget runs out are reported as `ok: false` with `error.type: "Timeout"`. The finished results are written, stdout is flushed, and the process leaves with `os._exit(0)` instead of joining threads it cannot kill. Just before that, `Fetcher.abandon()` SIGTERMs each abandoned scraper's Chrome and chromedriver, because `os._exit` skips Selenium's cleanup and Chrome otherwise outlives the process. `ADAPTER_BUDGET_S` overrides it; keep it well under `SCRAPE_TIMEOUT_MS`. |
+| Slowest-first dispatch | `BaseScraper.expected_seconds`, sorted in `_dispatch` | Wall time is set by whichever scraper finishes last. A 100 s scraper submitted after the cheap ones starts late and runs on alone; submitted first, it overlaps with everything else. |
+
+The `--workers` default went from 6 to 10 at the same time, because the shared throttle means more workers add parallelism across hosts without adding load on any one host.
+
+What this means when you write or change a scraper:
+
+- **The budget is a backstop, not an allowance.** A council that times out gets no update that night. The per-scraper aim stays at about 20 requests and 45 s for one production year.
+- **Set `expected_seconds`** on the class when one production year measures well above the 5 s default. Use the measured number, not a guess. It only orders dispatch; nothing enforces it.
+- **Do not catch `requests.Timeout` and carry on silently.** A timeout now raises where it used to hang. Treat it like any other fetch failure: log a warning, and let the council fail rather than return a quietly short list. `run_scraper` reports a returned `[]` as `ok: true` with 0 meetings, and council-alerts records that as a successful scrape. The shared base classes follow this: `DocsPublishedScraper` raises when its organisation, storage or document lookup fails, and `InfoCouncilScraper` warns per failed year and raises when every requested year failed—which, in a one-year production run, is any failure.
+- **Councils on a shared vendor host queue behind each other.** Ten tenants at five requests each is about 100 s of host time at the default `FETCH_DELAY`. Budget for that when adding a tenant to a busy platform.
+
+**What council-alerts does with the new fields** (checked against `packages/scraper-adapter/src/schema.ts` and `packages/jobs/src/ingestCouncils.ts`):
+
+- A `Timeout` result is an ordinary `ok: false` result. `CouncilResultSchema` needs `council`, `state` and `error.{type,message}` as strings, and `saveCouncilFailure` records it as a failed scrape. The upsert on failure updates only `state`, so the council's stored meetings are left as they were.
+- The exit code must be 0. `runPythonAdapter.ts` rejects the whole payload when the exit code is non-zero, even if the JSON is valid.
+- Every result also carries `elapsed_s`, the council's own wall time (`null` for a council that never started). The zod objects strip keys they do not declare, so ingest ignores the field today. Nothing else times scrapers in production, so seeing it there needs `ingestCouncils.ts` to log `r.elapsed_s`.
+- Every result also carries `egress`—`"direct"` or `"residential"`—so a night when only the proxied councils failed can be read off the output. Ignored by ingest the same way.
 
 To check what production actually did last night:
 
@@ -71,12 +83,7 @@ gh run view <run-id> --repo yimbymelbourne/council-alerts --log | grep "0 meetin
 **That run's `okCouncils` count is not a count of working councils.** It
 counts councils that did not raise, and a scraper returning an empty list
 does not raise — so `hunters_hill` and `woollahra`, both broken, are inside
-it. Worse, `InfoCouncilScraper` catches per-year fetch failures and logs them
-at DEBUG (`base.py`, the year loop), so a council that is *blocked from the
-runner's IP* also lands in `okCouncils` with 0 meetings: `bayside_nsw` returns
-76 meetings for 2026 from a home IP and 0 in production, because
-`infoweb.bayside.nsw.gov.au` is behind Cloudflare. Always read the per-council
-meeting counts, never the summary.
+it. A council *blocked from the runner's IP* used to land there too: `InfoCouncilScraper` logged per-year fetch failures at DEBUG, so `bayside_nsw` returned 76 meetings for 2026 from a home IP and 0 in production. InfoCouncil now raises when every year fails, and `bayside_nsw` goes through the residential proxy (see "Councils that block GitHub's runners"), but any scraper that catches its own fetch errors can still do the same. Always read the per-council meeting counts, never the summary.
 
 Prefer a code default that is correct unattended over a knob someone has to
 set in the other repo. The User-Agent decision is deliberately shaped that
@@ -254,8 +261,7 @@ Before touching anything, read 1–2 functioning scrapers to understand patterns
 - `aus_council_scrapers/scrapers/vic/banyule.py` — complex Selenium scraper
 - `aus_council_scrapers/scrapers/nsw/innerwest.py` — InfoCouncil-based scraper
 
-Not `vic/bayside.py`: it reads fine but the council blocks us, so you cannot
-run it against anything but its cassette.
+Not `vic/bayside.py` as a first reference: the council refuses GitHub's runners, so running it live needs `RESIDENTIAL_PROXY_URL` (see "Councils that block GitHub's runners").
 
 ### Step 2 — Visit the Council's URL
 
@@ -323,7 +329,7 @@ comparing meetings returned — reachability proves nothing here, since banyule
 loads its listing page fine and then fails on the interaction.
 
 **A 403 now means we identified ourselves and were refused anyway**, which is a
-different thing from the old blanket deferral. Three outcomes, in order:
+different thing from the old blanket deferral. Four outcomes, in order:
 
 1. **The council wants a browser-shaped client.** Rare but real — set
    `user_agent = BROWSER_USER_AGENT` on the scraper class, verified against
@@ -336,13 +342,9 @@ different thing from the old blanket deferral. Three outcomes, in order:
    `stonnington`, `whittlesea` and `yarra_ranges`, which have none yet.
    (`hobsons_bay` also answers now, with a 404 and a real page — its URL in
    `docs/councils.md` is stale.)
-2. **A JS challenge**, not a header problem: `cf-mitigated: challenge`
-   (Cloudflare, e.g. `cardinia`) or `x-amzn-waf-action: challenge` (AWS, e.g.
-   `melbourne`). Needs Selenium. Note the AWS variant answers **202 with an
-   empty body**, not 403, so it never raises `BlockedByWAF` — a scraper built
-   on `fetch_with_requests` there silently finds nothing.
-3. **Genuinely refused.** Leave it alone and say so. `bayside_vic` is here:
-   403 as a browser, connection reset when identifying.
+2. **A JS challenge**, not a header problem: `cf-mitigated: challenge` (Cloudflare) or `x-amzn-waf-action: challenge` (AWS, e.g. `melbourne`). Needs Selenium. Note the AWS variant answers **202 with an empty body**, not 403, so it never raises `BlockedByWAF`—a scraper built on `fetch_with_requests` there silently finds nothing. Some Cloudflare sites challenge only GitHub's runners and nothing gets past it from there; see the next section.
+3. **Refused from GitHub's runners only.** `bayside_vic` is here: 403 as a browser and a reset connection when identifying, from a runner, and a normal page from a home connection. See the next section.
+4. **Genuinely refused, from everywhere.** Leave it alone and say so.
 
 Overrides are constrained by `tests/test_user_agent.py`: an override may only
 ever be `BROWSER_USER_AGENT`, so there is one string to re-verify rather than a
@@ -354,6 +356,38 @@ the real client passes — `bayside_nsw` looks blocked under `curl -A` and
 returns 200 through the fetcher. Probe the endpoint the **scraper** hits, not
 the council's homepage: for every InfoCouncil council those are different
 hosts, and `burwood.infocouncil.biz` is fine while `burwood.nsw.gov.au` 403s.
+
+### Councils that block GitHub's runners
+
+Production runs on a GitHub-hosted runner, which has an Azure datacentre IP. Some councils refuse that IP whatever the client sends, and serve the same pages to a home connection. Measured from a runner on 19 Oct 2026:
+
+| Council | From a GitHub runner | From a home IP |
+|---|---|---|
+| `bayside_nsw` (`infoweb.bayside.nsw.gov.au`) | Cloudflare challenge for requests with either User-Agent, Selenium with and without the headless marker, and Cloudflare WARP. shuck passed about 1 page load in 3. | 669 meetings |
+| `cardinia` | The same, and shuck passed 0 of 6. | 122 meetings |
+| `bayside_vic` | 403 or a reset connection | 132 meetings |
+
+So these councils go through a proxy on a home machine. Each night council-alerts joins a Tailscale tailnet and sets `RESIDENTIAL_PROXY_URL` to a tinyproxy on that machine. The proxy carries HTTPS `CONNECT` only, and only to an allowlist of council hosts. The infrastructure side is in council-alerts [`docs/residential-egress.md`](https://github.com/yimbymelbourne/council-alerts/blob/main/docs/residential-egress.md).
+
+**Opting a scraper in** is one class attribute, like `user_agent`:
+
+```python
+egress = "residential"
+```
+
+`DefaultFetcher` then sends that scraper's requests through the proxy, and its Chrome too (`--proxy-server`) if it uses Selenium. Scrapers that do not opt in never touch the proxy. It is read from `RESIDENTIAL_PROXY_URL`, never `HTTP(S)_PROXY`, which requests would apply to every council in the process. On the first fetch:
+
+- **Set to a URL:** a 5 s TCP check of the proxy, once per process, then every request goes through it.
+- **Set to `direct`:** this machine already has a residential IP, so requests go direct. Use it when recording a cassette from home: `RECORD=cardinia RESIDENTIAL_PROXY_URL=direct pytest tests/scraper_test.py -k Cardinia`.
+- **Unset or empty, or the proxy does not answer:** the fetch raises `EgressUnavailable`, which names the council. The adapter reports it as `ok: false` with that error type, so a night with the home machine asleep shows up as those councils failing by name, not as 0 meetings.
+
+Replay ignores all of this: the playback fetcher never makes a request, so tests stay offline and need no env var.
+
+Three rules:
+
+- **Probe from a runner before opting a council in.** A home connection proves nothing about production: `bayside_nsw` returns 669 meetings from a home IP and returned 0 in production. To probe, push a throwaway branch whose only workflow runs `on: push` to that branch, on `ubuntu-latest`, and fetches the scraper's own endpoints through `DefaultFetcher`. Read the log, then delete the branch. The `Production` environment only deploys from `main`, so the probe sees the runner's own IP, which is the point.
+- **Every host the scraper requests must be on the proxy's allowlist.** Opting in here is half the change. The other half is a line in tinyproxy's filter on the home machine, described in the council-alerts doc. A host missing from it fails as a refused proxy tunnel.
+- **Keep the list short.** These councils fail together whenever the home machine is asleep or offline. The durable fix is for the council to allowlist us: outreach is tracked in #172 (Bayside NSW) and #173 (Cardinia).
 
 ### Step 4 — Implement
 

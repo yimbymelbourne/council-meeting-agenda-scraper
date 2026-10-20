@@ -1,5 +1,5 @@
 import argparse
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait
 import contextlib
 import io
 import json
@@ -56,6 +56,148 @@ def _matches(selector: str, value: str) -> bool:
     return value.lower() in wanted
 
 
+# How long adapter mode waits for scrapers before giving up on the stragglers.
+#
+# council-alerts SIGKILLs this process at 600 s (SCRAPE_TIMEOUT_MS), and a
+# kill discards stdout—so one stuck council used to cost every council its
+# update that night. Stopping ourselves first turns that into losing only the
+# councils that had not finished. 480 s leaves two minutes for what the
+# budget does not cover: interpreter start-up and importing every scraper
+# module (it is measured from dispatch), serialising the JSON, and Node
+# reading it. `ADAPTER_BUDGET_S` overrides it from the workflow's `env:`
+# block; keep it well under SCRAPE_TIMEOUT_MS.
+DEFAULT_ADAPTER_BUDGET_S = 480.0
+
+
+def _adapter_budget_s() -> float:
+    return float(os.environ.get("ADAPTER_BUDGET_S", DEFAULT_ADAPTER_BUDGET_S))
+
+
+def _failure(
+    scraper: BaseScraper, error_type: str, message: str, elapsed_s: Optional[float]
+) -> dict:
+    """An ok:false result in the shape council-alerts' zod schema accepts.
+
+    `council`, `state` and `error.{type,message}` are all required strings
+    there. A result missing any of them fails validation for the *whole*
+    payload, not just that council.
+    """
+    return {
+        "ok": False,
+        "council": scraper.council_name,
+        "state": scraper.state.upper(),
+        "error": {"type": error_type, "message": message},
+        "elapsed_s": elapsed_s,
+        "egress": scraper.egress,
+    }
+
+
+def _dispatch(
+    scrapers: list[BaseScraper],
+    workers: int,
+    budget_s: Optional[float],
+    **run_kwargs,
+) -> tuple[list[dict], bool]:
+    """Run scrapers on a thread pool, slowest first, for at most `budget_s`.
+
+    Returns the results and whether every scraper finished. A council still
+    running (or still queued) when the budget runs out is reported as
+    ok:false with error type `Timeout`, which council-alerts records as a
+    failed scrape while leaving that council's stored meetings alone.
+
+    When anything is unfinished the pool is NOT joined: Python cannot kill a
+    thread, so a worker blocked on a silent socket would hold the process
+    open until the very SIGKILL this exists to avoid. The caller must write
+    its output and leave with `_hard_exit`.
+
+    Dispatch is longest-expected-first. Wall time is set by whichever
+    scraper finishes last, and a 100 s scraper submitted after the cheap
+    ones starts late and runs on alone; submitted first, it overlaps with
+    everything else. The sort is stable, so ties keep registry order.
+    """
+    ordered = sorted(scrapers, key=lambda s: s.expected_seconds, reverse=True)
+    started_at: dict[str, float] = {}
+
+    def run(scraper: BaseScraper):
+        started_at[scraper.council_name] = time.monotonic()
+        return run_scraper(scraper, **run_kwargs)
+
+    executor = ThreadPoolExecutor(max_workers=workers)
+    futures = {executor.submit(run, scraper): scraper for scraper in ordered}
+    done, not_done = wait(futures, timeout=budget_s)
+
+    def elapsed(scraper: BaseScraper) -> Optional[float]:
+        start = started_at.get(scraper.council_name)
+        return None if start is None else round(time.monotonic() - start, 1)
+
+    results: list[dict] = []
+    for future, scraper in futures.items():
+        if future in done:
+            try:
+                out = future.result()
+            except Exception as e:
+                # run_scraper catches everything a scraper raises, so this is
+                # a bug in run_scraper itself. Still report it per council:
+                # the bare {"ok": False, "error": "<str>"} this used to emit
+                # has no council or state and fails the zod schema, which
+                # rejects the whole payload.
+                logging.exception(f"Worker future failed unexpectedly: {e}")
+                out = _failure(scraper, type(e).__name__, str(e), elapsed(scraper))
+        else:
+            future.cancel()
+            seconds = elapsed(scraper)
+            if seconds is None:
+                message = (
+                    f"Never started: the adapter's {budget_s:.0f} s budget ran "
+                    f"out while it was queued behind slower councils."
+                )
+            else:
+                message = (
+                    f"Still running after {seconds:.0f} s when the adapter's "
+                    f"{budget_s:.0f} s budget ran out; abandoned so the other "
+                    f"councils' results are kept."
+                )
+            scraper.logger.error(message)
+            out = _failure(scraper, "Timeout", message, seconds)
+
+        if out is not None:
+            results.append(out)
+
+    if not_done:
+        executor.shutdown(wait=False, cancel_futures=True)
+    else:
+        executor.shutdown(wait=True)
+    return results, not not_done
+
+
+def _write_json(stream, args, results: list[dict]) -> None:
+    payload = {
+        "format_version": 1,
+        "adapter_mode": args.adapter,
+        "council_filter": args.council,
+        "state_filter": args.state,
+        "years_filter": args.years,
+        "results": results,
+    }
+    stream.write(json.dumps(payload, ensure_ascii=False, default=json_default))
+    stream.write("\n")
+    stream.flush()
+
+
+def _hard_exit() -> None:
+    """Exit now, without waiting for worker threads that will never return.
+
+    `os._exit` skips every flush, so flush first. Exit 0, not 1:
+    council-alerts rejects the whole payload when the exit code is non-zero,
+    and the councils that timed out are already reported inside it.
+    """
+    sys.stdout.flush()
+    sys.stderr.flush()
+    for handler in logging.getLogger().handlers:
+        handler.flush()
+    os._exit(0)
+
+
 def main():
 
     # Parse arguments
@@ -75,7 +217,13 @@ def main():
         help="Filter meetings by year(s). Example: --years 2025 or --years 2024 2025",
     )
     parser.add_argument("--log-level", help="Set the log level", default="INFO")
-    parser.add_argument("--workers", help="Number of workers", default=6, type=int)
+    # 10, up from 6. council-alerts passes no --workers flag, so this default
+    # is production's concurrency. More workers used to mean more
+    # simultaneous requests to any vendor host several councils share,
+    # because each scraper throttled only itself. DefaultFetcher now spaces
+    # requests per host across the whole process, so extra workers add
+    # parallelism across hosts without adding load on any one of them.
+    parser.add_argument("--workers", help="Number of workers", default=10, type=int)
     parser.add_argument(
         "--format",
         choices=["text", "json"],
@@ -127,61 +275,70 @@ def main():
         if not os.path.exists("./agendas.db"):
             db.init()
 
-    futures = []
-    results: list[dict] = []
+    # Captured before stdout is redirected, so the timeout path can write the
+    # payload to the real stream from inside the redirect.
+    real_stdout = sys.stdout
 
     # In JSON mode, suppress any accidental prints from scrapers
     with suppress_stdout(args.format == "json"):
-        with ThreadPoolExecutor(max_workers=args.workers) as executor:
-            for scraper in SCRAPER_REGISTRY.values():
-                # Filter by council and state. Both accept a comma-separated
-                # list, because our only production caller already sends one:
-                # council-alerts builds `--council a,b` from its workflow
-                # input, and an exact single-name comparison matched nothing,
-                # so a multi-council request scraped no councils at all and
-                # reported success with an empty result.
-                if args.state and not _matches(args.state, scraper.state):
-                    continue
-                if args.council and not _matches(args.council, scraper.council_name):
-                    continue
+        # Filter by council and state. Both accept a comma-separated list,
+        # because our only production caller already sends one:
+        # council-alerts builds `--council a,b` from its workflow input, and
+        # an exact single-name comparison matched nothing, so a
+        # multi-council request scraped no councils at all and reported
+        # success with an empty result.
+        selected = [
+            scraper
+            for scraper in SCRAPER_REGISTRY.values()
+            if (not args.state or _matches(args.state, scraper.state))
+            and (not args.council or _matches(args.council, scraper.council_name))
+        ]
 
-                futures.append(
-                    executor.submit(
-                        run_scraper,
-                        scraper,
-                        skip_keywords=args.skip_keywords,
-                        adapter_mode=args.adapter,
-                        skip_pdf=args.skip_pdf,
-                        years=args.years,
-                    )
-                )
+        # The budget guards the production SIGKILL, so it applies only in
+        # adapter mode. Legacy mode writes to SQLite, and abandoning a thread
+        # mid-write there is worse than waiting.
+        budget_s = _adapter_budget_s() if args.adapter else None
+        results, finished = _dispatch(
+            selected,
+            args.workers,
+            budget_s,
+            skip_keywords=args.skip_keywords,
+            adapter_mode=args.adapter,
+            skip_pdf=args.skip_pdf,
+            years=args.years,
+        )
+        results.sort(key=lambda r: (r.get("state", ""), r.get("council", "")))
 
-            # Gather results safely (one failure shouldn't kill JSON output)
-            for fut in futures:
-                try:
-                    out = fut.result()
-                except Exception as e:
-                    # This catches unexpected exceptions escaping run_scraper
-                    logging.exception(f"Worker future failed unexpectedly: {e}")
-                    out = {"ok": False, "error": f"{type(e).__name__}: {e}"}
-
-                if out is not None:
-                    results.append(out)
-
-    results.sort(key=lambda r: (r.get("state", ""), r.get("council", "")))
+        if not finished:
+            # Written while the redirect is still in place: an abandoned
+            # thread that print()s from here on lands in the buffer, not in
+            # the middle of the JSON.
+            timed_out = [
+                r["council"]
+                for r in results
+                if not r["ok"] and r["error"]["type"] == "Timeout"
+            ]
+            logging.error(
+                f"Adapter budget of {budget_s:.0f}s reached; reporting "
+                f"{', '.join(timed_out)} as Timeout and exiting without "
+                f"waiting for them"
+            )
+            if args.format == "json":
+                _write_json(real_stdout, args, results)
+            # os._exit skips Selenium's cleanup, so an abandoned scraper's
+            # Chrome would outlive the process. Kill it first—but nothing
+            # here may stop _hard_exit from running, or the process hangs.
+            for scraper in selected:
+                if scraper.council_name in timed_out:
+                    try:
+                        scraper.fetcher.abandon()
+                    except Exception as e:
+                        scraper.logger.warning(f"Could not kill its browser: {e}")
+            _hard_exit()
 
     # JSON output mode: stdout should contain JSON ONLY
     if args.format == "json":
-        payload = {
-            "format_version": 1,
-            "adapter_mode": args.adapter,
-            "council_filter": args.council,
-            "state_filter": args.state,
-            "years_filter": args.years,
-            "results": results,
-        }
-        sys.stdout.write(json.dumps(payload, ensure_ascii=False, default=json_default))
-        sys.stdout.write("\n")
+        _write_json(sys.stdout, args, results)
         return
 
     logging.info(f"YIMBY SCRAPER Finished in {time.time() - start_time:.2f}s")
@@ -194,6 +351,14 @@ def run_scraper(
     skip_pdf: bool = False,
     years: list[int] = None,
 ):
+    # Reported per council so a slow scraper can be named from the adapter's
+    # output alone; nothing else times scrapers in production. council-alerts'
+    # zod schema strips keys it does not declare, so ingest ignores the field
+    # until it chooses to read it. `egress` rides along the same way: it says
+    # which councils depended on the home proxy, so a night when only those
+    # failed can be read off the output (packages/scraper-adapter/src/schema.ts,
+    # checked 19 Oct 2026: plain z.object, unknown keys stripped).
+    started = time.monotonic()
     try:
         scraper.logger.info("Scraper started")
 
@@ -245,6 +410,8 @@ def run_scraper(
                 "council": scraper.council_name,
                 "state": scraper.state.upper(),
                 "meetings": meetings,  # Changed from "meeting" to "meetings" (array)
+                "elapsed_s": round(time.monotonic() - started, 1),
+                "egress": scraper.egress,
             }
 
         # Legacy mode: process only the first meeting (backward compatibility)
@@ -326,6 +493,8 @@ def run_scraper(
             },
             "location": getattr(result, "location", None)
             or getattr(result, "cleaned_location", None),
+            "elapsed_s": round(time.monotonic() - started, 1),
+            "egress": scraper.egress,
         }
 
     except Exception as e:
@@ -351,7 +520,18 @@ def run_scraper(
                 "type": type(e).__name__,
                 "message": str(e),
             },
+            "elapsed_s": round(time.monotonic() - started, 1),
+            "egress": scraper.egress,
         }
+    finally:
+        # Each scraper's Chrome otherwise lives until the process exits, so a
+        # run with 10 workers piles up every browser any council opened. A
+        # failure to close is logged, never raised: it must not turn a
+        # finished council into a failed one.
+        try:
+            scraper.fetcher.close()
+        except Exception as e:
+            scraper.logger.warning(f"Could not close its browser: {e}")
 
 
 def get_agenda_info(scraper: BaseScraper, adapter_mode: bool = False) -> list[ScraperReturn]:

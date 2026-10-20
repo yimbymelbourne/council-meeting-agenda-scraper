@@ -120,6 +120,10 @@ def _drupal_field(soup: BeautifulSoup, name: str):
 
 @register_scraper
 class MelbourneScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 34 s. Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 34
+
     # How far back to fetch per-meeting pages for the agenda, time and
     # location. A quarter always spans several meetings — the council sits
     # roughly fortnightly outside the January recess — so there is never a

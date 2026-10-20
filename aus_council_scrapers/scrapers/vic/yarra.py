@@ -37,6 +37,10 @@ _WHERE_HEADING = re.compile(r"^\s*Where\s*$", re.IGNORECASE)
 
 @register_scraper
 class YarraScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 29 s. Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 29
+
     def __init__(self):
         council = "yarra"
         state = "VIC"

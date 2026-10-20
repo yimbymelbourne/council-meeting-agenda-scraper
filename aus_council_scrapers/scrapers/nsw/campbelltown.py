@@ -19,6 +19,10 @@ _DATE_RE = re.compile(rf"(\d{{1,2}}\s+({_MONTHS})(?:\s+\d{{4}})?)", re.IGNORECAS
 
 @register_scraper
 class CampbelltownScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 17 s. Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 17
+
     def __init__(self):
         council = "campbelltown"
         state = "NSW"

@@ -58,6 +58,10 @@ class _MeetingStub:
 
 @register_scraper
 class StrathfieldNSWScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 38 s. Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 38
+
     def __init__(self):
         super().__init__(
             council_name="strathfield", state="NSW", base_url=_STRATHFIELD_BASE_URL

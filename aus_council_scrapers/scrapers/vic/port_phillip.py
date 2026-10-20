@@ -55,6 +55,14 @@ class PortPhilipScraper(InfoCouncilScraper):
         years = {y for y in (_year_of(r.date) for r in results) if y}
         floor = min(years) if years else None
 
+        # A production run asks for the current year only, which InfoCouncil
+        # carries, so the archive could add nothing and is not fetched. That
+        # page also answered 429 in a full nightly run.
+        wanted = getattr(self, "years_filter", None)
+        if wanted and floor is not None and min(wanted) >= floor:
+            self.logger.info(f"{self.council_name} scraper found {len(results)} meetings")
+            return results
+
         for meeting in self._scrape_archive():
             year = _year_of(meeting.date)
             if year and year >= EARLIEST_YEAR and (floor is None or year < floor):
