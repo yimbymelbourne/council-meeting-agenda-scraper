@@ -72,6 +72,22 @@ PLATFORMS: tuple[Platform, ...] = (
         reference="aus_council_scrapers/scrapers/vic/kingston.py",
     ),
     Platform(
+        # After OpenCities: the generator tag is on every OpenCities site, so
+        # a meetings-module page matches both and lists the module first.
+        name="OpenCities content pages",
+        signatures=(r'name="generator" content="OpenCities',),
+        guidance=(
+            "An OpenCities site. If the meetings page has no "
+            "accordion-list-item-container rows and its papers are direct "
+            "/files/assets/public/ links in year accordions, tables or lists, "
+            "subclass OpenCitiesContentScraper "
+            "(aus_council_scrapers/opencities_content.py) with its pages; one "
+            "request a page, and documents are grouped into meetings by their "
+            "own labels and filenames."
+        ),
+        reference="aus_council_scrapers/scrapers/qld/livingstone.py",
+    ),
+    Platform(
         name="Alyka ksearch (Kentico)",
         signatures=(r"aw_ksearch\.js", r'id="searchapi"'),
         guidance=(
@@ -101,6 +117,20 @@ PLATFORMS: tuple[Platform, ...] = (
             "meeting_types when one year would cost >20 requests."
         ),
         reference="aus_council_scrapers/scrapers/wa/cottesloe.py",
+    ),
+    Platform(
+        # After CouncilConnect: every CouncilConnect site has a document
+        # library, so this only names a page that is one.
+        name="CouncilConnect document library",
+        signatures=(r"documentcentre-items", r"categories-dropdown"),
+        guidance=(
+            "CouncilConnect's /documents/ library, for councils whose papers "
+            "are filed there rather than in the meetings module. Subclass "
+            "CouncilConnectDocumentLibraryScraper "
+            "(aus_council_scrapers/councilconnect_library.py) with the site "
+            "origin; folders are found by label in the index."
+        ),
+        reference="aus_council_scrapers/scrapers/wa/kojonup.py",
     ),
     Platform(
         name="LGA SA Funnelback",
@@ -157,6 +187,48 @@ PLATFORMS: tuple[Platform, ...] = (
             "Ionata theme has no f_year and is bespoke."
         ),
         reference="aus_council_scrapers/scrapers/tas/clarence.py",
+    ),
+    Platform(
+        name="WP File Download",
+        signatures=(r"wpfd_root_category_id", r"action=wpfd&"),
+        guidance=(
+            "WordPress plugin filing papers in categories, with links "
+            "/download/<cat>/<slug>/<file>/<name>.pdf. Subclass "
+            "WPFileDownloadScraper (aus_council_scrapers/wpfd.py) with the "
+            "listing pages; categories the plugin lazy-loads over admin-ajax "
+            "have no links in the page."
+        ),
+        reference="aus_council_scrapers/scrapers/tas/devonport.py",
+    ),
+    Platform(
+        name="Walker Designs",
+        # The agency's footer link, and the class on its meetings tables.
+        signatures=(r"walkerdesigns\.com\.au", r"table-meeting"),
+        guidance=(
+            "Launceston agency's Craft CMS council sites. Where the meetings "
+            "page is a table per year (Date | Meeting | Agenda | Minutes ...), "
+            "subclass WalkerDesignsMeetingsScraper "
+            "(aus_council_scrapers/walkerdesigns.py) with the listing URL; the "
+            "columns are read from each table's header. The footer link alone "
+            "is not the template: Dorset's site is download cards on a page "
+            "per year, read by overriding listing_rows (scrapers/tas/dorset.py)."
+        ),
+        reference="aus_council_scrapers/scrapers/tas/meander_valley.py",
+    ),
+    Platform(
+        name="Datascape",
+        signatures=(r"cdn-sites\.datascape\.cloud",),
+        guidance=(
+            "ASP.NET CMS with a meetings module: ?category=&month=All&year= "
+            "listing, ?item=id: item pages, files under /repository/libraries/. "
+            "Subclass DatascapeMeetingsScraper (aus_council_scrapers/datascape.py) "
+            "with the listing URL and the category. robots.txt sets "
+            "Crawl-delay: 7, so a year costs minutes, not seconds, and the "
+            "sites on lb-dds-mc2.datascape.cloud share one rate limit, so "
+            "they take turns (`backend`); a Cloudflare-fronted site sets "
+            "backend = None."
+        ),
+        reference="aus_council_scrapers/scrapers/wa/manjimup.py",
     ),
     Platform(
         name="Granicus/Legistar",

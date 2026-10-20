@@ -41,6 +41,34 @@ and are verified against it rather than guessed at runtime:
     the link's own text (Mornington Peninsula, Frankston, The Hills, Hume).
     Monash files neither way and overrides `papers` itself.
 
+    Two more modes cover themes the first two misread. ``"folder"`` is for
+    payloads that group files under ``<div class="meeting-folder"><h3
+    class="folder-title">Agenda</h3>``, where each file's own label is a
+    ``div.meeting-document-title`` and the folder's heading is the only
+    thing that says agenda or minutes (Lake Macquarie, Pyrenees, Queenscliffe
+    to mid-2023). ``"search"`` is heading mode for councils whose headings
+    put the meeting's name or a date *before* the word, in forms the
+    leading-date stripping below cannot take off—"General Meeting Agenda 15
+    September 2026" (Gladstone), "17 December 2025 Confirmed Council Meeting
+    Minutes" (Central Goldfields), "Ordinary Meeting of Council 26 August
+    2026 - Minutes" (Queenscliffe)—so it looks for "agenda" or "minutes"
+    anywhere in the heading. It reads folders too, because Queenscliffe's
+    payloads of late 2023 mix the two layouts. Both are new rather than
+    changes to heading mode, whose start-anchored match is what keeps
+    Kingston's "Minutes relating to item 15.2" and Onkaparinga's "Notice of
+    adjourned meeting" out.
+
+    Every mode reads the NSW vocabulary too: a "Business Paper" is the agenda,
+    and outranks a bare "Agenda" on the same meeting (Snowy Valleys, Bland,
+    Broken Hill, Gilgandra); a heading may lead with the meeting's date or
+    name ("20 August 2026 - Minutes", "Ordinary Council Meeting - Confirmed
+    Minutes"). A link whose href is a bare GUID is rebuilt as a
+    ``/files/<guid>/`` URL (Bland, Broken Hill). Further rules are opt-in
+    because they infer more: ``label_dates_must_match``,
+    ``title_only_agenda``, ``title_heading_agenda`` (a heading that is only
+    the meeting's title is its agenda, at Kempsey) and
+    ``bound_business_paper``.
+
 Optionally, ``meeting_types``: a pattern a row's meeting type must match before
 its payload is fetched. Since each payload is a request, a council listing a
 dozen committees should be cut down to Council meetings and planning bodies—
@@ -77,6 +105,7 @@ numbers, the select offering "Any Year", the "Go" button.
 from __future__ import annotations
 
 import datetime
+import itertools
 import json
 import re
 from dataclasses import dataclass
@@ -141,17 +170,22 @@ _PROVISIONAL = re.compile(r"\b(?:draft|unconfirmed|amended|revised)\b", re.IGNOR
 # "Public Minutes" sits beside "Confidential Minutes" at Cambridge (8 April
 # 2024); "public" is a qualifier like "final", and "confidential" is not.
 # Onkaparinga's panel names itself first—"CAP Agenda 21 March 2024", "CAP
-# Minutes 5 May 2022"—so a planning panel's initials may lead.
+# Minutes 5 May 2022"—so a planning panel's initials may lead. Kempsey's
+# minutes are "Signed Minutes - 20 August 2024" and "... - Confirmed Meeting
+# Minutes" (2023–2024); "signed", "adopted" and "approved" qualify the
+# minutes as "confirmed" does.
 _BODY = r"(?:(?:cap|dap|lpp)\s+)?"
 _AGENDA_HEADING = re.compile(
     rf"^{_BODY}(?:(?:final|open|public)\s+)?agenda\b", re.IGNORECASE
 )
 _MINUTES_HEADING = re.compile(
-    rf"^{_BODY}(?:(?:un)?confirmed\s+|draft\s+|final\s+|public\s+)?minutes\b",
+    rf"^{_BODY}(?:(?:un)?confirmed\s+|draft\s+|final\s+|public\s+"
+    rf"|signed\s+|adopted\s+|approved\s+)?(?:meeting\s+)?minutes\b",
     re.IGNORECASE,
 )
 _PLAIN_HEADING = re.compile(
-    rf"^{_BODY}(?:(?:final|open|public|(?:un)?confirmed|draft)\s+)?(?:agenda|minutes)"
+    rf"^{_BODY}(?:(?:final|open|public|(?:un)?confirmed|draft"
+    rf"|signed|adopted|approved)\s+)?(?:agenda|minutes)"
     r"(?:$|\s*[-–—:(])",
     re.IGNORECASE,
 )
@@ -171,6 +205,257 @@ _WITH_ATTACHMENTS = re.compile(
 # "Minutes relating to item 15.2 - CEO Employment Matters" beside the real
 # "Minutes" (June 2026).
 _ONE_ITEM = re.compile(r"\brelating\s+to\b|\bitem\s+\d", re.IGNORECASE)
+
+# --- "Business Paper": the NSW word for the agenda -------------------------
+#
+# NSW councils call the agenda with its officers' reports the business paper,
+# and several never use the word "agenda" for it: Broken Hill's
+# "2609-Open-Business-Paper-Ordinary-Council-Meeting-held-30-September-
+# 2026.pdf", Bland's "Business Paper September 2026", Gilgandra's
+# "15 September 2026 - Business Paper", Murrumbidgee's "August 2026 Council
+# Meeting - Business Papers" (October 2026). Where a council publishes both,
+# the business paper is the one to keep: Snowy Valleys files a short
+# "Agenda"—the order of business, about 150 KB—beside a 5 MB "Business
+# Paper" holding the reports, so a business paper outranks an agenda on the same meeting.
+_BUSINESS_PAPER = re.compile(r"\bbusiness[\s-]+papers?\b", re.IGNORECASE)
+
+# Papers that name the business paper but are not it: "Questions on the
+# Business Paper", and Bland's "Business Paper Extra Attachments October
+# 2026", an attachment book that "attachments" alone would also exclude but
+# whose "extra" is what says so.
+_NOT_A_BUSINESS_PAPER = re.compile(
+    r"\bquestions?\s+on\b|\bextra\b|\bseparate\b", re.IGNORECASE
+)
+
+# The business paper with its attachments bound in, which is still the
+# business paper: Central Darling's only paper for a meeting is "18 August
+# 2026 Ordinary Central Darling Shire Council Meeting Business Paper with
+# attachments" (2026), "Business Paper including attachments" (2021). The
+# label has to say the attachments come *with* the paper. Bland's separate
+# attachment books are "Business Paper Attachments - August 2025" and
+# "Business Paper September 2025 Attachments" (2025), so "business paper"
+# and "attachments" in the same label are not enough. Ranked below a plain
+# business paper on the same meeting.
+#
+# A council whose bound-in paper is not labelled that way names its own form
+# (`OpenCitiesMeetingsScraper.bound_business_paper`): Central Darling's
+# 2025–2026 papers are "Council-Business-Paper-23-June-2026-Attachments.pdf",
+# whose first page is the business paper (checked on 23 July 2025's).
+_BOUND_BUSINESS_PAPER = re.compile(
+    r"\bbusiness[\s-]+papers?(?:[\s-]+[a-z]+){0,2}?[\s-]+"
+    r"(?:with|including|incl\.?|plus|and)[\s-]+attachments?\b",
+    re.IGNORECASE,
+)
+_ATTACHMENTS_WORD = re.compile(r"\battachments?\b", re.IGNORECASE)
+# "Ordinary-Council-Meeting-Business-paper-22.05.2024-No-Attachments.pdf"
+# (Central Darling) is the business paper alone, beside a separate
+# attachment book.
+_NO_ATTACHMENTS = re.compile(
+    r"\b(?:no|without|excluding)[\s-]+attachments?\b", re.IGNORECASE
+)
+
+# InfoCouncil's own file codes, for a council that uploads InfoCouncil's
+# output under its filename: Central Darling's 4 December 2025 agenda is
+# only "CO_20251204_AGN_77_AT.pdf" (AGN agenda, MIN minutes, AT with
+# attachments). Uppercase only, as InfoCouncil writes them. ATT (attachments
+# alone) and SUP (a supplementary paper) are not the paper. Ranked below a
+# labelled paper.
+_CODED_AGENDA = re.compile(r"\bAGN\b")
+_CODED_MINUTES = re.compile(r"\bMIN\b")
+_CODED_NOT_THE_PAPER = re.compile(r"\b(?:ATT|SUP)\b")
+
+# A heading can lead with the meeting's date or name before saying what the
+# paper is: Snowy Valleys' "20 August 2026 - Minutes" beside a plain
+# "Minutes" on other meetings, Murrumbidgee's "March 2024 Business Paper",
+# Kempsey's "Ordinary Council Meeting - Confirmed Minutes" (December 2023)
+# and "Ordinary Council Meeting - 13 December 2022 - Minutes". Heading mode
+# strips them, however many, before matching.
+_MONTH = (
+    r"(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?"
+    r"|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)"
+)
+_LEADING_DATE = re.compile(
+    rf"^(?:\d{{1,2}}(?:st|nd|rd|th)?\s+)?{_MONTH}\s+\d{{4}}\s*(?:[-–—:]\s*)?",
+    re.IGNORECASE,
+)
+_LEADING_MEETING = re.compile(r"^(?:[a-z]+\s+){0,3}meeting\s*[-–—:]\s*", re.IGNORECASE)
+
+# A heading that is only the meeting's title, which is the agenda: Kempsey
+# files its agenda under "Ordinary Council Meeting - 20 October 2026" beside
+# "Draft Minutes - 15 September 2026" (2022–2026). Its first PDF is the
+# agenda; every item's attachments follow it as untitled sections. Ranked
+# below a heading that says "Agenda", and taken as the minutes instead when
+# its file is named as minutes. Opt-in (`title_heading_agenda`), because
+# other councils' short headings ending in "meeting" are not agendas:
+# Onkaparinga's "Notice of adjourned meeting", Melton's "Record of Meeting".
+# Headings for a recording, a public forum, a notice or a record are titles
+# too, and are not papers, even where the rule is on.
+_TITLE_HEADING = re.compile(
+    rf"^(?:[a-z]+\s+){{0,3}}meeting"
+    rf"(?:\s*[-–—:]?\s*(?:\d{{1,2}}(?:st|nd|rd|th)?\s+)?{_MONTH}\s+\d{{4}})?$",
+    re.IGNORECASE,
+)
+_NOT_A_TITLE = re.compile(
+    r"\b(?:video|recording|live\s*stream|stream|watch|minutes?|forum|speakers?"
+    r"|notices?|records?)\b",
+    re.IGNORECASE,
+)
+_BUSINESS_PAPER_HEADING = re.compile(
+    rf"^{_BODY}(?:(?:final|open|public|full)\s+)?business\s+papers?\b", re.IGNORECASE
+)
+
+
+def _business_paper_rank(label: str, bound: Optional[re.Pattern] = None) -> int | None:
+    """0 if the label names the meeting's business paper (see
+    _BUSINESS_PAPER), 1 if it names the business paper with its attachments
+    bound in (see _BOUND_BUSINESS_PAPER; ``bound`` is a council's own form of
+    that), None if it is not the business paper."""
+    if (
+        not _BUSINESS_PAPER.search(label)
+        or _MINUTES.search(label)
+        or _NOT_A_BUSINESS_PAPER.search(label)
+    ):
+        return None
+    label = _NO_ATTACHMENTS.sub("", label)
+    if not _NOT_THE_PAPER.search(label):
+        return 0
+    bound_in = _BOUND_BUSINESS_PAPER.search(label) or (
+        bound is not None and bound.search(label)
+    )
+    # Excluded only for "attachments", and that is the bound-in form.
+    if bound_in and not _NOT_THE_PAPER.search(_ATTACHMENTS_WORD.sub("", label)):
+        return 1
+    return None
+
+
+def _heading_kind(heading: str) -> str:
+    """The heading with any leading dates and meeting names taken off, which
+    is the part that says what the paper is. Kempsey stacks them: "Ordinary
+    Council Meeting - 13 December 2022 - Minutes"."""
+    core = heading
+    while True:
+        stripped = _LEADING_MEETING.sub(
+            "", _LEADING_DATE.sub("", core, count=1), count=1
+        )
+        if stripped == core or not stripped:
+            return core
+        core = stripped
+
+
+# --- bare-GUID links ---------------------------------------------------------
+#
+# OpenCities links a file by `/files/<guid>/<filename>`, and the filename is
+# cosmetic: the GUID alone picks the file. Now and then an editor's link
+# loses everything but the GUID—Broken Hill's 26 August 2026 minutes are
+# `href="31b2b004-8ab9-4a31-8ab3-0eb3200d15eb"`, Bland's 20 October 2026
+# business paper `href="e02abdf0-…"`—which a browser resolves against the
+# page and gets a 403 or 404. Rebuilt as `/files/<guid>/<link text>.pdf`
+# both return the PDF (checked 20 October 2026, with any filename).
+_GUID_HREF = re.compile(
+    r"^/?(?:files/)?([0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12})/?$", re.IGNORECASE
+)
+# "(PDF, 53MB)", which the theme appends to a link's text.
+_SIZE_SUFFIX = re.compile(
+    r"\s*\((?:[a-z]{3,4},?\s*)?[\d.]+\s*[kmg]?b\)\s*$", re.IGNORECASE
+)
+
+
+def _pdf_href(anchor) -> str | None:
+    """The anchor's href if it is a PDF, rebuilt if it is a bare GUID, else
+    None. A bare GUID whose text names another kind of file (an ``.mp3``
+    recording) is None; one whose text has no extension at all is taken as a
+    PDF, as every one seen so far is."""
+    href = anchor["href"].strip()
+    if _is_pdf(href):
+        return href
+    match = _GUID_HREF.match(href)
+    if not match:
+        return None
+    name = _SIZE_SUFFIX.sub("", anchor.get_text(" ", strip=True)).strip()
+    extension = re.search(r"\.([a-z0-9]{2,4})$", name, re.IGNORECASE)
+    if extension and extension.group(1).lower() != "pdf":
+        return None
+    if not extension:
+        name += ".pdf"
+    filename = re.sub(r"[^\w.\-]+", "-", name).strip("-")
+    return f"/files/{match.group(1)}/{filename}"
+
+
+# --- a label that is only the meeting's name -------------------------------
+#
+# Some agendas are uploaded under a filename that is just the meeting:
+# Broken Hill's "2001-Extraordinary-Council-Meeting-13-January-2020.pdf",
+# Gilgandra's "15-September-2020-Open.pdf", Central Darling's
+# "Ordinary-Council-Meeting-22-March-2023.pdf". Each sits beside a file that
+# says "Minutes", so by elimination it is the agenda. That inference is only
+# as good as the elimination, so it is opt-in (`title_only_agenda`) and is
+# drawn only when the same payload has minutes and nothing else names the
+# agenda.
+_TITLE_ONLY_WORD = (
+    rf"(?:ordinary|extraordinary|special|council|meetings?|open|public|shire"
+    rf"|of|the|\d{{1,4}}|{_MONTH}|\d{{1,2}}\.\d{{1,2}}\.\d{{2,4}})"
+)
+_TITLE_ONLY_LABEL = re.compile(
+    rf"^{_TITLE_ONLY_WORD}(?:[\s_.-]+{_TITLE_ONLY_WORD})*(?:\.pdf)?$", re.IGNORECASE
+)
+_TITLE_ONLY_NEEDS = re.compile(r"\b(?:meetings?|open)\b", re.IGNORECASE)
+
+
+def _is_title_only(label: str) -> bool:
+    name = _SIZE_SUFFIX.sub("", label).strip()
+    return bool(_TITLE_ONLY_LABEL.match(name) and _TITLE_ONLY_NEEDS.search(name))
+
+
+# --- a link dated for another meeting ----------------------------------------
+#
+# A full date in a label—"held-30-November-2022", "24 November 2021".
+_LABEL_DATE = re.compile(
+    rf"\b(\d{{1,2}})(?:st|nd|rd|th)?[\s_.-]+({_MONTH})[\s_.,-]+(\d{{4}})\b",
+    re.IGNORECASE,
+)
+
+
+def drop_links_dated_otherwise(
+    content: BeautifulSoup, meeting_date: str, listed: set[datetime.date]
+) -> list[str]:
+    """Remove links whose text dates them to another meeting.
+
+    Broken Hill's payloads sometimes carry another meeting's minutes: the 29
+    November 2023 meeting lists "2211-Open-Minutes-of-the-Ordinary-Council-
+    Meeting-held-30-November-2022.pdf", and the 11 November 2021
+    extraordinary meeting the 24 November 2021 ordinary minutes. Stored as
+    this meeting's minutes, they would be a document of the wrong meeting.
+
+    But the same council also mistypes the day: its 18 December 2024 minutes
+    are "...-24-December-2024-confirmed.pdf", its 25 August 2021 minutes
+    "...-28-August-2021-...", its 27 May 2020 agenda "...-21-May-2020-...",
+    and no meeting was held on any of those days. So a date that is not the
+    meeting's counts against a link only when it is in another month, or is
+    the date of another meeting in `listed` (the listing's own dates). A
+    label with no full date says nothing either way and is kept. Returns the
+    labels removed, for logging.
+    """
+    try:
+        wanted = parse_date(meeting_date, dayfirst=True).date()
+    except (ValueError, OverflowError):
+        return []
+
+    def elsewhere(day: datetime.date) -> bool:
+        return (day.year, day.month) != (wanted.year, wanted.month) or day in listed
+
+    dropped = []
+    for anchor in content.find_all("a", href=True):
+        label = _label(anchor.get_text(" ", strip=True))
+        dates = set()
+        for day, month, year in _LABEL_DATE.findall(label):
+            try:
+                dates.add(parse_date(f"{day} {month} {year}").date())
+            except (ValueError, OverflowError):
+                continue
+        if dates and wanted not in dates and all(elsewhere(d) for d in dates):
+            dropped.append(label)
+            anchor.decompose()
+    return dropped
 
 
 def _label(text: str) -> str:
@@ -401,7 +686,12 @@ def _pick(candidates: list[tuple[str, str, int]]) -> str | None:
     return ranked[0][1][1] if ranked else None
 
 
-def papers_by_link_text(content: BeautifulSoup, base_url: str) -> dict[str, str]:
+def papers_by_link_text(
+    content: BeautifulSoup,
+    base_url: str,
+    title_only_agenda: bool = False,
+    bound_business_paper: Optional[re.Pattern] = None,
+) -> dict[str, str]:
     """Pick the agenda and minutes out of one flat list of files.
 
     Classification is on the **link text only**, never the href: Mornington
@@ -415,20 +705,43 @@ def papers_by_link_text(content: BeautifulSoup, base_url: str) -> dict[str, str]
     or the minutes.
     """
     agendas: list[tuple[str, str, int]] = []
+    business: list[tuple[str, str, int]] = []
     minutes: list[tuple[str, str, int]] = []
     for anchor in content.find_all("a", href=True):
-        href = anchor["href"].strip()
-        if not _is_pdf(href):
+        href = _pdf_href(anchor)
+        if not href:
             continue
         label = _label(anchor.get_text(" ", strip=True))
+        url = urljoin(base_url, href)
+        business_rank = _business_paper_rank(label, bound_business_paper)
+        if business_rank is not None:
+            business.append((label, url, business_rank))
+            continue
         if _NOT_THE_PAPER.search(label):
             continue
-        url = urljoin(base_url, href)
         if _AGENDA.search(label):
             agendas.append((label, url, 0))
         elif _MINUTES.search(label):
             minutes.append((label, url, 0))
-    return _papers(_pick(agendas), _pick(minutes))
+        elif _CODED_NOT_THE_PAPER.search(label):
+            continue
+        elif _CODED_AGENDA.search(label):
+            agendas.append((label, url, 1))
+        elif _CODED_MINUTES.search(label):
+            minutes.append((label, url, 1))
+    agenda = _pick(business) or _pick(agendas)
+    if not agenda and title_only_agenda and minutes:
+        # See _TITLE_ONLY_LABEL.
+        agenda = next(
+            (
+                urljoin(base_url, href)
+                for anchor in content.find_all("a", href=True)
+                if (href := _pdf_href(anchor))
+                and _is_title_only(_label(anchor.get_text(" ", strip=True)))
+            ),
+            None,
+        )
+    return _papers(agenda, _pick(minutes))
 
 
 def _is_minutes_file(url: str) -> bool:
@@ -448,7 +761,12 @@ def _in_nested_attachments(anchor, section) -> bool:
     return False
 
 
-def papers_by_heading(content: BeautifulSoup, base_url: str) -> dict[str, str]:
+def papers_by_heading(
+    content: BeautifulSoup,
+    base_url: str,
+    title_heading_agenda: bool = False,
+    bound_business_paper: Optional[re.Pattern] = None,
+) -> dict[str, str]:
     """Pick the agenda and minutes by the heading each file is filed under.
 
     Only ``div.meeting-document`` sections are read. The payload's other list,
@@ -471,17 +789,31 @@ def papers_by_heading(content: BeautifulSoup, base_url: str) -> dict[str, str]:
         return papers_by_link_text(
             BeautifulSoup("".join(str(div) for div in related), "html.parser"),
             base_url,
+            bound_business_paper=bound_business_paper,
         )
 
     agendas: list[tuple[str, str, int]] = []
+    business: list[tuple[str, str, int]] = []
     minutes: list[tuple[str, str, int]] = []
     for section in sections:
         h3 = section.find("h3")
         if not h3:
             continue
         heading = _label(h3.get_text(" ", strip=True))
-        bound_in = bool(_WITH_ATTACHMENTS.match(heading))
-        not_the_paper = bool(_NOT_THE_PAPER.search(heading)) and not bound_in
+        # What the paper is, with any leading date or meeting name taken off.
+        kind = _heading_kind(heading)
+        bound_in = bool(_WITH_ATTACHMENTS.match(kind))
+        business_rank = (
+            _business_paper_rank(kind, bound_business_paper)
+            if _BUSINESS_PAPER_HEADING.match(kind)
+            else None
+        )
+        is_business_paper = business_rank is not None
+        not_the_paper = (
+            bool(_NOT_THE_PAPER.search(heading))
+            and not bound_in
+            and not is_business_paper
+        )
         if not_the_paper or _ONE_ITEM.search(heading):
             continue
         # The paper is the section's own "Download PDF" link. A section can
@@ -493,9 +825,9 @@ def papers_by_heading(content: BeautifulSoup, base_url: str) -> dict[str, str]:
         # trusting link order.
         url = next(
             (
-                urljoin(base_url, a["href"].strip())
+                urljoin(base_url, href)
                 for a in section.find_all("a", href=True)
-                if _is_pdf(a["href"].strip())
+                if (href := _pdf_href(a))
                 and not _in_nested_attachments(a, section)
                 and not _NOT_THE_PAPER.search(_label(a.get_text(" ", strip=True)))
             ),
@@ -503,18 +835,329 @@ def papers_by_heading(content: BeautifulSoup, base_url: str) -> dict[str, str]:
         )
         if not url:
             continue
-        rank = 0 if _PLAIN_HEADING.match(heading) and not bound_in else 1
-        if _AGENDA_HEADING.match(heading):
+        rank = 0 if _PLAIN_HEADING.match(kind) and not bound_in else 1
+        bare_title = (
+            title_heading_agenda
+            and not _MINUTES_HEADING.match(kind)
+            and not _AGENDA_HEADING.match(kind)
+            and not is_business_paper
+            and _TITLE_HEADING.match(heading)
+            and not _NOT_A_TITLE.search(heading)
+        )
+        if bare_title:
+            # The meeting's bare title (see _TITLE_HEADING). It is the
+            # agenda, unless its file says minutes: Kempsey's 15 July 2025
+            # files the minutes under "Ordinary Council Meeting - 15 July
+            # 2025" and the agenda under "Business Paper - ...".
             if _is_minutes_file(url):
-                # Filed under the wrong heading: Cambridge's 8 April 2024
-                # Special Council Meeting and 20 September 2022 Development
-                # Committee put the minutes PDF under "Agenda". Storing it as
-                # the agenda would report a document that is not one.
-                continue
+                minutes.append((heading, url, 2))
+            else:
+                agendas.append((heading, url, 2))
+            continue
+        names_agenda = is_business_paper or _AGENDA_HEADING.match(kind)
+        if names_agenda and _is_minutes_file(url):
+            # Filed under the wrong heading: Cambridge's 8 April 2024
+            # Special Council Meeting and 20 September 2022 Development
+            # Committee put the minutes PDF under "Agenda". Storing it as
+            # the agenda would report a document that is not one. The file
+            # is still the minutes, so it is a candidate for them, ranked
+            # below any heading that says "Minutes": Kempsey's 21 April
+            # 2020 files its minutes under a second "Agenda - 21 April 2020"
+            # heading and nowhere else.
+            minutes.append((heading, url, 3))
+            continue
+        if is_business_paper:
+            business.append((heading, url, business_rank))
+        elif _AGENDA_HEADING.match(kind):
             agendas.append((heading, url, rank))
-        elif _MINUTES_HEADING.match(heading):
+        elif _MINUTES_HEADING.match(kind):
             minutes.append((heading, url, rank))
-    return _papers(_pick(agendas), _pick(minutes))
+    return _papers(_pick(business) or _pick(agendas), _pick(minutes))
+
+
+# --- folder and search modes -------------------------------------------------
+
+# An item's own paper, numbered as the agenda numbers it: Queenscliffe's
+# "6.2.2 Unconfirmed Minutes Audit & Risk Committee Meeting on 20 April 2026"
+# and "13.1.1 Quarterly Financial Report" sit beside the meeting's minutes.
+# One- or two-digit parts only, so a dotted date ("28.4.2026 Ordinary Council
+# Meeting Agenda", Wujal Wujal) is not an item number.
+_ITEM_NUMBER = re.compile(r"^\d{1,2}(?:\.\d{1,2}){1,3}\.?\s")
+
+
+def _says(label: str) -> str | None:
+    """``"agenda"`` or ``"minutes"`` when the label names exactly one of
+    them as a word anywhere, else None. "Agenda and Minutes" is None: it
+    says nothing about which this file is."""
+    agenda = bool(_AGENDA.search(label))
+    minutes = bool(_MINUTES.search(label))
+    if agenda == minutes:
+        return None
+    return "agenda" if agenda else "minutes"
+
+
+def _file_says(url: str) -> str | None:
+    """What the file's own name says it is, as `_says`."""
+    name = _label(urlparse(url).path.rsplit("/", 1)[-1].replace("-", " "))
+    return _says(name)
+
+
+def _not_a_paper(label: str) -> bool:
+    return bool(
+        _NOT_THE_PAPER.search(label)
+        or _ONE_ITEM.search(label)
+        or _ITEM_NUMBER.match(label)
+    )
+
+
+def _own_title(document) -> str:
+    title = document.find("div", class_="meeting-document-title")
+    return _label(title.get_text(" ", strip=True)) if title else ""
+
+
+def _folder_title(folder) -> str:
+    heading = folder.find(class_="folder-title")
+    if (
+        heading is None
+        or heading.find_parent("div", class_="meeting-folder") is not folder
+    ):
+        return ""
+    return _label(heading.get_text(" ", strip=True))
+
+
+@dataclass(frozen=True)
+class FolderDocument:
+    """One file in a ``div.meeting-folder``: the heading of the folder it
+    sits in, its own title, and its href (rebuilt if a bare GUID)."""
+
+    folder: str
+    title: str
+    href: str
+
+
+def folder_documents(content: BeautifulSoup) -> list[FolderDocument]:
+    """Every file filed in a ``div.meeting-folder``, in payload order.
+
+    The folder is the *nearest* one: Queenscliffe's 8 November 2023 minutes
+    sit in a "Minutes" folder inside a "Reports" folder, and its later
+    payloads put each item's attachments in an "Attachments" folder inside
+    the minutes' own section. A file with no PDF link (Lake Macquarie lists
+    "Service Delivery Standing Committee" on 10 August 2020 with nothing to
+    download) is left out.
+    """
+    documents = []
+    for document in content.find_all("div", class_="meeting-document"):
+        title = document.find("div", class_="meeting-document-title")
+        if title is None:
+            # A headed section (``<h3>`` and links), which search mode reads.
+            continue
+        folder = document.find_parent("div", class_="meeting-folder")
+        if folder is None:
+            continue
+        href = next(
+            (h for a in document.find_all("a", href=True) if (h := _pdf_href(a))),
+            None,
+        )
+        if href:
+            documents.append(
+                FolderDocument(_folder_title(folder), _own_title(document), href)
+            )
+    return documents
+
+
+def _folder_candidates(
+    content: BeautifulSoup,
+    base_url: str,
+    bound_business_paper: Optional[re.Pattern],
+    agendas: list,
+    business: list,
+    minutes: list,
+) -> None:
+    """Add each folder file that is an agenda or minutes to the lists.
+
+    The folder's heading says which: "Agenda", "Minutes", or a business
+    paper. Folders for anything else—"Attachments", "Questions on items",
+    "Reports", Queenscliffe's untitled per-item folders—are passed over.
+    Within a folder, a file titled as an attachment book or one item's paper
+    is not the paper ("October 2026 Ordinary Meeting Agenda Attachments",
+    Pyrenees; "Supplementary Agenda", Lake Macquarie). A title naming the
+    folder's kind ranks 0, a title naming nothing (Lake Macquarie's
+    "Ordinary Meeting") 1, and a title naming the *other* kind is filed as
+    that kind at 2: the title is about this one file, the folder about all
+    of them.
+    """
+    for document in folder_documents(content):
+        folder, title = document.folder, document.title
+        if _NOT_THE_PAPER.search(folder) or _not_a_paper(title):
+            continue
+        url = urljoin(base_url, document.href)
+        if _BUSINESS_PAPER.search(folder) and not _MINUTES.search(folder):
+            rank = _business_paper_rank(title, bound_business_paper)
+            if rank is not None:
+                business.append((title, url, rank))
+                continue
+            kind = "agenda"
+        else:
+            kind = _says(folder)
+        if kind is None:
+            continue
+        titled = _says(title)
+        if titled is None or titled == kind:
+            target = agendas if kind == "agenda" else minutes
+            target.append((title, url, 0 if titled == kind else 1))
+        else:
+            (agendas if titled == "agenda" else minutes).append((title, url, 2))
+
+
+def papers_by_folder(
+    content: BeautifulSoup,
+    base_url: str,
+    bound_business_paper: Optional[re.Pattern] = None,
+) -> dict[str, str]:
+    """Pick the agenda and minutes by the folder each file is filed in.
+
+    See `_folder_candidates`. Lake Macquarie's agenda folder holds
+    "Ordinary Meeting", "Information Meeting", "Amended Agenda" and
+    "Supplementary Agenda": the supplementary paper is excluded, the amended
+    one is provisional and ranks below a plain one, and the rest go in
+    payload order, which puts the meeting's own agenda first.
+    """
+    agendas: list[tuple[str, str, int]] = []
+    business: list[tuple[str, str, int]] = []
+    minutes: list[tuple[str, str, int]] = []
+    _folder_candidates(
+        content, base_url, bound_business_paper, agendas, business, minutes
+    )
+    return _papers(_pick(business) or _pick(agendas), _pick(minutes))
+
+
+def _section_link(section) -> str | None:
+    """A headed section's own paper: its first PDF that is not in a list or
+    folder nested inside it and is not labelled as something else."""
+    for anchor in section.find_all("a", href=True):
+        href = _pdf_href(anchor)
+        if not href or _NOT_THE_PAPER.search(_label(anchor.get_text(" ", strip=True))):
+            continue
+        nested = False
+        for parent in anchor.parents:
+            if parent is section:
+                break
+            if parent.name == "div" and {"meeting-attachments", "meeting-folder"} & set(
+                parent.get("class") or []
+            ):
+                nested = True
+                break
+        if not nested:
+            return href
+    return None
+
+
+def papers_by_search(
+    content: BeautifulSoup,
+    base_url: str,
+    bound_business_paper: Optional[re.Pattern] = None,
+    related_fills_gaps: bool = False,
+    title_heading_agenda: bool = False,
+) -> dict[str, str]:
+    """Pick the agenda and minutes by searching each heading for the word.
+
+    Each ``div.meeting-document`` section with an ``<h3>`` is classified by
+    the one of "agenda" or "minutes" its heading names, wherever in the
+    heading it is. A heading naming neither—Queenscliffe's 13 December 2023
+    "Ordinary Meeting of Council 13 December 2023"—or both is classified by
+    its file's name instead, ranked below a heading that says. A heading
+    for an attachment book or one item's paper is not the paper ("Attachments
+    to Item 7.4", Central Goldfields; "28.4.2026 Ordinary Council Meeting
+    Appendices", Wujal Wujal), nor is one whose file is named as the other
+    kind, which is filed as that kind instead (as in heading mode). Notices
+    ("Special Budget Meeting Notice 21 July 2026", Gladstone) name neither
+    and their files neither, so they drop out.
+
+    Files in ``div.meeting-folder`` folders are read as `papers_by_folder`
+    reads them, ranked alongside. A payload with neither falls back to its
+    Related Information list by link text, as heading mode does.
+
+    ``title_heading_agenda`` takes a heading that names neither paper, and
+    whose file does not either, as the agenda when the heading is the
+    meeting's title: Queenscliffe's 12 June 2024 Planning Review Meeting
+    files its agenda under "Planning Review Meeting 12 June 2024" as
+    ``planning-review-meeting-12-june-2024.pdf`` (its first page says
+    "Agenda"). Ranked below any heading that says, and opt-in for the same
+    reason as heading mode's rule (see `_TITLE_HEADING`).
+
+    ``related_fills_gaps`` also reads the Related Information list when the
+    sections hold only one of the two papers: Central Goldfields files 19
+    November 2025's agenda and 23 July 2025's minutes there alone, labelled by
+    filename. Opt-in, because at Kingston that list links other meetings'
+    papers (see `papers_by_heading`).
+    """
+    sections = [
+        s
+        for s in content.find_all("div", class_="meeting-document")
+        if s.find("h3") is not None
+        and s.find_parent("div", class_="meeting-folder") is None
+    ]
+    agendas: list[tuple[str, str, int]] = []
+    business: list[tuple[str, str, int]] = []
+    minutes: list[tuple[str, str, int]] = []
+    for section in sections:
+        heading = _label(section.find("h3").get_text(" ", strip=True))
+        business_rank = (
+            _business_paper_rank(heading, bound_business_paper)
+            if _BUSINESS_PAPER.search(heading)
+            else None
+        )
+        if business_rank is None and _not_a_paper(heading):
+            continue
+        href = _section_link(section)
+        if not href:
+            continue
+        url = urljoin(base_url, href)
+        filed_as = _file_says(url)
+        if business_rank is not None:
+            if filed_as == "minutes":
+                minutes.append((heading, url, 3))
+            else:
+                business.append((heading, url, business_rank))
+            continue
+        says = _says(heading)
+        if says is None:
+            if filed_as is not None:
+                (agendas if filed_as == "agenda" else minutes).append((heading, url, 2))
+            elif (
+                title_heading_agenda
+                and re.search(r"\bmeeting\b", heading, re.IGNORECASE)
+                and not _NOT_A_TITLE.search(heading)
+            ):
+                agendas.append((heading, url, 3))
+            continue
+        if filed_as is not None and filed_as != says:
+            # Filed under the wrong heading; see papers_by_heading.
+            (agendas if filed_as == "agenda" else minutes).append((heading, url, 3))
+            continue
+        (agendas if says == "agenda" else minutes).append((heading, url, 0))
+    _folder_candidates(
+        content, base_url, bound_business_paper, agendas, business, minutes
+    )
+
+    papers = _papers(_pick(business) or _pick(agendas), _pick(minutes))
+    has_both = "agenda" in papers and "minutes" in papers
+    if (not sections and not papers) or (related_fills_gaps and not has_both):
+        related = [
+            div
+            for div in content.find_all("div", class_="meeting-attachments")
+            if div.find_parent("div", class_="meeting-document") is None
+        ]
+        if related:
+            listed = papers_by_link_text(
+                BeautifulSoup("".join(str(div) for div in related), "html.parser"),
+                base_url,
+                bound_business_paper=bound_business_paper,
+            )
+            for kind, url in listed.items():
+                papers.setdefault(kind, url)
+            papers = _papers(papers.get("agenda"), papers.get("minutes"))
+    return papers
 
 
 def _papers(agenda: str | None, minutes: str | None) -> dict[str, str]:
@@ -612,8 +1255,13 @@ class OpenCitiesMeetingsScraper(BaseScraper):
     #: drive the form by postback. See the module docstring.
     list_name: Optional[str] = None
 
-    #: ``"heading"`` or ``"link_text"``—see the module docstring.
+    #: ``"heading"``, ``"link_text"``, ``"folder"`` or ``"search"``—see the
+    #: module docstring.
     papers_by: str = "link_text"
+
+    #: In search mode, take a paper the headed sections lack from the
+    #: Related Information list, by link text. See `papers_by_search`.
+    related_fills_gaps: bool = False
 
     #: When set, only rows whose meeting type matches are fetched.
     meeting_types: Optional[re.Pattern] = None
@@ -632,6 +1280,39 @@ class OpenCitiesMeetingsScraper(BaseScraper):
 
     #: Read each meeting's own page instead of the renderer payload.
     detail_pages: bool = False
+
+    #: Ignore a payload's links whose text dates them to another meeting—
+    #: another meeting's paper filed on this one (Broken Hill). Opt-in,
+    #: because it trusts the dates in a council's labels; see
+    #: `drop_links_dated_otherwise`.
+    label_dates_must_match: bool = False
+
+    #: In link-text mode, take a PDF labelled only with the meeting's name
+    #: and date as the agenda when nothing else names one and the minutes are
+    #: there beside it. See `_TITLE_ONLY_LABEL`.
+    title_only_agenda: bool = False
+
+    #: In heading mode, take a heading that is only the meeting's title
+    #: ("Ordinary Council Meeting - 20 October 2026") as the agenda's, or the
+    #: minutes' when its file is named as minutes (Kempsey). See
+    #: `_TITLE_HEADING`. In search mode, the same for a title heading whose
+    #: file names neither paper (Queenscliffe); see `papers_by_search`.
+    title_heading_agenda: bool = False
+
+    #: A council's own label for its business paper with the attachments
+    #: bound in, where the label does not say "with attachments"—Central
+    #: Darling's "Council-Business-Paper-23-June-2026-Attachments.pdf". See
+    #: `_BOUND_BUSINESS_PAPER`.
+    bound_business_paper: Optional[re.Pattern] = None
+
+    #: Also keep the rows on the main listing's bare first page that no
+    #: year's filter returns. Gilgandra's 20 October 2026 meeting is on the
+    #: bare listing with its business paper, but on no year's page (checked
+    #: 20 October 2026): a row nobody has tagged with a year yet. The bare
+    #: page holds the ten newest rows, which is where a freshly added one
+    #: sits. Costs the bare page's request in production, which
+    #: ``year_filtered_first_page`` would otherwise save.
+    bare_page_rows: bool = False
 
     def __init__(self, council_name: str, state: str, listing_url: str):
         parts = urlparse(listing_url)
@@ -912,7 +1593,10 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             and listing.list_name
             and listing.by_year
         ):
-            return self._fetch_listing_page(listing.dlv_url(), required)
+            html = self._fetch_listing_page(listing.dlv_url(), required)
+            if html is not None:
+                self._bare_pages[listing.dlv_url()] = html
+            return html
         wanted = self._wanted_years()
         if listing.years:
             # A one-year archive listing (Hume's 2020 page) is only walked
@@ -926,8 +1610,18 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             self._prefetched[url] = html
         return html
 
+    def _bare_page(self, listing: Listing) -> str | None:
+        """The listing's bare first page, fetched only if the walk has not
+        already (see ``bare_page_rows``). A failure is a warning: the page
+        only adds rows the year filter left out."""
+        url = listing.dlv_url()
+        if url in self._bare_pages:
+            return self._bare_pages[url]
+        return self._fetch_listing_page(url)
+
     def _rows(self) -> list[ListingRow]:
         self._prefetched: dict[str, str] = {}
+        self._bare_pages: dict[str, str] = {}
         main = self.main_listing()
         first = self._first_page(main, required=True)
 
@@ -944,7 +1638,14 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         seen: set[str] = set()
         for listing, listing_first in listings:
             required = listing is main or listing.required
-            for html in self._walk(listing, listing_first, required):
+            pages = self._walk(listing, listing_first, required)
+            if listing is main and self.bare_page_rows and listing.by_year:
+                # After the year pages, so a row they hold keeps its place
+                # and the bare page adds only the rows they left out.
+                pages = itertools.chain(pages, [self._bare_page(listing)])
+            for html in pages:
+                if html is None:
+                    continue
                 for row in parse_listing_rows(html, listing.url):
                     if self.detail_pages and not row.detail_url:
                         continue
@@ -1000,8 +1701,30 @@ class OpenCitiesMeetingsScraper(BaseScraper):
         also return ``"agenda_html"`` for a council whose agenda is a web page
         rather than a PDF (Monash)."""
         if self.papers_by == "heading":
-            return papers_by_heading(content, self.base_url)
-        return papers_by_link_text(content, self.base_url)
+            return papers_by_heading(
+                content,
+                self.base_url,
+                title_heading_agenda=self.title_heading_agenda,
+                bound_business_paper=self.bound_business_paper,
+            )
+        if self.papers_by == "folder":
+            return papers_by_folder(
+                content, self.base_url, bound_business_paper=self.bound_business_paper
+            )
+        if self.papers_by == "search":
+            return papers_by_search(
+                content,
+                self.base_url,
+                bound_business_paper=self.bound_business_paper,
+                related_fills_gaps=self.related_fills_gaps,
+                title_heading_agenda=self.title_heading_agenda,
+            )
+        return papers_by_link_text(
+            content,
+            self.base_url,
+            title_only_agenda=self.title_only_agenda,
+            bound_business_paper=self.bound_business_paper,
+        )
 
     def row_papers(self, content: BeautifulSoup, row: ListingRow) -> dict[str, str]:
         """The papers for one listing row. Override when the row itself says
@@ -1022,6 +1745,15 @@ class OpenCitiesMeetingsScraper(BaseScraper):
     def build_return(
         self, content: BeautifulSoup, row: ListingRow
     ) -> ScraperReturn | None:
+        if self.label_dates_must_match:
+            dropped = drop_links_dated_otherwise(
+                content, row.date, getattr(self, "_listed_dates", set())
+            )
+            if dropped:
+                self.logger.info(
+                    f"{row.date} {row.meeting_type}: passed over links dated for "
+                    f"another meeting: {dropped}"
+                )
         papers = self.row_papers(content, row)
         agenda_url = papers.get("agenda")
         minutes_url = papers.get("minutes")
@@ -1037,7 +1769,7 @@ class OpenCitiesMeetingsScraper(BaseScraper):
             labels = [
                 _label(a.get_text(" ", strip=True))
                 for a in content.find_all("a", href=True)
-                if _is_pdf(a["href"].strip())
+                if _pdf_href(a)
             ]
             if labels:
                 self.logger.warning(
@@ -1086,6 +1818,13 @@ class OpenCitiesMeetingsScraper(BaseScraper):
 
         rows = self._rows()
         self.logger.info(f"Found {len(rows)} meeting entries to process")
+        # For label_dates_must_match: the days this listing held a meeting.
+        self._listed_dates = set()
+        for row in rows:
+            try:
+                self._listed_dates.add(parse_date(row.date, dayfirst=True).date())
+            except (ValueError, OverflowError):
+                continue
 
         self._payload_failures = 0
         results: list[ScraperReturn] = []

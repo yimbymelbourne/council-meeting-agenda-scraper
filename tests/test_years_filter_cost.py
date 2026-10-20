@@ -12,7 +12,6 @@ other years are never requested.
 
 from __future__ import annotations
 
-import json
 import re
 
 from bs4 import BeautifulSoup
@@ -25,53 +24,17 @@ from aus_council_scrapers.scrapers.vic.banyule import (
     BanyuleScraper,
     _parse_listing_items,
 )
-from tests.cassette import PlaybackFetcher, cassette_paths
+from tests.replay_cost import (
+    CountingPlayback as _CountingPlayback,
+    load_cassette as _load,
+    meetings_in as _meetings_in,
+    recorded_date as _recorded_date,
+    sorted_meetings as _sorted,
+)
 
 # A complete past year in both recordings, so the filtered run has pages to
 # skip on both sides of it.
 _YEAR = 2025
-
-
-def _load(slug: str) -> tuple[list, list[dict]]:
-    result_path, replay_path = cassette_paths(slug)
-    with open(replay_path) as f:
-        replay = json.load(f)
-    with open(result_path) as f:
-        expected = json.load(f)
-    return replay, expected
-
-
-def _recorded_date(replay: list) -> str:
-    return next(value for key, value in replay if key == ["meta", "recorded_date"])
-
-
-def _sorted(results) -> list[dict]:
-    # Order is not the contract here; which meetings come back is.
-    return sorted(results, key=lambda r: (r["date"], r["name"], r["agenda_url"] or ""))
-
-
-def _meetings_in(results: list[dict], year: int) -> list[dict]:
-    return _sorted(r for r in results if parse_date(r["date"]).year == year)
-
-
-class _CountingPlayback(PlaybackFetcher):
-    """Playback that remembers which URLs the scraper asked for."""
-
-    def __init__(self, replay_data, slug, driver=None):
-        super().__init__(replay_data, slug)
-        self.requested: list[str] = []
-        self._driver = driver
-
-    def get_selenium_driver(self):
-        return self._driver if self._driver else super().get_selenium_driver()
-
-    def fetch_with_requests(self, url, method="GET", **kwargs):
-        self.requested.append(url)
-        return super().fetch_with_requests(url, method, **kwargs)
-
-    def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
-        self.requested.append(url)
-        return super().fetch_with_selenium(url, wait_time, wait_condition)
 
 
 # --------------------------------------------------------------------------
