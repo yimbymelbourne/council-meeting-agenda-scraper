@@ -62,6 +62,36 @@ def test_detects_councilconnect():
     assert [p.name for p in detect(html)] == ["CouncilConnect"]
 
 
+def test_detects_lgasa_funnelback():
+    """The listing names its push collection and links documents on the
+    Matrix origin, so either is enough."""
+    collection = (
+        '<input name="collection" value="gawler-council-minutes-and-agenda-push">'
+    )
+    origin = '<a href="https://lgasa-web.squiz.cloud/?a=1873521">Agenda</a>'
+    for html in (collection, origin):
+        assert [p.name for p in detect(html)] == ["LGA SA Funnelback"]
+
+
+def test_detects_craft_simplegov():
+    """The six SA Craft sites share no one marker: the asset folders differ
+    (Marion's /assets/meetings/, Playford's /assets/agendas-minutes/), and
+    Holdfast Bay shows only the agency credit in its footer on page 1."""
+    pages = (
+        '<a href="/assets/meetings/2026/10-oct/agendas/Agenda.pdf">Agenda</a>',
+        '<a href="/assets/agendas-minutes/minutes/Minutes.pdf">Minutes</a>',
+        '<table class="table--agendasMinutes"></table>',
+        '<p>Site by <a href="https://www.simple.com.au/gov">SimpleGov</a></p>',
+    )
+    for html in pages:
+        assert [p.name for p in detect(html)] == ["Craft/SimpleGov (SA)"]
+
+
+def test_detects_moderngov_from_the_url_alone():
+    found = detect("", "https://meetings.cityofadelaide.com.au/ieListMeetings.aspx")
+    assert [p.name for p in found] == ["Modern.Gov"]
+
+
 def test_unknown_platform_returns_nothing():
     assert detect("<html><body><h1>Meetings</h1></body></html>") == []
 

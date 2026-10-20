@@ -103,9 +103,57 @@ PLATFORMS: tuple[Platform, ...] = (
         reference="aus_council_scrapers/scrapers/wa/cottesloe.py",
     ),
     Platform(
+        name="LGA SA Funnelback",
+        signatures=(
+            r"lgasa-search\.lga\.sa\.gov\.au",
+            r"-council-minutes-and-agenda-push",
+            r"lgasa-web\.squiz\.cloud",
+        ),
+        guidance=(
+            "Subclass LGASAFunnelbackScraper (aus_council_scrapers/lgasa.py) "
+            "and set listing_urls to the council's agendas-and-minutes page. "
+            "robots.txt disallows search.json and query=/facet parameters, "
+            "so it reads that page through Selenium, 20 s apart; do not "
+            "write a parser."
+        ),
+        reference="aus_council_scrapers/scrapers/sa/port_adelaide_enfield.py",
+    ),
+    Platform(
+        name="Craft/SimpleGov (SA)",
+        signatures=(
+            r"/assets/meetings/(?:\d{4}/\d{2}-[a-z]+/|agendas/|minutes/)",
+            r"/assets/agendas-minutes/(?:agendas|minutes)/",
+            r"table--agendasMinutes",
+            r"accordion--minutes",
+            r"simple\.com\.au/gov",
+        ),
+        guidance=(
+            "Subclass CraftMeetingsModuleScraper or CraftArchiveScraper "
+            "(aus_council_scrapers/craft.py) with listing_url and a row "
+            "parser. The date filter needs ISO dates; AWS WAF, so Selenium "
+            "unless plain requests are measured to pass."
+        ),
+        reference="aus_council_scrapers/scrapers/sa/salisbury.py",
+    ),
+    Platform(
         name="Granicus/Legistar",
         signatures=(r"granicus\.com", r"legistar"),
         guidance="No base class yet — first council on this platform gets to write one.",
+    ),
+    Platform(
+        name="Modern.Gov",
+        signatures=(
+            r"ieListMeetings\.aspx",
+            r"ieListDocuments\.aspx",
+            r"mgWebService\.asmx",
+        ),
+        guidance=(
+            "Subclass ModernGovScraper (aus_council_scrapers/moderngov.py) "
+            "with the base URL and a committee allowlist {CId: name}. "
+            "Documents are only on per-meeting pages, so the allowlist is "
+            "what bounds the cost."
+        ),
+        reference="aus_council_scrapers/scrapers/nsw/sydney.py",
     ),
     Platform(
         name="Civica",

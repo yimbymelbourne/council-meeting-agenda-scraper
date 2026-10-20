@@ -1,8 +1,26 @@
+from aus_council_scrapers.scrapers.sa.adelaide import CityOfAdelaideScraper
+from aus_council_scrapers.scrapers.sa.adelaide_hills import AdelaideHillsScraper
+from aus_council_scrapers.scrapers.sa.barossa import BarossaScraper
 from aus_council_scrapers.scrapers.sa.burnside import BurnsideScraper
+from aus_council_scrapers.scrapers.sa.campbelltown_sa import CampbelltownSAScraper
 from aus_council_scrapers.scrapers.sa.charles_sturt import CharlesSturtScraper
+from aus_council_scrapers.scrapers.sa.gawler import GawlerScraper
+from aus_council_scrapers.scrapers.sa.holdfast_bay import HoldfastBayScraper
+from aus_council_scrapers.scrapers.sa.light_regional import LightRegionalScraper
+from aus_council_scrapers.scrapers.sa.marion import MarionScraper
 from aus_council_scrapers.scrapers.sa.mitcham import MitchamScraper
 from aus_council_scrapers.scrapers.sa.mount_barker import MountBarkerScraper
+from aus_council_scrapers.scrapers.sa.norwood_payneham_st_peters import (
+    NorwoodPaynehamStPetersScraper,
+)
 from aus_council_scrapers.scrapers.sa.onkaparinga import OnkaparingaScraper
+from aus_council_scrapers.scrapers.sa.playford import PlayfordScraper
+from aus_council_scrapers.scrapers.sa.port_adelaide_enfield import (
+    PortAdelaideEnfieldScraper,
+)
+from aus_council_scrapers.scrapers.sa.prospect import ProspectScraper
+from aus_council_scrapers.scrapers.sa.salisbury import SalisburyScraper
 from aus_council_scrapers.scrapers.sa.tea_tree_gully import TeaTreeGullyScraper
 from aus_council_scrapers.scrapers.sa.unley import UnleyScraper
+from aus_council_scrapers.scrapers.sa.walkerville import WalkervilleScraper
 from aus_council_scrapers.scrapers.sa.west_torrens import WestTorrensScraper

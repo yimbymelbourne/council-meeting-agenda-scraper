@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**97 of 108 councils complete (89%)** — 4 partial, 0 broken, 7 not started.
+**114 of 123 councils complete (92%)** — 4 partial, 0 broken, 5 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -15,8 +15,11 @@ whenever a fixture changes; CI checks it is current.
 
 | | Council | Meetings | Years | Agendas | Minutes | Notes |
 | --- | --- | ---: | --- | ---: | ---: | --- |
+| ✅ | `adelaide` | 241 | 2020-2026 | 241 | 239 |  |
+| ✅ | `adelaide_hills` | 392 | 2020-2026 | 392 | 309 |  |
 | ✅ | `armadale` | 472 | 2020-2026 | 472 | 470 |  |
 | ✅ | `banyule` | 75 | 2022-2026 | 75 | 75 |  |
+| ✅ | `barossa` | 224 | 2022-2026 | 224 | 216 |  |
 | ✅ | `bassendean` | 100 | 2020-2026 | 100 | 96 |  |
 | ✅ | `bayside_nsw` | 649 | 2020-2026 | 642 | 557 |  |
 | ✅ | `bayside_vic` | 132 | 2021-2026 | 132 | 128 |  |
@@ -30,6 +33,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `cambridge` | 166 | 2020-2026 | 166 | 165 |  |
 | ✅ | `camden` | 76 | 2020-2026 | 76 | 75 |  |
 | ✅ | `campbelltown` | 95 | 2020-2026 | 95 | 95 |  |
+| ✅ | `campbelltown_sa` | 462 | 2020-2026 | 462 | 459 |  |
 | ✅ | `canada_bay` | 101 | 2018-2026 | 101 | 100 |  |
 | ✅ | `canning` | 213 | 2020-2026 | 213 | 137 |  |
 | ✅ | `canterbury_bankstown` | 152 | 2020-2026 | 152 | 150 |  |
@@ -40,15 +44,19 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `cottesloe` | 116 | 2020-2026 | 116 | 116 |  |
 | ✅ | `cumberland` | 329 | 2020-2026 | 311 | 229 |  |
 | ✅ | `darebin` | 84 | 2022-2026 | 84 | 79 |  |
+| ✅ | `derwent_valley` | 102 | 2020-2026 | 102 | 98 |  |
 | ✅ | `east_fremantle` | 190 | 2020-2026 | 190 | 187 |  |
+| ✅ | `fairfield` | 259 | 2020-2026 | 259 | 258 |  |
 | ✅ | `frankston` | 123 | 2020-2026 | 123 | 123 |  |
 | ✅ | `fremantle` | 260 | 2020-2026 | 260 | 258 |  |
+| ✅ | `gawler` | 416 | 2020-2026 | 416 | 400 |  |
 | ✅ | `georges_river` | 632 | 2020-2026 | 630 | 571 |  |
 | ✅ | `glen_eira` | 130 | 2020-2026 | 130 | 130 |  |
 | ✅ | `gold_coast` | 180 | 2020-2026 | 180 | 176 |  |
 | ✅ | `gosnells` | 651 | 2001-2026 | 651 | 650 |  |
 | ✅ | `hobart` | 996 | 2016-2026 | 996 | 967 |  |
 | ✅ | `hobsons_bay` | 53 | 2022-2026 | 53 | 51 |  |
+| ✅ | `holdfast_bay` | 437 | 2020-2026 | 437 | 429 |  |
 | ✅ | `hornsby` | 291 | 2020-2026 | 288 | 143 |  |
 | ✅ | `hume` | 153 | 2020-2026 | 153 | 151 |  |
 | ✅ | `hunters_hill` | 90 | 2020-2026 | 90 | 85 |  |
@@ -60,11 +68,13 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `kuringgai` | 313 | 2020-2026 | 296 | 259 |  |
 | ✅ | `kwinana` | 188 | 2020-2026 | 188 | 186 |  |
 | ✅ | `lane_cove` | 161 | 2020-2026 | 159 | 150 |  |
+| ✅ | `light_regional` | 168 | 2020-2026 | 168 | 167 |  |
 | ✅ | `liverpool` | 200 | 2020-2026 | 194 | 135 |  |
 | ✅ | `lockyer_valley` | 104 | 2020-2026 | 103 | 103 |  |
 | ✅ | `mandurah` | 159 | 2020-2026 | 159 | 158 |  |
 | ✅ | `manningham` | 53 | 2021-2026 | 53 | 37 |  |
 | ✅ | `maribyrnong` | 133 | 2020-2026 | 133 | 132 |  |
+| ✅ | `marion` | 345 | 2020-2026 | 345 | 345 |  |
 | ✅ | `melbourne` | 224 | 2020-2026 | 224 | 220 |  |
 | ✅ | `melton` | 92 | 2020-2026 | 92 | 89 |  |
 | ✅ | `melville` | 224 | 2020-2026 | 224 | 136 |  |
@@ -82,16 +92,21 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `nillumbik` | 121 | 2020-2026 | 121 | 119 |  |
 | ✅ | `north_sydney` | 124 | 2020-2026 | 124 | 122 |  |
 | ✅ | `northern_beaches` | 143 | 2016-2026 | 143 | 128 |  |
+| ✅ | `norwood_payneham_st_peters` | 126 | 2024-2026 | 126 | 123 |  |
 | ✅ | `onkaparinga` | 197 | 2020-2026 | 197 | 197 |  |
 | ✅ | `parramatta` | 778 | 2008-2026 | 778 | 716 |  |
 | ✅ | `penrith_city` | 118 | 2020-2026 | 118 | 115 |  |
 | ✅ | `peppermint_grove` | 85 | 2020-2026 | 85 | 84 |  |
 | ✅ | `perth` | 199 | 2020-2026 | 199 | 133 |  |
+| ✅ | `playford` | 461 | 2020-2026 | 461 | 358 |  |
+| ✅ | `port_adelaide_enfield` | 204 | 2020-2026 | 204 | 203 |  |
 | ✅ | `port_phillip` | 128 | 2022-2026 | 128 | 121 |  |
+| ✅ | `prospect` | 452 | 2020-2026 | 452 | 293 |  |
 | ✅ | `randwick` | 429 | 2020-2026 | 424 | 360 |  |
 | ✅ | `redland` | 110 | 2020-2026 | 86 | 109 |  |
 | 🟡 | `rockingham` | 26 | 2026-2026 | 26 | 24 | only 1 year(s) |
 | ✅ | `ryde` | 96 | 2020-2026 | 96 | 94 |  |
+| ✅ | `salisbury` | 820 | 2020-2026 | 820 | 803 |  |
 | ✅ | `scenic_rim` | 140 | 2020-2026 | 140 | 140 |  |
 | ✅ | `serpentine_jarrahdale` | 117 | 2020-2026 | 117 | 116 |  |
 | ✅ | `somerset` | 157 | 2020-2026 | 157 | 157 |  |
@@ -102,11 +117,13 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `subiaco` | 165 | 2021-2026 | 165 | 108 |  |
 | ✅ | `sunshine_coast` | 98 | 2020-2026 | 98 | 98 |  |
 | ✅ | `sutherland` | 290 | 2020-2026 | 290 | 288 |  |
+| ✅ | `sydney` | 247 | 2020-2026 | 247 | 246 |  |
 | 🟡 | `tea_tree_gully` | 2 | 2026-2026 | 2 | 2 | only 1 year(s) |
 | ✅ | `the_hills` | 232 | 2021-2026 | 232 | 231 |  |
 | ✅ | `unley` | 173 | 2020-2026 | 173 | 172 |  |
 | ✅ | `victoria_park` | 119 | 2020-2026 | 119 | 118 |  |
 | ✅ | `vincent` | 199 | 2020-2026 | 181 | 132 |  |
+| ✅ | `walkerville` | 452 | 2020-2026 | 452 | 316 |  |
 | ✅ | `wanneroo` | 215 | 2020-2026 | 215 | 138 |  |
 | ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
 | ✅ | `west_torrens` | 127 | 2020-2026 | 127 | 124 |  |
@@ -122,4 +139,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`casey` `fairfield` `greater_dandenong` `knox` `swan` `sydney` `whittlesea`
+`casey` `greater_dandenong` `knox` `swan` `whittlesea`

@@ -1,1 +1,2 @@
+from aus_council_scrapers.scrapers.tas.derwent_valley import DerwentValleyScraper
 from aus_council_scrapers.scrapers.tas.hobart import HobartScraper

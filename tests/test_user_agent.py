@@ -98,7 +98,24 @@ def test_stripping_the_headless_marker_stays_opt_in():
         for slug, scraper in SCRAPER_REGISTRY.items()
         if scraper.strip_headless_user_agent
     }
-    assert opted_in == {"MelbourneScraper"}, opted_in
+    # adelaide_hills: CloudFront 403s HeadlessChrome from a GitHub runner.
+    # barossa: unmeasured headless from the runner; from a home IP it
+    # returns the same 47 meetings for 2026 stripped or not.
+    # The LGA SA Funnelback councils need it for the same reason melbourne
+    # does: headless Chrome is Cloudflare-challenged from GitHub's runners and
+    # the de-headlessed string clears it (see aus_council_scrapers/lgasa.py).
+    assert opted_in == {
+        "MelbourneScraper",
+        "AdelaideHillsScraper",
+        "BarossaScraper",
+        "CampbelltownSAScraper",
+        "DerwentValleyScraper",
+        "GawlerScraper",
+        "LightRegionalScraper",
+        "PortAdelaideEnfieldScraper",
+        "ProspectScraper",
+        "WalkervilleScraper",
+    }, opted_in
     assert SCRAPER_REGISTRY["BanyuleScraper"].strip_headless_user_agent is False
 
 
