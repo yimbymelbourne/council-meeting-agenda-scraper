@@ -72,6 +72,37 @@ PLATFORMS: tuple[Platform, ...] = (
         reference="aus_council_scrapers/scrapers/vic/kingston.py",
     ),
     Platform(
+        name="Alyka ksearch (Kentico)",
+        signatures=(r"aw_ksearch\.js", r'id="searchapi"'),
+        guidance=(
+            "Subclass KsearchScraper (aus_council_scrapers/alyka.py). JSON "
+            "POST with the filters in SearchParam/SearchFilter headers read "
+            "from the page's hidden inputs; record shape differs per council."
+        ),
+        reference="aus_council_scrapers/scrapers/wa/stirling.py",
+    ),
+    Platform(
+        name="Alyka page-type listing (Kentico)",
+        signatures=(r"aw_pagetypelisting\.js", r"Alyka\.MeetingDocument"),
+        guidance=(
+            "Subclass PageTypeListingScraper (aus_council_scrapers/alyka.py). "
+            "POST {SI, PR, ...} to div#pageTypeListing[data-api]; the "
+            "htmlResult fragment is parsed per council."
+        ),
+        reference="aus_council_scrapers/scrapers/wa/joondalup.py",
+    ),
+    Platform(
+        name="CouncilConnect",
+        signatures=(r"CouncilMeetings_usercontrol", r"lvMeetings_dpMeetings"),
+        guidance=(
+            "Market Creations' WA CMS. Subclass CouncilConnectScraper "
+            "(aus_council_scrapers/councilconnect.py) with the site origin; "
+            "set inline_documents when the year listing links the PDFs, and "
+            "meeting_types when one year would cost >20 requests."
+        ),
+        reference="aus_council_scrapers/scrapers/wa/cottesloe.py",
+    ),
+    Platform(
         name="Granicus/Legistar",
         signatures=(r"granicus\.com", r"legistar"),
         guidance="No base class yet — first council on this platform gets to write one.",

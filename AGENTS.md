@@ -279,6 +279,9 @@ work into a ten-line subclass. Fetch the meeting page and look for:
 | `docspublished.com.au` | `DocsPublishedScraper`—needs only the publishing slug; everything else is resolved from `/api/organisation/<slug>` at runtime |
 | `OCServiceHandler.axd`, `accordion-list-item-container` | `OpenCitiesMeetingsScraper` (`aus_council_scrapers/opencities.py`)—needs the listing URL, its `dlv_` list name and whether papers are labelled by heading or link text; see `scrapers/vic/kingston.py`. Rows with no `data-cvid`, only a link to a page per meeting, use `detail_pages = True` (`west_torrens`); `page_size` makes a busy year one listing request (`gold_coast`). Each kept meeting costs one request, so cut a council with many committees down with `meeting_types`. `banyule` is OpenCities too but drives the page with Selenium and has not moved to the base class |
 | `*.resolve.red`, `Resolve Public`, `boardsync-theme` | `ResolveScraper` (`aus_council_scrapers/resolve.py`)—needs the portal subdomain as `tenant` and a `meeting_types` pattern. Documents are the tokenless `DocPreview.aspx?aoid=` links, which never expire. The agenda is the packet (`&p=1`), because the bare agenda is now an order of business with no reports in it. Each kept meeting costs one detail call to learn which documents exist. A council that moved to Resolve recently sets `resolve_from` and reads its older papers in `other_meetings` |
+| `aw_ksearch.js`, `id="searchapi"` | `KsearchScraper` (`aus_council_scrapers/alyka.py`)—Alyka's Kendo search on Kentico. A JSON POST whose filters ride in `SearchParam`/`SearchFilter` headers read from the page's hidden inputs; the record shape differs per council, so parsing stays in the subclass. See `scrapers/wa/stirling.py` |
+| `aw_pagetypelisting.js`, `Alyka.MeetingDocument` | `PageTypeListingScraper` (`aus_council_scrapers/alyka.py`)—Alyka's page-type listing on Kentico. Posts `{SI, PR, ...}` to `div#pageTypeListing[data-api]` and parses the `htmlResult` fragment per council. See `scrapers/wa/joondalup.py`. Use `AlykaScraper._each_year` for a per-year loop, so a host that fails every year raises rather than returning `[]` |
+| `CouncilMeetings_usercontrol`, `lvMeetings_dpMeetings` | `CouncilConnectScraper` (`aus_council_scrapers/councilconnect.py`)—Market Creations' WA CMS. Needs the site origin; set `inline_documents` when the year listing links the PDFs (`east_fremantle`), otherwise each meeting costs a page request, and `meeting_types` to read only Council meetings when committees would push a year past ~20 requests (`nedlands`). See `scrapers/wa/cottesloe.py` |
 | `cf-mitigated: challenge`, `server: cloudflare` | Cloudflare interstitial—needs Selenium, no header will get past it |
 
 Note that InfoCouncil is not forever: three councils have left the platform
@@ -301,6 +304,8 @@ domains and strings, so two things slip past:
 Also check the URL in `docs/councils.md` actually *is* the meeting listing.
 Several are landing pages that link to it, and detection run against one of
 those sees a page with no meetings on it.
+
+**Check robots.txt before writing a scraper.** Read `/robots.txt` on every host the scraper will request, and request no path it disallows, even one the council's own page calls from JavaScript. Honour any `Crawl-delay` in it as that host's spacing. If the only listing is disallowed, the council gets no scraper: `swan` is the example, whose listing API sits under a disallowed `/v1/` while Joondalup's identical platform serves it from an allowed path.
 
 ### How we identify ourselves, and what a 403 means now
 

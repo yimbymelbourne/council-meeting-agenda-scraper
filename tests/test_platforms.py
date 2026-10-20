@@ -42,6 +42,26 @@ def test_detects_resolve():
     assert platform_links(html) == {"woollahra.resolve.red"}
 
 
+def test_detects_alyka_ksearch():
+    """Stirling, Melville and Rockingham load the Kendo search module."""
+    html = '<script src="/awcontent/web/assets/js/modules/aw_ksearch.js"></script>'
+    assert [p.name for p in detect(html)] == ["Alyka ksearch (Kentico)"]
+
+
+def test_detects_alyka_page_type_listing():
+    """Kwinana's listing names the transformation without loading the
+    script by that name, so either signature has to do."""
+    script = '<script src="/awcontent/web/assets/js/modules/aw_pagetypelisting.js">'
+    hidden = '<input value="Alyka.MeetingDocument.SmartSearchResults" />'
+    for html in (script, hidden):
+        assert [p.name for p in detect(html)] == ["Alyka page-type listing (Kentico)"]
+
+
+def test_detects_councilconnect():
+    html = '<div id="ctl00_CouncilMeetings_usercontrol_lvMeetings_dpMeetings">'
+    assert [p.name for p in detect(html)] == ["CouncilConnect"]
+
+
 def test_unknown_platform_returns_nothing():
     assert detect("<html><body><h1>Meetings</h1></body></html>") == []
 
