@@ -4,7 +4,7 @@ from typing import Optional
 
 from aus_council_scrapers.base import ScraperReturn, register_scraper
 from aus_council_scrapers.resolve import ResolveScraper
-from aus_council_scrapers.resolve_archives import opencities_meetings
+from aus_council_scrapers.opencities import OpenCitiesArchive
 
 # The council's OpenCities meetings page, which kept its papers until the
 # move to Resolve.
@@ -42,17 +42,16 @@ class MoretonBayScraper(ResolveScraper):
         # A year is three or four listing pages, nearly all of it General
         # Meetings, so the listing is not filtered by type; each kept
         # meeting is then a request for its papers.
-        results = []
-        for year in self.before_resolve(wanted):
-            results += opencities_meetings(
-                self,
-                MEETINGS,
-                year,
-                _ARCHIVE_TYPES,
-                _archive_name,
-                before=self.resolve_from,
-            )
-        return results
+        before = self.before_resolve(wanted)
+        if not before:
+            return []
+        return OpenCitiesArchive(
+            self,
+            MEETINGS,
+            _archive_name,
+            meeting_types=_ARCHIVE_TYPES,
+            heading_prefix=_HEADING_PREFIX,
+        ).read(set(before), before=self.resolve_from)
 
     def _record(self, event, today) -> Optional[ScraperReturn]:
         record = super()._record(event, today)
@@ -77,6 +76,17 @@ _VENUE = re.compile(r"\(([A-Z][A-Za-z ]+)\)\s*$")
 # Audit Committee and the Delegated Decisions Committee.
 _ARCHIVE_TYPES = re.compile(
     r"^(General Meeting|Community Council Meeting|Special|Post-election)",
+    re.IGNORECASE,
+)
+
+
+# The archive heads each paper with the meeting it belongs to: "General
+# agenda", "Special Meeting minutes", "Post-election Meeting Agenda", and
+# once "9.30am Post-election Meeting - Agenda" beside "9.00am Declaration of
+# Office Ceremony".
+_HEADING_PREFIX = re.compile(
+    r"^(?:\d{1,2}[.:]\d{2}\s*[ap]m\s+)?"
+    r"(?:general|special(?: meeting)?|post-election meeting)\s*(?:-\s*)?",
     re.IGNORECASE,
 )
 

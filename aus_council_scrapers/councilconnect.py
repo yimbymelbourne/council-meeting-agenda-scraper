@@ -122,8 +122,10 @@ _WEEKDAY = r"(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*,?"
 _MONTH = r"(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*"
 # Strips "16 December 2025 - ", "7 July - " and "- 12 November 2025" from a
 # heading, leaving the meeting's name.
+# The weekday is matched as a whole word, or "Swearing in Ceremony 25 October
+# 2023" loses "mony" as if it were "Monday" (Mundaring).
 _HEADING_DATE = re.compile(
-    rf"(?:{_WEEKDAY}\s*)?\b\d{{1,2}}(?:st|nd|rd|th)?\s+{_MONTH}\b(?:\s+\d{{4}})?",
+    rf"(?:\b{_WEEKDAY}\s*)?\b\d{{1,2}}(?:st|nd|rd|th)?\s+{_MONTH}\b(?:\s+\d{{4}})?",
     re.IGNORECASE,
 )
 
@@ -213,6 +215,13 @@ class CouncilConnectScraper(BaseScraper):
     upcoming_path: Optional[str | tuple[str, ...]] = "/council-meetings/"
     first_year: int = EARLIEST_YEAR
     wrong_documents: dict[str, str] = {}
+
+    @staticmethod
+    def meeting_type_of(url: str) -> Optional[str]:
+        """The type slug in a meeting page's URL ("ordinary-council-meeting"),
+        or None if the URL is not a meeting's own page."""
+        match = _MEETING_PATH.match(urlparse(url).path)
+        return match.group("type") if match else None
 
     # --- years -------------------------------------------------------------
 

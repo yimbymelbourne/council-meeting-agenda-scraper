@@ -16,6 +16,7 @@ from aus_council_scrapers.scrapers.wa.kwinana import KwinanaScraper
 from aus_council_scrapers.scrapers.wa.mandurah import MandurahScraper
 from aus_council_scrapers.scrapers.wa.melville import MelvilleScraper
 from aus_council_scrapers.scrapers.wa.mosman_park import MosmanParkScraper
+from aus_council_scrapers.scrapers.wa.mundaring import MundaringScraper
 from aus_council_scrapers.scrapers.wa.murray import MurrayWAScraper
 from aus_council_scrapers.scrapers.wa.nedlands import NedlandsScraper
 from aus_council_scrapers.scrapers.wa.peppermint_grove import PeppermintGroveScraper

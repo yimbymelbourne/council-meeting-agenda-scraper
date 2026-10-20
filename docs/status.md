@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**129 of 134 councils complete (96%)** — 4 partial, 0 broken, 1 not started.
+**131 of 135 councils complete (97%)** — 3 partial, 0 broken, 1 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -29,7 +29,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
 | ✅ | `brighton_tas` | 146 | 2020-2026 | 146 | 144 |  |
 | ✅ | `brimbank` | 83 | 2020-2026 | 83 | 82 |  |
-| ✅ | `brisbane` | 72 | 2020-2026 | 72 | 66 |  |
+| 🟡 | `brisbane` | 72 | 2020-2026 | 72 | 66 | papers before mid-2025 are Word files, which are not emitted: 6 meetings in 2020-2023, none in 2024 |
 | ✅ | `burnside` | 209 | 2020-2026 | 209 | 206 |  |
 | ✅ | `burwood` | 166 | 2020-2026 | 162 | 139 |  |
 | ✅ | `cambridge` | 166 | 2020-2026 | 166 | 165 |  |
@@ -41,7 +41,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `canterbury_bankstown` | 152 | 2020-2026 | 152 | 150 |  |
 | ✅ | `cardinia` | 122 | 2020-2026 | 121 | 120 |  |
 | ✅ | `casey` | 100 | 2020-2026 | 100 | 99 |  |
-| 🟡 | `charles_sturt` | 29 | 2025-2026 | 29 | 29 | only 2 year(s) |
+| ✅ | `charles_sturt` | 256 | 2020-2026 | 256 | 252 |  |
 | ✅ | `claremont` | 234 | 2020-2026 | 234 | 229 |  |
 | ✅ | `clarence` | 135 | 2020-2026 | 135 | 135 |  |
 | ✅ | `cockburn` | 160 | 2020-2026 | 160 | 158 |  |
@@ -97,7 +97,8 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `mornington_peninsula` | 145 | 2022-2026 | 145 | 141 |  |
 | ✅ | `mosman` | 203 | 2019-2026 | 203 | 200 |  |
 | ✅ | `mosman_park` | 208 | 2020-2026 | 208 | 165 |  |
-| 🟡 | `mount_barker` | 5 | 2026-2026 | 5 | 4 | only 1 year(s) |
+| 🟡 | `mount_barker` | 106 | 2020-2026 | 106 | 104 | assessment panel before Sep 2026 not read (council-domain list behind Cloudflare) |
+| ✅ | `mundaring` | 114 | 2020-2026 | 114 | 112 |  |
 | ✅ | `murray` | 67 | 2021-2026 | 67 | 66 |  |
 | ✅ | `nedlands` | 148 | 2020-2026 | 148 | 144 |  |
 | ✅ | `nillumbik` | 121 | 2020-2026 | 121 | 119 |  |
@@ -131,7 +132,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `sunshine_coast` | 98 | 2020-2026 | 98 | 98 |  |
 | ✅ | `sutherland` | 290 | 2020-2026 | 290 | 288 |  |
 | ✅ | `sydney` | 247 | 2020-2026 | 247 | 246 |  |
-| 🟡 | `tea_tree_gully` | 2 | 2026-2026 | 2 | 2 | only 1 year(s) |
+| ✅ | `tea_tree_gully` | 136 | 2022-2026 | 136 | 132 |  |
 | ✅ | `the_hills` | 232 | 2021-2026 | 232 | 231 |  |
 | ✅ | `unley` | 173 | 2020-2026 | 173 | 172 |  |
 | ✅ | `victoria_park` | 119 | 2020-2026 | 119 | 118 |  |

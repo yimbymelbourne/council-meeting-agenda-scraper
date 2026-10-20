@@ -104,6 +104,8 @@ def test_stripping_the_headless_marker_stays_opt_in():
     # The LGA SA Funnelback councils need it for the same reason melbourne
     # does: headless Chrome is Cloudflare-challenged from GitHub's runners and
     # the de-headlessed string clears it (see aus_council_scrapers/lgasa.py).
+    # Charles Sturt, Tea Tree Gully and Mount Barker read their pre-Resolve
+    # papers from the same kind of listing page (ResolveWithLGASAArchive).
     assert opted_in == {
         "MelbourneScraper",
         "AdelaideHillsScraper",
@@ -115,6 +117,9 @@ def test_stripping_the_headless_marker_stays_opt_in():
         "PortAdelaideEnfieldScraper",
         "ProspectScraper",
         "WalkervilleScraper",
+        "CharlesSturtScraper",
+        "TeaTreeGullyScraper",
+        "MountBarkerScraper",
     }, opted_in
     assert SCRAPER_REGISTRY["BanyuleScraper"].strip_headless_user_agent is False
 
