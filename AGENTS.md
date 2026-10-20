@@ -51,7 +51,7 @@ Five mechanisms, all code defaults here, so none needs a change to `council-aler
 |---|---|---|
 | Request timeout, `(10, 60)` s connect/read | `DefaultFetcher.fetch_with_requests` | A server that accepts the connection and then sends nothing. `api.docassembler.com.au` once held a local run for 12+ minutes at 0% CPU. The read timeout bounds the gap between bytes, not the whole download. `FETCH_TIMEOUT` overrides the read half. |
 | Selenium page-load timeout, 60 s | `DefaultFetcher.__setup_selenium_driver` | `driver.get` has no limit by default and waits for the load event forever. |
-| Per-host throttle shared across the whole process | `DefaultFetcher.__throttle` | Each scraper builds its own fetcher, so the old per-instance throttle spaced one council's requests and nothing spaced a vendor host. About 12 Resolve tenants share `api.resolve.red` and 7 LGA SA councils share one Funnelback host. Now `FETCH_DELAY` is a real per-host limit: councils on one vendor host take turns, and different hosts still run in parallel. |
+| Per-host throttle shared across the whole process | `DefaultFetcher.__throttle` | Each scraper builds its own fetcher, so the old per-instance throttle spaced one council's requests and nothing spaced a vendor host. About 12 Resolve tenants share `api.resolve.red` and 7 LGA SA councils share one Funnelback host. Now `FETCH_DELAY` is a real per-host limit: councils on one vendor host take turns, and different hosts still run in parallel. `HOST_DELAY_FACTORS` spaces a busy vendor API at a fraction of `FETCH_DELAY`: `api.resolve.red` is at 0.25 (0.5 s), because at the full 2 s its 13 councils alone hit the 480 s budget. |
 | Adapter budget, 480 s | `main.py` `_dispatch` | Councils still running (or still queued) when the budget runs out are reported as `ok: false` with `error.type: "Timeout"`. The finished results are written, stdout is flushed, and the process leaves with `os._exit(0)` instead of joining threads it cannot kill. Just before that, `Fetcher.abandon()` SIGTERMs each abandoned scraper's Chrome and chromedriver, because `os._exit` skips Selenium's cleanup and Chrome otherwise outlives the process. `ADAPTER_BUDGET_S` overrides it; keep it well under `SCRAPE_TIMEOUT_MS`. |
 | Slowest-first dispatch | `BaseScraper.expected_seconds`, sorted in `_dispatch` | Wall time is set by whichever scraper finishes last. A 100 s scraper submitted after the cheap ones starts late and runs on alone; submitted first, it overlaps with everything else. |
 
@@ -62,7 +62,7 @@ What this means when you write or change a scraper:
 - **The budget is a backstop, not an allowance.** A council that times out gets no update that night. The per-scraper aim stays at about 20 requests and 45 s for one production year.
 - **Set `expected_seconds`** on the class when one production year measures well above the 5 s default. Use the measured number, not a guess. It only orders dispatch; nothing enforces it.
 - **Do not catch `requests.Timeout` and carry on silently.** A timeout now raises where it used to hang. Treat it like any other fetch failure: log a warning, and let the council fail rather than return a quietly short list. `run_scraper` reports a returned `[]` as `ok: true` with 0 meetings, and council-alerts records that as a successful scrape. The shared base classes follow this: `DocsPublishedScraper` raises when its organisation, storage or document lookup fails, and `InfoCouncilScraper` warns per failed year and raises when every requested year failed—which, in a one-year production run, is any failure.
-- **Councils on a shared vendor host queue behind each other.** Ten tenants at five requests each is about 100 s of host time at the default `FETCH_DELAY`. Budget for that when adding a tenant to a busy platform.
+- **Councils on a shared vendor host queue behind each other.** Ten tenants at five requests each is about 100 s of host time at the default `FETCH_DELAY`. Budget for that when adding a tenant to a busy platform. Measure the tenants *together*, not one at a time: each of the 13 Resolve councils measured 6–133 s on its own, but run together at the full 2 s they queued for 281 requests and woollahra and mitcham were cut off at 480 s. A waiting scraper also holds a worker, so the councils behind it in the queue wait too.
 
 **What council-alerts does with the new fields** (checked against `packages/scraper-adapter/src/schema.ts` and `packages/jobs/src/ingestCouncils.ts`):
 
@@ -80,10 +80,7 @@ gh run view <run-id> --repo yimbymelbourne/council-alerts --log | grep -E "Scrap
 gh run view <run-id> --repo yimbymelbourne/council-alerts --log | grep "0 meetings"
 ```
 
-**That run's `okCouncils` count is not a count of working councils.** It
-counts councils that did not raise, and a scraper returning an empty list
-does not raise — so `hunters_hill` and `woollahra`, both broken, are inside
-it. A council *blocked from the runner's IP* used to land there too: `InfoCouncilScraper` logged per-year fetch failures at DEBUG, so `bayside_nsw` returned 76 meetings for 2026 from a home IP and 0 in production. InfoCouncil now raises when every year fails, and `bayside_nsw` goes through the residential proxy (see "Councils that block GitHub's runners"), but any scraper that catches its own fetch errors can still do the same. Always read the per-council meeting counts, never the summary.
+**That run's `okCouncils` count is not a count of working councils.** It counts councils that did not raise, and a scraper returning an empty list does not raise—so `hunters_hill` and `woollahra` sat inside it for months while returning nothing, after both left InfoCouncil. A council *blocked from the runner's IP* used to land there too: `InfoCouncilScraper` logged per-year fetch failures at DEBUG, so `bayside_nsw` returned 76 meetings for 2026 from a home IP and 0 in production. InfoCouncil now raises when every year fails, and `bayside_nsw` goes through the residential proxy (see "Councils that block GitHub's runners"), but any scraper that catches its own fetch errors can still do the same. Always read the per-council meeting counts, never the summary.
 
 Prefer a code default that is correct unattended over a knob someone has to
 set in the other repo. The User-Agent decision is deliberately shaped that
@@ -281,6 +278,7 @@ work into a ten-line subclass. Fetch the meeting page and look for:
 | `*.infocouncil.biz`, `bpsGridPDFLink`, `grdMenu` | `InfoCouncilScraper` |
 | `docspublished.com.au` | `DocsPublishedScraper` — needs only the publishing slug; everything else is resolved from `/api/organisation/<slug>` at runtime |
 | `OCServiceHandler.axd`, `accordion-list-item-container` | OpenCities; see `aus_council_scrapers/scrapers/vic/banyule.py` |
+| `*.resolve.red`, `Resolve Public`, `boardsync-theme` | `ResolveScraper` (`aus_council_scrapers/resolve.py`)—needs the portal subdomain as `tenant` and a `meeting_types` pattern. Documents are the tokenless `DocPreview.aspx?aoid=` links, which never expire. The agenda is the packet (`&p=1`), because the bare agenda is now an order of business with no reports in it. Each kept meeting costs one detail call to learn which documents exist. A council that moved to Resolve recently sets `resolve_from` and reads its older papers in `other_meetings` |
 | `cf-mitigated: challenge`, `server: cloudflare` | Cloudflare interstitial — needs Selenium, no header will get past it |
 
 Note that InfoCouncil is not forever: three councils have left the platform

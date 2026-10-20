@@ -22,14 +22,8 @@ Two kinds, because a scraper can be broken in one way and fine in the other:
     dates, duplicates. Fails `test_conformance`.
 """
 
-_PLATFORM_GONE = "{host} returns 404 — council has left the InfoCouncil platform"
+# Empty for now. hunters_hill and woollahra were here until they were rebuilt
+# on Resolve (#145), after leaving InfoCouncil.
+REPLAY_BROKEN: dict[str, str] = {}
 
-REPLAY_BROKEN = {
-    "hunters_hill": _PLATFORM_GONE.format(host="huntershill.infocouncil.biz"),
-    "woollahra": _PLATFORM_GONE.format(host="woollahra.infocouncil.biz"),
-}
-
-OUTPUT_BROKEN = {
-    "hunters_hill": _PLATFORM_GONE.format(host="huntershill.infocouncil.biz"),
-    "woollahra": _PLATFORM_GONE.format(host="woollahra.infocouncil.biz"),
-}
+OUTPUT_BROKEN: dict[str, str] = {}

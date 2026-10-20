@@ -25,7 +25,6 @@ KNOWN_UNIMPORTED = {
     "MonashScraper",
     "MooneeValleyScraper",
     "StonningtonScraper",
-    "WilloughbyNSWScraper",
 }
 
 

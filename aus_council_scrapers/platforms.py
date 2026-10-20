@@ -44,6 +44,16 @@ PLATFORMS: tuple[Platform, ...] = (
         reference="aus_council_scrapers/scrapers/nsw/parramatta.py",
     ),
     Platform(
+        name="Resolve",
+        signatures=(r"resolve\.red", r"Resolve Public", r"boardsync-theme"),
+        guidance=(
+            "Subclass ResolveScraper with the portal subdomain as `tenant`, "
+            "plus a `meeting_types` pattern—every kept meeting costs one "
+            "detail request to learn which documents it has."
+        ),
+        reference="aus_council_scrapers/resolve.py",
+    ),
+    Platform(
         name="OpenCities",
         signatures=(
             r"OCServiceHandler\.axd",
@@ -70,7 +80,8 @@ PLATFORMS: tuple[Platform, ...] = (
 
 #: Platform links pointing off the council's own domain.
 _EXTERNAL_PLATFORM = re.compile(
-    r"https?://([a-z0-9-]+\.(?:infocouncil\.biz|docspublished\.com\.au))", re.I
+    r"https?://([a-z0-9-]+\.(?:infocouncil\.biz|docspublished\.com\.au|resolve\.red))",
+    re.I,
 )
 
 

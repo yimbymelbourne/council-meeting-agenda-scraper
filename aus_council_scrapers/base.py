@@ -455,6 +455,21 @@ class DefaultFetcher(Fetcher):
     # for the load event indefinitely. Same reasoning, same order of magnitude.
     PAGE_LOAD_TIMEOUT = 60
 
+    # Hosts spaced at a fraction of FETCH_DELAY, so FETCH_DELAY still scales
+    # them. Only for a vendor API that many councils share and that is built
+    # for traffic, where the shared spacing would otherwise queue every
+    # tenant behind one slot.
+    #
+    # api.resolve.red: 13 councils' listing and detail calls, 281 requests
+    # for one production year. At the full 2 s they queue for about 560 s.
+    # Measured 19 Oct 2026: run together with --years 2026, the 13 alone hit
+    # the 480 s adapter budget, and woollahra and mitcham were cut off as
+    # Timeout. Each scraper also holds a worker while it waits, so other
+    # councils would have queued behind them. At 0.5 s the same 13 finish
+    # together in 138 s. That is 2 requests a second to a multi-tenant JSON
+    # API, which the portal itself calls several times per page view.
+    HOST_DELAY_FACTORS: dict[str, float] = {"api.resolve.red": 0.25}
+
     # Shared by every instance: the next free request slot per host. A
     # caller reserves a slot under the lock and sleeps *outside* it, so a
     # long wait on one host never blocks a request to another.
@@ -503,12 +518,13 @@ class DefaultFetcher(Fetcher):
             return
 
         host = urllib.parse.urlparse(url).netloc
+        delay = self.__fetch_delay * self.HOST_DELAY_FACTORS.get(host, 1.0)
         with DefaultFetcher._host_lock:
             now = time.monotonic()
             slot = max(now, DefaultFetcher._next_slot_at.get(host, now))
             # Jitter so a long run of requests is not perfectly periodic.
             DefaultFetcher._next_slot_at[host] = slot + (
-                self.__fetch_delay * random.uniform(0.75, 1.25)
+                delay * random.uniform(0.75, 1.25)
             )
         if slot > now:
             time.sleep(slot - now)
