@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**125 of 134 councils complete (93%)** — 4 partial, 0 broken, 5 not started.
+**129 of 134 councils complete (96%)** — 4 partial, 0 broken, 1 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -40,6 +40,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `canning` | 213 | 2020-2026 | 213 | 137 |  |
 | ✅ | `canterbury_bankstown` | 152 | 2020-2026 | 152 | 150 |  |
 | ✅ | `cardinia` | 122 | 2020-2026 | 121 | 120 |  |
+| ✅ | `casey` | 100 | 2020-2026 | 100 | 99 |  |
 | 🟡 | `charles_sturt` | 29 | 2025-2026 | 29 | 29 | only 2 year(s) |
 | ✅ | `claremont` | 234 | 2020-2026 | 234 | 229 |  |
 | ✅ | `clarence` | 135 | 2020-2026 | 135 | 135 |  |
@@ -59,6 +60,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `glenorchy` | 164 | 2020-2026 | 164 | 164 |  |
 | ✅ | `gold_coast` | 180 | 2020-2026 | 180 | 176 |  |
 | ✅ | `gosnells` | 651 | 2001-2026 | 651 | 650 |  |
+| ✅ | `greater_dandenong` | 144 | 2020-2026 | 144 | 143 |  |
 | ✅ | `hobart` | 996 | 2016-2026 | 996 | 967 |  |
 | ✅ | `hobsons_bay` | 53 | 2022-2026 | 53 | 51 |  |
 | ✅ | `holdfast_bay` | 437 | 2020-2026 | 437 | 429 |  |
@@ -71,6 +73,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `kalamunda` | 202 | 2020-2026 | 202 | 123 |  |
 | ✅ | `kingborough` | 165 | 2020-2026 | 165 | 163 |  |
 | ✅ | `kingston` | 147 | 2020-2026 | 147 | 144 |  |
+| ✅ | `knox` | 165 | 2020-2026 | 165 | 163 |  |
 | ✅ | `kuringgai` | 313 | 2020-2026 | 296 | 259 |  |
 | ✅ | `kwinana` | 188 | 2020-2026 | 188 | 186 |  |
 | ✅ | `lane_cove` | 161 | 2020-2026 | 159 | 150 |  |
@@ -139,6 +142,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `waverley` | 277 | 2020-2026 | 270 | 247 |  |
 | ✅ | `west_torrens` | 127 | 2020-2026 | 127 | 124 |  |
 | ✅ | `whitehorse` | 160 | 2020-2026 | 160 | 150 |  |
+| ✅ | `whittlesea` | 44 | 2024-2026 | 44 | 43 |  |
 | ✅ | `willoughby` | 25 | 2024-2026 | 25 | 24 |  |
 | ✅ | `woollahra` | 634 | 2020-2026 | 634 | 628 |  |
 | ✅ | `wyndham` | 151 | 2020-2026 | 151 | 149 |  |
@@ -150,4 +154,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`casey` `greater_dandenong` `knox` `swan` `whittlesea`
+`swan`
