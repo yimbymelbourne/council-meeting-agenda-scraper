@@ -70,6 +70,7 @@ from aus_council_scrapers.scrapers.wa.kalgoorlie_boulder import KalgoorlieBoulde
 from aus_council_scrapers.scrapers.wa.karratha import KarrathaScraper
 from aus_council_scrapers.scrapers.wa.katanning import KatanningScraper
 from aus_council_scrapers.scrapers.wa.kellerberrin import KellerberrinScraper
+from aus_council_scrapers.scrapers.wa.kent import KentScraper
 from aus_council_scrapers.scrapers.wa.kojonup import KojonupScraper
 from aus_council_scrapers.scrapers.wa.kondinin import KondininScraper
 from aus_council_scrapers.scrapers.wa.koorda import KoordaScraper
@@ -84,9 +85,11 @@ from aus_council_scrapers.scrapers.wa.meekatharra import MeekatharraScraper
 from aus_council_scrapers.scrapers.wa.melville import MelvilleScraper
 from aus_council_scrapers.scrapers.wa.menzies import MenziesScraper
 from aus_council_scrapers.scrapers.wa.merredin import MerredinScraper
+from aus_council_scrapers.scrapers.wa.mingenew import MingenewScraper
 from aus_council_scrapers.scrapers.wa.moora import MooraScraper
 from aus_council_scrapers.scrapers.wa.morawa import MorawaScraper
 from aus_council_scrapers.scrapers.wa.mosman_park import MosmanParkScraper
+from aus_council_scrapers.scrapers.wa.mount_marshall import MountMarshallScraper
 from aus_council_scrapers.scrapers.wa.mukinbudin import MukinbudinScraper
 from aus_council_scrapers.scrapers.wa.mundaring import MundaringScraper
 from aus_council_scrapers.scrapers.wa.murchison import MurchisonScraper
@@ -98,6 +101,7 @@ from aus_council_scrapers.scrapers.wa.nedlands import NedlandsScraper
 from aus_council_scrapers.scrapers.wa.ngaanyatjarraku import NgaanyatjarrakuScraper
 from aus_council_scrapers.scrapers.wa.northam import NorthamScraper
 from aus_council_scrapers.scrapers.wa.northampton import NorthamptonScraper
+from aus_council_scrapers.scrapers.wa.nungarin import NungarinScraper
 from aus_council_scrapers.scrapers.wa.peppermint_grove import PeppermintGroveScraper
 from aus_council_scrapers.scrapers.wa.perenjori import PerenjoriScraper
 from aus_council_scrapers.scrapers.wa.perth import PerthScraper
@@ -134,6 +138,7 @@ from aus_council_scrapers.scrapers.wa.wickepin import WickepinScraper
 from aus_council_scrapers.scrapers.wa.williams import WilliamsScraper
 from aus_council_scrapers.scrapers.wa.wiluna import WilunaScraper
 from aus_council_scrapers.scrapers.wa.wongan_ballidu import WonganBalliduScraper
+from aus_council_scrapers.scrapers.wa.woodanilling import WoodanillingScraper
 from aus_council_scrapers.scrapers.wa.wyalkatchem import WyalkatchemScraper
 from aus_council_scrapers.scrapers.wa.wyndham_east_kimberley import (
     WyndhamEastKimberleyScraper,
