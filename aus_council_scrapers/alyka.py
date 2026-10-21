@@ -18,7 +18,7 @@ subclasses.
     user's choices—a year, a meeting type—in the shape the page's
     multiselects produce. The response is ``{Data: [...], Total}``.
 
-`PageTypeListingScraper`—`aw_pagetypelisting.js` (kwinana, joondalup)
+`PageTypeListingScraper`—`aw_pagetypelisting.js` (kwinana, joondalup, swan)
     POST ``{SI, OB, Q, PS, FS, PG, PR, IncludeFirst}`` to the endpoint named by
     ``div#pageTypeListing[data-api]``. ``PR`` is a list built from every
     ``[data-filter-item]`` in that div: hidden text inputs name the content

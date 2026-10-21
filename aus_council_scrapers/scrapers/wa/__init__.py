@@ -115,6 +115,7 @@ from aus_council_scrapers.scrapers.wa.shark_bay import SharkBayScraper
 from aus_council_scrapers.scrapers.wa.south_perth import SouthPerthScraper
 from aus_council_scrapers.scrapers.wa.stirling import StirlingScraper
 from aus_council_scrapers.scrapers.wa.subiaco import SubiacoScraper
+from aus_council_scrapers.scrapers.wa.swan import SwanScraper
 from aus_council_scrapers.scrapers.wa.tammin import TamminScraper
 from aus_council_scrapers.scrapers.wa.three_springs import ThreeSpringsScraper
 from aus_council_scrapers.scrapers.wa.toodyay import ToodyayScraper
