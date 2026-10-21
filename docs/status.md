@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**463 of 519 councils complete (89%)** — 48 partial, 0 broken, 8 not started.
+**468 of 526 councils complete (88%)** — 50 partial, 0 broken, 8 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -36,6 +36,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `banana` | 10 | 2026-2026 | 10 | 10 | only 1 year(s) |
 | ✅ | `banyule` | 75 | 2022-2026 | 75 | 75 |  |
 | 🟡 | `barcaldine` | 19 | 2025-2026 | 19 | 18 | only 2 year(s) |
+| ✅ | `barcoo` | 100 | 2020-2026 | 100 | 99 |  |
 | ✅ | `barkly` | 53 | 2022-2026 | 53 | 52 |  |
 | ✅ | `barossa` | 224 | 2022-2026 | 224 | 216 |  |
 | ✅ | `barunga_west` | 145 | 2020-2026 | 145 | 143 |  |
@@ -49,6 +50,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `bega_valley` | 12 | 2026-2026 | 12 | 6 | only 1 year(s) |
 | ✅ | `bellingen` | 90 | 2020-2026 | 90 | 89 |  |
 | ✅ | `belmont` | 115 | 2021-2026 | 115 | 114 |  |
+| ✅ | `belyuen` | 68 | 2020-2026 | 68 | 62 |  |
 | ✅ | `berri_barmera` | 172 | 2020-2026 | 172 | 171 |  |
 | ✅ | `berrigan` | 30 | 2024-2026 | 30 | 25 |  |
 | ✅ | `beverley` | 68 | 2021-2026 | 68 | 68 |  |
@@ -247,6 +249,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `katherine` | 135 | 2020-2026 | 135 | 123 |  |
 | ✅ | `kellerberrin` | 68 | 2020-2026 | 68 | 66 |  |
 | ✅ | `kempsey` | 78 | 2020-2026 | 78 | 76 |  |
+| ✅ | `kent` | 77 | 2020-2026 | 77 | 76 |  |
 | ✅ | `kentish` | 94 | 2020-2026 | 94 | 92 |  |
 | ✅ | `kiama` | 108 | 2020-2026 | 108 | 107 |  |
 | ✅ | `kimba` | 155 | 2020-2026 | 155 | 150 |  |
@@ -313,6 +316,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `mid_murray` | 137 | 2020-2026 | 137 | 135 |  |
 | ✅ | `mid_western` | 89 | 2020-2026 | 89 | 88 |  |
 | ✅ | `mildura` | 118 | 2020-2026 | 118 | 117 |  |
+| ✅ | `mingenew` | 85 | 2020-2026 | 85 | 74 |  |
 | ✅ | `mitcham` | 248 | 2020-2026 | 248 | 236 |  |
 | ✅ | `mitchell` | 163 | 2020-2026 | 163 | 160 |  |
 | ✅ | `moira` | 96 | 2020-2026 | 96 | 96 |  |
@@ -330,6 +334,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `mount_barker` | 106 | 2020-2026 | 106 | 104 | assessment panel before Sep 2026 not read (council-domain list behind Cloudflare) |
 | ✅ | `mount_gambier` | 182 | 2020-2026 | 182 | 179 |  |
 | ✅ | `mount_isa` | 54 | 2023-2026 | 54 | 52 |  |
+| 🟡 | `mount_marshall` | 14 | 2025-2026 | 14 | 12 | only 2 year(s); ordinary meetings are labelled by month only and dated from the meeting-dates page, which lists the current year alone, so 2021-2025 ordinary meetings are left out (about 55; 15 and 22 April 2025 are dated in their labels), as are a few month-only special and electors' meetings |
 | ✅ | `mount_remarkable` | 122 | 2020-2026 | 122 | 119 |  |
 | ✅ | `moyne` | 36 | 2024-2026 | 36 | 36 |  |
 | ✅ | `mukinbudin` | 71 | 2021-2026 | 71 | 69 |  |
@@ -365,6 +370,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `northern_midlands` | 101 | 2020-2026 | 101 | 100 |  |
 | 🟡 | `northern_peninsula_area` | 87 | 2020-2026 | 87 | 84 | month-only papers with no day anywhere are left out: most of 2021, and several special and Trustee meetings each year (Feb, Mar, Apr, May and Aug 2025; Jun-Oct 2024) |
 | ✅ | `norwood_payneham_st_peters` | 126 | 2024-2026 | 126 | 123 |  |
+| ✅ | `nungarin` | 99 | 2020-2026 | 99 | 94 |  |
 | ✅ | `onkaparinga` | 197 | 2020-2026 | 197 | 197 |  |
 | ✅ | `orange` | 544 | 2020-2026 | 544 | 537 |  |
 | ✅ | `orroroo_carrieton` | 106 | 2020-2026 | 106 | 104 |  |
@@ -509,6 +515,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `wodonga` | 87 | 2020-2026 | 87 | 87 |  |
 | ✅ | `wollondilly` | 324 | 2015-2026 | 324 | 288 |  |
 | ✅ | `wongan_ballidu` | 75 | 2021-2026 | 75 | 75 |  |
+| 🟡 | `woodanilling` | 75 | 2020-2026 | 75 | 73 | about 14 month-only meetings left out: nearly all of 2020, and February, March and November 2021 |
 | ✅ | `woollahra` | 634 | 2020-2026 | 634 | 628 |  |
 | 🟡 | `woorabinda` | 24 | 2025-2026 | 24 | 23 | only 2 year(s) |
 | ✅ | `wudinna` | 160 | 2020-2026 | 160 | 152 |  |

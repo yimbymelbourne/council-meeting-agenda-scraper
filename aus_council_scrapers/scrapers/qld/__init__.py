@@ -2,6 +2,7 @@ from aus_council_scrapers.scrapers.qld.aurukun import AurukunScraper
 from aus_council_scrapers.scrapers.qld.balonne import BalonneScraper
 from aus_council_scrapers.scrapers.qld.banana import BananaScraper
 from aus_council_scrapers.scrapers.qld.barcaldine import BarcaldineScraper
+from aus_council_scrapers.scrapers.qld.barcoo import BarcooScraper
 from aus_council_scrapers.scrapers.qld.blackall_tambo import BlackallTamboScraper
 from aus_council_scrapers.scrapers.qld.boulia import BouliaScraper
 from aus_council_scrapers.scrapers.qld.brisbane import BrisbaneScraper
