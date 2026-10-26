@@ -141,6 +141,19 @@ KNOWN_GAPS: dict[str, str] = {
         "about 14 month-only meetings left out: nearly all of 2020, and "
         "February, March and November 2021"
     ),
+    # SharePoint councils, under the documented robots.txt exception.
+    "fraser_coast": (
+        "current year only: earlier years are a SharePoint folder archive, "
+        "which has no plain-download form, and are not read"
+    ),
+    "mount_magnet": (
+        "no 2026 papers published anywhere on the site (checked 26 Oct 2026), "
+        "so a production run fails; agendas linked only for 2023-2024"
+    ),
+    "carrathool": (
+        "only the current year is read: the meetings page holds one year, "
+        "and the Feb 2023-Dec 2025 archive page labels papers by month only"
+    ),
 }
 
 
