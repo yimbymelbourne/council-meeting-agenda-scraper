@@ -4,7 +4,8 @@ fetches, and a sequence number that must never become a meeting's day.
 Cassettes are recorded unfiltered, so replay never sees production's shape:
 one `--years` year a night. Hope Vale and Temora have a page per year, found
 from an index; a year must fetch the index and that year's page only (and
-Temora its one Business Papers page), while still returning every meeting of
+Temora its one Business Papers page and the oEmbed titles of the year's
+recordings beside month-only minutes), while still returning every meeting of
 the year. Winton's archive holds 2021 and before, and is fetched only then.
 
 These councils label most papers by month alone, and a meeting is emitted
@@ -36,6 +37,10 @@ from tests.cassette import PlaybackFetcher, cassette_paths
 
 _HOPE_VALE = "https://www.hopevale.qld.gov.au/Council/Council-Meetings"
 _TEMORA = "https://www.temora.nsw.gov.au/Your-Council/Council-Meetings"
+_OEMBED = (
+    "https://www.youtube.com/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch"
+    "%3Fv%3D{}&format=json"
+)
 _WINTON = "https://www.winton.qld.gov.au/Council/Council-Meetings"
 _BTRC = "https://www.btrc.qld.gov.au/Council/Council-Meetings"
 _MCKINLAY = "https://www.mckinlay.qld.gov.au/About-Council/Council-meetings"
@@ -105,6 +110,20 @@ def _key(r: dict) -> tuple:
                 f"{_TEMORA}/Past-Council-Minutes",
                 f"{_TEMORA}/Business-Papers",
                 f"{_TEMORA}/Past-Council-Minutes/Minutes-from-2026",
+                # One oEmbed title per recording beside a month-only
+                # minutes that `misfiled` does not date.
+                *(
+                    _OEMBED.format(video)
+                    for video in (
+                        "72-vBrLgWhc",
+                        "JZEO1Y43z64",
+                        "GgO8OlUVIy8",
+                        "kdHgX6ZIRHw",
+                        "PiHVTCnEG_c",
+                        "-KaNZVuZ5z0",
+                        "bPvALviCuF8",
+                    )
+                ),
             ],
         ),
     ],

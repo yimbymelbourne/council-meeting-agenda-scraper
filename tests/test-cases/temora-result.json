@@ -745,6 +745,18 @@
   },
   {
     "name": "Ordinary Council Meeting",
+    "date": "2021-10-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.temora.nsw.gov.au/Your-Council/Council-Meetings/Past-Council-Minutes/Minutes-from-2021",
+    "download_url": "https://www.temora.nsw.gov.au/files/assets/public/v/1/council-meetings/2021-meeting-documents/october-2021-action-minutes.pdf",
+    "agenda_url": null,
+    "minutes_url": "https://www.temora.nsw.gov.au/files/assets/public/v/1/council-meetings/2021-meeting-documents/october-2021-action-minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Council Meeting",
     "date": "2021-09-16",
     "time": null,
     "location": null,
