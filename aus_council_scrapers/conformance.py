@@ -130,6 +130,17 @@ KNOWN_GAPS: dict[str, str] = {
         "minutes before mid-2023 not emitted: their only address is the "
         "robots-disallowed file store"
     ),
+    "mount_marshall": (
+        "ordinary meetings are labelled by month only and dated from the "
+        "meeting-dates page, which lists the current year alone, so 2021-2025 "
+        "ordinary meetings are left out (about 55; 15 and 22 April 2025 are "
+        "dated in their labels), as are a few month-only special and "
+        "electors' meetings"
+    ),
+    "woodanilling": (
+        "about 14 month-only meetings left out: nearly all of 2020, and "
+        "February, March and November 2021"
+    ),
 }
 
 

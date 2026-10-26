@@ -1,5 +1,6 @@
 from aus_council_scrapers.scrapers.nt.alice_springs import AliceSpringsScraper
 from aus_council_scrapers.scrapers.nt.barkly import BarklyScraper
+from aus_council_scrapers.scrapers.nt.belyuen import BelyuenScraper
 from aus_council_scrapers.scrapers.nt.central_desert import CentralDesertScraper
 from aus_council_scrapers.scrapers.nt.coomalie import CoomalieScraper
 from aus_council_scrapers.scrapers.nt.darwin import DarwinScraper
