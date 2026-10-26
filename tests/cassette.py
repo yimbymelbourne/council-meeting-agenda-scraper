@@ -179,6 +179,13 @@ class RecordingFetcher(Fetcher):
         self.replay_data.append([["selenium", url], result])
         return result
 
+    def restart_driver(self):
+        # Forwarded rather than inherited as a no-op: a recording run is a live
+        # run, and it is the one place where a browser dying mid-scrape gets
+        # written into a cassette as though it were the council's answer.
+        self.__delegate.restart_driver()
+        self.__driver = None
+
     def close(self):
         self.__delegate.close()
 

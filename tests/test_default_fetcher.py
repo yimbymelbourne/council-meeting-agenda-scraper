@@ -45,19 +45,22 @@ def test_connection_error_is_retried_and_recovers(monkeypatch):
     assert calls["n"] == 2
 
 
-def test_timeout_is_retried_the_same_way(monkeypatch):
+def test_a_timeout_is_not_retried(monkeypatch):
+    """Timeouts fail straight away: a read timeout already costs up to the
+    whole read limit, and retrying it would spend minutes of the adapter's
+    shared 480 s budget on one request (AGENTS.md, "Do not catch
+    requests.Timeout")."""
     calls = {"n": 0}
 
     def fake_get(self, url, **kwargs):
         calls["n"] += 1
-        if calls["n"] == 1:
-            raise requests.Timeout("read timed out")
-        return _OKResponse()
+        raise requests.ReadTimeout("read timed out")
 
     monkeypatch.setattr(requests.Session, "get", fake_get)
 
-    assert _fetcher().fetch_with_requests("https://x.test/") == "<html>ok</html>"
-    assert calls["n"] == 2
+    with pytest.raises(requests.Timeout):
+        _fetcher().fetch_with_requests("https://x.test/")
+    assert calls["n"] == 1
 
 
 def test_connection_error_raises_after_exhausting_retries(monkeypatch):

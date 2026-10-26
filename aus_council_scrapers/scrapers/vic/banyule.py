@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from aus_council_scrapers.constants import EARLIEST_YEAR
 
@@ -96,6 +97,12 @@ def _clean_location(location_div: BeautifulSoup) -> str | None:
 
 @register_scraper
 class BanyuleScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 49 s
+    # (was 246 s before it honoured years_filter).
+    # Orders dispatch only (slowest first); see
+    # BaseScraper.expected_seconds.
+    expected_seconds = 49
+
     def __init__(self):
         council = "banyule"
         state = "VIC"
@@ -103,12 +110,26 @@ class BanyuleScraper(BaseScraper):
         self.webpage_url = _LISTING_URL
         super().__init__(council, state, base_url)
 
+    def _wanted_years(self) -> set[int]:
+        """The years worth asking Banyule for.
+
+        Almost all of this scraper's wall time is per meeting: one browser
+        page load for each meeting's documents, plus a settle after every
+        postback. Unfiltered that is ~80 meetings and ~20 postbacks, around
+        four minutes. Production asks for one year, so ``years_filter`` is
+        what bounds both.
+        """
+        years_filter = getattr(self, "years_filter", None)
+        if years_filter:
+            return set(years_filter)
+        return set(range(EARLIEST_YEAR, clock.current_year() + 3))
+
     # ------------------------------------------------------------------
     # Step 1: collect meeting CVIDs from the listing page
     # ------------------------------------------------------------------
 
-    def _offered_years(self, soup: BeautifulSoup) -> list[str]:
-        """The years Banyule's own filter offers, newest first.
+    def _offered_years(self, soup: BeautifulSoup, wanted: set[int]) -> list[str]:
+        """The wanted years Banyule's own filter offers, newest first.
 
         Asking for a year the dropdown does not list does nothing useful:
         assigning an absent value to a ``<select>`` silently leaves it on
@@ -116,25 +137,44 @@ class BanyuleScraper(BaseScraper):
         listing. The previous code counted up to ``current_year + 1``, which is
         never an option, and its first pass was therefore an accidental
         unfiltered crawl. Reading the options makes that pass deliberate.
+
+        Only wanted years are returned, so a one-year production run posts
+        back once rather than once per year since ``EARLIEST_YEAR``.
         """
         select = soup.find("select", attrs={"name": _YEAR_SELECT})
         years = []
         for option in select.find_all("option") if select else []:
             label = option.get_text(strip=True)
-            if label.isdigit() and len(label) == 4 and int(label) >= EARLIEST_YEAR:
+            if label.isdigit() and len(label) == 4 and int(label) in wanted:
                 years.append(option.get("value") or label)
         return years
 
     def _page_through(
-        self, driver, seen_cvids: set[str], all_items: list[tuple[str, str, str]]
+        self,
+        driver,
+        seen_cvids: set[str],
+        all_items: list[tuple[str, str, str]],
+        earliest_wanted: int,
     ) -> None:
-        """Collect every meeting in the listing as currently filtered."""
+        """Collect every meeting in the listing as currently filtered.
+
+        The listing runs newest first, so once a page holds nothing from the
+        earliest wanted year or later, the pages behind it are older still
+        and paging on only costs a postback each. "Nothing new" rather than
+        "nothing": every page repeats the sticky next-meeting entry, which
+        would otherwise keep each page looking current.
+        """
         while True:
             page_soup = BeautifulSoup(driver.page_source, "html.parser")
+            new_years = []
             for item in _parse_listing_items(page_soup):
                 if item[2] not in seen_cvids:
                     seen_cvids.add(item[2])
                     all_items.append(item)
+                    new_years.append(_year_of(item[0]) or 0)
+
+            if new_years and max(new_years) < earliest_wanted:
+                return
 
             next_btn = page_soup.find(
                 "input", attrs={"name": _NEXT_BUTTON, "type": "submit"}
@@ -157,6 +197,9 @@ class BanyuleScraper(BaseScraper):
         in 2022, so the shortfall against EARLIEST_YEAR is the council's, not a
         gap in this scraper — there is nothing here to fix.
         """
+        wanted = self._wanted_years()
+        earliest_wanted = min(wanted)
+
         listing_html = self.fetcher.fetch_with_selenium(self.webpage_url)
         initial_soup = BeautifulSoup(listing_html, "html.parser")
 
@@ -168,9 +211,9 @@ class BanyuleScraper(BaseScraper):
 
             # The unfiltered listing first — it carries everything, and paging
             # it is cheaper than trusting the filter to be exhaustive.
-            self._page_through(driver, seen_cvids, all_items)
+            self._page_through(driver, seen_cvids, all_items, earliest_wanted)
 
-            for year in self._offered_years(initial_soup):
+            for year in self._offered_years(initial_soup, wanted):
                 driver.execute_script(
                     f"""
                     document.querySelector('select[name="{_YEAR_SELECT}"]')
@@ -179,7 +222,7 @@ class BanyuleScraper(BaseScraper):
                     """
                 )
                 self.fetcher.sleep(3)
-                self._page_through(driver, seen_cvids, all_items)
+                self._page_through(driver, seen_cvids, all_items, earliest_wanted)
 
         except Exception:
             # The year filter is how this scraper reaches anything beyond the
@@ -193,12 +236,9 @@ class BanyuleScraper(BaseScraper):
             if not all_items:
                 all_items = _parse_listing_items(initial_soup)
 
-        # Keep only years >= EARLIEST_YEAR
-        return [
-            item
-            for item in all_items
-            if (_year_of(item[0]) or 0) >= EARLIEST_YEAR
-        ]
+        # Drop unwanted years before their documents are fetched—that fetch
+        # is the expensive half, and main.py would discard them anyway.
+        return [item for item in all_items if _year_of(item[0]) in wanted]
 
     # ------------------------------------------------------------------
     # Step 2: fetch individual meeting content via ocsvc API

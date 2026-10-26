@@ -46,6 +46,116 @@ TARGET_MIN_YEARS = 3
 
 _URL_FIELDS = ("agenda_url", "minutes_url", "agenda_html_url", "minutes_html_url")
 
+# Gaps the counts above cannot see: a body or a stretch of years the council
+# publishes but the scraper does not read. Each keeps its council `partial`,
+# with the reason in the notes, so the scorecard does not call it complete.
+# Remove an entry in the change that closes the gap.
+KNOWN_GAPS: dict[str, str] = {
+    "brisbane": (
+        "papers before mid-2025 are Word files, which are not emitted: 6 "
+        "meetings in 2020-2023, none in 2024"
+    ),
+    "flinders_qld": (
+        "most ordinary meetings of 2020-2023 are labelled by month "
+        "only, with no day in the filename either, and are left out"
+    ),
+    "mount_barker": (
+        "assessment panel before Sep 2026 not read (council-domain list "
+        "behind Cloudflare)"
+    ),
+    "northern_peninsula_area": (
+        "month-only papers with no day anywhere are left out: most of 2021, "
+        "and several special and Trustee meetings each year (Feb, Mar, Apr, "
+        "May and Aug 2025; Jun-Oct 2024)"
+    ),
+    # OpenCities content pages labelled by month only: a meeting whose day
+    # is published nowhere on the page is left out rather than given one.
+    "blackall_tambo": (
+        "about 59 month-only meetings left out: every meeting of 2020-2023, "
+        "and a few a year since"
+    ),
+    "boulia": "every 2020-2023 paper gives only its month, so those years are left out",
+    "mckinlay": (
+        "ordinary meetings are labelled by month only and left out (about "
+        "69); mostly special meetings are emitted"
+    ),
+    "temora": (
+        "about 39 month-only minutes left out, most since 2023; only the "
+        "latest agenda is online"
+    ),
+    "winton": (
+        "ordinary meetings never give their day on the page and are left "
+        "out (about 104); only special meetings are emitted"
+    ),
+    # CouncilConnect document libraries labelled by month only: a meeting
+    # with no published day is left out rather than given one.
+    "yilgarn": (
+        "Ordinary meetings 2021-2024 left out (about 45): papers labelled by "
+        "month only, no day published"
+    ),
+    "murchison": (
+        "Ordinary meetings 2020-2024 left out bar Apr-Jun 2021 (about 50): "
+        "papers labelled by month only, no day published"
+    ),
+    "cuballing": (
+        "Ordinary meetings 2020-2024 left out bar one (about 55): papers "
+        "labelled by month only, no day published"
+    ),
+    "yalgoo": (
+        "most meetings 2020-2022 left out (about 30): papers labelled by "
+        "month only, no day published"
+    ),
+    # Queensland Resolve tenants whose record starts when the council moved
+    # to Resolve; the earlier papers are on the council's own site.
+    "bundaberg": "2020 to Jul 2022 not read (per-year accordions on the council site)",
+    "charters_towers": "2020 to Oct 2022 not read (council-site archive page)",
+    "gympie": "2020 to Apr 2024 not read (council-site Meetings-Archive)",
+    "hinchinbrook": "2020-2023 minutes not read (council-site Archived-Minutes; no agendas)",
+    "noosa": "2020 to Mar 2023 not read (council-site OpenCities archive)",
+    "toowoomba": (
+        "20 of 22 Ordinary meetings Jun 2020-Mar 2022 and nine 2020-21 specials "
+        "are unpublished in the Resolve API; the tenant host is robots-disallowed"
+    ),
+    "harvey": (
+        "papers are titled by month only; a day comes only from the current "
+        "schedule (Nov 2025 on), a title or a special-meeting notice, so 69 "
+        "ordinary meetings 2020-2025 and 6 special meetings (Jul 2026 among "
+        "them) are not emitted"
+    ),
+    "torres_strait_island": (
+        "ordinary meetings 2021-2025 titled by month only, not emitted "
+        "(about 60 meetings)"
+    ),
+    "gingin": (
+        "minutes before mid-2023 not emitted: their only address is the "
+        "robots-disallowed file store"
+    ),
+    "mount_marshall": (
+        "ordinary meetings are labelled by month only and dated from the "
+        "meeting-dates page, which lists the current year alone, so 2021-2025 "
+        "ordinary meetings are left out (about 55; 15 and 22 April 2025 are "
+        "dated in their labels), as are a few month-only special and "
+        "electors' meetings"
+    ),
+    "woodanilling": (
+        "about 14 month-only meetings left out: nearly all of 2020, and "
+        "February, March and November 2021"
+    ),
+    # SharePoint councils, under the documented robots.txt exception.
+    "fraser_coast": (
+        "current year only: earlier years are a SharePoint folder archive, "
+        "which has no plain-download form, and are not read"
+    ),
+    "mount_magnet": (
+        "no 2026 papers published anywhere on the site (checked 26 Oct 2026), "
+        "so a production run fails; agendas linked only for 2023-2024"
+    ),
+    "carrathool": (
+        "only the current year is read: the meetings page holds one year, "
+        "and the Feb 2023-Dec 2025 archive page labels papers by month only"
+    ),
+}
+
 
 @dataclass
 class Assessment:
@@ -147,5 +257,7 @@ def assess(slug: str, meetings: list[dict]) -> Assessment:
         result.coverage.append("no agendas")
     if result.years and result.years[-1] < this_year:
         result.coverage.append(f"nothing newer than {result.years[-1]}")
+    if slug in KNOWN_GAPS:
+        result.coverage.append(KNOWN_GAPS[slug])
 
     return result

@@ -38,6 +38,10 @@ def _abs(href: str) -> str:
 
 @register_scraper
 class GlenEiraScraper(BaseScraper):
+    # One production year, measured Oct 2026 from a home IP: 22 s. Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 22
+
     def __init__(self):
         super().__init__("glen_eira", "VIC", _BASE_URL)
         self.default_location = "420 Glen Eira Road, Caulfield"

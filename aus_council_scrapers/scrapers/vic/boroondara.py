@@ -32,6 +32,10 @@ class BoroondaraScraper(BaseScraper):
     time appears in a machine-readable form.
     """
 
+    # One production year, measured Oct 2026 from a home IP: 97 s. Orders
+    # dispatch only (slowest first); see BaseScraper.expected_seconds.
+    expected_seconds = 97
+
     def __init__(self):
         super().__init__("boroondara", "VIC", "https://www.boroondara.vic.gov.au")
         self.default_location = "8 Inglesby Road, Camberwell, Victoria 3124"
