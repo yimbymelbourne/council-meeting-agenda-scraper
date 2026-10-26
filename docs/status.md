@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**482 of 536 councils complete (89%)** — 53 partial, 0 broken, 1 not started.
+**484 of 536 councils complete (90%)** — 51 partial, 0 broken, 1 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -103,7 +103,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `carnamah` | 112 | 2020-2026 | 112 | 103 |  |
 | ✅ | `carnarvon` | 126 | 2020-2026 | 126 | 124 |  |
 | 🟡 | `carpentaria` | 80 | 2020-2026 | 80 | 78 | 18 meetings 2020-2024 left out: neither paper's cover is in its first 256 KB, and both files are past 2 MB (minutes are text-less scans) |
-| 🟡 | `carrathool` | 10 | 2026-2026 | 10 | 10 | only 1 year(s); only the current year is read: the meetings page holds one year, and the Feb 2023-Dec 2025 archive page labels papers by month only |
+| ✅ | `carrathool` | 43 | 2023-2026 | 43 | 42 |  |
 | ✅ | `casey` | 100 | 2020-2026 | 100 | 99 |  |
 | ✅ | `cassowary_coast` | 120 | 2020-2026 | 120 | 117 |  |
 | ✅ | `ceduna` | 153 | 2020-2026 | 153 | 141 |  |
@@ -239,7 +239,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `horsham` | 99 | 2020-2026 | 99 | 99 |  |
 | ✅ | `hume` | 153 | 2020-2026 | 153 | 151 |  |
 | ✅ | `hunters_hill` | 90 | 2020-2026 | 90 | 85 |  |
-| 🟡 | `huon_valley` | 89 | 2020-2026 | 89 | 85 | most agendas are SharePoint folder shares and are left out (16 of 89 meetings carry one), so upcoming meetings are mostly not emitted until their minutes are up; Jan-Aug 2020 and Mar-Apr 2021 papers are on Google Drive and not read |
+| 🟡 | `huon_valley` | 102 | 2020-2026 | 102 | 98 | most agendas since Sep 2020 are SharePoint folder shares and are left out (27 of 102 meetings carry one, 11 of them Jan 2020-Apr 2021 Google Drive papers), so upcoming meetings are mostly not emitted until their minutes are up |
 | 🟡 | `indigo` | 21 | 2025-2026 | 21 | 21 | only 2 year(s) |
 | ✅ | `inner_west` | 306 | 2020-2026 | 297 | 203 |  |
 | ✅ | `inverell` | 25 | 2024-2026 | 25 | 24 |  |
@@ -347,7 +347,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `mount_gambier` | 182 | 2020-2026 | 182 | 179 |  |
 | ✅ | `mount_isa` | 54 | 2023-2026 | 54 | 52 |  |
 | 🟡 | `mount_magnet` | 115 | 2020-2025 | 115 | 113 | nothing newer than 2025; no 2026 papers published anywhere on the site (checked 26 Oct 2026), so a production run fails; agendas linked only for 2023-2024 |
-| 🟡 | `mount_marshall` | 14 | 2025-2026 | 14 | 12 | only 2 year(s); ordinary meetings are labelled by month only and dated from the meeting-dates page, which lists the current year alone, so 2021-2025 ordinary meetings are left out (about 55; 15 and 22 April 2025 are dated in their labels), as are a few month-only special and electors' meetings |
+| ✅ | `mount_marshall` | 73 | 2021-2026 | 73 | 71 |  |
 | ✅ | `mount_remarkable` | 122 | 2020-2026 | 122 | 119 |  |
 | ✅ | `moyne` | 36 | 2024-2026 | 36 | 36 |  |
 | ✅ | `mukinbudin` | 71 | 2021-2026 | 71 | 69 |  |

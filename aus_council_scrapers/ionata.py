@@ -165,8 +165,11 @@ class IonataMeetingsScraper(BaseScraper):
         """
         raise NotImplementedError
 
-    def document_url(self, href: str) -> Optional[str]:
+    def document_url(self, href: str, kind: str) -> Optional[str]:
         """A link the card labels Agenda or Minutes, as a URL worth storing.
+
+        `kind` is "agenda" or "minutes", the card's label for the link, for
+        a subclass whose link can lead to a folder holding both.
 
         Hrefs are hand-pasted, and a trailing space survives as `%20`—Sorell
         has one, and the asset host 403s it. Anything not ending in `.pdf` is
@@ -231,7 +234,7 @@ class IonataMeetingsScraper(BaseScraper):
                 # Livestream, Attachments, Audio—and on Clarence the
                 # quarterly report or annual plan tabled at that meeting.
                 continue
-            url = self.document_url(link["href"])
+            url = self.document_url(link["href"], kind)
             if url is None:
                 self.logger.info(
                     f"{self.council_name}: {title!r} links its {kind} to "
