@@ -3,6 +3,7 @@ import re
 from bs4 import Tag
 
 from aus_council_scrapers.base import register_scraper
+from aus_council_scrapers.meeting_documents import AGENDA, MINUTES
 from aus_council_scrapers.opencities_content import (
     ContentPage,
     OpenCitiesContentScraper,
@@ -20,13 +21,20 @@ class McKinlayScraper(OpenCitiesContentScraper):
     # "January" under 2025) or the day of a special meeting ("3 March -
     # Special Meeting 2026"). Special meetings mostly give their day;
     # ordinary meetings mostly do not, in the label or the file, and are
-    # left out rather than dated to the 1st. The filenames start with the
-    # month's place in the year ("05-may-confirmed-ordinary-meeting-
-    # minutes.pdf", "10-october-...", "03march2026-..."), which is not the
-    # day (`numbered_files`).
+    # dated from their papers' first page (`pdf_dates`), or left out where
+    # neither gives a day in the month, never dated to the 1st. The minutes
+    # first: their first bytes give the day ("CONFIRMED MINUTES OF THE
+    # ORDINARY MEETING OF COUNCIL HELD AT ... 15th July 2025"), while an
+    # agenda's cover is rarely in its first bytes and the file is 3-11 MB.
+    # A paper not readable from its first bytes is downloaded whole only up
+    # to 2 MB: agendas first, at the default 8 MB, cost 32 MB a night. The
+    # filenames start with the month's place in the year ("05-may-
+    # confirmed-ordinary-meeting-minutes.pdf", "10-october-...",
+    # "03march2026-..."), which is not the day (`numbered_files`).
     #
     # Robots.txt disallows only /MyCity/ and one old page, and sets no
-    # Crawl-delay. Two requests a night.
+    # Crawl-delay. Two page requests a night, plus a PDF read for each
+    # month-only meeting of the year.
     pages = [
         ContentPage(f"{_MEETINGS}/Meeting-Agendas"),
         ContentPage(f"{_MEETINGS}/Meeting-minutes"),
@@ -36,6 +44,12 @@ class McKinlayScraper(OpenCitiesContentScraper):
     # until its first one (2 April in 2024, 3 March in 2026). Until then
     # the year raises rather than returning nothing as if it were quiet.
     month_only_fails = True
+
+    pdf_dates = True
+    pdf_kinds = (MINUTES, AGENDA)
+    pdf_full_limit = 2 * 1024 * 1024
+    # 2026: 15 PDF reads, 4.2 MB, 32 s from a home IP (26 Oct 2026).
+    expected_seconds = 32.0
 
     def __init__(self):
         super().__init__("mckinlay", "QLD", _BASE_URL)

@@ -10,6 +10,7 @@ from aus_council_scrapers import clock
 from aus_council_scrapers.alyka import find_date, find_month
 from aus_council_scrapers.base import BaseScraper, ScraperReturn, register_scraper
 from aus_council_scrapers.constants import EARLIEST_YEAR
+from aus_council_scrapers.pdf_dates import meeting_date_from_papers
 
 _BASE_URL = "https://www.woodanilling.wa.gov.au"
 _INDEX_URL = f"{_BASE_URL}/past-council-meetings.aspx"
@@ -235,8 +236,11 @@ class WoodanillingScraper(BaseScraper):
         dated heading. A paper dated to the month only ("E-Minutes November
         2021") takes the day of its counterpart of the same type that month
         when there is exactly one ("E-Agenda March 2020" from "E-Minutes 17
-        March 2020"), and is otherwise left out: nothing on the site says
-        which day it was.
+        March 2020"). Failing that it is dated from its PDF's first page
+        (pdf_dates.py), the month's papers of one meeting type together
+        when there is one of each, minutes first; a day outside the label's
+        month is never taken. Otherwise it is left out. Only these pre-2023
+        pages are read this way, so a production year costs no PDF read.
         """
         dated: list[tuple[datetime.date, str, _Paper]] = []
         undated: list[tuple[tuple[int, int], str, _Paper]] = []
@@ -266,6 +270,7 @@ class WoodanillingScraper(BaseScraper):
                 )
                 if month:
                     undated.append((month, name, paper))
+        pending: dict[tuple, list[_Paper]] = {}
         for month, name, paper in undated:
             days = {
                 date
@@ -275,7 +280,33 @@ class WoodanillingScraper(BaseScraper):
             if len(days) == 1:
                 dated.append((days.pop(), name, paper))
             elif month[0] == year:
-                self.logger.warning(f"{self.council_name}: cannot date {paper.label!r}; skipped")
+                pending.setdefault((month, name), []).append(paper)
+        for (month, name), papers in pending.items():
+            kinds = [paper.kind for paper in papers]
+            if len(kinds) == len(set(kinds)):
+                ordered = sorted(papers, key=lambda p: p.kind != "minutes")
+                date = meeting_date_from_papers(
+                    self.fetcher, [p.url for p in ordered], *month, logger=self.logger
+                )
+                found = [(paper, date) for paper in papers]
+            else:
+                found = [
+                    (
+                        paper,
+                        meeting_date_from_papers(
+                            self.fetcher, [paper.url], *month, logger=self.logger
+                        ),
+                    )
+                    for paper in papers
+                ]
+            for paper, date in found:
+                if date:
+                    self.logger.info(
+                        f"{self.council_name}: {paper.label!r} dated {date} from the PDF"
+                    )
+                    dated.append((date, name, paper))
+                else:
+                    self.logger.warning(f"{self.council_name}: cannot date {paper.label!r}; skipped")
 
         meetings: dict[tuple, list[_Paper]] = {}
         for date, name, paper in dated:

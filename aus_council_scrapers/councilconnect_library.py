@@ -52,7 +52,9 @@ council itself names that meeting's day somewhere it is read:
   date (Cuballing's agendas are month-only and its 2026 minutes dated);
 - the council's published meeting schedule for the year (`schedule_path`)
   gives the one ordinary meeting in that month;
-- a subclass's `corrections` give it, from the paper's own cover.
+- a subclass's `corrections` give it, from the paper's own cover;
+- with `pdf_dates` set, the paper's own first page gives a day in the
+  label's month (see pdf_dates.py), read only for the years being scraped.
 
 Otherwise it is left out, and logged so a run says what was dropped.
 Recordings are not used, though their labels often carry the day: of
@@ -75,6 +77,7 @@ from aus_council_scrapers import clock
 from aus_council_scrapers.base import BaseScraper, ScraperReturn
 from aus_council_scrapers.constants import EARLIEST_YEAR
 from aus_council_scrapers.councilconnect import ELECTORS_NAMES
+from aus_council_scrapers.pdf_dates import PDF_FULL_LIMIT, meeting_date_from_pdf
 
 AGENDA = "agenda"
 MINUTES = "minutes"
@@ -123,6 +126,8 @@ _NUMERIC = re.compile(
 )
 _MONTH_ONLY = re.compile(rf"\b(?P<month>{_MONTH})(?![a-z])", re.IGNORECASE)
 _YEAR = re.compile(r"(?<![\d/])(?:19|20)\d{2}(?![\d/])")
+# Yalgoo's leading sequence number, "2020-07 Ordinary Council Meeting Agenda".
+_NUMBERED = re.compile(r"^\s*((?:19|20)\d{2})-(\d{2})\b")
 
 # Not the meeting's agenda or minutes, whatever else the label says. Matched
 # with any "and attachments" packet wording taken out first (see _PACKET), so
@@ -226,6 +231,10 @@ class _Document:
     # Set only by a correction, to tell apart two meetings of one type on
     # one day (see _meetings).
     time: Optional[str] = None
+    # The month a numbered label's sequence names ("2020-07 Ordinary Council
+    # Meeting Agenda"), used only to bound a date read from the PDF
+    # (`numbered_months`).
+    pdf_month: Optional[tuple[int, int]] = None
 
 
 @dataclass
@@ -271,6 +280,20 @@ class CouncilConnectDocumentLibraryScraper(BaseScraper):
         says, by their contents. Never emitted.
     `first_year`
         Folders before it are not read.
+    `numbered_months`
+        For a council that numbers its papers "<year>-<month>" and gives no
+        month otherwise (Yalgoo's "2020-07 Ordinary Council Meeting
+        Agenda"): with `pdf_dates`, such a paper is dated from its PDF, and
+        only a day in that month is taken. The number is a sequence, not
+        always the meeting's month (Yalgoo's "2025-02" papers are for a
+        meeting held on 7 March), so it is never used for anything else,
+        and a paper whose meeting fell in another month is left out.
+    `pdf_dates` / `pdf_kinds` / `pdf_full_limit`
+        Date a month-only paper that nothing above dates from its PDF's
+        first page, reading the meeting's papers in `pdf_kinds` order and
+        stopping at the first that gives a day in the label's month. Each
+        meeting so dated costs one or two requests a night, so it is off by
+        default; `pdf_full_limit` bounds a file read whole.
     """
 
     folder_pattern: re.Pattern = re.compile(r"agend|minut", re.IGNORECASE)
@@ -286,6 +309,10 @@ class CouncilConnectDocumentLibraryScraper(BaseScraper):
     wrong_documents: dict[str, str] = {}
     first_year: int = EARLIEST_YEAR
     ordinary_name: str = "Ordinary Council Meeting"
+    pdf_dates: bool = False
+    numbered_months: bool = False
+    pdf_kinds: tuple[str, ...] = (AGENDA, MINUTES)
+    pdf_full_limit: int = PDF_FULL_LIMIT
 
     # --- years -------------------------------------------------------------
 
@@ -501,6 +528,11 @@ class CouncilConnectDocumentLibraryScraper(BaseScraper):
             return None
 
         date, month = self._read_date(tested, folder.year)
+        pdf_month = None
+        if self.numbered_months and date is None and month is None:
+            numbered = _NUMBERED.match(tested)
+            if numbered and 1 <= int(numbered.group(2)) <= 12:
+                pdf_month = (int(numbered.group(1)), int(numbered.group(2)))
         document = _Document(
             kind=kind,
             name=name,
@@ -512,6 +544,7 @@ class CouncilConnectDocumentLibraryScraper(BaseScraper):
             date=date,
             month=month,
             typed=typed,
+            pdf_month=pdf_month,
         )
         return document
 
@@ -564,7 +597,6 @@ class CouncilConnectDocumentLibraryScraper(BaseScraper):
                     date
                 )
 
-        dated = []
         for document in documents:
             if document.date is None and document.month is not None:
                 year, month = document.month
@@ -577,6 +609,13 @@ class CouncilConnectDocumentLibraryScraper(BaseScraper):
                     and self.schedule_path
                 ):
                     document.date = self._schedule().get((year, month))
+        if self.pdf_dates:
+            self._dates_from_pdfs(
+                [d for d in documents if d.date is None and (d.month or d.pdf_month)]
+            )
+
+        dated = []
+        for document in documents:
             if document.date is None:
                 self.dropped.append(document)
                 self.logger.info(
@@ -586,6 +625,63 @@ class CouncilConnectDocumentLibraryScraper(BaseScraper):
                 continue
             dated.append(document)
         return dated
+
+    def _dates_from_pdfs(self, documents: list[_Document]) -> None:
+        """Date month-only papers from their PDFs' first page (`pdf_dates`).
+
+        Papers of one meeting type in one month are one meeting when there
+        is at most one of each kind: the first of them, in `pdf_kinds`
+        order, that gives a day in the label's month dates them all. Two
+        papers of one kind (a special meeting's agenda and its amended
+        agenda, or two meetings) are each dated from their own PDF. Only
+        papers whose month is in a wanted year are read; the rest are left
+        out as before.
+        """
+        wanted = self._wanted_years()
+        groups: dict[tuple[str, int, int], list[_Document]] = {}
+        for document in documents:
+            year, month = document.month or document.pdf_month
+            if year in wanted:
+                groups.setdefault((document.name, year, month), []).append(document)
+
+        def read(document: _Document) -> Optional[datetime.date]:
+            year, month = document.month or document.pdf_month
+            return meeting_date_from_pdf(
+                self.fetcher,
+                document.url,
+                year,
+                month,
+                full_limit=self.pdf_full_limit,
+                logger=self.logger,
+            )
+
+        def order(document: _Document):
+            kind = (
+                self.pdf_kinds.index(document.kind)
+                if document.kind in self.pdf_kinds
+                else len(self.pdf_kinds)
+            )
+            return (kind, document.rank, -document.doc_id)
+
+        for group in groups.values():
+            kinds = [d.kind for d in group]
+            if len(kinds) == len(set(kinds)):
+                date = None
+                for document in sorted(group, key=order):
+                    if document.kind in self.pdf_kinds:
+                        date = read(document)
+                    if date:
+                        break
+                targets = [(d, date) for d in group] if date else []
+            else:
+                targets = [(d, read(d)) for d in sorted(group, key=order)]
+            for document, date in targets:
+                if date:
+                    self.logger.info(
+                        f"{self.council_name}: {document.label!r} dated {date} "
+                        f"from the PDF"
+                    )
+                    document.date = date
 
     # --- the scrape ----------------------------------------------------------
 

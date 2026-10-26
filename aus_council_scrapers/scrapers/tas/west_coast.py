@@ -5,6 +5,7 @@ from typing import Optional
 from bs4 import BeautifulSoup
 
 from aus_council_scrapers.base import register_scraper
+from aus_council_scrapers.pdf_dates import meeting_date_from_papers
 from aus_council_scrapers.wpfd import (
     WPFDFile,
     WPFDListing,
@@ -22,12 +23,13 @@ from aus_council_scrapers.wpfd import (
 # Meeting Dates" ("Tuesday 24 March 2026", "Tuesday 14 July 2026 – Special
 # Meeting", "Thursday 10 December 2026 (Annual General Meeting & Ordinary
 # Council Meeting)"). A month's undated meeting takes the one scheduled date
-# of its type in that month; with none or several, it is left out with a
-# warning rather than given a guessed day. That is the case for the January
-# 2026 AGM: the schedule lists "Tuesday 27 January 2026" as an ordinary
-# meeting only, though the AGM agenda says it was held that evening too. A
-# meeting moved after the schedule was published would carry the scheduled
-# day.
+# of its type in that month. With none or several, the day is read from the
+# meeting's own papers (pdf_dates.py), agenda first, and only a day in that
+# month is taken; failing that it is left out with a warning rather than
+# given a guessed day. That is how the January 2026 AGM is dated: the
+# schedule lists "Tuesday 27 January 2026" as an ordinary meeting only, and
+# the AGM agenda gives its own day. A meeting moved after the schedule was
+# published would carry the scheduled day.
 #
 # Every ordinary meeting depends on the schedule, so a year with undated
 # meetings and no schedule entries fails the scrape rather than quietly
@@ -40,7 +42,8 @@ from aus_council_scrapers.wpfd import (
 # specials included, and no schedule for those years is published, so
 # nothing there can be dated to the day and neither is fetched.
 #
-# A production year is two requests: the listing, and the schedule page.
+# A production year is two requests, the listing and the schedule page,
+# plus a PDF read or two for a meeting the schedule does not date.
 # nginx, no CDN. robots.txt disallows only /wp-admin/ (admin-ajax allowed).
 
 # "2026 Meeting Dates"; also "Meeting Dates 2027" or "Meeting Dates for
@@ -117,4 +120,14 @@ class WestCoastTasScraper(WPFileDownloadScraper):
             for date, kinds in self._schedule
             if (date.year, date.month) == (year, month_number) and name in kinds
         ]
-        return scheduled[0] if len(scheduled) == 1 else None
+        if len(scheduled) == 1:
+            return scheduled[0]
+        # Off the schedule: one meeting a year or so, a PDF read or two.
+        papers = sorted(files, key=lambda f: f.kind != "agenda")
+        return meeting_date_from_papers(
+            self.fetcher,
+            [f.url for f in papers],
+            year,
+            month_number,
+            logger=self.logger,
+        )

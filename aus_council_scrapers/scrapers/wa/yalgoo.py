@@ -19,8 +19,11 @@ class YalgooScraper(CouncilConnectDocumentLibraryScraper):
     meeting's date from 2023 ("2026-05 Ordinary Council Meeting Agenda -
     Friday 29 May 2026"; the "2026-05" is a sequence number, not always the
     meeting's month). Before that most give only "2020-07 Ordinary Council
-    Meeting Agenda" and are left out, there being no day to give them. One
-    production year is three requests.
+    Meeting Agenda", with no day; those are dated from their PDFs' first
+    page (`pdf_dates`), taking only a day in the numbered month
+    (`numbered_months`), and left out where the PDF gives none. One
+    production year is three requests: every 2026 label gives its day, so
+    no PDF is read.
     """
 
     skip_folder_pattern = re.compile(r"attach|committee|lemc", re.IGNORECASE)
@@ -48,6 +51,9 @@ class YalgooScraper(CouncilConnectDocumentLibraryScraper):
             )
         },
     }
+
+    pdf_dates = True
+    numbered_months = True
 
     def __init__(self):
         super().__init__("yalgoo", "WA", "https://www.yalgoo.wa.gov.au")

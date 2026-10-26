@@ -24,10 +24,12 @@ class YilgarnScraper(CouncilConnectDocumentLibraryScraper):
     and so on. All nine 2026 agendas up on 20 Oct 2026 give the same date
     on their covers as that page. 2025's Ordinary meetings and every
     electors' meeting are corrected below from their covers. Ordinary
-    meetings from 2021 to 2024 have no published day anywhere this reads,
-    and are left out (about 90 papers); a special meeting is kept where one
-    of its papers is dated ("Agenda - Special Meeting of Council 28 July
-    2021") or corrected below. One production year is four requests.
+    meetings from 2021 to 2024 have no published day on the site, and are
+    dated from their PDFs' first page (`pdf_dates`, agenda first), or left
+    out where it gives no day in the label's month; a special meeting is
+    kept where one of its papers is dated ("Agenda - Special Meeting of
+    Council 28 July 2021") or corrected below. One production year is four
+    requests, and no PDF read while the dates page covers the year.
     """
 
     schedule_path = "/shire/shire/meetings.aspx"
@@ -109,6 +111,8 @@ class YilgarnScraper(CouncilConnectDocumentLibraryScraper):
             "special-meeting-of-council-agend-may-2024 (read 20 Oct 2026)"
         ),
     }
+
+    pdf_dates = True
 
     def __init__(self):
         super().__init__("yilgarn", "WA", "https://www.yilgarn.wa.gov.au")
