@@ -116,16 +116,13 @@ _OPENCITIES_GENERATOR = (
 def test_detects_opencities_content_pages_by_the_generator_tag():
     """Hepburn, Boulia and Temora never turned on the meetings module, so
     nothing but the CMS's generator tag says OpenCities. The tag names
-    granicus.com, hence the Legistar false positive behind it."""
+    granicus.com, which no longer reads as Legistar (#156)."""
     html = (
         _OPENCITIES_GENERATOR + '<a href="/files/assets/public/v/1/council/documents/'
         'public-agenda-ordinary-meeting-of-council-22-september-2026.pdf">'
         "Agenda</a>"
     )
-    assert [p.name for p in detect(html)] == [
-        "OpenCities content pages",
-        "Granicus/Legistar",
-    ]
+    assert [p.name for p in detect(html)] == ["OpenCities content pages"]
 
 
 def test_a_meetings_module_page_names_the_module_before_content_pages():
@@ -181,6 +178,40 @@ def test_detects_datascape():
 
 def test_unknown_platform_returns_nothing():
     assert detect("<html><body><h1>Meetings</h1></body></html>") == []
+
+
+def test_opencities_footer_credit_does_not_also_match_granicus_legistar():
+    """OpenCities is a Granicus product with no connection to Legistar's
+    meeting/agenda system, but every OpenCities site credits Granicus by URL
+    in its own generator meta tag and page footer. Confirmed on Logan
+    (really eScribe) and Ipswich (really InfoCouncil) — both matched
+    Granicus/Legistar purely from their own website's CMS credit."""
+    html = (
+        '<meta name="generator" content="OpenCities - '
+        'https://granicus.com/product/opencities" />'
+        '<span class="powered-by">Powered by '
+        '<a href="https://granicus.com/solution/govaccess/opencities/">'
+        "Granicus</a></span>"
+    )
+    # The generator tag alone now identifies an OpenCities site (content
+    # pages), which is right; what must not appear is Granicus/Legistar.
+    assert [p.name for p in detect(html)] == ["OpenCities content pages"]
+
+
+def test_opencities_footer_credit_does_not_mask_a_real_opencities_match():
+    html = (
+        '<meta name="generator" content="OpenCities - '
+        'https://granicus.com/product/opencities" />'
+        '<div class="accordion-list-item-container"></div>'
+    )
+    assert [p.name for p in detect(html)] == ["OpenCities", "OpenCities content pages"]
+
+
+def test_genuine_granicus_agenda_url_still_matches():
+    """The exclusion is scoped to OpenCities' own branding path — an actual
+    Granicus-hosted agenda subdomain is a real signal and must still match."""
+    found = detect("", "https://cityname.granicus.com/ViewPublisher.php")
+    assert [p.name for p in found] == ["Granicus/Legistar"]
 
 
 def test_finds_platform_links_on_a_council_page():
