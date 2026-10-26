@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**482 of 536 councils complete (89%)** — 52 partial, 0 broken, 2 not started.
+**482 of 536 councils complete (89%)** — 53 partial, 0 broken, 1 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -239,6 +239,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `horsham` | 99 | 2020-2026 | 99 | 99 |  |
 | ✅ | `hume` | 153 | 2020-2026 | 153 | 151 |  |
 | ✅ | `hunters_hill` | 90 | 2020-2026 | 90 | 85 |  |
+| 🟡 | `huon_valley` | 89 | 2020-2026 | 89 | 85 | most agendas are SharePoint folder shares and are left out (16 of 89 meetings carry one), so upcoming meetings are mostly not emitted until their minutes are up; Jan-Aug 2020 and Mar-Apr 2021 papers are on Google Drive and not read |
 | 🟡 | `indigo` | 21 | 2025-2026 | 21 | 21 | only 2 year(s) |
 | ✅ | `inner_west` | 306 | 2020-2026 | 297 | 203 |  |
 | ✅ | `inverell` | 25 | 2024-2026 | 25 | 24 |  |
@@ -555,4 +556,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`huon_valley` `north_burnett`
+`north_burnett`

@@ -127,6 +127,12 @@ KNOWN_GAPS: dict[str, str] = {
         "no 2026 papers published anywhere on the site (checked 26 Oct 2026), "
         "so a production run fails; agendas linked only for 2023-2024"
     ),
+    "huon_valley": (
+        "most agendas are SharePoint folder shares and are left out (16 of 89 "
+        "meetings carry one), so upcoming meetings are mostly not emitted until "
+        "their minutes are up; Jan-Aug 2020 and Mar-Apr 2021 papers are on "
+        "Google Drive and not read"
+    ),
     "carrathool": (
         "only the current year is read: the meetings page holds one year, "
         "and the Feb 2023-Dec 2025 archive page labels papers by month only"
