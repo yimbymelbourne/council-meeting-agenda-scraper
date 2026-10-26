@@ -22,7 +22,12 @@ _LISTING_URL = f"{_BASE_URL}/council/meetings-agendas-minutes/"
 # `/embeddedfolderview` is not allowed, and neither is `/uc`, the direct
 # download. So documents are emitted as `/uc?export=download` links (they
 # answer with the PDF itself) but never fetched here, the same emit-only
-# treatment as Forbes and Gingin. Crawl-delay is 1 s.
+# treatment as Forbes and Gingin. Crawl-delay is 1 s. Emitting them is a
+# documented robots.txt exception, recorded on 26 Oct 2026 under the
+# maintainer's decision that council papers on disallowed hosts all get it:
+# drive.google.com/robots.txt ends `Disallow: /` after its allowed prefixes,
+# and drive.usercontent.google.com, where /uc redirects, is `User-agent: *`
+# / `Disallow: /` (both checked 26 Oct 2026). See AGENTS.md.
 _DRIVE = "https://drive.google.com"
 _DRIVE_CRAWL_DELAY = 1.0
 _FILE_ID = re.compile(r"drive\.google\.com/(?:file/d/|open\?id=)([\w-]{20,})")

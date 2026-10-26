@@ -12,6 +12,7 @@ from __future__ import annotations
 import pytest
 
 from aus_council_scrapers import clock
+from aus_council_scrapers.scrapers.nsw.carrathool import CarrathoolScraper
 from aus_council_scrapers.scrapers.nsw.coolamon import CoolamonScraper
 from aus_council_scrapers.scrapers.nsw.warren import WarrenScraper
 from aus_council_scrapers.scrapers.qld.blackall_tambo import BlackallTamboScraper
@@ -31,6 +32,7 @@ from aus_council_scrapers.scrapers.qld.winton import WintonScraper
 from aus_council_scrapers.scrapers.tas.west_coast import WestCoastTasScraper
 from aus_council_scrapers.scrapers.wa.cuballing import CuballingScraper
 from aus_council_scrapers.scrapers.wa.harvey import HarveyScraper
+from aus_council_scrapers.scrapers.wa.mount_marshall import MountMarshallScraper
 from aus_council_scrapers.scrapers.wa.murchison import MurchisonScraper
 from aus_council_scrapers.scrapers.wa.woodanilling import WoodanillingScraper
 from aus_council_scrapers.scrapers.wa.yalgoo import YalgooScraper
@@ -65,6 +67,8 @@ _SCRAPERS = [
     (WoodanillingScraper, 2021),
     (YalgooScraper, 2021),
     (YilgarnScraper, 2023),
+    (CarrathoolScraper, 2024),
+    (MountMarshallScraper, 2023),
 ]
 
 
@@ -92,3 +96,24 @@ def test_one_year_reads_only_that_years_papers(scraper_class, year):
         if url
     }
     assert not other_years & set(fetcher.requested)
+
+
+# Councils whose PDF reads are of past years only: the current year is dated
+# by the council's own pages, so a production night is those pages alone.
+@pytest.mark.parametrize(
+    "scraper_class, pages",
+    [(CarrathoolScraper, 1), (MountMarshallScraper, 2)],
+    ids=lambda c: getattr(c, "__name__", str(c)),
+)
+def test_the_current_year_reads_no_pdf(scraper_class, pages):
+    scraper = scraper_class()
+    replay, expected = load_cassette(scraper.council_name)
+    fetcher = CountingPlayback(replay, scraper.council_name)
+    scraper.fetcher = fetcher
+    with clock.frozen(recorded_date(replay)):
+        year = clock.current_year()
+        scraper.years_filter = [year]
+        results = [r.to_dict() for r in scraper.scraper()]
+
+    assert sorted_meetings(results) == meetings_in(expected, year)
+    assert len(fetcher.requested) == pages

@@ -107,13 +107,6 @@ KNOWN_GAPS: dict[str, str] = {
         "minutes before mid-2023 not emitted: their only address is the "
         "robots-disallowed file store"
     ),
-    "mount_marshall": (
-        "ordinary meetings are labelled by month only and dated from the "
-        "meeting-dates page, which lists the current year alone, so 2021-2025 "
-        "ordinary meetings are left out (about 55; 15 and 22 April 2025 are "
-        "dated in their labels), as are a few month-only special and "
-        "electors' meetings"
-    ),
     "woodanilling": (
         "Oct 2020 special meeting left out: labelled by month only, and its "
         "papers' first page gives only the date the CEO signed them"
@@ -128,14 +121,10 @@ KNOWN_GAPS: dict[str, str] = {
         "so a production run fails; agendas linked only for 2023-2024"
     ),
     "huon_valley": (
-        "most agendas are SharePoint folder shares and are left out (16 of 89 "
-        "meetings carry one), so upcoming meetings are mostly not emitted until "
-        "their minutes are up; Jan-Aug 2020 and Mar-Apr 2021 papers are on "
-        "Google Drive and not read"
-    ),
-    "carrathool": (
-        "only the current year is read: the meetings page holds one year, "
-        "and the Feb 2023-Dec 2025 archive page labels papers by month only"
+        "most agendas since Sep 2020 are SharePoint folder shares and are left "
+        "out (27 of 102 meetings carry one, 11 of them Jan 2020-Apr 2021 "
+        "Google Drive papers), so upcoming meetings are mostly not emitted "
+        "until their minutes are up"
     ),
     # Dated from their PDFs (`pdf_dates`): a meeting whose first page cannot
     # be read cheaply, or gives no day in the label's month, is left out.
