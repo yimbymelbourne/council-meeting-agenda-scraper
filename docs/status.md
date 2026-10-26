@@ -465,7 +465,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `tasman` | 9 | 2026-2026 | 9 | 7 | only 1 year(s) |
 | ✅ | `tatiara` | 114 | 2020-2026 | 114 | 112 |  |
 | ✅ | `tea_tree_gully` | 136 | 2022-2026 | 136 | 132 |  |
-| 🟡 | `temora` | 83 | 2020-2026 | 83 | 79 | only the latest agenda is online, so past meetings have minutes only; a month-only minutes published after 26 Oct 2026 is left out until its day is added to `misfiled` (each file is 5-210 MB, too large to read nightly) |
+| 🟡 | `temora` | 84 | 2020-2026 | 84 | 80 | only the latest agenda is online, so past meetings have minutes only; a month-only minutes takes its day from its YouTube recording's title, and one whose recording gives no day (as Sep 2026's did not) is left out until its day is added to `misfiled` (each file is 5-210 MB, too large to read nightly) |
 | ✅ | `tenterfield` | 79 | 2020-2026 | 79 | 79 |  |
 | ✅ | `the_hills` | 232 | 2021-2026 | 232 | 231 |  |
 | ✅ | `three_springs` | 93 | 2020-2026 | 93 | 91 |  |

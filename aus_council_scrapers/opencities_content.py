@@ -1035,8 +1035,11 @@ class OpenCitiesContentScraper(BaseScraper):
                 complete.append(paper)
             else:
                 pending.append(paper)
+        complete.extend(self.date_month_only(pending, wanted))
         if self.pdf_dates:
-            complete.extend(self._dates_from_pdfs(pending, wanted))
+            complete.extend(
+                self._dates_from_pdfs([p for p in pending if p.date is None], wanted)
+            )
         for paper in pending:
             if paper.date is None:
                 self._month_only.append(paper)
@@ -1046,6 +1049,20 @@ class OpenCitiesContentScraper(BaseScraper):
                     f"{paper.year}"
                 )
         return complete
+
+    def date_month_only(
+        self, papers: list[_Paper], wanted: Optional[set[int]]
+    ) -> list[_Paper]:
+        """Date month-only papers from a source this class does not read.
+
+        Called with the papers still undated once the page and the other
+        paper of the same meeting have been tried, before `pdf_dates`. A
+        subclass sets `date` on the ones it can date and returns them;
+        whatever it leaves undated is left out and logged as usual. Temora
+        reads the day from the title of the meeting's recording. Nothing by
+        default.
+        """
+        return []
 
     def _dates_from_pdfs(
         self, papers: list[_Paper], wanted: Optional[set[int]]

@@ -75,9 +75,10 @@ KNOWN_GAPS: dict[str, str] = {
     ),
     "temora": (
         "only the latest agenda is online, so past meetings have minutes "
-        "only; a month-only minutes published after 26 Oct 2026 is left out "
-        "until its day is added to `misfiled` (each file is 5-210 MB, too "
-        "large to read nightly)"
+        "only; a month-only minutes takes its day from its YouTube "
+        "recording's title, and one whose recording gives no day (as Sep "
+        "2026's did not) is left out until its day is added to `misfiled` "
+        "(each file is 5-210 MB, too large to read nightly)"
     ),
     "winton": (
         "5 meetings left out, their papers scans with no text: Jul 2023 "
