@@ -81,6 +81,7 @@ from aus_council_scrapers.meeting_documents import (
     group_documents,
     name_words,
 )
+from aus_council_scrapers.pdf_dates import PDF_FULL_LIMIT, meeting_date_from_pdf
 
 # --- dates ----------------------------------------------------------------
 
@@ -542,6 +543,16 @@ class OpenCitiesContentScraper(BaseScraper):
         warns. Off by default: elsewhere a month-only paper is the odd one
         out, and its year has dated meetings beside it.
 
+    ``pdf_dates``
+        For a council that gives the day nowhere on the page: a meeting
+        whose papers are all month-only, in a year being scraped, is dated
+        from its papers' first page (`pdf_dates`), read in the order of
+        ``pdf_kinds`` and stopping at the first that gives a day in the
+        label's month. A month holding two papers of one kind for one body
+        dates each paper from its own PDF instead. Costs one or two
+        requests per meeting a night, so it is off by default; set
+        ``pdf_full_limit`` to bound the size of a file read whole.
+
     and may override `link_label` where a link's own text does not say what
     it is (a table row's "Agenda", a list's "Business Paper").
     """
@@ -556,6 +567,9 @@ class OpenCitiesContentScraper(BaseScraper):
     page_headings: tuple[str, ...] = ()
     numbered_files: bool = False
     month_only_fails: bool = False
+    pdf_dates: bool = False
+    pdf_kinds: tuple[str, ...] = (AGENDA, MINUTES)
+    pdf_full_limit: int = PDF_FULL_LIMIT
 
     # The accordions OpenCities renders for a document list, and the content
     # area that holds them. Links outside an accordion but in the content
@@ -979,7 +993,9 @@ class OpenCitiesContentScraper(BaseScraper):
 
     # --- month-only papers --------------------------------------------------
 
-    def _complete_months(self, papers: list[_Paper]) -> list[_Paper]:
+    def _complete_months(
+        self, papers: list[_Paper], wanted: Optional[set[int]] = None
+    ) -> list[_Paper]:
         """Give a month-only paper the day of its meeting's other paper.
 
         NPARC titles both papers by month ("February Council Meeting Agenda",
@@ -997,6 +1013,7 @@ class OpenCitiesContentScraper(BaseScraper):
         complete = list(dated)
         # Kept for `month_only_fails`.
         self._month_only: list[_Paper] = []
+        pending = []
         for paper in papers:
             if paper.date:
                 continue
@@ -1017,6 +1034,11 @@ class OpenCitiesContentScraper(BaseScraper):
                 paper.date = days.pop()
                 complete.append(paper)
             else:
+                pending.append(paper)
+        if self.pdf_dates:
+            complete.extend(self._dates_from_pdfs(pending, wanted))
+        for paper in pending:
+            if paper.date is None:
                 self._month_only.append(paper)
                 self.logger.info(
                     f"{self.council_name}: leaving out {paper.link.label!r}: "
@@ -1024,6 +1046,58 @@ class OpenCitiesContentScraper(BaseScraper):
                     f"{paper.year}"
                 )
         return complete
+
+    def _dates_from_pdfs(
+        self, papers: list[_Paper], wanted: Optional[set[int]]
+    ) -> list[_Paper]:
+        """Date month-only papers from their PDFs (`pdf_dates`); the dated ones."""
+        groups: dict[tuple, list[_Paper]] = {}
+        for paper in papers:
+            if paper.month is None or (wanted and paper.year not in wanted):
+                continue
+            groups.setdefault((paper.year, paper.month, _body(paper.words)), []).append(
+                paper
+            )
+
+        def order(p: _Paper):
+            kind = self.pdf_kinds.index(p.kind) if p.kind in self.pdf_kinds else 99
+            return (kind, p.rank)
+
+        def read(paper: _Paper) -> Optional[datetime.date]:
+            return meeting_date_from_pdf(
+                self.fetcher,
+                paper.link.url,
+                paper.year,
+                paper.month,
+                full_limit=self.pdf_full_limit,
+                logger=self.logger,
+            )
+
+        dated = []
+        for group in groups.values():
+            kinds = [p.kind for p in group]
+            if len(kinds) == len(set(kinds)):
+                # One meeting: the first paper that gives the day dates both.
+                date = None
+                for paper in sorted(group, key=order):
+                    if paper.kind in self.pdf_kinds:
+                        date = read(paper)
+                    if date:
+                        break
+                targets = [(p, date) for p in group] if date else []
+            else:
+                # Two papers of one kind: more than one meeting, so each
+                # paper is dated by itself.
+                targets = [(p, read(p)) for p in group]
+            for paper, date in targets:
+                if date:
+                    self.logger.info(
+                        f"{self.council_name}: {paper.link.label!r} dated {date} "
+                        f"from the PDF"
+                    )
+                    paper.date = date
+                    dated.append(paper)
+        return dated
 
     def _follow_filenames(self, papers: list[_Paper]) -> list[_Paper]:
         """Move a mislabelled paper to the meeting its filename names.
@@ -1169,7 +1243,7 @@ class OpenCitiesContentScraper(BaseScraper):
                 seen.add(link.url)
                 papers.append(paper)
 
-        papers = self._complete_months(papers)
+        papers = self._complete_months(papers, wanted)
         papers = self._join_multi_day(self._follow_filenames(papers))
         papers = self._drop_sundays(papers)
         papers = [p for p in papers if p.date.year in wanted]

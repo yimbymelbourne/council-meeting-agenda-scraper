@@ -84,13 +84,15 @@ def _record(scraper: BaseScraper, slug: str, result_path: str, replay_path: str)
     # Egress too: a residential council records only with
     # RESIDENTIAL_PROXY_URL set—`direct` when recording from a home
     # connection—and otherwise fails with EgressUnavailable rather than
-    # recording whatever the current IP is served.
+    # recording whatever the current IP is served. Extra CA certificates
+    # too, or a council whose server omits its intermediate cannot record.
     recorder = RecordingFetcher(
         DefaultFetcher(
             user_agent=scraper.user_agent,
             strip_headless_user_agent=scraper.strip_headless_user_agent,
             egress=scraper.egress,
             council=scraper.council_name,
+            extra_ca_certs=scraper.extra_ca_certs,
         )
     )
     scraper.fetcher = recorder

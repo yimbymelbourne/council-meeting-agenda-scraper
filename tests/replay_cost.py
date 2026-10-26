@@ -59,3 +59,11 @@ class CountingPlayback(PlaybackFetcher):
     def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
         self.requested.append(url)
         return super().fetch_with_selenium(url, wait_time, wait_condition)
+
+    def fetch_bytes(self, url, max_bytes=None, **kwargs):
+        self.requested.append(url)
+        return super().fetch_bytes(url, max_bytes, **kwargs)
+
+    def fetch_pdf_text(self, url, *args, **kwargs):
+        self.requested.append(url)
+        return super().fetch_pdf_text(url, *args, **kwargs)

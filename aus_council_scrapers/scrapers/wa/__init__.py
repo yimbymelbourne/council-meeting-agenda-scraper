@@ -50,6 +50,7 @@ from aus_council_scrapers.scrapers.wa.donnybrook_balingup import (
     DonnybrookBalingupScraper,
 )
 from aus_council_scrapers.scrapers.wa.dowerin import DowerinScraper
+from aus_council_scrapers.scrapers.wa.dumbleyung import DumbleyungScraper
 from aus_council_scrapers.scrapers.wa.dundas import DundasScraper
 from aus_council_scrapers.scrapers.wa.east_fremantle import EastFremantleScraper
 from aus_council_scrapers.scrapers.wa.east_pilbara import EastPilbaraScraper

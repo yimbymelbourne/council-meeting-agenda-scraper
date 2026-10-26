@@ -31,6 +31,7 @@ from aus_council_scrapers.scrapers.nsw.cessnock import CessnockScraper
 from aus_council_scrapers.scrapers.nsw.clarence_valley import ClarenceValleyScraper
 from aus_council_scrapers.scrapers.nsw.cobar import CobarScraper
 from aus_council_scrapers.scrapers.nsw.coffs_harbour import CoffsHarbourScraper
+from aus_council_scrapers.scrapers.nsw.coolamon import CoolamonScraper
 from aus_council_scrapers.scrapers.nsw.coonamble import CoonambleScraper
 from aus_council_scrapers.scrapers.nsw.cootamundra_gundagai import (
     CootamundraGundagaiScraper,
@@ -122,6 +123,7 @@ from aus_council_scrapers.scrapers.nsw.uralla import UrallaScraper
 from aus_council_scrapers.scrapers.nsw.wagga_wagga import WaggaWaggaScraper
 from aus_council_scrapers.scrapers.nsw.walcha import WalchaScraper
 from aus_council_scrapers.scrapers.nsw.walgett import WalgettScraper
+from aus_council_scrapers.scrapers.nsw.warren import WarrenScraper
 from aus_council_scrapers.scrapers.nsw.warrumbungle import WarrumbungleScraper
 from aus_council_scrapers.scrapers.nsw.waverley import WaverleyScraper
 from aus_council_scrapers.scrapers.nsw.weddin import WeddinScraper
@@ -129,5 +131,6 @@ from aus_council_scrapers.scrapers.nsw.wentworth import WentworthScraper
 from aus_council_scrapers.scrapers.nsw.willoughby import WilloughbyScraper
 from aus_council_scrapers.scrapers.nsw.wingecarribee import WingecarribeeScraper
 from aus_council_scrapers.scrapers.nsw.wollondilly import WollondillyScraper
+from aus_council_scrapers.scrapers.nsw.wollongong import WollongongScraper
 from aus_council_scrapers.scrapers.nsw.woollahra import WoollahraScraper
 from aus_council_scrapers.scrapers.nsw.yass_valley import YassValleyScraper

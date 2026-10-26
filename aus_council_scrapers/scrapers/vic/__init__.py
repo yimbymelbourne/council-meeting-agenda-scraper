@@ -5,6 +5,7 @@ from aus_council_scrapers.scrapers.vic.banyule import BanyuleScraper
 from aus_council_scrapers.scrapers.vic.bass_coast import BassCoastScraper
 from aus_council_scrapers.scrapers.vic.baw_baw import BawBawScraper
 from aus_council_scrapers.scrapers.vic.bayside import BaysideVicScraper
+from aus_council_scrapers.scrapers.vic.benalla import BenallaScraper
 from aus_council_scrapers.scrapers.vic.boroondara import BoroondaraScraper
 from aus_council_scrapers.scrapers.vic.brimbank import BrimbankScraper
 from aus_council_scrapers.scrapers.vic.buloke import BulokeScraper
