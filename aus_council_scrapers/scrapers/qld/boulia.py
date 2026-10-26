@@ -27,7 +27,8 @@ class BouliaScraper(OpenCitiesContentScraper):
     # 2023 and early 2024 titles give the month only ("February 2024
     # Ordinary Council Meeting Agenda"); those take the day of the same
     # meeting's minutes where they have one. 2023's minutes are month-only
-    # too, so 2023 is left out, logged. The budget meetings' papers carry
+    # too, so 2023 (and 2020-2022, month-only throughout) is dated from the
+    # papers' first page (`pdf_dates`). The budget meetings' papers carry
     # no date at all ("2026-2027 Budget Meeting of Council"), and neither
     # does the 2024 post-election agenda; those from 2024 on are dated from
     # their PDFs in `misfiled`.
@@ -56,6 +57,8 @@ class BouliaScraper(OpenCitiesContentScraper):
         # Meeting Thursday 28 March 2024".
         "post-election-council-meeting-agenda.pdf": datetime.date(2024, 3, 28),
     }
+
+    pdf_dates = True
 
     def __init__(self):
         super().__init__("boulia", "QLD", _BASE_URL)

@@ -82,6 +82,46 @@ def _pdf(
             datetime.date(2026, 1, 22),
         ),
         ("HELD ... ON THE 23 RD JUNE 2022", 2022, 6, datetime.date(2022, 6, 23)),
+        # A day whose digits are spaced out is not read as its last digit:
+        # McKinlay's "1 5 th July 202 5" is the 15th, not the 5th, and
+        # Yalgoo's "F riday 2 9th July 202 2" the 29th, not the 9th.
+        ("ORDINARY MEETING HELD AT JULIA CREEK 1 5 th July 202 5", 2025, 7, None),
+        ("will be held on F riday 2 9th July 202 2", 2022, 7, None),
+        # A signed date is not the meeting's, even when it is the only one.
+        ("STEPHEN GASH CHIEF EXECUTIVE OFFICER 2 October 2020", 2020, 10, None),
+        # A meeting held over two days is dated from the first.
+        (
+            "ORDINARY COUNCIL MEETING MINUTES 30-31 August 2023",
+            2023,
+            8,
+            datetime.date(2023, 8, 30),
+        ),
+        (
+            "RATIFIED MINUTES Ordinary Meeting - 15th and 16th November 2021 "
+            "Monday 15th November, 12:04pm - 5:00pm Tuesday 16th November, 9:00am",
+            2021,
+            11,
+            datetime.date(2021, 11, 15),
+        ),
+        ("MINUTES 25 \ufffd 26 May 2023", 2023, 5, datetime.date(2023, 5, 25)),
+        # An item number or a reporting period is not a two-day meeting.
+        (
+            "AGENDA Item 17.5 - 20 November 2025 Meeting Date: 20 November 2025",
+            2025,
+            11,
+            datetime.date(2025, 11, 20),
+        ),
+        ("Accounts paid 1 - 31 May 2023", 2023, 5, datetime.date(2023, 5, 31)),
+        # "and" joins two days only after an ordinal.
+        ("Items 3 and 4 May 2023", 2023, 5, datetime.date(2023, 5, 4)),
+        # Nor does it leave the signature's date as the only one in the month.
+        (
+            "will be held on F riday 2 9th July 202 2 in the Council Chambers. "
+            "CHIEF EXECUTIVE OFFICER 25th July 202 2",
+            2022,
+            7,
+            None,
+        ),
         ("Wednesday, January 21, 2026", 2026, 1, datetime.date(2026, 1, 21)),
         ("Meeting date: 21/01/2026", 2026, 1, datetime.date(2026, 1, 21)),
         # A date in another month is not this meeting's.

@@ -290,15 +290,30 @@ _WEEKDAY = (
     r"(?P<weekday>mon|tue|tues|wed|wednes|thu|thur|thurs|fri|sat|satur|sun)"
     r"(?:\s?day)?\b\.?"
 )
+# Some PDFs space a day's digits out ("1 5 th July 202 5" is the 15th,
+# McKinlay; "F riday 2 9th July" the 29th, Yalgoo), and the last digit alone
+# would be read as a wrong day. A day after a digit and a space is marked
+# `spaced` (see _candidates) and never taken; it is not rebuilt either, since
+# "Item 2 9 July" would join the same way.
 _DAY = r"(?<!\d)(?P<day>[0-3]?\d)\s*(?:st|nd|rd|th)?"
 # Four digits, which some PDFs space out: "2 02 6".
 _YEAR = r"(?P<year>(?:\d\s?){3}\d)(?!\d)"
+# The first day of a meeting held over two: "24-25 May 2021", "15th and 16th
+# November 2021" (Torres Strait Island). The meeting is dated from its first
+# day. "and" or "&" joins two days only after an ordinal, so "Items 3 and 4
+# May" is not read as a range, and the days must be at most two apart, so
+# "Item 17.5 - 20 November" and "1 - 31 May" (a reporting period) are not
+# either (see _candidates). U+FFFD is an en dash some PDFs lose.
+_FROM_DAY = (
+    r"(?:(?<![\d.])(?P<from>[0-3]?\d)"
+    r"(?:\s*(?:st|nd|rd|th)\s*(?:and|&)|\s*(?:st|nd|rd|th)?\s*[-\u2013\u2014\ufffd])\s*)?"
+)
 
 _DATES = [
     # "Thursday 22nd January 2026", "the 16TH JULY, 2020", "15THOctober, 2026",
     # "21st day of January 2026".
     re.compile(
-        rf"(?:{_WEEKDAY}[\s,]+)?(?:the\s+)?{_DAY}[\s,.-]*(?:day\s+of\s+|of\s+)?"
+        rf"(?:{_WEEKDAY}[\s,]+)?(?:the\s+)?{_FROM_DAY}{_DAY}[\s,.-]*(?:day\s+of\s+|of\s+)?"
         rf"{_MONTH}\.?[\s,.-]*{_YEAR}",
         re.IGNORECASE,
     ),
@@ -334,6 +349,10 @@ _ANCHOR = re.compile(
     re.IGNORECASE,
 )
 _ANCHOR_WINDOW = 120
+# A date just after an officer's title is the day a paper was signed, not
+# the meeting's: "CHIEF EXECUTIVE OFFICER 2 October 2020" (Woodanilling),
+# "CHIEF EXECUTIVE OFFICER 25th July 2022" (Yalgoo).
+_SIGNED = re.compile(r"\b(?:officer|ceo|manager|signed|dated)\b", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -342,6 +361,12 @@ class _Candidate:
     start: int  # where in the text it begins
     weekday_checked: bool  # a weekday was written beside it and agrees
     anchored: bool
+    # Its day follows a digit and a space, so it may be the tail of a
+    # spaced-out day ("2 9th July"): its true day is unknown.
+    spaced: bool = False
+    # It follows an officer's title (see _SIGNED): the day a paper was
+    # signed, which is never the meeting's.
+    signed: bool = False
 
 
 def _candidates(text: str) -> list[_Candidate]:
@@ -350,21 +375,36 @@ def _candidates(text: str) -> list[_Candidate]:
         for m in pattern.finditer(text):
             month = m["month"]
             month = int(month) if month.isdigit() else _MONTH_NUMBERS[month[:3].lower()]
+            first_day = "day"
+            if m.groupdict().get("from") and 0 < int(m["day"]) - int(m["from"]) <= 2:
+                first_day = "from"
             try:
                 date = datetime.date(
-                    int(re.sub(r"\s", "", m["year"])), month, int(m["day"])
+                    int(re.sub(r"\s", "", m["year"])), month, int(m[first_day])
                 )
             except ValueError:
                 continue
             weekday = m["weekday"]
+            if re.search(r"\d\s$", text[: m.start(first_day)]):
+                found.append(_Candidate(date, m.start(), False, False, spaced=True))
+                continue
             if weekday:
                 if _WEEKDAY_NUMBERS[weekday[:3].lower()] != date.weekday():
                     # "Wednesday, 2 January 2025" was a Thursday: a misread
                     # or a typo, and either way not evidence.
                     continue
             before = text[max(0, m.start() - _ANCHOR_WINDOW) : m.start()]
+            signed = not weekday and _SIGNED.search(
+                text[max(0, m.start() - 40) : m.start()]
+            )
             found.append(
-                _Candidate(date, m.start(), bool(weekday), bool(_ANCHOR.search(before)))
+                _Candidate(
+                    date,
+                    m.start(),
+                    bool(weekday),
+                    bool(_ANCHOR.search(before)),
+                    signed=bool(signed),
+                )
             )
     # The patterns run one after another; the text's own order is what
     # "first" means.
@@ -392,21 +432,38 @@ def find_meeting_date(text: str, year: int, month: int) -> Optional[datetime.dat
 
     Otherwise None: a business paper also dates its reports and committee
     meetings in the same month, and a guess would publish a wrong date.
+
+    A date in the month whose day may be spaced out ("F riday 2 9th July
+    2022") is never taken, and it counts against the others: rule 1 does
+    not apply, and rule 2 only to a date before it. Yalgoo's July 2022
+    agenda gives the meeting as "2 9th July" and is signed "25th July":
+    without this, the 25th would be the only readable day.
+
+    A date signed by an officer ("CHIEF EXECUTIVE OFFICER 2 October 2020")
+    is never taken either, and rule 1 does not apply where one is given.
+    A meeting held over two days ("24-25 May 2021") is dated from the first.
     """
     text = re.sub(r"\s+", " ", text.replace("\xa0", " ")).strip()
     in_month = [
         c for c in _candidates(text) if (c.date.year, c.date.month) == (year, month)
     ]
+    spaced = [c for c in in_month if c.spaced]
+    signed = [c for c in in_month if c.signed]
+    in_month = [c for c in in_month if not (c.spaced or c.signed)]
     days = {c.date for c in in_month}
-    if len(days) == 1:
+    if len(days) == 1 and not spaced and not signed:
         return days.pop()
     if not in_month:
         return None
     first = in_month[0]
-    if first.start < _TITLE_CHARS and (
-        first.weekday_checked
-        or first.anchored
-        or sum(c.date == first.date for c in in_month) > 1
+    if (
+        first.start < _TITLE_CHARS
+        and not any(c.start < first.start for c in spaced)
+        and (
+            first.weekday_checked
+            or first.anchored
+            or sum(c.date == first.date for c in in_month) > 1
+        )
     ):
         return first.date
     confirmed = {c.date for c in in_month if c.weekday_checked}

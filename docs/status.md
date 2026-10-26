@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**475 of 536 councils complete (88%)** — 59 partial, 0 broken, 2 not started.
+**482 of 536 councils complete (89%)** — 52 partial, 0 broken, 2 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -55,7 +55,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `berri_barmera` | 172 | 2020-2026 | 172 | 171 |  |
 | ✅ | `berrigan` | 30 | 2024-2026 | 30 | 25 |  |
 | ✅ | `beverley` | 68 | 2021-2026 | 68 | 68 |  |
-| 🟡 | `blackall_tambo` | 27 | 2024-2026 | 27 | 27 | about 59 month-only meetings left out: every meeting of 2020-2023, and a few a year since |
+| ✅ | `blackall_tambo` | 86 | 2020-2026 | 86 | 86 |  |
 | ✅ | `blacktown` | 92 | 2021-2026 | 92 | 87 |  |
 | ✅ | `bland` | 81 | 2020-2026 | 81 | 79 |  |
 | ✅ | `blayney` | 86 | 2020-2026 | 86 | 85 |  |
@@ -63,7 +63,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `boddington` | 67 | 2022-2026 | 67 | 67 |  |
 | ✅ | `bogan` | 84 | 2020-2026 | 84 | 80 |  |
 | ✅ | `boroondara` | 83 | 2024-2026 | 83 | 81 |  |
-| 🟡 | `boulia` | 38 | 2024-2026 | 38 | 38 | every 2020-2023 paper gives only its month, so those years are left out |
+| ✅ | `boulia` | 89 | 2020-2026 | 89 | 89 |  |
 | ✅ | `bourke` | 80 | 2020-2026 | 80 | 80 |  |
 | ✅ | `boyup_brook` | 117 | 2020-2026 | 117 | 116 |  |
 | ✅ | `break_o_day` | 91 | 2020-2026 | 91 | 90 |  |
@@ -148,7 +148,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `cowra` | 75 | 2024-2026 | 75 | 0 | no minutes on any past meeting |
 | ✅ | `cranbrook` | 114 | 2020-2026 | 114 | 108 |  |
 | ✅ | `croydon` | 93 | 2020-2026 | 93 | 93 |  |
-| 🟡 | `cuballing` | 29 | 2020-2026 | 29 | 27 | Ordinary meetings 2020-2024 left out bar one (about 55): papers labelled by month only, no day published |
+| ✅ | `cuballing` | 92 | 2020-2026 | 92 | 90 |  |
 | ✅ | `cue` | 96 | 2020-2026 | 96 | 93 |  |
 | ✅ | `cumberland` | 329 | 2020-2026 | 311 | 229 |  |
 | ✅ | `cunderdin` | 87 | 2020-2026 | 87 | 86 |  |
@@ -183,7 +183,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `exmouth` | 81 | 2020-2026 | 81 | 80 |  |
 | ✅ | `fairfield` | 259 | 2020-2026 | 259 | 258 |  |
 | ✅ | `federation` | 67 | 2022-2026 | 67 | 66 |  |
-| 🟡 | `flinders_qld` | 50 | 2020-2026 | 50 | 49 | most ordinary meetings of 2020-2023 are labelled by month only, with no day in the filename either, and are left out |
+| ✅ | `flinders_qld` | 97 | 2020-2026 | 97 | 96 |  |
 | ✅ | `flinders_ranges` | 107 | 2020-2026 | 107 | 103 |  |
 | ✅ | `flinders_tas` | 127 | 2018-2026 | 127 | 127 |  |
 | ✅ | `forbes` | 59 | 2022-2026 | 59 | 58 |  |
@@ -224,7 +224,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `gwydir` | 91 | 2020-2026 | 91 | 88 |  |
 | 🟡 | `gympie` | 39 | 2024-2026 | 39 | 39 | 2020 to Apr 2024 not read (council-site Meetings-Archive) |
 | ✅ | `halls_creek` | 83 | 2020-2026 | 83 | 73 |  |
-| 🟡 | `harvey` | 22 | 2022-2026 | 22 | 22 | papers are titled by month only; a day comes only from the current schedule (Nov 2025 on), a title or a special-meeting notice, so 69 ordinary meetings 2020-2025 and 6 special meetings (Jul 2026 among them) are not emitted |
+| ✅ | `harvey` | 98 | 2020-2026 | 98 | 97 |  |
 | ✅ | `hawkesbury` | 120 | 2020-2026 | 120 | 120 |  |
 | ✅ | `hay` | 27 | 2024-2026 | 27 | 24 |  |
 | ✅ | `hepburn` | 102 | 2020-2026 | 102 | 101 |  |
@@ -313,7 +313,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `maribyrnong` | 133 | 2020-2026 | 133 | 132 |  |
 | ✅ | `marion` | 345 | 2020-2026 | 345 | 345 |  |
 | ✅ | `maroondah` | 84 | 2020-2026 | 84 | 83 |  |
-| 🟡 | `mckinlay` | 49 | 2020-2026 | 49 | 49 | ordinary meetings are labelled by month only and left out (about 69); mostly special meetings are emitted |
+| 🟡 | `mckinlay` | 117 | 2020-2026 | 117 | 117 | Feb 2020 special meeting left out: its agenda says Tuesday 7th February 2020, which was a Friday, and its minutes are a scan |
 | ✅ | `meander_valley` | 92 | 2020-2026 | 92 | 91 |  |
 | ✅ | `meekatharra` | 118 | 2020-2026 | 118 | 114 |  |
 | ✅ | `melbourne` | 224 | 2020-2026 | 224 | 220 |  |
@@ -351,7 +351,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `moyne` | 36 | 2024-2026 | 36 | 36 |  |
 | ✅ | `mukinbudin` | 71 | 2021-2026 | 71 | 69 |  |
 | ✅ | `mundaring` | 114 | 2020-2026 | 114 | 112 |  |
-| 🟡 | `murchison` | 29 | 2020-2026 | 29 | 27 | Ordinary meetings 2020-2024 left out bar Apr-Jun 2021 (about 50): papers labelled by month only, no day published |
+| ✅ | `murchison` | 81 | 2020-2026 | 81 | 75 |  |
 | ✅ | `murray` | 67 | 2021-2026 | 67 | 66 |  |
 | ✅ | `murray_bridge` | 178 | 2020-2026 | 178 | 174 |  |
 | ✅ | `murray_river` | 102 | 2020-2026 | 102 | 101 |  |
@@ -380,7 +380,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `northern_beaches` | 143 | 2016-2026 | 143 | 128 |  |
 | ✅ | `northern_grampians` | 100 | 2020-2026 | 100 | 100 |  |
 | ✅ | `northern_midlands` | 101 | 2020-2026 | 101 | 100 |  |
-| 🟡 | `northern_peninsula_area` | 87 | 2020-2026 | 87 | 84 | month-only papers with no day anywhere are left out: most of 2021, and several special and Trustee meetings each year (Feb, Mar, Apr, May and Aug 2025; Jun-Oct 2024) |
+| 🟡 | `northern_peninsula_area` | 119 | 2020-2026 | 119 | 111 | Sep 2026 Trustee meeting left out: its agenda is a scan with no text |
 | ✅ | `norwood_payneham_st_peters` | 126 | 2024-2026 | 126 | 123 |  |
 | ✅ | `nungarin` | 99 | 2020-2026 | 99 | 94 |  |
 | ✅ | `oberon` | 98 | 2020-2026 | 98 | 95 |  |
@@ -464,7 +464,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `tasman` | 9 | 2026-2026 | 9 | 7 | only 1 year(s) |
 | ✅ | `tatiara` | 114 | 2020-2026 | 114 | 112 |  |
 | ✅ | `tea_tree_gully` | 136 | 2022-2026 | 136 | 132 |  |
-| 🟡 | `temora` | 37 | 2020-2026 | 37 | 33 | about 39 month-only minutes left out, most since 2023; only the latest agenda is online |
+| 🟡 | `temora` | 83 | 2020-2026 | 83 | 79 | only the latest agenda is online, so past meetings have minutes only; a month-only minutes published after 26 Oct 2026 is left out until its day is added to `misfiled` (each file is 5-210 MB, too large to read nightly) |
 | ✅ | `tenterfield` | 79 | 2020-2026 | 79 | 79 |  |
 | ✅ | `the_hills` | 232 | 2021-2026 | 232 | 231 |  |
 | ✅ | `three_springs` | 93 | 2020-2026 | 93 | 91 |  |
@@ -472,7 +472,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `toodyay` | 136 | 2020-2026 | 136 | 136 |  |
 | 🟡 | `toowoomba` | 211 | 2020-2026 | 211 | 211 | 20 of 22 Ordinary meetings Jun 2020-Mar 2022 and nine 2020-21 specials are unpublished in the Resolve API; the tenant host is robots-disallowed |
 | ✅ | `torres` | 123 | 2020-2026 | 123 | 123 |  |
-| 🟡 | `torres_strait_island` | 29 | 2020-2026 | 29 | 29 | ordinary meetings 2021-2025 titled by month only, not emitted (about 60 meetings) |
+| 🟡 | `torres_strait_island` | 88 | 2020-2026 | 88 | 88 | Jul 2025 ordinary and Apr 2020 statutory meetings left out: titled by month only, and their PDFs' first page gives no day |
 | ✅ | `townsville` | 149 | 2020-2026 | 149 | 149 |  |
 | ✅ | `towong` | 97 | 2021-2026 | 97 | 97 |  |
 | ✅ | `trayning` | 82 | 2020-2026 | 82 | 78 |  |
@@ -510,7 +510,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `wentworth` | 20 | 2025-2026 | 20 | 19 | only 2 year(s) |
 | ✅ | `west_arnhem` | 74 | 2022-2026 | 74 | 74 |  |
 | ✅ | `west_arthur` | 53 | 2023-2026 | 53 | 52 |  |
-| 🟡 | `west_coast` | 12 | 2026-2026 | 12 | 12 | only 1 year(s) |
+| 🟡 | `west_coast` | 14 | 2026-2026 | 14 | 13 | only 1 year(s) |
 | ✅ | `west_daly` | 93 | 2023-2026 | 93 | 80 |  |
 | ✅ | `west_tamar` | 36 | 2024-2026 | 36 | 35 |  |
 | ✅ | `west_torrens` | 127 | 2020-2026 | 127 | 124 |  |
@@ -526,12 +526,12 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `willoughby` | 25 | 2024-2026 | 25 | 24 |  |
 | ✅ | `wiluna` | 132 | 2020-2026 | 132 | 132 |  |
 | ✅ | `wingecarribee` | 113 | 2020-2026 | 113 | 112 |  |
-| 🟡 | `winton` | 7 | 2024-2026 | 7 | 7 | ordinary meetings never give their day on the page and are left out (about 104); only special meetings are emitted |
+| 🟡 | `winton` | 100 | 2020-2026 | 100 | 98 | 5 meetings left out, their papers scans with no text: Jul 2023 ordinary, and the Apr 2020 statutory, Jul 2021 and Jul 2023 budget and Nov 2021 special meetings |
 | ✅ | `wodonga` | 87 | 2020-2026 | 87 | 87 |  |
 | ✅ | `wollondilly` | 324 | 2015-2026 | 324 | 288 |  |
 | 🟡 | `wollongong` | 99 | 2020-2026 | 99 | 98 | Local Planning Panel not read: its agendas (about 95 since 2020) are on its own allowed page, with per-application decisions and no minutes |
 | ✅ | `wongan_ballidu` | 75 | 2021-2026 | 75 | 75 |  |
-| 🟡 | `woodanilling` | 75 | 2020-2026 | 75 | 73 | about 14 month-only meetings left out: nearly all of 2020, and February, March and November 2021 |
+| 🟡 | `woodanilling` | 88 | 2020-2026 | 88 | 84 | Oct 2020 special meeting left out: labelled by month only, and its papers' first page gives only the date the CEO signed them |
 | ✅ | `woollahra` | 634 | 2020-2026 | 634 | 628 |  |
 | 🟡 | `woorabinda` | 24 | 2025-2026 | 24 | 23 | only 2 year(s) |
 | ✅ | `wudinna` | 160 | 2020-2026 | 160 | 152 |  |
@@ -539,14 +539,14 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `wyalkatchem` | 102 | 2020-2026 | 102 | 99 |  |
 | ✅ | `wyndham` | 151 | 2020-2026 | 151 | 149 |  |
 | ✅ | `wyndham_east_kimberley` | 91 | 2020-2026 | 91 | 90 |  |
-| 🟡 | `yalgoo` | 60 | 2020-2026 | 60 | 57 | most meetings 2020-2022 left out (about 30): papers labelled by month only, no day published |
+| 🟡 | `yalgoo` | 95 | 2020-2026 | 95 | 91 | Apr 2022 special meeting left out: its papers say both 13 April and Tuesday, and 13 April 2022 was a Wednesday |
 | ✅ | `yankalilla` | 173 | 2020-2026 | 173 | 171 |  |
 | ✅ | `yarra` | 120 | 2020-2026 | 120 | 119 |  |
 | ✅ | `yarra_ranges` | 129 | 2021-2026 | 129 | 128 |  |
 | ✅ | `yarrabah` | 105 | 2020-2026 | 105 | 102 |  |
 | 🟡 | `yarriambiack` | 13 | 2025-2026 | 13 | 13 | only 2 year(s) |
 | ✅ | `yass_valley` | 191 | 2020-2026 | 191 | 132 |  |
-| 🟡 | `yilgarn` | 35 | 2021-2026 | 35 | 33 | Ordinary meetings 2021-2024 left out (about 45): papers labelled by month only, no day published |
+| ✅ | `yilgarn` | 86 | 2021-2026 | 86 | 83 |  |
 | ✅ | `york` | 112 | 2020-2026 | 112 | 111 |  |
 | ✅ | `yorke_peninsula` | 121 | 2020-2026 | 121 | 120 |  |
 

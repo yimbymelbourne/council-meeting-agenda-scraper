@@ -129,44 +129,6 @@ def test_one_year_fetches_only_its_pages_and_keeps_its_meetings(
     assert sorted(_key(r) for r in results) == want
 
 
-@pytest.mark.parametrize(
-    "scraper_class, slug, year, pages",
-    [
-        # Winton's 2021 meetings all give only their month. The run must
-        # still read the archive, then fail rather than report a quiet year.
-        (
-            WintonScraper,
-            "winton",
-            2021,
-            [f"{_WINTON}/Business-Papers", f"{_WINTON}/Previous-Agendas-and-Minutes"],
-        ),
-        # Temora's 2024 minutes give only their month, every one.
-        (
-            TemoraScraper,
-            "temora",
-            2024,
-            [
-                f"{_TEMORA}/Past-Council-Minutes",
-                f"{_TEMORA}/Business-Papers",
-                f"{_TEMORA}/Past-Council-Minutes/Minutes-from-2024",
-            ],
-        ),
-    ],
-)
-def test_a_year_of_month_only_papers_raises(scraper_class, slug, year, pages):
-    _, replay_path = cassette_paths(slug)
-    with open(replay_path) as f:
-        fetcher = _CountingPlayback(json.load(f), slug)
-    scraper = scraper_class()
-    scraper.fetcher = fetcher
-    scraper.years_filter = [year]
-    with clock.frozen(fetcher.recorded_date), pytest.raises(
-        RuntimeError, match="gives its day"
-    ):
-        scraper.scraper()
-    assert fetcher.requested == pages
-
-
 _PAGE = "https://council.example/Meetings"
 
 # An ordinary meeting's minutes labelled by month only, in a file that

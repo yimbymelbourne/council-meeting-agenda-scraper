@@ -59,55 +59,34 @@ KNOWN_GAPS: dict[str, str] = {
         "papers before mid-2025 are Word files, which are not emitted: 6 "
         "meetings in 2020-2023, none in 2024"
     ),
-    "flinders_qld": (
-        "most ordinary meetings of 2020-2023 are labelled by month "
-        "only, with no day in the filename either, and are left out"
-    ),
     "mount_barker": (
         "assessment panel before Sep 2026 not read (council-domain list "
         "behind Cloudflare)"
     ),
+    # Labelled by month only and dated from their PDFs (`pdf_dates`) or a
+    # `misfiled` entry read off the cover: a meeting whose papers give no
+    # day that can be trusted is left out rather than given one.
     "northern_peninsula_area": (
-        "month-only papers with no day anywhere are left out: most of 2021, "
-        "and several special and Trustee meetings each year (Feb, Mar, Apr, "
-        "May and Aug 2025; Jun-Oct 2024)"
+        "Sep 2026 Trustee meeting left out: its agenda is a scan with no text"
     ),
-    # OpenCities content pages labelled by month only: a meeting whose day
-    # is published nowhere on the page is left out rather than given one.
-    "blackall_tambo": (
-        "about 59 month-only meetings left out: every meeting of 2020-2023, "
-        "and a few a year since"
-    ),
-    "boulia": "every 2020-2023 paper gives only its month, so those years are left out",
     "mckinlay": (
-        "ordinary meetings are labelled by month only and left out (about "
-        "69); mostly special meetings are emitted"
+        "Feb 2020 special meeting left out: its agenda says Tuesday 7th "
+        "February 2020, which was a Friday, and its minutes are a scan"
     ),
     "temora": (
-        "about 39 month-only minutes left out, most since 2023; only the "
-        "latest agenda is online"
+        "only the latest agenda is online, so past meetings have minutes "
+        "only; a month-only minutes published after 26 Oct 2026 is left out "
+        "until its day is added to `misfiled` (each file is 5-210 MB, too "
+        "large to read nightly)"
     ),
     "winton": (
-        "ordinary meetings never give their day on the page and are left "
-        "out (about 104); only special meetings are emitted"
-    ),
-    # CouncilConnect document libraries labelled by month only: a meeting
-    # with no published day is left out rather than given one.
-    "yilgarn": (
-        "Ordinary meetings 2021-2024 left out (about 45): papers labelled by "
-        "month only, no day published"
-    ),
-    "murchison": (
-        "Ordinary meetings 2020-2024 left out bar Apr-Jun 2021 (about 50): "
-        "papers labelled by month only, no day published"
-    ),
-    "cuballing": (
-        "Ordinary meetings 2020-2024 left out bar one (about 55): papers "
-        "labelled by month only, no day published"
+        "5 meetings left out, their papers scans with no text: Jul 2023 "
+        "ordinary, and the Apr 2020 statutory, Jul 2021 and Jul 2023 budget "
+        "and Nov 2021 special meetings"
     ),
     "yalgoo": (
-        "most meetings 2020-2022 left out (about 30): papers labelled by "
-        "month only, no day published"
+        "Apr 2022 special meeting left out: its papers say both 13 April "
+        "and Tuesday, and 13 April 2022 was a Wednesday"
     ),
     # Queensland Resolve tenants whose record starts when the council moved
     # to Resolve; the earlier papers are on the council's own site.
@@ -120,15 +99,9 @@ KNOWN_GAPS: dict[str, str] = {
         "20 of 22 Ordinary meetings Jun 2020-Mar 2022 and nine 2020-21 specials "
         "are unpublished in the Resolve API; the tenant host is robots-disallowed"
     ),
-    "harvey": (
-        "papers are titled by month only; a day comes only from the current "
-        "schedule (Nov 2025 on), a title or a special-meeting notice, so 69 "
-        "ordinary meetings 2020-2025 and 6 special meetings (Jul 2026 among "
-        "them) are not emitted"
-    ),
     "torres_strait_island": (
-        "ordinary meetings 2021-2025 titled by month only, not emitted "
-        "(about 60 meetings)"
+        "Jul 2025 ordinary and Apr 2020 statutory meetings left out: titled "
+        "by month only, and their PDFs' first page gives no day"
     ),
     "gingin": (
         "minutes before mid-2023 not emitted: their only address is the "
@@ -142,8 +115,8 @@ KNOWN_GAPS: dict[str, str] = {
         "electors' meetings"
     ),
     "woodanilling": (
-        "about 14 month-only meetings left out: nearly all of 2020, and "
-        "February, March and November 2021"
+        "Oct 2020 special meeting left out: labelled by month only, and its "
+        "papers' first page gives only the date the CEO signed them"
     ),
     # SharePoint councils, under the documented robots.txt exception.
     "fraser_coast": (

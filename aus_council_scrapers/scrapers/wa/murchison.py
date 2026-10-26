@@ -21,7 +21,9 @@ class MurchisonScraper(CouncilConnectDocumentLibraryScraper):
     meeting-dates page ("Thursday 23 July 2026"); every 2026 agenda up on
     20 Oct 2026 gives the same date on its cover. 2025's are corrected below
     from their agendas' covers, as are the electors' meetings, which the
-    page does not list. Other years' month-only papers are left out. The
+    page does not list. Other years' month-only papers are dated from
+    their PDFs' first page (`pdf_dates`, agenda first), and left out where
+    it gives no day in the label's month. The
     recordings' labels often carry a day but are not used: "OCM Recording
     29 May 2025" is of a meeting held on 22 May. One production year is the
     index, the year's folder and the dates page, three requests.
@@ -62,6 +64,8 @@ class MurchisonScraper(CouncilConnectDocumentLibraryScraper):
             ("992/agenda-ocm-december-2025", "2025-12-13"),
         )
     }
+
+    pdf_dates = True
 
     def __init__(self):
         super().__init__("murchison", "WA", "https://www.murchison.wa.gov.au")

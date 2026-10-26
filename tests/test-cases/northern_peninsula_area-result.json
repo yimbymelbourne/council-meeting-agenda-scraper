@@ -204,6 +204,18 @@
     "minutes_html_url": null
   },
   {
+    "name": "Trustee Meeting",
+    "date": "2025-08-27",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/august-ordinary-trustee-meeting-agenda.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/august-ordinary-trustee-meeting-agenda.pdf",
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "Ordinary Council Meeting",
     "date": "2025-08-26",
     "time": null,
@@ -252,6 +264,18 @@
     "minutes_html_url": null
   },
   {
+    "name": "Trustee Meeting",
+    "date": "2025-05-28",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/may-trustee-meeting-agenda.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/may-trustee-meeting-agenda.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/may-trustee-minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "Council Meeting",
     "date": "2025-05-27",
     "time": null,
@@ -276,14 +300,38 @@
     "minutes_html_url": null
   },
   {
+    "name": "Trustee Council Meeting",
+    "date": "2025-04-15",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/april_trustee_council_meeting_agenda.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/april_trustee_council_meeting_agenda.pdf",
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "Council Meeting",
     "date": "2025-03-24",
     "time": null,
     "location": null,
     "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
-    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/agenda___ordinary_council_meeting___monday_24th_march_2025.pdf",
-    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/agenda___ordinary_council_meeting___monday_24th_march_2025.pdf",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/march-council-meeting-booklet.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/march-council-meeting-booklet.pdf",
     "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Council Meeting",
+    "date": "2025-03-07",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/march-special-council-meeting.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/march-special-council-meeting.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/march_special_council_meeting_minutes-2025.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -296,6 +344,42 @@
     "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february_trustee_meeting_book_publish-2025.pdf",
     "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february_trustee_meeting_book_publish-2025.pdf",
     "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/draft_trustee_minutes_26022025___draft.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "2025-02-25",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february_council_meeting_book_publish-2025.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february_council_meeting_book_publish-2025.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february-council-meeting-confirmed-minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Trustee Meeting",
+    "date": "2025-02-07",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february_special_trustee_meeting_book_publish-2025.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february_special_trustee_meeting_book_publish-2025.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february-trustee-confirmed-minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Council Meeting",
+    "date": "2025-02-07",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february_special_council_meeting_agenda_publish-2025.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february_special_council_meeting_agenda_publish-2025.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2025/february_special_council_meeting_minutes_final-2025.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -372,6 +456,18 @@
     "minutes_html_url": null
   },
   {
+    "name": "Trustees Meeting",
+    "date": "2024-11-01",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/october_trustee_meeting_book_publish-2024.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/october_trustee_meeting_book_publish-2024.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/trustee_01112024_final.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "Council Meeting",
     "date": "2024-10-31",
     "time": null,
@@ -380,6 +476,30 @@
     "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/october_council_meeting_book_publish-2024.pdf",
     "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/october_council_meeting_book_publish-2024.pdf",
     "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/ordinary_council_meeting_minutes_31102024___draft_w_declarations.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Council Meeting",
+    "date": "2024-10-14",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/october_special_meeting_book_final-2024.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/october_special_meeting_book_final-2024.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/october_special_council_meeting_minutes_draft-2024.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Meeting",
+    "date": "2024-10-10",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/october_special_council_meeting_book_publish-2024.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/october_special_council_meeting_book_publish-2024.pdf",
+    "minutes_url": null,
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -404,6 +524,42 @@
     "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/september_trustee_meeting_book_publish-2024.pdf",
     "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/september_trustee_meeting_book_publish-2024.pdf",
     "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/6_draft_trustee_23092024_draft.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Trustee Meeting",
+    "date": "2024-09-09",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/september_special_trustee_meeting_book_publish-2024.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/september_special_trustee_meeting_book_publish-2024.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/september_special_trustee_meeting_minutes_final-2024.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Council Meeting",
+    "date": "2024-09-09",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/special_council_meeting_book-2024.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/special_council_meeting_book-2024.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/september_special_council_meeting_minutes_final_w_declaration-2024.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Meeting",
+    "date": "2024-08-29",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/august_special_meeting_book_final-2024.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/august_special_meeting_book_final-2024.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/august_special_meeting_minutes_draft-2024.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -452,6 +608,30 @@
     "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/july_trustee_meeting_book_publish-2024.pdf",
     "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/july_trustee_meeting_book_publish-2024.pdf",
     "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/6_draft_trustee_22072024_draft.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Council Meeting",
+    "date": "2024-07-15",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/july_special_meeting_book_publish-2024.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/july_special_meeting_book_publish-2024.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/july_special_meeting_minutes_final-2024.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special Budget Meeting",
+    "date": "2024-06-28",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/special_budget_meeting_book-2024.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/special_budget_meeting_book-2024.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2024/june_special_meeting_minutes_final-2024.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -720,6 +900,18 @@
     "minutes_html_url": null
   },
   {
+    "name": "Special Council Meeting",
+    "date": "2023-06-27",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/notice_and_agenda_of_special_council_meeting-2023.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/notice_and_agenda_of_special_council_meeting-2023.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/june_special_meeting_minutes_final-2023.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "Council Meeting",
     "date": "2023-06-20",
     "time": null,
@@ -764,6 +956,18 @@
     "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/april_council_meeting_book_compressed-2023.pdf",
     "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/april_council_meeting_book_compressed-2023.pdf",
     "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/ordinary_council_meeting_minutes_18042023___final.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "2023-03-22",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/march_council_meeting_book_for_publishing-2023.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/march_council_meeting_book_for_publishing-2023.pdf",
+    "minutes_url": null,
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -948,6 +1152,18 @@
     "minutes_html_url": null
   },
   {
+    "name": "Council Meeting",
+    "date": "2022-02-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2022/nparc_ordinary_council_meeting_booklet__22160222_compressed-2022.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2022/nparc_ordinary_council_meeting_booklet__22160222_compressed-2022.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/feb_22_ordinary_council_minutes-2023.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "Ordinary Meeting",
     "date": "2021-12-22",
     "time": null,
@@ -973,6 +1189,30 @@
   },
   {
     "name": "Ordinary Meeting",
+    "date": "2021-10-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/october_2021_ordinary_council_meeting__19_meeting_book.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/october_2021_ordinary_council_meeting__19_meeting_book.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/october_2021_ordinary_council_meeting_minutes_confirmed.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2021-09-22",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/september_2021_ordinary_council_meeting__18_agenda.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/september_2021_ordinary_council_meeting__18_agenda.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/september_2021_ordinary_council_meeting_minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
     "date": "2021-08-18",
     "time": null,
     "location": null,
@@ -980,6 +1220,114 @@
     "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/18_august_2021_ordinary_council_meeting_agenda.pdf",
     "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/18_august_2021_ordinary_council_meeting_agenda.pdf",
     "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/august_2021_meeting_minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2021-07-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/agenda_final-2021.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/agenda_final-2021.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/july_2021_meeting_minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2021-06-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/june_2001_meeting_agenda-2021.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/june_2001_meeting_agenda-2021.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/june_2021_meeting_minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2021-05-28",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/may_2021_meeting_agenda.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/may_2021_meeting_agenda.pdf",
+    "minutes_url": null,
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2021-04-21",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/april_2021_meeting_agenda.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/april_2021_meeting_agenda.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/april_2021_meeting_minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2021-03-16",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/nparc_ordinary_council_meeting_march_2021_agenda_only.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/nparc_ordinary_council_meeting_march_2021_agenda_only.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/nparc_march_2021_ordinary_council_meeting_minutes_confirmed.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2021-02-17",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/feb_notice_of_agenda-2021.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/feb_notice_of_agenda-2021.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/feb_21_meeting_minutes-2023.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2021-01-20",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/january_meeting_agenda_2021.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/january_meeting_agenda_2021.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2021/nparc_january_2021_ordinary_council_meeting_minutes_confirmed.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2020-12-08",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/december_notice_of_agenda-2020.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/december_notice_of_agenda-2020.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/dec_confirmation_of_minutes_2020.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2020-11-17",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/oprdinary_council_meeting_november_2020.pdf",
+    "agenda_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/oprdinary_council_meeting_november_2020.pdf",
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/november_meeting_minutes_new_format_2020.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
@@ -996,6 +1344,30 @@
     "minutes_html_url": null
   },
   {
+    "name": "Special Meeting",
+    "date": "2020-10-02",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/spec_oct_2020_meeting_minutes.pdf",
+    "agenda_url": null,
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/spec_oct_2020_meeting_minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2020-08-18",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/august_2020_minutes_m.pdf",
+    "agenda_url": null,
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/august_2020_minutes_m.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "Ordinary Meeting",
     "date": "2020-06-23",
     "time": null,
@@ -1004,6 +1376,18 @@
     "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/nparc_minutes_of_orindary_meetingtuesday_23rd__june_2020_.pdf",
     "agenda_url": null,
     "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2020/nparc_minutes_of_orindary_meetingtuesday_23rd__june_2020_.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary Meeting",
+    "date": "2020-05-19",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.nparc.qld.gov.au/Our-council/Council-meetings",
+    "download_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/may_20_ordinary_council_minutes-2023.pdf",
+    "agenda_url": null,
+    "minutes_url": "https://www.nparc.qld.gov.au/files/assets/public/v/1/our-council/documents/council-meetings/2023/may_20_ordinary_council_minutes-2023.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },

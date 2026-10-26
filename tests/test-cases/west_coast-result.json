@@ -1,5 +1,17 @@
 [
   {
+    "name": "Annual General Meeting",
+    "date": "2026-01-27",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.westcoast.tas.gov.au/council/our-council/council-meetings/agenda-minutes-and-recordings/",
+    "download_url": "https://www.westcoast.tas.gov.au/download/654/january-2026/22315/agenda-annual-general-meeting-january-2026.pdf",
+    "agenda_url": "https://www.westcoast.tas.gov.au/download/654/january-2026/22315/agenda-annual-general-meeting-january-2026.pdf",
+    "minutes_url": "https://www.westcoast.tas.gov.au/download/654/january-2026/22542/unconfirmed-annual-general-meeting-minutes-january-2026.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
     "name": "Council Meeting",
     "date": "2026-01-27",
     "time": null,
@@ -140,6 +152,18 @@
     "download_url": "https://www.westcoast.tas.gov.au/download/662/september-2026/25661/agenda-september-2026.pdf",
     "agenda_url": "https://www.westcoast.tas.gov.au/download/662/september-2026/25661/agenda-september-2026.pdf",
     "minutes_url": "https://www.westcoast.tas.gov.au/download/662/september-2026/25702/draft-minutes-september-2026.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Council Meeting",
+    "date": "2026-10-27",
+    "time": null,
+    "location": null,
+    "webpage_url": "https://www.westcoast.tas.gov.au/council/our-council/council-meetings/agenda-minutes-and-recordings/",
+    "download_url": "https://www.westcoast.tas.gov.au/download/663/october-2026/25824/agenda-october-2026.pdf",
+    "agenda_url": "https://www.westcoast.tas.gov.au/download/663/october-2026/25824/agenda-october-2026.pdf",
+    "minutes_url": null,
     "agenda_html_url": null,
     "minutes_html_url": null
   }

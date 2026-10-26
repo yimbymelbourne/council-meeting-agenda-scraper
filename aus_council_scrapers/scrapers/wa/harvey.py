@@ -9,6 +9,7 @@ from dateutil.parser import parse as parse_date
 
 from aus_council_scrapers.alyka import PageTypeListingScraper, find_date, find_month
 from aus_council_scrapers.base import ScraperReturn, register_scraper
+from aus_council_scrapers.pdf_dates import meeting_date_from_papers
 
 _BASE_URL = "https://www.harvey.wa.gov.au"
 # A WordPress build by Alyka that carries the page-type listing over from
@@ -49,18 +50,17 @@ _NOTICES_URL = (
 # - a month-only title otherwise joins the one meeting of its kind that
 #   another paper dates in that month (25 February 2025's agenda is titled
 #   with its day and its minutes are not);
+# - a month-only title that none of these dates is dated from its PDF's
+#   cover ("Tuesday, 26 May 2026", pdf_dates.py), its meeting's agenda
+#   first and then its minutes, accepting only a day in the title's month;
 # - anything else is left out and logged, never given an invented day.
 #
-# The day is on every paper's cover ("Tuesday, 26 May 2026"), but reading
-# it needs the PDF's bytes, which the fetcher does not return (it returns
-# decoded text) and the cassettes do not store. Until the project decides
-# to add that, two gaps remain. Earlier years keep only their titled and
-# notified dates: most ordinary meetings before November 2025 are left out.
-# And the schedule rolls forward: once the dates page moves on to the next
-# council year (from about November), the current year's earlier ordinary
-# meetings can no longer be dated, so a run late in the year returns fewer
-# of them. The schedule's first and last months are logged on every run so
-# that shift shows up.
+# The PDF read is what dates ordinary meetings before November 2025, which
+# the schedule no longer lists, and what keeps the current year's earlier
+# meetings once the schedule rolls on to the next council year (from about
+# November). The schedule's first and last months are logged on every run
+# so that shift shows up; each meeting it no longer dates costs a PDF read
+# or two a night.
 _COUNCIL = re.compile(r"\bcouncil\b", re.IGNORECASE)
 _SPECIAL = re.compile(r"\bspecial\b", re.IGNORECASE)
 # Not meetings of the council, or not the paper itself: the agenda briefing
@@ -280,12 +280,52 @@ class HarveyScraper(PageTypeListingScraper):
                 if meeting[kind] is None:
                     meeting[kind] = href
             else:
-                undated.append(title)
-        if undated:
+                undated.append((name, (year, month), kind, href, title))
+
+        # What is left is dated from its PDFs, a month's papers of one kind
+        # of meeting together when there is one of each paper, and each by
+        # itself when there are two of a kind (two meetings in the month).
+        groups: dict[tuple, list] = {}
+        for paper in undated:
+            groups.setdefault((paper[0], paper[1]), []).append(paper)
+        left_out = []
+        for (name, (year, month)), group in groups.items():
+            kinds = [paper[2] for paper in group]
+            if len(kinds) == len(set(kinds)):
+                ordered = sorted(group, key=lambda p: p[2] != "agenda")
+                date = meeting_date_from_papers(
+                    self.fetcher,
+                    [p[3] for p in ordered],
+                    year,
+                    month,
+                    logger=self.logger,
+                )
+                dated = [(p, date) for p in group]
+            else:
+                dated = [
+                    (
+                        p,
+                        meeting_date_from_papers(
+                            self.fetcher, [p[3]], year, month, logger=self.logger
+                        ),
+                    )
+                    for p in group
+                ]
+            for (name, _, kind, href, title), date in dated:
+                if date is None:
+                    left_out.append(title)
+                    continue
+                self.logger.info(f"Harvey: {title!r} dated {date} from the PDF")
+                meeting = papers.setdefault(
+                    (name, date), {"agenda": None, "minutes": None}
+                )
+                if meeting[kind] is None:
+                    meeting[kind] = href
+        if left_out:
             self.logger.warning(
-                f"Harvey: {len(undated)} papers name only a month that neither "
-                f"the meeting-dates page, a notice nor a dated sibling paper "
-                f"gives one day for, and were left out: {undated[:5]}"
+                f"Harvey: {len(left_out)} papers name only a month that neither "
+                f"the meeting-dates page, a notice, a dated sibling paper nor "
+                f"the PDF gives one day for, and were left out: {left_out[:5]}"
             )
 
         results = []
