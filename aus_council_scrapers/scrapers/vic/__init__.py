@@ -52,6 +52,7 @@ from aus_council_scrapers.scrapers.vic.mitchell import MitchellScraper
 from aus_council_scrapers.scrapers.vic.moira import MoiraScraper
 from aus_council_scrapers.scrapers.vic.monash import MonashScraper
 from aus_council_scrapers.scrapers.vic.moonee_valley import MooneeValleyScraper
+from aus_council_scrapers.scrapers.vic.moorabool import MooraboolScraper
 from aus_council_scrapers.scrapers.vic.mornington_peninsula import (
     MorningtonPeninsulaScraper,
 )

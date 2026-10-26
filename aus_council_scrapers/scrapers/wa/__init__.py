@@ -24,6 +24,7 @@ from aus_council_scrapers.scrapers.wa.busselton import BusseltonScraper
 from aus_council_scrapers.scrapers.wa.cambridge import CambridgeScraper
 from aus_council_scrapers.scrapers.wa.canning import CanningScraper
 from aus_council_scrapers.scrapers.wa.capel import CapelScraper
+from aus_council_scrapers.scrapers.wa.carnamah import CarnamahScraper
 from aus_council_scrapers.scrapers.wa.carnarvon import CarnarvonScraper
 from aus_council_scrapers.scrapers.wa.chapman_valley import ChapmanValleyScraper
 from aus_council_scrapers.scrapers.wa.chittering import ChitteringScraper
@@ -89,6 +90,7 @@ from aus_council_scrapers.scrapers.wa.mingenew import MingenewScraper
 from aus_council_scrapers.scrapers.wa.moora import MooraScraper
 from aus_council_scrapers.scrapers.wa.morawa import MorawaScraper
 from aus_council_scrapers.scrapers.wa.mosman_park import MosmanParkScraper
+from aus_council_scrapers.scrapers.wa.mount_magnet import MountMagnetScraper
 from aus_council_scrapers.scrapers.wa.mount_marshall import MountMarshallScraper
 from aus_council_scrapers.scrapers.wa.mukinbudin import MukinbudinScraper
 from aus_council_scrapers.scrapers.wa.mundaring import MundaringScraper

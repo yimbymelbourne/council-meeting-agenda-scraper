@@ -25,7 +25,8 @@ _LISTING_URL = f"{_BASE_URL}/city-and-council/your-council/meetings/"
 # maintainer decided on 21 Oct 2026 to read it anyway, because these papers
 # are the council's official public record and its own page calls this
 # endpoint for every visitor. One request a year keeps the load trivial.
-# This is the only such exception; see AGENTS.md before adding another.
+# It was the first such exception. AGENTS.md lists the others; read it
+# before adding another.
 
 # Swan's fragment is an accordion, one item per meeting. The heading is the
 # date and the meeting ("February 11, 2026 - Ordinary Meeting of Council"),

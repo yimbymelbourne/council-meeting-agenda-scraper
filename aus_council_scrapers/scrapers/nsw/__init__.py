@@ -24,6 +24,7 @@ from aus_council_scrapers.scrapers.nsw.canada_bay import CanadaBayScraper
 from aus_council_scrapers.scrapers.nsw.canterbury_bankstown import (
     CanterburyBankstownScraper,
 )
+from aus_council_scrapers.scrapers.nsw.carrathool import CarrathoolScraper
 from aus_council_scrapers.scrapers.nsw.central_coast_nsw import CentralCoastNSWScraper
 from aus_council_scrapers.scrapers.nsw.central_darling import CentralDarlingScraper
 from aus_council_scrapers.scrapers.nsw.cessnock import CessnockScraper
@@ -42,6 +43,7 @@ from aus_council_scrapers.scrapers.nsw.edward_river import EdwardRiverScraper
 from aus_council_scrapers.scrapers.nsw.eurobodalla import EurobodallaScraper
 from aus_council_scrapers.scrapers.nsw.fairfield import FairfieldScraper
 from aus_council_scrapers.scrapers.nsw.federation import FederationScraper
+from aus_council_scrapers.scrapers.nsw.forbes import ForbesScraper
 from aus_council_scrapers.scrapers.nsw.georges_river import GeorgesRiverScraper
 from aus_council_scrapers.scrapers.nsw.gilgandra import GilgandraScraper
 from aus_council_scrapers.scrapers.nsw.glen_innes_severn import GlenInnesSevernScraper
@@ -86,6 +88,7 @@ from aus_council_scrapers.scrapers.nsw.narromine import NarromineScraper
 from aus_council_scrapers.scrapers.nsw.newcastle import NewcastleScraper
 from aus_council_scrapers.scrapers.nsw.north_sydney import NorthSydneyScraper
 from aus_council_scrapers.scrapers.nsw.northern_beaches import NorthernBeachesScraper
+from aus_council_scrapers.scrapers.nsw.oberon import OberonScraper
 from aus_council_scrapers.scrapers.nsw.orange import OrangeScraper
 from aus_council_scrapers.scrapers.nsw.parkes import ParkesScraper
 from aus_council_scrapers.scrapers.nsw.parramatta import ParramattaScraper

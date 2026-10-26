@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**469 of 526 councils complete (89%)** — 50 partial, 0 broken, 7 not started.
+**473 of 530 councils complete (89%)** — 53 partial, 0 broken, 4 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -99,7 +99,9 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `canterbury_bankstown` | 152 | 2020-2026 | 152 | 150 |  |
 | ✅ | `capel` | 82 | 2021-2026 | 82 | 80 |  |
 | ✅ | `cardinia` | 122 | 2020-2026 | 121 | 120 |  |
+| ✅ | `carnamah` | 112 | 2020-2026 | 112 | 103 |  |
 | ✅ | `carnarvon` | 126 | 2020-2026 | 126 | 124 |  |
+| 🟡 | `carrathool` | 10 | 2026-2026 | 10 | 10 | only 1 year(s); only the current year is read: the meetings page holds one year, and the Feb 2023-Dec 2025 archive page labels papers by month only |
 | ✅ | `casey` | 100 | 2020-2026 | 100 | 99 |  |
 | ✅ | `cassowary_coast` | 120 | 2020-2026 | 120 | 117 |  |
 | ✅ | `ceduna` | 153 | 2020-2026 | 153 | 141 |  |
@@ -180,8 +182,10 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `flinders_qld` | 50 | 2020-2026 | 50 | 49 | most ordinary meetings of 2020-2023 are labelled by month only, with no day in the filename either, and are left out |
 | ✅ | `flinders_ranges` | 107 | 2020-2026 | 107 | 103 |  |
 | ✅ | `flinders_tas` | 127 | 2018-2026 | 127 | 127 |  |
+| ✅ | `forbes` | 59 | 2022-2026 | 59 | 58 |  |
 | ✅ | `franklin_harbour` | 120 | 2020-2026 | 120 | 118 |  |
 | ✅ | `frankston` | 123 | 2020-2026 | 123 | 123 |  |
+| 🟡 | `fraser_coast` | 11 | 2026-2026 | 11 | 10 | only 1 year(s); current year only: earlier years are a SharePoint folder archive, which has no plain-download form, and are not read |
 | ✅ | `fremantle` | 260 | 2020-2026 | 260 | 258 |  |
 | ✅ | `gannawarra` | 89 | 2020-2026 | 89 | 87 |  |
 | ✅ | `gawler` | 416 | 2020-2026 | 416 | 400 |  |
@@ -323,6 +327,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `monash` | 72 | 2021-2026 | 72 | 70 |  |
 | ✅ | `moonee_valley` | 211 | 2018-2026 | 211 | 204 |  |
 | 🟡 | `moora` | 24 | 2025-2026 | 24 | 22 | only 2 year(s) |
+| ✅ | `moorabool` | 194 | 2020-2026 | 138 | 133 |  |
 | ✅ | `morawa` | 98 | 2020-2026 | 98 | 97 |  |
 | ✅ | `moree_plains` | 53 | 2023-2026 | 53 | 52 |  |
 | ✅ | `moreton_bay` | 154 | 2020-2026 | 154 | 154 |  |
@@ -334,6 +339,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `mount_barker` | 106 | 2020-2026 | 106 | 104 | assessment panel before Sep 2026 not read (council-domain list behind Cloudflare) |
 | ✅ | `mount_gambier` | 182 | 2020-2026 | 182 | 179 |  |
 | ✅ | `mount_isa` | 54 | 2023-2026 | 54 | 52 |  |
+| 🟡 | `mount_magnet` | 115 | 2020-2025 | 115 | 113 | nothing newer than 2025; no 2026 papers published anywhere on the site (checked 26 Oct 2026), so a production run fails; agendas linked only for 2023-2024 |
 | 🟡 | `mount_marshall` | 14 | 2025-2026 | 14 | 12 | only 2 year(s); ordinary meetings are labelled by month only and dated from the meeting-dates page, which lists the current year alone, so 2021-2025 ordinary meetings are left out (about 55; 15 and 22 April 2025 are dated in their labels), as are a few month-only special and electors' meetings |
 | ✅ | `mount_remarkable` | 122 | 2020-2026 | 122 | 119 |  |
 | ✅ | `moyne` | 36 | 2024-2026 | 36 | 36 |  |
@@ -371,6 +377,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `northern_peninsula_area` | 87 | 2020-2026 | 87 | 84 | month-only papers with no day anywhere are left out: most of 2021, and several special and Trustee meetings each year (Feb, Mar, Apr, May and Aug 2025; Jun-Oct 2024) |
 | ✅ | `norwood_payneham_st_peters` | 126 | 2024-2026 | 126 | 123 |  |
 | ✅ | `nungarin` | 99 | 2020-2026 | 99 | 94 |  |
+| ✅ | `oberon` | 98 | 2020-2026 | 98 | 95 |  |
 | ✅ | `onkaparinga` | 197 | 2020-2026 | 197 | 197 |  |
 | ✅ | `orange` | 544 | 2020-2026 | 544 | 537 |  |
 | ✅ | `orroroo_carrieton` | 106 | 2020-2026 | 106 | 104 |  |
@@ -540,4 +547,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`carnamah` `carpentaria` `carrathool` `forbes` `mapoon` `moorabool` `north_burnett`
+`carpentaria` `huon_valley` `mapoon` `north_burnett`

@@ -25,6 +25,7 @@ from aus_council_scrapers.scrapers.qld.doomadgee import DoomadgeeScraper
 from aus_council_scrapers.scrapers.qld.douglas import DouglasShireScraper
 from aus_council_scrapers.scrapers.qld.etheridge import EtheridgeScraper
 from aus_council_scrapers.scrapers.qld.flinders_qld import FlindersQldScraper
+from aus_council_scrapers.scrapers.qld.fraser_coast import FraserCoastScraper
 from aus_council_scrapers.scrapers.qld.gladstone import GladstoneScraper
 from aus_council_scrapers.scrapers.qld.gold_coast import GoldCoastScraper
 from aus_council_scrapers.scrapers.qld.goondiwindi import GoondiwindiScraper
