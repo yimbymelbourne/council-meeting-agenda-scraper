@@ -647,10 +647,33 @@ class DefaultFetcher(Fetcher):
         last_error = None
         for attempt in range(self.MAX_RETRIES):
             self.__throttle(url)
-            if method.upper() == "POST":
-                response = self.__session.post(url, **kwargs)
-            else:
-                response = self.__session.get(url, **kwargs)
+            try:
+                if method.upper() == "POST":
+                    response = self.__session.post(url, **kwargs)
+                else:
+                    response = self.__session.get(url, **kwargs)
+            except requests.Timeout:
+                # Not retried: a read timeout already costs up to the full
+                # read limit (60 s), so retrying would spend minutes of the
+                # adapter's shared 480 s budget on one request. Let the
+                # council fail instead (AGENTS.md, "Do not catch
+                # requests.Timeout"). ConnectTimeout is a Timeout too.
+                raise
+            except requests.ConnectionError as e:
+                # A dropped connection (reset, refused, DNS blip) is the
+                # transient failure this fetcher exists to absorb. It was
+                # seen for real about 600 requests into a long recording,
+                # where one reset aborted the whole scrape. These fail fast,
+                # so retrying them with the usual backoff is cheap.
+                last_error = e
+                if attempt < self.MAX_RETRIES - 1:
+                    delay = self.__backoff(None, attempt)
+                    self.__logger.warning(
+                        f"{e.__class__.__name__} from {url}—backing off "
+                        f"{delay:.1f}s (attempt {attempt + 1}/{self.MAX_RETRIES})"
+                    )
+                    time.sleep(delay)
+                continue
 
             if response.status_code not in self.RETRY_STATUSES:
                 response.raise_for_status()
