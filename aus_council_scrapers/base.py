@@ -31,6 +31,14 @@ from aus_council_scrapers.constants import (
     TIME_REGEX,
     TIMEZONES_BY_STATE,
 )
+from aus_council_scrapers.pdf_dates import (
+    PDF_FULL_LIMIT,
+    PDF_HEAD_BYTES,
+    PdfGone,
+    PdfText,
+    PdfTooLarge,
+    read_pdf_text,
+)
 
 
 USER_AGENT_ISSUE = (
@@ -192,6 +200,54 @@ def resolve_egress_proxy(egress: str, council: Optional[str] = None) -> Optional
     if problem:
         raise EgressUnavailable(council, problem)
     return proxy_url
+
+
+# Extra CA certificates: a few council servers send their leaf certificate
+# without the intermediate that signed it. Browsers fetch the missing issuer
+# from the leaf's AIA "CA Issuers" URL; requests/OpenSSL does not, so the
+# handshake fails with "unable to get local issuer certificate". The fix is
+# per scraper and opt-in: list the intermediate's PEM file (under
+# aus_council_scrapers/certs/, with a header saying where it came from and
+# when it expires) in `extra_ca_certs`, and that scraper's requests verify
+# against certifi's bundle plus those files. Verification is never turned
+# off, and no other council trusts the extra certificates.
+CERTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "certs")
+
+_ca_bundle_lock = threading.Lock()
+_ca_bundles: dict[tuple[str, ...], str] = {}
+
+
+def ca_bundle_with(extra_ca_certs: tuple[str, ...]) -> str:
+    """Path to a CA bundle of certifi's roots followed by `extra_ca_certs`.
+
+    Names are resolved against CERTS_DIR (an absolute path is used as is).
+    Built once per process per set of names, in a temporary file removed at
+    exit, so certifi updates are picked up and nothing derived is committed.
+    """
+    import atexit
+    import tempfile
+
+    import certifi
+
+    key = tuple(extra_ca_certs)
+    with _ca_bundle_lock:
+        if key in _ca_bundles:
+            return _ca_bundles[key]
+        with open(certifi.where(), encoding="utf-8") as f:
+            parts = [f.read()]
+        for name in key:
+            path = os.path.join(CERTS_DIR, name)
+            with open(path, encoding="utf-8") as f:
+                pem = f.read()
+            if "-----BEGIN CERTIFICATE-----" not in pem:
+                raise ValueError(f"{path} holds no PEM certificate")
+            parts.append(f"\n# extra_ca_certs: {name}\n{pem}")
+        fd, bundle = tempfile.mkstemp(prefix="aus-council-ca-", suffix=".pem")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write("\n".join(parts))
+        atexit.register(lambda p=bundle: os.path.exists(p) and os.remove(p))
+        _ca_bundles[key] = bundle
+        return bundle
 
 
 def register_scraper(cls):
@@ -378,6 +434,33 @@ class Fetcher(ABC):
     def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
         raise NotImplementedError()
 
+    # Not abstract, so the many small test fetchers that serve only pages
+    # need not implement them.
+    def fetch_bytes(self, url, max_bytes: Optional[int] = None, **kwargs) -> bytes:
+        """The response body as bytes, not decoded text.
+
+        `fetch_with_requests` returns `response.text`, which mangles a PDF.
+        With `max_bytes`, only the first that many bytes are asked for (an
+        HTTP Range request) and read.
+        """
+        raise NotImplementedError(f"{type(self).__name__} cannot fetch bytes")
+
+    def fetch_pdf_text(
+        self,
+        url,
+        pages: int = 1,
+        partial: bool = True,
+        full_limit: int = PDF_FULL_LIMIT,
+    ) -> PdfText:
+        """The text of a PDF's first `pages` pages (`pdf_dates.read_pdf_text`).
+
+        From the file's first bytes when they hold those pages and
+        `partial` allows it, otherwise from the whole file, which is not
+        downloaded when it is larger than `full_limit` (`PdfTooLarge`).
+        The text, not the file, is what a cassette records.
+        """
+        raise NotImplementedError(f"{type(self).__name__} cannot fetch PDFs")
+
     def sleep(self, seconds: float) -> None:
         """Wait for a page to settle after driving it.
 
@@ -483,8 +566,14 @@ class DefaultFetcher(Fetcher):
         strip_headless_user_agent: bool = False,
         egress: str = "direct",
         council: Optional[str] = None,
+        extra_ca_certs: tuple[str, ...] = (),
     ):
         self.__session = requests.Session()
+        # Opt-in per scraper; see `ca_bundle_with`. The bundle is built on
+        # the first fetch, not here: scrapers are constructed at import time,
+        # and a bad certificate file should fail its own council, not the
+        # import of every scraper.
+        self.extra_ca_certs = tuple(extra_ca_certs)
         self.user_agent = resolve_user_agent(user_agent)
         self.strip_headless_user_agent = strip_headless_user_agent
         if egress not in EGRESS_MODES:
@@ -634,6 +723,10 @@ class DefaultFetcher(Fetcher):
         return self.__driver
 
     def fetch_with_requests(self, url, method="GET", **kwargs):
+        return self.__send(url, method, **kwargs).text
+
+    def __send(self, url, method="GET", **kwargs) -> requests.Response:
+        """One request, throttled, through the egress, retried on 429/5xx."""
         # Defaulted here, below the RecordingFetcher, not in the scraper or
         # the recorder: cassette keys are built from the kwargs a scraper
         # passes, so adding it any higher would change every key and make
@@ -644,6 +737,11 @@ class DefaultFetcher(Fetcher):
             # requests lets an HTTPS_PROXY in the environment override the
             # session's proxies but not a request's own.
             kwargs.setdefault("proxies", dict(self.__session.proxies))
+        if self.extra_ca_certs:
+            # Per request, not on the session, for the same reason as the
+            # proxies: requests lets REQUESTS_CA_BUNDLE in the environment
+            # override a session's `verify` but not a request's own path.
+            kwargs.setdefault("verify", ca_bundle_with(self.extra_ca_certs))
         last_error = None
         for attempt in range(self.MAX_RETRIES):
             self.__throttle(url)
@@ -677,7 +775,8 @@ class DefaultFetcher(Fetcher):
 
             if response.status_code not in self.RETRY_STATUSES:
                 response.raise_for_status()
-                return response.text
+                return response
+            response.close()
 
             last_error = requests.HTTPError(
                 f"{response.status_code} for {url}", response=response
@@ -697,6 +796,93 @@ class DefaultFetcher(Fetcher):
                 time.sleep(delay)
 
         raise last_error
+
+    # Sent for bytes instead of DEFAULTHEADERS' Accept, which names no
+    # binary type: a server that negotiates strictly answers a PDF request
+    # without */* with 406.
+    BYTES_ACCEPT = "application/pdf, */*;q=0.8"
+
+    def _fetch_body(
+        self,
+        url,
+        max_bytes: Optional[int] = None,
+        limit: Optional[int] = None,
+        **kwargs,
+    ) -> tuple[bytes, Optional[int]]:
+        """(body, the whole file's length if the server said it).
+
+        With `max_bytes`, a Range request for that many bytes; a server that
+        ignores Range and sends everything is read that far and the
+        connection closed, so the cost is the same. With `limit`, a body
+        that runs past it raises `PdfTooLarge` instead of being read.
+        """
+        headers = {"Accept": self.BYTES_ACCEPT, **kwargs.pop("headers", {})}
+        if max_bytes:
+            headers["Range"] = f"bytes=0-{max_bytes - 1}"
+        response = self.__send(url, headers=headers, stream=True, **kwargs)
+        try:
+            total = None
+            content_range = response.headers.get("Content-Range", "")
+            m = re.match(r"bytes\s+\d+-\d+/(\d+)", content_range)
+            if response.status_code == 206 and m:
+                total = int(m.group(1))
+            elif response.status_code == 200 and not response.headers.get(
+                "Content-Encoding"
+            ):
+                length = response.headers.get("Content-Length")
+                total = int(length) if length and length.isdigit() else None
+            if limit and total and total > limit and not max_bytes:
+                raise PdfTooLarge(f"{url} is {total} bytes (limit {limit})")
+            cap = max_bytes or limit
+            chunks, size = [], 0
+            for chunk in response.iter_content(64 * 1024):
+                chunks.append(chunk)
+                size += len(chunk)
+                if cap and size >= cap:
+                    break
+            else:
+                # The body ended first, so it is the whole file, whatever
+                # the headers did or did not say.
+                if response.status_code == 200:
+                    total = size
+            body = b"".join(chunks)
+            if max_bytes:
+                body = body[:max_bytes]
+            elif limit and size >= limit and (total is None or total > limit):
+                raise PdfTooLarge(f"{url} runs past {limit} bytes")
+            return body, total
+        finally:
+            response.close()
+
+    def fetch_bytes(self, url, max_bytes: Optional[int] = None, **kwargs) -> bytes:
+        return self._fetch_body(url, max_bytes, **kwargs)[0]
+
+    def fetch_pdf_text(
+        self,
+        url,
+        pages: int = 1,
+        partial: bool = True,
+        full_limit: int = PDF_FULL_LIMIT,
+    ) -> PdfText:
+        try:
+            result = read_pdf_text(
+                self._fetch_body,
+                url,
+                pages=pages,
+                partial=partial,
+                head_bytes=PDF_HEAD_BYTES,
+                full_limit=full_limit,
+            )
+        except requests.HTTPError as e:
+            status = getattr(e.response, "status_code", None)
+            if status in (404, 410):
+                raise PdfGone(f"{url} answered {status}") from e
+            raise
+        self.__logger.debug(
+            f"PDF text of {url}: {result.bytes_read} bytes read, "
+            f"{'whole file' if result.complete else 'first bytes only'}"
+        )
+        return result
 
     def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
         if not self.__driver:
@@ -801,6 +987,12 @@ class BaseScraper(ABC):
     # AGENTS.md, "Councils that block GitHub's runners".
     egress: str = "direct"
 
+    # PEM files under aus_council_scrapers/certs/ to trust on top of certifi,
+    # for a council whose server omits its intermediate certificate. Its
+    # requests (not Selenium, whose Chrome fetches missing issuers itself)
+    # then verify against certifi plus these. See `ca_bundle_with`.
+    extra_ca_certs: tuple[str, ...] = ()
+
     # Roughly how long one production run (a single `--years` year, from the
     # runner) takes, in seconds. main.py uses it only to order dispatch:
     # longest first, so a slow scraper starts at t=0 rather than after the
@@ -830,6 +1022,7 @@ class BaseScraper(ABC):
             strip_headless_user_agent=self.strip_headless_user_agent,
             egress=self.egress,
             council=self.council_name,
+            extra_ca_certs=self.extra_ca_certs,
         )
 
         self.default_name: str = f"{self.council_name.capitalize()} Council Meeting"

@@ -2,7 +2,7 @@
 
 # Scraper status
 
-**473 of 530 councils complete (89%)** — 53 partial, 0 broken, 4 not started.
+**475 of 536 councils complete (88%)** — 59 partial, 0 broken, 2 not started.
 
 Derived from the recorded test fixtures, so it cannot disagree with
 what the scrapers actually produce. Regenerate with
@@ -51,6 +51,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `bellingen` | 90 | 2020-2026 | 90 | 89 |  |
 | ✅ | `belmont` | 115 | 2021-2026 | 115 | 114 |  |
 | ✅ | `belyuen` | 68 | 2020-2026 | 68 | 62 |  |
+| 🟡 | `benalla` | 47 | 2025-2026 | 47 | 45 | only 2 year(s); papers before Feb 2025 not read (site document archive, an admin-ajax search; 2023 Council minutes are there) |
 | ✅ | `berri_barmera` | 172 | 2020-2026 | 172 | 171 |  |
 | ✅ | `berrigan` | 30 | 2024-2026 | 30 | 25 |  |
 | ✅ | `beverley` | 68 | 2021-2026 | 68 | 68 |  |
@@ -101,6 +102,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `cardinia` | 122 | 2020-2026 | 121 | 120 |  |
 | ✅ | `carnamah` | 112 | 2020-2026 | 112 | 103 |  |
 | ✅ | `carnarvon` | 126 | 2020-2026 | 126 | 124 |  |
+| 🟡 | `carpentaria` | 80 | 2020-2026 | 80 | 78 | 18 meetings 2020-2024 left out: neither paper's cover is in its first 256 KB, and both files are past 2 MB (minutes are text-less scans) |
 | 🟡 | `carrathool` | 10 | 2026-2026 | 10 | 10 | only 1 year(s); only the current year is read: the meetings page holds one year, and the Feb 2023-Dec 2025 archive page labels papers by month only |
 | ✅ | `casey` | 100 | 2020-2026 | 100 | 99 |  |
 | ✅ | `cassowary_coast` | 120 | 2020-2026 | 120 | 117 |  |
@@ -132,6 +134,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `collie` | 104 | 2020-2026 | 104 | 102 |  |
 | ✅ | `coober_pedy` | 133 | 2020-2026 | 133 | 126 |  |
 | ✅ | `cook` | 82 | 2022-2026 | 82 | 81 |  |
+| 🟡 | `coolamon` | 72 | 2020-2026 | 72 | 72 | agendas are taken down after each meeting, so past meetings have minutes only (one left behind, Oct 2024); Mar 2022 and Aug 2023 left out (minutes past 8 MB) |
 | ✅ | `coolgardie` | 106 | 2020-2026 | 106 | 106 |  |
 | ✅ | `coomalie` | 126 | 2020-2026 | 126 | 121 |  |
 | ✅ | `coonamble` | 49 | 2023-2026 | 49 | 45 |  |
@@ -165,6 +168,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `douglas` | 113 | 2020-2026 | 113 | 112 |  |
 | ✅ | `dowerin` | 105 | 2020-2026 | 105 | 103 |  |
 | 🟡 | `dubbo` | 23 | 2025-2026 | 23 | 23 | only 2 year(s) |
+| ✅ | `dumbleyung` | 90 | 2020-2026 | 90 | 90 |  |
 | ✅ | `dundas` | 104 | 2020-2026 | 104 | 102 |  |
 | ✅ | `dungog` | 94 | 2020-2026 | 94 | 93 |  |
 | ✅ | `east_arnhem` | 57 | 2021-2026 | 57 | 54 |  |
@@ -265,6 +269,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `kojonup` | 104 | 2020-2026 | 104 | 101 |  |
 | ✅ | `kondinin` | 65 | 2022-2026 | 65 | 60 |  |
 | ✅ | `koorda` | 97 | 2020-2026 | 97 | 96 |  |
+| 🟡 | `kowanyama` | 53 | 2023-2026 | 53 | 51 | Sep 2023 and Jun 2026 ordinary meetings left out: the minutes give no day in the month (Jun 2026's say 30 May) and the pack is past 8 MB |
 | ✅ | `kulin` | 83 | 2020-2026 | 83 | 81 |  |
 | ✅ | `kuringgai` | 313 | 2020-2026 | 296 | 259 |  |
 | ✅ | `kwinana` | 188 | 2020-2026 | 188 | 186 |  |
@@ -302,6 +307,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `manjimup` | 102 | 2020-2026 | 102 | 102 |  |
 | ✅ | `manningham` | 53 | 2021-2026 | 53 | 37 |  |
 | ✅ | `mansfield` | 34 | 2024-2026 | 34 | 33 |  |
+| 🟡 | `mapoon` | 87 | 2020-2026 | 87 | 83 | most 2020 meetings (9) and the Jul 2024 budget meeting left out: no day readable on the papers' first page |
 | ✅ | `maranoa` | 246 | 2020-2026 | 244 | 245 |  |
 | ✅ | `mareeba` | 97 | 2020-2026 | 97 | 97 |  |
 | ✅ | `maribyrnong` | 133 | 2020-2026 | 133 | 132 |  |
@@ -494,6 +500,7 @@ whenever a fixture changes; CI checks it is current.
 | ✅ | `wanneroo` | 215 | 2020-2026 | 215 | 138 |  |
 | ✅ | `waratah_wynyard` | 80 | 2021-2026 | 80 | 78 |  |
 | ✅ | `waroona` | 88 | 2020-2026 | 88 | 87 |  |
+| ✅ | `warren` | 75 | 2020-2026 | 75 | 75 |  |
 | ✅ | `warrnambool` | 90 | 2020-2026 | 90 | 85 |  |
 | ✅ | `warrumbungle` | 70 | 2021-2026 | 70 | 69 |  |
 | ✅ | `wattle_range` | 165 | 2020-2026 | 165 | 163 |  |
@@ -522,6 +529,7 @@ whenever a fixture changes; CI checks it is current.
 | 🟡 | `winton` | 7 | 2024-2026 | 7 | 7 | ordinary meetings never give their day on the page and are left out (about 104); only special meetings are emitted |
 | ✅ | `wodonga` | 87 | 2020-2026 | 87 | 87 |  |
 | ✅ | `wollondilly` | 324 | 2015-2026 | 324 | 288 |  |
+| 🟡 | `wollongong` | 99 | 2020-2026 | 99 | 98 | Local Planning Panel not read: its agendas (about 95 since 2020) are on its own allowed page, with per-application decisions and no minutes |
 | ✅ | `wongan_ballidu` | 75 | 2021-2026 | 75 | 75 |  |
 | 🟡 | `woodanilling` | 75 | 2020-2026 | 75 | 73 | about 14 month-only meetings left out: nearly all of 2020, and February, March and November 2021 |
 | ✅ | `woollahra` | 634 | 2020-2026 | 634 | 628 |  |
@@ -547,4 +555,4 @@ whenever a fixture changes; CI checks it is current.
 No scraper yet. Run `python scripts/detect_platform.py <slug>` to see
 which platform a council runs before writing one.
 
-`carpentaria` `huon_valley` `mapoon` `north_burnett`
+`huon_valley` `north_burnett`

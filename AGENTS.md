@@ -106,6 +106,7 @@ way: the honest default and the per-council overrides are both in code, so
 | `aus_council_scrapers/constants.py` | `EARLIEST_YEAR`, regex patterns, timezones |
 | `aus_council_scrapers/scrapers/<state>/` | One folder per state and territory: `act`, `nsw`, `nt`, `qld`, `sa`, `tas`, `vic`, `wa` |
 | `aus_council_scrapers/resolve.py`, `opencities.py`, `opencities_content.py`, `alyka.py`, `councilconnect.py`, `councilconnect_library.py`, `lgasa.py`, `craft.py`, `moderngov.py`, `escribe.py`, `ionata.py`, `wpfd.py`, `walkerdesigns.py`, `datascape.py` | One base class per shared platform; see the platform table under Step 3. `InfoCouncilScraper` and `DocsPublishedScraper` are in `base.py` |
+| `aus_council_scrapers/pdf_dates.py` | A month-only meeting's day read from its PDF's first page; see "Dating a meeting from its PDF" |
 | `aus_council_scrapers/meeting_documents.py` | Groups a flat register of individually titled documents into meetings (`cockburn`, `bayswater`) |
 | `aus_council_scrapers/platforms.py` | Platform signatures, read by `scripts/detect_platform.py` |
 | `aus_council_scrapers/clock.py` | `current_year()` / `today()` — use instead of `datetime` |
@@ -318,7 +319,7 @@ Also check the URL in `docs/councils.md` actually *is* the meeting listing.
 Several are landing pages that link to it, and detection run against one of
 those sees a page with no meetings on it.
 
-**Check robots.txt before writing a scraper.** Read `/robots.txt` on every host the scraper will request, and request no path it disallows, even one the council's own page calls from JavaScript. Honour any `Crawl-delay` in it as that host's spacing. The one exception is a documented one: when robots.txt disallows the only route to a council's official public papers, the maintainer has decided to scrape them anyway, and each such council records the exact disallow lines and the date checked in its own module, and says so in `docs/councils.md`. The councils so far: `swan` (21 Oct 2026; its listing API sits under a disallowed `/v1/`), and from 26 Oct 2026 `fraser_coast` and `mount_magnet` (papers on SharePoint, whose robots.txt disallows everything), `moorabool` and `oberon` (the meetings listing itself is disallowed), and `forbes`, `carrathool` and `carnamah` (the listing is allowed but the PDFs sit under a disallowed path, and council-alerts downloads every emitted document). Do not add a council to this list without the same explicit decision. Papers that need a login stay out whatever robots.txt says. Where a WAF challenges a plain request for robots.txt (the AWS WAF's 202 with an empty body, on five of the SA Craft sites), read it through Selenium as the scraper would. A robots.txt that answers 4xx, as Barossa's does even to Selenium, places no restriction (RFC 9309).
+**Check robots.txt before writing a scraper.** Read `/robots.txt` on every host the scraper will request, and request no path it disallows, even one the council's own page calls from JavaScript. Honour any `Crawl-delay` in it as that host's spacing. The one exception is a documented one: when robots.txt disallows the only route to a council's official public papers, the maintainer has decided to scrape them anyway, and each such council records the exact disallow lines and the date checked in its own module, and says so in `docs/councils.md`. The councils so far: `swan` (21 Oct 2026; its listing API sits under a disallowed `/v1/`), and from 26 Oct 2026 `wollongong` (every route to its papers—the site's search query strings and the Funnelback host's `/s/`—is disallowed), `fraser_coast` and `mount_magnet` (papers on SharePoint, whose robots.txt disallows everything), `moorabool` and `oberon` (the meetings listing itself is disallowed), and `forbes`, `carrathool` and `carnamah` (the listing is allowed but the PDFs sit under a disallowed path, and council-alerts downloads every emitted document). Do not add a council to this list without the same explicit decision. Papers that need a login stay out whatever robots.txt says. Where a WAF challenges a plain request for robots.txt (the AWS WAF's 202 with an empty body, on five of the SA Craft sites), read it through Selenium as the scraper would. A robots.txt that answers 4xx, as Barossa's does even to Selenium, places no restriction (RFC 9309).
 
 ### How we identify ourselves, and what a 403 means now
 
@@ -373,6 +374,7 @@ Production runs on a GitHub-hosted runner, which has an Azure datacentre IP. Som
 | `cardinia` | The same, and shuck passed 0 of 6. | 122 meetings |
 | `bayside_vic` | 403 or a reset connection | 132 meetings |
 | `casey` (`/api/meetings?_format=json`) | An empty body where the JSON should be, behind Varnish with no challenge header we recognise. Measured 20 Oct 2026 by running the whole adapter from a runner. | 100 meetings |
+| `wollongong` (`wolcc-search.funnelback.squiz.cloud`) | Cloudflare challenge (403 `cf-mitigated: challenge`) for the scraper's `search.json` URL through `DefaultFetcher`, for bare requests, for robots.txt on all three hosts and for six document PDFs. Measured 26 Oct 2026 by a throwaway-branch probe. | 99 meetings |
 | 18 regional councils: `balranald`, `blayney`, `buloke`, `cairns`, `eurobodalla`, `flinders_tas`, `glamorgan_spring_bay`, `greater_geelong`, `greater_shepparton`, `halls_creek`, `hawkesbury`, `latrobe_vic`, `launceston`, `manjimup`, `port_stephens`, `sandstone`, `towong`, `warrnambool` | 403 from a firewall, 405 from the Datascape host, a connection timeout, or (Balranald) a Selenium timeout. Measured 20 Oct 2026 by running every state shard once from a runner. | Built and recorded from a home connection |
 
 So these councils go through a proxy on a home machine. Each night council-alerts joins a Tailscale tailnet and sets `RESIDENTIAL_PROXY_URL` to a tinyproxy on that machine. The proxy carries HTTPS `CONNECT` only, and only to an allowlist of council hosts. The infrastructure side is in council-alerts [`docs/residential-egress.md`](https://github.com/yimbymelbourne/council-alerts/blob/main/docs/residential-egress.md).
@@ -396,6 +398,12 @@ Three rules:
 - **Probe from a runner before opting a council in.** A home connection proves nothing about production: `bayside_nsw` returns 669 meetings from a home IP and returned 0 in production. To probe, push a throwaway branch whose only workflow runs `on: push` to that branch, on `ubuntu-latest`, and fetches the scraper's own endpoints through `DefaultFetcher`. Read the log, then delete the branch. The `Production` environment only deploys from `main`, so the probe sees the runner's own IP, which is the point.
 - **Every host the scraper requests must be on the proxy's allowlist.** Opting in here is half the change. The other half is a line in tinyproxy's filter on the home machine, described in the council-alerts doc. A host missing from it fails as a refused proxy tunnel.
 - **Keep the list short.** These councils fail together whenever the home machine is asleep or offline. The durable fix is for the council to allowlist us: outreach is tracked in #172 (Bayside NSW) and #173 (Cardinia).
+
+### Servers that omit their intermediate certificate
+
+A council site that opens in a browser but raises `SSLCertVerificationError: unable to get local issuer certificate` from requests is usually sending its leaf certificate without the intermediate. Browsers fetch the missing one from the leaf's AIA "CA Issuers" URL; requests does not. Check with `openssl s_client -connect <host>:443 -servername <host> -showcerts`: one certificate in the chain and "unable to verify the first certificate" confirms it.
+
+The fix is per scraper and never `verify=False`. Fetch the intermediate from that AIA URL, check that it chains to a root in certifi (`openssl verify -CAfile $(python -m certifi) -untrusted <intermediate> <leaf>`) and that its SHA-256 matches Certificate Transparency (crt.sh), and save it as PEM under `aus_council_scrapers/certs/`. Give it a header saying where it came from, when it was fetched, when it expires and its `# SHA-256:` (`tests/test_extra_ca_certs.py` checks that line against the certificate). Then set `extra_ca_certs = ("<file>.pem",)` on the scraper. Its requests then verify against certifi's bundle plus that file, and no other council trusts it. `benalla` is the one case so far; its intermediate expires 2 Nov 2027.
 
 ### Step 4 — Implement
 
@@ -447,6 +455,27 @@ directly, as Canada Bay's does, one request covers the whole history.
 Read the diff in `<slug>-result.json` before committing. It is the only place
 the scraper's actual output gets reviewed, and going from 200 meetings to 3 is
 an easy thing to re-record past without noticing.
+
+### Dating a meeting from its PDF
+
+Some councils label papers by month only ("MEETING 2026 January Business Paper", "October 2026 Minutes") and give the day nowhere on the page. Since 26 Oct 2026 such a meeting may take its day from the paper's own first page ("BUSINESS PAPER ORDINARY MEETING Thursday 22nd January 2026"), through `aus_council_scrapers/pdf_dates.py`:
+
+- `meeting_date_from_pdf(fetcher, url, year, month)` returns the date or None. Only a date in the listing's month and year is accepted. Where the page gives several, it takes the one in the title that a weekday, "held"/"to be held" or a repeat backs, or the only one a weekday confirms; otherwise None, never a guess. `meeting_date_from_papers` tries a meeting's papers in order and stops at the first that answers. `OpenCitiesContentScraper` does this for month-only papers when `pdf_dates = True` (`carpentaria`, `mapoon`).
+- `fetcher.fetch_pdf_text(url)` reads the text cheapest first: an HTTP Range request for the first 256 KB (a server that ignores Range is read that far and closed), which holds page one of most Word-made and "fast web view" files; then the whole file, but only up to `full_limit` (8 MB by default), else `PdfTooLarge`. `fetch_bytes(url, max_bytes=None)` is the bytes primitive; `fetch_with_requests` returns `response.text`, which mangles a PDF. Both go through the per-host throttle and the scraper's egress.
+- **A cassette records the text, not the file** (`["pdf_text", url, pages, partial]`, plus `full_limit` when it is not the 8 MB default), with whether it was read whole and how many bytes it cost. That keeps a 25 MB business paper to a line of JSON. `fetch_bytes` is recorded base64. Because a non-default limit is in the key, changing a council's `pdf_full_limit` misses the cassette: re-record with `RECORD=<slug>`.
+- **A dead link leaves its meeting out; any other fetch error fails the council.** A paper that answers 404 or 410 raises `PdfGone`, which `meeting_date_from_pdf` logs as a warning and treats like an unreadable paper (None). A council page that links a deleted file would otherwise fail the council every night. Timeouts, connection errors and 5xx responses still raise, so a bad night is never mistaken for a short list.
+
+Use it only when nothing on the page gives the day, and only for meetings in `years_filter`: each meeting costs one or two requests and 0.25–25 MB a night. Read the cheapest paper first: small minutes before a business paper whose cover Acrobat put at the end of a 12 MB file (Warren), but the business paper first where its cover is up front and the minutes are scans (Carpentaria). Measured for one production year (2026, home IP, 26 Oct 2026):
+
+| Council | Meetings | PDF reads | Bytes read | Wall time |
+|---|---|---|---|---|
+| `warren` | 10 | 10 | 2.6 MB | 22 s |
+| `coolamon` | 9 | 9 (18 requests: no minutes file is readable from its first bytes) | 21 MB | 41 s |
+| `carpentaria` | 10 | 12 | 2.6 MB | 32 s |
+| `kowanyama` | 12 | 15 | 4.9 MB | 34 s |
+| `mapoon` | 9 | 9 | 5.1 MB | 32 s |
+
+A CDN fetching a file from its origin for the first time can answer a Range request with a 200 and no length (Carpentaria's, 26 Oct 2026); `read_pdf_text` asks once more, and a file still unreadable is left out that night, so Carpentaria's count can vary by one between runs.
 
 ### Driving a page with Selenium
 

@@ -51,6 +51,10 @@ _URL_FIELDS = ("agenda_url", "minutes_url", "agenda_html_url", "minutes_html_url
 # with the reason in the notes, so the scorecard does not call it complete.
 # Remove an entry in the change that closes the gap.
 KNOWN_GAPS: dict[str, str] = {
+    "benalla": (
+        "papers before Feb 2025 not read (site document archive, an admin-ajax "
+        "search; 2023 Council minutes are there)"
+    ),
     "brisbane": (
         "papers before mid-2025 are Word files, which are not emitted: 6 "
         "meetings in 2020-2023, none in 2024"
@@ -153,6 +157,29 @@ KNOWN_GAPS: dict[str, str] = {
     "carrathool": (
         "only the current year is read: the meetings page holds one year, "
         "and the Feb 2023-Dec 2025 archive page labels papers by month only"
+    ),
+    # Dated from their PDFs (`pdf_dates`): a meeting whose first page cannot
+    # be read cheaply, or gives no day in the label's month, is left out.
+    "coolamon": (
+        "agendas are taken down after each meeting, so past meetings have "
+        "minutes only (one left behind, Oct 2024); Mar 2022 and Aug 2023 "
+        "left out (minutes past 8 MB)"
+    ),
+    "carpentaria": (
+        "18 meetings 2020-2024 left out: neither paper's cover is in its "
+        "first 256 KB, and both files are past 2 MB (minutes are text-less scans)"
+    ),
+    "kowanyama": (
+        "Sep 2023 and Jun 2026 ordinary meetings left out: the minutes give "
+        "no day in the month (Jun 2026's say 30 May) and the pack is past 8 MB"
+    ),
+    "mapoon": (
+        "most 2020 meetings (9) and the Jul 2024 budget meeting left out: "
+        "no day readable on the papers' first page"
+    ),
+    "wollongong": (
+        "Local Planning Panel not read: its agendas (about 95 since 2020) are "
+        "on its own allowed page, with per-application decisions and no minutes"
     ),
 }
 

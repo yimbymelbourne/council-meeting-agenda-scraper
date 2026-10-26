@@ -7,6 +7,8 @@ Keys are small JSON arrays whose first element names the channel:
     ["requests", url, method, kwargs_json]     # params/data/json/headers etc.
     ["selenium", url]                          # fetch_with_selenium
     ["driver", n, op, args]                    # nth direct WebDriver call
+    ["bytes", url] / ["bytes", url, kwargs]    # fetch_bytes; value base64
+    ["pdf_text", url, pages, partial(, limit)] # fetch_pdf_text; value the text
 
 Playback is **strict**: any call that was not recorded raises `CassetteMiss`
 rather than returning a plausible-looking empty page. A scraper that starts
@@ -17,6 +19,7 @@ meetings.
 
 from __future__ import annotations
 
+import base64
 import json
 import os
 from typing import Any
@@ -25,6 +28,14 @@ import requests
 
 from aus_council_scrapers import clock
 from aus_council_scrapers.base import Fetcher
+from aus_council_scrapers.pdf_dates import (
+    PDF_FULL_LIMIT,
+    NotAPdf,
+    PdfGone,
+    PdfText,
+    PdfTooLarge,
+    PdfUnavailable,
+)
 
 
 class CassetteMiss(BaseException):
@@ -67,6 +78,10 @@ _REPLAYABLE_ERRORS = {
     "ConnectionError": requests.ConnectionError,
     "Timeout": requests.Timeout,
     "TooManyRedirects": requests.TooManyRedirects,
+    "PdfUnavailable": PdfUnavailable,
+    "NotAPdf": NotAPdf,
+    "PdfTooLarge": PdfTooLarge,
+    "PdfGone": PdfGone,
 }
 
 
@@ -82,6 +97,29 @@ def decode_failure(value: dict) -> Exception:
 
 def is_failure(value: Any) -> bool:
     return isinstance(value, dict) and FAILURE_MARKER in value
+
+
+def bytes_key(url: str, max_bytes: int | None, kwargs: dict[str, Any]) -> list:
+    if max_bytes:
+        kwargs = {**kwargs, "max_bytes": max_bytes}
+    return ["bytes", url, _canonical_kwargs(kwargs)] if kwargs else ["bytes", url]
+
+
+def pdf_text_key(url: str, pages: int, partial: bool, full_limit: int) -> list:
+    # The size limit is in the key when it is not the default, so raising a
+    # council's limit misses the cassette (re-record) instead of replaying
+    # the old PdfTooLarge. Left out at the default so keys stay short.
+    key = ["pdf_text", url, pages, partial]
+    return key if full_limit == PDF_FULL_LIMIT else [*key, full_limit]
+
+
+# Bytes are stored base64-encoded, so a cassette stays JSON.
+def encode_bytes(data: bytes) -> dict:
+    return {"base64": base64.b64encode(data).decode("ascii")}
+
+
+def decode_bytes(value: dict) -> bytes:
+    return base64.b64decode(value["base64"])
 
 
 def requests_key(url: str, method: str, kwargs: dict[str, Any] | None) -> list:
@@ -168,6 +206,31 @@ class RecordingFetcher(Fetcher):
             self.replay_data.append([key, encode_failure(e)])
             raise
         self.replay_data.append([key, result])
+        return result
+
+    def fetch_bytes(self, url, max_bytes=None, **kwargs):
+        key = bytes_key(url, max_bytes, kwargs)
+        try:
+            result = self.__delegate.fetch_bytes(url, max_bytes, **kwargs)
+        except Exception as e:
+            self.replay_data.append([key, encode_failure(e)])
+            raise
+        self.replay_data.append([key, encode_bytes(result)])
+        return result
+
+    def fetch_pdf_text(self, url, pages=1, partial=True, full_limit=PDF_FULL_LIMIT):
+        # Recorded as one call, whatever the live fetcher did to get it (a
+        # Range request, then perhaps the whole file): the text is what the
+        # scraper reads, and a few KB where the file is many MB.
+        key = pdf_text_key(url, pages, partial, full_limit)
+        try:
+            result = self.__delegate.fetch_pdf_text(
+                url, pages=pages, partial=partial, full_limit=full_limit
+            )
+        except Exception as e:
+            self.replay_data.append([key, encode_failure(e)])
+            raise
+        self.replay_data.append([key, result.to_record()])
         return result
 
     def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
@@ -284,6 +347,14 @@ class PlaybackFetcher(Fetcher):
     def fetch_with_requests(self, url, method="GET", **kwargs):
         key = tuple(requests_key(url, method, kwargs))
         return self._lookup(key, f"{method} {url}")
+
+    def fetch_bytes(self, url, max_bytes=None, **kwargs):
+        key = tuple(bytes_key(url, max_bytes, kwargs))
+        return decode_bytes(self._lookup(key, f"bytes of {url}"))
+
+    def fetch_pdf_text(self, url, pages=1, partial=True, full_limit=PDF_FULL_LIMIT):
+        key = tuple(pdf_text_key(url, pages, partial, full_limit))
+        return PdfText.from_record(self._lookup(key, f"PDF text of {url}"))
 
     def fetch_with_selenium(self, url, wait_time=10, wait_condition=None):
         return self._lookup(("selenium", url), f"selenium GET {url}")

@@ -19,6 +19,9 @@ class _OKResponse:
     def raise_for_status(self):
         pass
 
+    def close(self):
+        pass
+
 
 def _fetcher():
     # fetch_delay=0 keeps backoff sleeps at 0 too (see __backoff), so these
@@ -87,6 +90,9 @@ def test_a_retryable_status_code_is_still_retried_as_before(monkeypatch):
     class _ServiceUnavailable:
         status_code = 503
         headers = {}
+
+        def close(self):
+            pass
 
     def fake_get(self, url, **kwargs):
         calls["n"] += 1

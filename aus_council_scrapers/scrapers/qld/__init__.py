@@ -11,6 +11,7 @@ from aus_council_scrapers.scrapers.qld.bundaberg import BundabergScraper
 from aus_council_scrapers.scrapers.qld.burdekin import BurdekinScraper
 from aus_council_scrapers.scrapers.qld.burke import BurkeScraper
 from aus_council_scrapers.scrapers.qld.cairns import CairnsScraper
+from aus_council_scrapers.scrapers.qld.carpentaria import CarpentariaScraper
 from aus_council_scrapers.scrapers.qld.cassowary_coast import CassowaryCoastScraper
 from aus_council_scrapers.scrapers.qld.central_highlands_qld import (
     CentralHighlandsQldScraper,
@@ -34,12 +35,14 @@ from aus_council_scrapers.scrapers.qld.hinchinbrook import HinchinbrookScraper
 from aus_council_scrapers.scrapers.qld.hope_vale import HopeValeScraper
 from aus_council_scrapers.scrapers.qld.ipswich import IpswichScraper
 from aus_council_scrapers.scrapers.qld.isaac import IsaacScraper
+from aus_council_scrapers.scrapers.qld.kowanyama import KowanyamaScraper
 from aus_council_scrapers.scrapers.qld.livingstone import LivingstoneScraper
 from aus_council_scrapers.scrapers.qld.lockhart_river import LockhartRiverScraper
 from aus_council_scrapers.scrapers.qld.lockyer_valley import LockyerValleyScraper
 from aus_council_scrapers.scrapers.qld.logan import LoganScraper
 from aus_council_scrapers.scrapers.qld.longreach import LongreachScraper
 from aus_council_scrapers.scrapers.qld.mackay import MackayScraper
+from aus_council_scrapers.scrapers.qld.mapoon import MapoonScraper
 from aus_council_scrapers.scrapers.qld.maranoa import MaranoaScraper
 from aus_council_scrapers.scrapers.qld.mareeba import MareebaScraper
 from aus_council_scrapers.scrapers.qld.mckinlay import McKinlayScraper
