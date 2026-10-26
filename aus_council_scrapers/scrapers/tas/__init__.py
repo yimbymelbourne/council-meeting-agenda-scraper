@@ -17,6 +17,7 @@ from aus_council_scrapers.scrapers.tas.glamorgan_spring_bay import (
 )
 from aus_council_scrapers.scrapers.tas.glenorchy import GlenorchyScraper
 from aus_council_scrapers.scrapers.tas.hobart import HobartScraper
+from aus_council_scrapers.scrapers.tas.huon_valley import HuonValleyScraper
 from aus_council_scrapers.scrapers.tas.kentish import KentishScraper
 from aus_council_scrapers.scrapers.tas.king_island import KingIslandScraper
 from aus_council_scrapers.scrapers.tas.kingborough import KingboroughScraper
