@@ -8,14 +8,24 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+    types: [opened, synchronize, reopened, ready_for_review]
   release:
     types: [published]
 
 permissions:
   contents: read
 
+# A newer push to the same PR cancels the run it supersedes. Pushes to main
+# and releases are never cancelled, so the deploy job always completes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
+    # Draft PRs skip CI to save Actions minutes; marking the PR ready for
+    # review runs it. Push and release runs are unaffected.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
 
     steps:
@@ -42,7 +52,10 @@ jobs:
       # - name: Lint with flake8
       - name: Test with pytest
         run: |
-          poetry run pytest --timeout=30
+          # Replay runs in parallel and with a longer per-test limit: the
+          # largest cassettes (30+ MB) take close to 30 s to replay serially on
+          # a runner, and with 500+ councils a serial run was flaking on time.
+          poetry run pytest -n auto --timeout=120
       # Coverage against the target is reported, never gated. A scraper that
       # reaches only two years of history is unfinished, not broken, and a
       # build that goes red for unfinished work is a build people learn to

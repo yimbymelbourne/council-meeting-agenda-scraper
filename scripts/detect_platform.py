@@ -22,13 +22,14 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import requests  # noqa: E402
 
 from aus_council_scrapers.base import (  # noqa: E402
+    BROWSER_USER_AGENT,
     USER_AGENT_ISSUE,
     BlockedByWAF,
     DefaultFetcher,
 )
 from aus_council_scrapers.platforms import (  # noqa: E402
     detect,
-    is_cloudflare_challenge,
+    is_js_challenge,
     platform_links,
 )
 
@@ -62,11 +63,11 @@ def classify(fetcher: DefaultFetcher, url: str) -> tuple[str, str]:
     try:
         html = fetcher.fetch_with_requests(url)
     except BlockedByWAF:
-        # One extra request to tell a firewall block apart from a Cloudflare
-        # challenge: the first is pending a decision, the second needs Selenium.
-        # Send the same headers the fetcher does — a bare request triggers
-        # challenges that our real header set passes, which would misreport a
-        # reachable council as permanently blocked.
+        # Two extra requests to tell three different blocks apart: a JS
+        # challenge that needs a browser, a council that wants a browser-shaped
+        # User-Agent, and a genuine refusal. Send the same headers the fetcher
+        # does — a bare request triggers challenges that our real header set
+        # passes, which would misreport a reachable council as blocked.
         try:
             head = requests.head(
                 url,
@@ -74,13 +75,47 @@ def classify(fetcher: DefaultFetcher, url: str) -> tuple[str, str]:
                 allow_redirects=True,
                 headers=DefaultFetcher.DEFAULTHEADERS,
             )
-            if is_cloudflare_challenge(head.headers):
-                return "cloudflare", "needs Selenium — no User-Agent gets past this"
+            if is_js_challenge(head.headers):
+                return "challenge", "needs Selenium — no User-Agent gets past this"
         except Exception:
             pass
-        return "blocked", f"403 — deferred pending {USER_AGENT_ISSUE}"
+        try:
+            browser = requests.get(
+                url,
+                timeout=30,
+                allow_redirects=True,
+                headers={
+                    **DefaultFetcher.DEFAULTHEADERS,
+                    "User-Agent": BROWSER_USER_AGENT,
+                },
+            )
+            if browser.status_code == 200:
+                return (
+                    "browser-only",
+                    "200 with BROWSER_USER_AGENT — set `user_agent = "
+                    "BROWSER_USER_AGENT` on the scraper, as manningham does",
+                )
+        except Exception:
+            pass
+        return "blocked", f"403 even when identifying honestly — see {USER_AGENT_ISSUE}"
     except Exception as e:
         return "error", f"{type(e).__name__}: {str(e)[:70]}"
+
+    if not html.strip():
+        # A 200/202 with nothing in it is an AWS WAF challenge, not a council
+        # with an empty meetings page. Reporting it as "bespoke, 0 bytes" is
+        # how `melbourne` read as unfinished rather than unreachable.
+        try:
+            head = requests.head(url, timeout=20, allow_redirects=True,
+                                 headers=DefaultFetcher.DEFAULTHEADERS)
+            if is_js_challenge(head.headers):
+                return "challenge", (
+                    "empty body behind a WAF challenge — needs Selenium, and "
+                    "note it never raises because the status is not an error"
+                )
+        except Exception:
+            pass
+        return "empty", "fetched nothing — check the URL and the response headers"
 
     found = detect(html, url)
     if found:

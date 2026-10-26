@@ -4,11 +4,16 @@ import logging
 import os
 import random
 import re
+import signal
+import socket
+import subprocess
+import threading
 import time
 import urllib.parse
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional
+from xml.etree import ElementTree
 
 import pytz
 import requests
@@ -32,26 +37,161 @@ USER_AGENT_ISSUE = (
     "https://github.com/yimbymelbourne/council-meeting-agenda-scraper/issues/142"
 )
 
+# How we describe ourselves, one string per channel. Both are honest, which is
+# the point: #142 objected to claiming to be a browser while not being one.
+#
+# On the requests channel we are a script, so we say so. We fetch agendas and
+# minutes councils are legally required to publish, and an identifiable client
+# with a contact URL can be allowlisted or contacted instead of silently
+# blocked.
+IDENTIFYING_USER_AGENT = (
+    "aus-council-scrapers/0.1 "
+    "(+https://github.com/yimbymelbourne/council-meeting-agenda-scraper)"
+)
+
+# A minority of councils run WAF rules that do the opposite: they reject
+# anything that is not browser-shaped. Those get this string via a per-scraper
+# `user_agent` override — never globally, or the 13 councils that only answer
+# an identifying client go dark again.
+#
+# The trailing token is `Safari/537.36`. The string this replaced ended
+# `537.3`, one digit short, which made it a rare fingerprint rather than a
+# common one — the worst of both worlds.
+BROWSER_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
+
+
+def resolve_user_agent(override: Optional[str] = None) -> str:
+    """The User-Agent for the requests channel.
+
+    Precedence: an explicit per-scraper override, then the `USER_AGENT`
+    environment variable, then the identifying default. The override wins over
+    the environment on purpose — a scraper sets it because its council demands
+    it, so an env var meant for everything else must not switch it off.
+    """
+    return override or os.environ.get("USER_AGENT") or IDENTIFYING_USER_AGENT
+
 
 class BlockedByWAF(requests.HTTPError):
     """A council's firewall rejected us with 403.
 
-    This is a known, tracked problem with a known cause, so it should stop
-    work on that council rather than prompt a workaround.
+    Since #142 was settled this means something narrower than it used to:
+    we identified ourselves honestly and were refused anyway.
     """
 
-    def __init__(self, url: str):
-        super().__init__(
-            f"403 for {url}\n\n"
-            f"This council's firewall is blocking us. Do NOT work around it — "
-            f"it is a known issue with a pending decision, tracked at:\n"
-            f"  {USER_AGENT_ISSUE}\n\n"
-            f"The cause is our spoofed browser User-Agent: 13 of 15 blocked "
-            f"councils return 200 with an identifying User-Agent instead. "
-            f"Defer this council until that issue is resolved.\n\n"
-            f"(cardinia stays blocked either way, behind a Cloudflare "
-            f"challenge — that one needs Selenium, not a header.)"
+    def __init__(self, url: str, user_agent: str):
+        browser_hint = (
+            f"You are already sending {BROWSER_USER_AGENT!r}, so this is not a "
+            f"User-Agent problem. Check for a JS challenge "
+            f"(`cf-mitigated`, `x-amzn-waf-action`), which needs Selenium."
+            if user_agent == BROWSER_USER_AGENT
+            else f"A few councils reject any client that is not browser-shaped "
+            f"— `manningham` is one. If this is another, set\n"
+            f"  user_agent = BROWSER_USER_AGENT\n"
+            f"on the scraper class, and verify it against that council only.\n\n"
+            f"Do NOT change the project-wide default: 13 councils are "
+            f"reachable *because* it identifies us. Background: "
+            f"{USER_AGENT_ISSUE}"
         )
+        super().__init__(f"403 for {url}\n\nSent as: {user_agent}\n\n{browser_hint}")
+
+
+# Residential egress: a few councils refuse GitHub's runners however we
+# identify ourselves (see AGENTS.md, "Councils that block GitHub's runners").
+# A scraper opts in with `egress = "residential"`, and its requests then go
+# through the proxy named here. council-alerts sets it each night to a
+# tinyproxy on a home machine, reached over Tailscale.
+#
+# Deliberately not HTTP(S)_PROXY: requests applies those to every session in
+# the process, which would send every council through one home connection.
+RESIDENTIAL_PROXY_ENV = "RESIDENTIAL_PROXY_URL"
+
+# The value that means "this machine already has a residential IP": recording
+# a cassette from home, or a local adapter run. Requests go direct.
+RESIDENTIAL_PROXY_DIRECT = "direct"
+
+EGRESS_MODES = ("direct", "residential")
+
+
+class EgressUnavailable(Exception):
+    """A residential-egress council was asked for with no way to reach it.
+
+    Raised on the first fetch, not at construction, because every scraper is
+    built at import time. It is an ordinary exception on purpose, so
+    `run_scraper` reports it as `ok: false` with this type name and the
+    council's stored meetings are left alone. The alternative—fetching
+    direct and being refused—used to come back as an ok council with 0
+    meetings.
+    """
+
+    def __init__(self, council: Optional[str], reason: str):
+        self.council = council
+        who = council or "this scraper"
+        super().__init__(
+            f"{who} needs residential egress, but {reason}. Set "
+            f"{RESIDENTIAL_PROXY_ENV} to the proxy URL, or to "
+            f"'{RESIDENTIAL_PROXY_DIRECT}' on a machine with a residential IP."
+        )
+
+
+# One TCP check per proxy per process, shared by every fetcher. main.py runs
+# scrapers on worker threads, so the cache is guarded; the check itself runs
+# under the lock too, which only ever holds up other residential councils
+# waiting on the same answer.
+_PROXY_PREFLIGHT_TIMEOUT_S = 5.0
+_proxy_preflight_lock = threading.Lock()
+_proxy_preflight_results: dict[str, Optional[str]] = {}
+
+
+def _preflight_proxy(proxy_url: str) -> Optional[str]:
+    """Return None if the proxy accepts a TCP connection, else why not.
+
+    Without this a sleeping home machine costs each residential council a
+    10 s connect timeout and surfaces as a bare `ConnectTimeout`. With it the
+    failure is one short wait and a named `EgressUnavailable`.
+    """
+    with _proxy_preflight_lock:
+        if proxy_url in _proxy_preflight_results:
+            return _proxy_preflight_results[proxy_url]
+        parsed = urllib.parse.urlparse(proxy_url)
+        try:
+            host = parsed.hostname
+            port = parsed.port or (443 if parsed.scheme == "https" else 80)
+            if not host:
+                raise ValueError("no host in the URL")
+            socket.create_connection((host, port), _PROXY_PREFLIGHT_TIMEOUT_S).close()
+            problem = None
+        except (OSError, ValueError) as e:
+            problem = (
+                f"the proxy at {parsed.hostname}:{parsed.port} did not accept a "
+                f"connection ({type(e).__name__}: {e})"
+            )
+        _proxy_preflight_results[proxy_url] = problem
+        return problem
+
+
+def resolve_egress_proxy(egress: str, council: Optional[str] = None) -> Optional[str]:
+    """The proxy URL for a fetcher's traffic, or None to go direct.
+
+    Raises `EgressUnavailable` for a residential council when no proxy is
+    configured or the configured one cannot be reached.
+    """
+    if egress == "direct":
+        return None
+    if egress != "residential":
+        raise ValueError(f"unknown egress {egress!r}; expected one of {EGRESS_MODES}")
+
+    proxy_url = os.environ.get(RESIDENTIAL_PROXY_ENV, "").strip()
+    if not proxy_url:
+        raise EgressUnavailable(council, f"{RESIDENTIAL_PROXY_ENV} is not set")
+    if proxy_url == RESIDENTIAL_PROXY_DIRECT:
+        return None
+    problem = _preflight_proxy(proxy_url)
+    if problem:
+        raise EgressUnavailable(council, problem)
+    return proxy_url
 
 
 def register_scraper(cls):
@@ -247,8 +387,31 @@ class Fetcher(ABC):
         """
         time.sleep(seconds)
 
+    def restart_driver(self) -> None:
+        """Throw away the browser so the next fetch starts a fresh one.
+
+        A scraper that loads dozens of heavy pages through one long-lived
+        Chrome can find it dead mid-run — `InvalidSessionIdException`, "the
+        browser has closed the connection" — after which every later fetch
+        fails and the scraper looks merely unproductive. Retrying is useless
+        against a dead session; restarting is not.
+
+        A no-op by default so replay, which has no browser, ignores it.
+        """
+        return None
+
     def close(self) -> None:
         pass
+
+    def abandon(self) -> None:
+        """Kill any browser this fetcher started, without waiting on it.
+
+        For a scraper the adapter is giving up on. `close` cannot be used:
+        it asks the browser to quit over the same session that may be the
+        thing that hung. A no-op by default, since only a live browser
+        outlives the process.
+        """
+        return None
 
 
 class DefaultFetcher(Fetcher):
@@ -261,19 +424,82 @@ class DefaultFetcher(Fetcher):
     metronome), and 429/403/503 responses are retried with exponential
     backoff honouring `Retry-After`.
 
-    The delay is keyed by host, so scraping different councils concurrently
-    is unaffected.
+    The spacing is per host *across the whole process*, not per fetcher.
+    Every scraper builds its own fetcher, and many councils share one vendor
+    host—fourteen Resolve tenants all call `api.resolve.red`, seven
+    DocsPublished councils call DocAssembler. A per-instance throttle let all of
+    them hit that host at once, so `FETCH_DELAY` limited each council and
+    nothing limited the vendor. Different hosts still run fully in parallel.
+
+    Every request also carries a timeout. Without one a server that accepts
+    the connection and then sends nothing blocks the worker forever:
+    `api.docassembler.com.au` held a local run for 12+ minutes at 0% CPU, and
+    in production that is the 600 s SIGKILL with nothing persisted for any
+    council.
     """
 
     DEFAULT_FETCH_DELAY = 2.0
     MAX_RETRIES = 4
     RETRY_STATUSES = frozenset({403, 429, 500, 502, 503, 504})
 
-    def __init__(self, fetch_delay: Optional[float] = None):
+    # (connect, read) seconds for requests. The read timeout bounds the gap
+    # between bytes, not the whole download, so a big PDF listing that keeps
+    # streaming is unaffected; only a silent server trips it. 60 s is far
+    # above any response a council has taken to start answering. `FETCH_TIMEOUT`
+    # overrides the read half from the council-alerts workflow without a PR
+    # here. A total wall-clock bound is main.py's adapter budget, not this.
+    CONNECT_TIMEOUT = 10.0
+    DEFAULT_READ_TIMEOUT = 60.0
+
+    # Selenium has no default page-load timeout at all—`driver.get` waits
+    # for the load event indefinitely. Same reasoning, same order of magnitude.
+    PAGE_LOAD_TIMEOUT = 60
+
+    # Hosts spaced at a fraction of FETCH_DELAY, so FETCH_DELAY still scales
+    # them. Only for a vendor API that many councils share and that is built
+    # for traffic, where the shared spacing would otherwise queue every
+    # tenant behind one slot.
+    #
+    # api.resolve.red: 13 councils' listing and detail calls, 281 requests
+    # for one production year. At the full 2 s they queue for about 560 s.
+    # Measured 19 Oct 2026: run together with --years 2026, the 13 alone hit
+    # the 480 s adapter budget, and woollahra and mitcham were cut off as
+    # Timeout. Each scraper also holds a worker while it waits, so other
+    # councils would have queued behind them. At 0.5 s the same 13 finish
+    # together in 138 s. That is 2 requests a second to a multi-tenant JSON
+    # API, which the portal itself calls several times per page view.
+    HOST_DELAY_FACTORS: dict[str, float] = {"api.resolve.red": 0.25}
+
+    # Shared by every instance: the next free request slot per host. A
+    # caller reserves a slot under the lock and sleeps *outside* it, so a
+    # long wait on one host never blocks a request to another.
+    _host_lock = threading.Lock()
+    _next_slot_at: dict[str, float] = {}
+
+    def __init__(
+        self,
+        fetch_delay: Optional[float] = None,
+        user_agent: Optional[str] = None,
+        strip_headless_user_agent: bool = False,
+        egress: str = "direct",
+        council: Optional[str] = None,
+    ):
         self.__session = requests.Session()
-        self.__set_headers(self.DEFAULTHEADERS)
+        self.user_agent = resolve_user_agent(user_agent)
+        self.strip_headless_user_agent = strip_headless_user_agent
+        if egress not in EGRESS_MODES:
+            raise ValueError(f"unknown egress {egress!r}; expected one of {EGRESS_MODES}")
+        self.egress = egress
+        # Only used to name the council in an EgressUnavailable message.
+        self.council = council
+        # Resolved on the first fetch, not here: scrapers are constructed at
+        # import time, long before anyone has decided whether this run needs
+        # the proxy, and a run that never touches this council must not fail
+        # for lack of one.
+        self.__egress_resolved = False
+        self.__proxy_url: Optional[str] = None
+        self.__set_headers({**self.DEFAULTHEADERS, "User-Agent": self.user_agent})
         self.__driver = None
-        self.__last_request_at: dict[str, float] = {}
         self.__logger = logging.getLogger(self.__class__.__name__)
 
         if fetch_delay is None:
@@ -281,22 +507,27 @@ class DefaultFetcher(Fetcher):
                 os.environ.get("FETCH_DELAY", self.DEFAULT_FETCH_DELAY)
             )
         self.__fetch_delay = fetch_delay
+        self.__timeout = (
+            self.CONNECT_TIMEOUT,
+            float(os.environ.get("FETCH_TIMEOUT", self.DEFAULT_READ_TIMEOUT)),
+        )
 
     def __throttle(self, url: str) -> None:
-        """Space out consecutive requests to the same host."""
+        """Space out consecutive requests to the same host, process-wide."""
         if self.__fetch_delay <= 0:
             return
 
         host = urllib.parse.urlparse(url).netloc
-        last = self.__last_request_at.get(host)
-        if last is not None:
+        delay = self.__fetch_delay * self.HOST_DELAY_FACTORS.get(host, 1.0)
+        with DefaultFetcher._host_lock:
+            now = time.monotonic()
+            slot = max(now, DefaultFetcher._next_slot_at.get(host, now))
             # Jitter so a long run of requests is not perfectly periodic.
-            wait = self.__fetch_delay * random.uniform(0.75, 1.25) - (
-                time.monotonic() - last
+            DefaultFetcher._next_slot_at[host] = slot + (
+                delay * random.uniform(0.75, 1.25)
             )
-            if wait > 0:
-                time.sleep(wait)
-        self.__last_request_at[host] = time.monotonic()
+        if slot > now:
+            time.sleep(slot - now)
 
     def __backoff(self, response, attempt: int) -> float:
         retry_after = response.headers.get("Retry-After") if response else None
@@ -308,7 +539,9 @@ class DefaultFetcher(Fetcher):
         return min(self.__fetch_delay * (2**attempt), 60.0)
 
     DEFAULTHEADERS = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.62 Safari/537.3",
+        # Overridden per instance by `resolve_user_agent`; the value here is
+        # what a caller reading DEFAULTHEADERS directly should send.
+        "User-Agent": IDENTIFYING_USER_AGENT,
         "Accept-Language": "en-US,en;q=0.9",
         "Referer": "https://www.google.com/",
         "Connection": "keep-alive",
@@ -327,20 +560,73 @@ class DefaultFetcher(Fetcher):
         self.__session.headers.clear()
         self.__session.headers.update(headers)
 
+    def __ensure_egress(self) -> Optional[str]:
+        """Route this fetcher through the residential proxy if it needs one.
+
+        Runs before every fetch and does work only the first time. A failure
+        is not cached on the instance, so it raises again on every later
+        fetch too—a scraper that swallows one fetch error cannot then carry
+        on direct and come back with a quiet 0 meetings.
+        """
+        if not self.__egress_resolved:
+            self.__proxy_url = resolve_egress_proxy(self.egress, self.council)
+            if self.__proxy_url:
+                # Both schemes: an http:// link on a residential council's
+                # site is as blocked as the https:// ones.
+                self.__session.proxies.update(
+                    {"http": self.__proxy_url, "https": self.__proxy_url}
+                )
+            self.__egress_resolved = True
+        return self.__proxy_url
+
     def __setup_selenium_driver(self):
+        proxy_url = self.__ensure_egress()
         chrome_options = Options()
         chrome_options.add_argument("--headless")
+        if proxy_url:
+            chrome_options.add_argument(f"--proxy-server={proxy_url}")
         # Suppress automation signals that bot-detection (e.g. Akamai) checks for
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option("useAutomationExtension", False)
         self.__driver = webdriver.Chrome(options=chrome_options)
+        # A page that never fires its load event raises TimeoutException
+        # instead of hanging the worker past the adapter's budget.
+        self.__driver.set_page_load_timeout(self.PAGE_LOAD_TIMEOUT)
         self.__driver.execute_cdp_cmd(
             "Page.addScriptToEvaluateOnNewDocument",
             {
                 "source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
             },
         )
+        # Chrome's own string is the honest answer on this channel — we really
+        # are Chrome — so it is left alone by default, and the identifying
+        # string is deliberately NOT sent here (it gains nothing on any
+        # council and melbourne 403s anything not browser-shaped).
+        #
+        # The one exception is opt-in per scraper: headless Chrome announces
+        # itself as "HeadlessChrome", and a few WAFs reject that token on
+        # sight. Stripping it is off by default because it is not free.
+        # Measured by running each Selenium-channel scraper both ways
+        # (2026-08-20), meetings returned:
+        #
+        #   scraper       headless UA   de-headlessed
+        #   banyule                73     10   <- year-filter postbacks break
+        #   campbelltown           95     95
+        #   darebin                84     84
+        #   melbourne               0    224   <- 403 without it
+        #   strathfield            97     97
+        #
+        # So this is melbourne's fix, not a global improvement. Reachability
+        # alone would have said all five were fine either way — banyule loads
+        # its listing page and then fails on the interaction.
+        if self.strip_headless_user_agent:
+            user_agent = self.__driver.execute_script("return navigator.userAgent")
+            if "Headless" in user_agent:
+                self.__driver.execute_cdp_cmd(
+                    "Network.setUserAgentOverride",
+                    {"userAgent": user_agent.replace("Headless", "")},
+                )
 
     def get_selenium_driver(self):
         if not self.__driver:
@@ -348,6 +634,16 @@ class DefaultFetcher(Fetcher):
         return self.__driver
 
     def fetch_with_requests(self, url, method="GET", **kwargs):
+        # Defaulted here, below the RecordingFetcher, not in the scraper or
+        # the recorder: cassette keys are built from the kwargs a scraper
+        # passes, so adding it any higher would change every key and make
+        # every recorded fixture miss. A scraper may still pass its own.
+        kwargs.setdefault("timeout", self.__timeout)
+        if self.__ensure_egress():
+            # Passed per request as well as set on the session, because
+            # requests lets an HTTPS_PROXY in the environment override the
+            # session's proxies but not a request's own.
+            kwargs.setdefault("proxies", dict(self.__session.proxies))
         last_error = None
         for attempt in range(self.MAX_RETRIES):
             self.__throttle(url)
@@ -364,11 +660,10 @@ class DefaultFetcher(Fetcher):
                 f"{response.status_code} for {url}", response=response
             )
             if response.status_code == 403:
-                # Not a transient failure and not something to engineer around.
-                # A measured 13 of 15 blocked councils return 200 as soon as we
-                # send an identifying User-Agent instead of the spoofed browser
-                # one, so a workaround here would be solving the wrong problem.
-                last_error = BlockedByWAF(url)
+                # Not a transient failure, so retrying is pointless. What it
+                # means now that we identify ourselves is narrower than it used
+                # to be — see BlockedByWAF.
+                last_error = BlockedByWAF(url, self.user_agent)
                 break
             if attempt < self.MAX_RETRIES - 1:
                 delay = self.__backoff(response, attempt)
@@ -389,9 +684,56 @@ class DefaultFetcher(Fetcher):
             WebDriverWait(self.__driver, wait_time).until(wait_condition)
         return self.__driver.page_source
 
-    def close(self) -> None:
+    def restart_driver(self) -> None:
         if self.__driver:
+            try:
+                self.__driver.quit()
+            except Exception:
+                # Already gone — quitting a dead session raises, and the point
+                # of this call is to recover from exactly that.
+                pass
+        self.__driver = None
+
+    def close(self) -> None:
+        if not self.__driver:
+            return
+        try:
             self.__driver.quit()
+        except Exception as e:
+            # A session that has already died cannot be quit over, and Chrome
+            # would outlive it. Signal the processes directly instead.
+            self.__logger.warning(f"Could not quit the browser cleanly: {e}")
+            self.abandon()
+        finally:
+            # Forgotten either way, so a later abandon() never signals a PID
+            # that chromedriver no longer owns.
+            self.__driver = None
+
+    def abandon(self) -> None:
+        # The adapter leaves with os._exit when its budget runs out, which
+        # skips Selenium's own cleanup, and chromedriver dying does not take
+        # its Chrome with it: both stayed alive after the run, reparented to
+        # init. So signal Chrome (chromedriver's children; Chrome takes its
+        # own renderers down) and then chromedriver. SIGTERM only, never a
+        # wait—this runs on the way out of a process that is already late.
+        process = getattr(getattr(self.__driver, "service", None), "process", None)
+        if process is None:
+            return
+        try:
+            children = subprocess.run(
+                ["pgrep", "-P", str(process.pid)],
+                capture_output=True,
+                text=True,
+                timeout=2,
+            ).stdout.split()
+        except Exception as e:
+            self.__logger.warning(f"Could not list chromedriver's children: {e}")
+            children = []
+        for pid in [*children, str(process.pid)]:
+            try:
+                os.kill(int(pid), signal.SIGTERM)
+            except (ProcessLookupError, ValueError):
+                pass
 
 
 class BaseScraper(ABC):
@@ -419,6 +761,31 @@ class BaseScraper(ABC):
         `close()`: Closes the Selenium WebDriver instance if it exists.
     """
 
+    # Set on the subclass only for a council whose WAF refuses an identifying
+    # client — `BROWSER_USER_AGENT`, verified against that council. Leave it
+    # None everywhere else; see `resolve_user_agent` and #142.
+    user_agent: Optional[str] = None
+
+    # Set on the subclass for a council that rejects the "HeadlessChrome"
+    # token in Chrome's User-Agent. Verify by running the scraper both ways
+    # and comparing meetings returned — it costs banyule most of its history.
+    strip_headless_user_agent: bool = False
+
+    # "residential" for a council that refuses GitHub's runners whatever we
+    # send: its requests then go through RESIDENTIAL_PROXY_URL, and with that
+    # unset it fails by name with EgressUnavailable. Set it only after probing
+    # the council from a runner—a home connection proves nothing. See
+    # AGENTS.md, "Councils that block GitHub's runners".
+    egress: str = "direct"
+
+    # Roughly how long one production run (a single `--years` year, from the
+    # runner) takes, in seconds. main.py uses it only to order dispatch:
+    # longest first, so a slow scraper starts at t=0 rather than after the
+    # pool has drained the cheap ones and runs on alone towards the 600 s
+    # kill. Nothing enforces it. Leave the default unless a measured run is
+    # well above it, and then set the measured number, not a guess.
+    expected_seconds: float = 5.0
+
     def __init__(
         self,
         council_name: str,
@@ -435,7 +802,12 @@ class BaseScraper(ABC):
         self.time_regex: re.Pattern = TIME_REGEX
         self.date_regex: re.Pattern = DATE_REGEX
         self.keyword_regexes: list[re.Pattern] = COUNCIL_HOUSING_REGEX
-        self.fetcher = DefaultFetcher()
+        self.fetcher = DefaultFetcher(
+            user_agent=self.user_agent,
+            strip_headless_user_agent=self.strip_headless_user_agent,
+            egress=self.egress,
+            council=self.council_name,
+        )
 
         self.default_name: str = f"{self.council_name.capitalize()} Council Meeting"
         self.default_time: Optional[str] = None
@@ -494,6 +866,45 @@ def _merge_split_meetings(results: list[ScraperReturn]) -> list[ScraperReturn]:
 
 
 class InfoCouncilScraper(BaseScraper):
+    # Read the committee cell as InfoCouncil lays it out rather than as one
+    # string. Opt-in, because switching it on rewrites the names in most of
+    # the cassettes recorded before it existed.
+    #
+    # The cell holds the meeting type as bare text and the venue in a <span>
+    # after a <br>, so `cell.text` runs them together: Scenic Rim's meetings
+    # all come out named "Ordinary Council Chambers 82 Brisbane Street
+    # BEAUDESERT QLD 4285". And every supplementary agenda gets a grid row of
+    # its own—14 of Scenic Rim's 26 rows in 2026—named after its parent
+    # with "Supplementary" appended, sometimes with an upload timestamp
+    # ("Council - Supplementary uploaded 12/10/2026 16:27"). Left alone, each
+    # becomes a meeting whose "agenda" is the supplementary paper.
+    #
+    # With this set, the name is the bare text only, the venue goes to
+    # `location`, and a supplementary row loses its agenda (it is not the
+    # agenda) but keeps anything else it carries, which then merges onto the
+    # parent meeting through `_merge_split_meetings` now the names agree.
+    tidy_meeting_rows: bool = False
+
+    # The marker InfoCouncil appends to a supplementary row's committee text,
+    # with the upload stamp and item numbers some councils add after it.
+    # Vincent labels the same thing "Late Items".
+    SUPPLEMENTARY_NAME_REGEX = re.compile(
+        r"\s*-?\s*\b(?:Supplementary|Late Items)\b"
+        r"(?:\s+uploaded\s+\d{1,2}/\d{1,2}/\d{4}\s+\d{1,2}:\d{2})?"
+        r"(?:\s+[\d,]+\b)?",
+        re.IGNORECASE,
+    )
+    # InfoCouncil names supplementary papers <committee>_<date>_AGN_<id>[_AT]
+    # _SUP[_<suffix>], the suffix being item numbers, EXTRA or EMBEDDED. This
+    # catches the rows whose text omits the word: Redland's "Previously
+    # Confidential Information" rows are nothing but these. The chair's copy
+    # of an agenda (_CHAIRMANS[_<suffix>]) is a variant of the real one, not
+    # the agenda itself: Ipswich gives its 5 Nov 2020 Extraordinary Council
+    # one a row of its own, which otherwise becomes a second meeting.
+    SUPPLEMENTARY_FILE_REGEX = re.compile(
+        r"_(?:SUP|CHAIRMANS)(?:_\w*)?\.(?:PDF|HTML?)$", re.I
+    )
+
     def __init__(self, council, state, base_url, infocouncil_url):
         self.infocouncil_url = infocouncil_url
         super().__init__(council, state, base_url)
@@ -513,6 +924,10 @@ class InfoCouncilScraper(BaseScraper):
             years_to_try = sorted(years_filter)
         else:
             years_to_try = range(EARLIEST_YEAR, current_year + 3)
+
+        # Year pages that raised, kept so that a council whose every year
+        # failed can fail too. See the handler at the bottom of the loop.
+        failures: list[Exception] = []
 
         for year in years_to_try:
             year_url = f"{self.infocouncil_url}?year={year}"
@@ -639,6 +1054,15 @@ class InfoCouncilScraper(BaseScraper):
 
                     name = location.text if location else None
 
+                    if self.tidy_meeting_rows:
+                        name, supplementary = self._tidy_committee_name(location)
+                        location_text = self._tidy_location(location_text)
+                        if supplementary or any(
+                            url and self.SUPPLEMENTARY_FILE_REGEX.search(url)
+                            for url in (agenda_url, agenda_html_url)
+                        ):
+                            agenda_url = agenda_html_url = None
+
                     if not agenda_url and not minutes_url:
                         continue
 
@@ -656,10 +1080,30 @@ class InfoCouncilScraper(BaseScraper):
                     )
                     results.append(scraper_return)
 
+            except EgressUnavailable:
+                # Not a bad year page: no year can be fetched, and wrapping
+                # it in the every-year-failed RuntimeError below would hide
+                # the one error type that says what to fix.
+                raise
             except Exception as e:
-                # Log but continue trying other years
-                self.logger.debug(f"Failed to fetch meetings for year {year}: {e}")
+                # One bad year should not cost the others: a full-history
+                # walk asks for years the site may not serve. But this used
+                # to log at DEBUG, which hid a blocked or stalled host
+                # completely—and production asks for one year only, so a
+                # requests.Timeout here came back as an ok council with 0
+                # meetings. Warn, and fail the council once every year has
+                # failed (below).
+                self.logger.warning(
+                    f"{self.council_name}: failed to fetch meetings for {year}: {e}"
+                )
+                failures.append(e)
                 continue
+
+        if failures and len(failures) == len(years_to_try):
+            raise RuntimeError(
+                f"{self.council_name}: every InfoCouncil year page failed "
+                f"({len(failures)} of {len(years_to_try)})"
+            ) from failures[-1]
 
         # The legacy grid splits some meetings across two rows in the same way
         # the redesigned template does — one carrying the agenda, another the
@@ -669,13 +1113,54 @@ class InfoCouncilScraper(BaseScraper):
         results = _merge_split_meetings(results)
 
         if not results:
-            self.logger.info(f"{self.council_name} scraper found no meetings")
+            self.logger.warning(f"{self.council_name} scraper found no meetings")
         else:
             self.logger.info(
                 f"{self.council_name} scraper found {len(results)} meetings"
             )
 
         return results
+
+    def _tidy_committee_name(self, cell) -> tuple[Optional[str], bool]:
+        """The meeting type from a grid committee cell, and whether the row is
+        a supplementary paper rather than the meeting itself.
+
+        Only the cell's own text is the name; the venue sits in a child
+        <span>. Two councils' quirks are smoothed here too, since a name is
+        what lets a supplementary row merge onto its parent: the
+        "Supplementary" marker and its upload stamp come off, and a doubled
+        word goes. Redland's budget meeting is "Special Special Budget
+        Meeting" because InfoCouncil prefixes "Special" to a committee
+        already called "Special Budget Meeting".
+        """
+        if cell is None:
+            return None, False
+
+        own_text = " ".join(
+            part.strip() for part in cell.find_all(string=True, recursive=False)
+        )
+        # A cell with no bare text keeps the old reading rather than no name.
+        name = " ".join((own_text or cell.get_text(" ")).split())
+
+        supplementary = bool(self.SUPPLEMENTARY_NAME_REGEX.search(name))
+        name = self.SUPPLEMENTARY_NAME_REGEX.sub("", name)
+        name = re.sub(r"\b(\w+)(?:\s+\1\b)+", r"\1", name)
+        name = name.strip(" -")
+
+        return name or None, supplementary
+
+    @staticmethod
+    def _tidy_location(location: Optional[str]) -> Optional[str]:
+        """Venue lines joined into one line: "Council Chambers, 82 Brisbane
+        Street, BEAUDESERT QLD 4285", not three lines with raw newlines."""
+        if not location:
+            return None
+        lines = [
+            " ".join(line.split()).rstrip(",")
+            for line in location.splitlines()
+            if line.strip()
+        ]
+        return ", ".join(lines) or None
 
     def _scrape_responsive_rows(self, soup, year: int) -> list[ScraperReturn]:
         """Parse the redesigned InfoCouncil template.
@@ -768,6 +1253,325 @@ class InfoCouncilScraper(BaseScraper):
                     papers.setdefault(f"{kind}_{suffix}", url)
 
         return papers
+
+
+class DocsPublishedScraper(BaseScraper):
+    """Councils publishing through docspublished.com.au (DocAssembler).
+
+    The published page is an Angular app that renders nothing without
+    JavaScript, but everything behind it is JSON, so this needs no browser.
+    A subclass supplies only the publishing slug — the path segment in the
+    public URL.
+
+    **The viewer URL is not the document.** `/<slug>/document/<uuid>` is the
+    SPA shell: it answers 200 `text/html` and fetches the PDF client-side, so
+    anything downstream expecting a PDF gets ~10 KB of Angular instead. The
+    shell is also what *unknown* paths under the slug return, so getting this
+    wrong fails silently rather than 404ing. The real document lives in Azure
+    blob storage and is composed in three steps:
+
+    1. `/api/organisation/<slug>` → `Key`, the tenant's blob path segment.
+       `Key` and `Id` are different UUIDs: `Id` keys the document list, `Key`
+       keys the storage path, and swapping them yields URLs that 404.
+    2. `/api/documents/<Id>` → per meeting, the assembled agenda and minutes
+       as `<kind>AssembledDocFolderName` and `<kind>DocumentFilePath`.
+    3. `<container>/<Key>/<folder>/<file>` plus the container's read-only SAS
+       token, which the portal ships in its JS bundle (see `_storage_config`).
+
+    The filenames the API reports cannot be trusted verbatim. Blob names are
+    byte-exact, and DocAssembler's stored path sometimes disagrees with what
+    it actually wrote — always in whitespace, always in the same direction:
+    the blob has a run of spaces where the API reports one. Ten of Northern
+    Beaches' 269 documents are affected, and every one of them 404s. Both the
+    list and the per-document endpoint report the collapsed name, so there is
+    no better field to read; the only source of truth is the container
+    listing, which the same SAS token makes readable. `_stored_names` reads it
+    once per council and `_document_url` reconciles against it, which also
+    drops the occasional document the API lists but nobody ever uploaded (two
+    at Parramatta).
+    """
+
+    API_ROOT = "https://api.docassembler.com.au/api"
+    PORTAL_ROOT = "https://docspublished.com.au"
+
+    # Azure caps a listing page at 5000 blobs; Parramatta needs three pages.
+    LISTING_PAGE_SIZE = 5000
+
+    # Set on the subclass. The organisation id is deliberately not a class
+    # attribute: `Key` has to be fetched anyway and `Id` comes back on the
+    # same response, so hardcoding the id bought nothing and left two values
+    # to keep in step.
+    publishing_slug: str = ""
+
+    BUNDLE_REGEX = re.compile(r'src="([^"]*main-[A-Za-z0-9]+\.js)"')
+    BASE_HREF_REGEX = re.compile(r'<base[^>]+href="([^"]*)"')
+    BLOB_CONFIG_REGEX = re.compile(
+        r'azureConnectionString:"(?P<base>[^"]+)"'
+        r',azureContainerName:"(?P<container>[^"]+)"'
+        r',azureSasToken:"(?P<sas>[^"]+)"'
+    )
+
+    def __init__(self, council_name: str, state: str):
+        super().__init__(
+            council_name,
+            state,
+            f"{self.PORTAL_ROOT}/{self.publishing_slug}",
+        )
+
+    def scraper(self) -> list[ScraperReturn]:
+        years_filter = getattr(self, "years_filter", None)
+
+        # Each of these three lookups is required: without the organisation,
+        # the storage token or the document list there is nothing to emit.
+        # A failure raises rather than returning [], because run_scraper
+        # reports [] as an ok council with 0 meetings and the ingest records
+        # that as a successful scrape. api.docassembler.com.au is the host
+        # that once stalled a run for 12+ minutes; now that requests time
+        # out, a stall must surface as a failed council, not a quiet one.
+        organisation = self._get_json(
+            f"{self.API_ROOT}/organisation/{self.publishing_slug}"
+        )
+        if not organisation:
+            raise RuntimeError(
+                f"No DocAssembler organisation for {self.publishing_slug}"
+            )
+
+        storage = self._storage_config()
+        if not storage:
+            raise RuntimeError("Could not read the DocAssembler storage settings")
+
+        tenant_key = organisation["Key"]
+        stored = self._stored_names(storage, tenant_key)
+        documents = self._get_json(f"{self.API_ROOT}/documents/{organisation['Id']}")
+        if documents is None:
+            raise RuntimeError(
+                f"DocAssembler returned no document list for {self.publishing_slug}"
+            )
+        if not documents:
+            self.logger.warning(f"{self.council_name} scraper found no meetings")
+            return []
+
+        tz = pytz.timezone(TIMEZONES_BY_STATE[self.state.upper()])
+        results = []
+
+        for doc in documents:
+            meeting_date_str = doc.get("MeetingDate")
+            if not meeting_date_str:
+                continue
+
+            # MeetingDate is UTC without an offset, so the local date can
+            # differ from the UTC one — a 10:30am Sydney meeting is stamped
+            # 23:30 the previous day. Converting is what makes the data line
+            # up: meetings then start at the hours the council publishes, and
+            # the local date agrees with the date in the document filenames.
+            try:
+                meeting_dt = (
+                    datetime.datetime.fromisoformat(meeting_date_str)
+                    .replace(tzinfo=datetime.timezone.utc)
+                    .astimezone(tz)
+                )
+            except ValueError:
+                self.logger.warning(f"Unparseable MeetingDate {meeting_date_str!r}")
+                continue
+
+            if years_filter and meeting_dt.year not in years_filter:
+                continue
+
+            papers = {}
+            for kind in ("Agenda", "Minutes"):
+                url = self._document_url(
+                    storage,
+                    tenant_key,
+                    stored,
+                    doc.get(f"{kind}AssembledDocFolderName"),
+                    doc.get(f"{kind}DocumentFilePath"),
+                )
+                if not url:
+                    continue
+                # Councils occasionally publish a Word agenda. Report it as
+                # the HTML rendition so the PDF fields only ever hold a PDF.
+                suffix = "pdf" if url.split("?")[0].lower().endswith(".pdf") else "html"
+                papers[f"{kind.lower()}_{suffix}"] = url
+
+            # A meeting can be listed before either paper is published.
+            if not papers:
+                continue
+
+            # The viewer page for the document we linked: the page a human
+            # would land on, and the one identifier that survives a SAS-token
+            # rotation. The blob URL can be re-resolved from this UUID,
+            # whereas the signed URL alone goes permanently dead.
+            viewer_id = doc.get("AgendaDocumentId") or doc.get("MinutesDocumentId")
+            agenda_url = papers.get("agenda_pdf")
+            minutes_url = papers.get("minutes_pdf")
+
+            results.append(
+                ScraperReturn(
+                    name=doc.get("MeetingType") or doc.get("DocumentTitle"),
+                    date=meeting_dt.strftime("%Y-%m-%d"),
+                    time=meeting_dt.strftime("%I:%M %p").lstrip("0"),
+                    webpage_url=(
+                        f"{self.base_url}/document/{viewer_id}"
+                        if viewer_id
+                        else self.base_url
+                    ),
+                    agenda_url=agenda_url,
+                    minutes_url=minutes_url,
+                    agenda_html_url=papers.get("agenda_html"),
+                    minutes_html_url=papers.get("minutes_html"),
+                    download_url=agenda_url or minutes_url,
+                )
+            )
+
+        if not results:
+            self.logger.info(f"{self.council_name} scraper found no meetings")
+        else:
+            self.logger.info(
+                f"{self.council_name} scraper found {len(results)} meetings"
+            )
+
+        return results
+
+    def _get_json(self, url: str):
+        """Fetch JSON through the fetcher so runs stay recordable.
+
+        Fetch and decode errors propagate: the caller has no fallback for
+        either call this serves, so catching them here only turned a timeout
+        or a 5xx into an empty result.
+        """
+        body = self.fetcher.fetch_with_requests(url)
+        return json.loads(body) if body else None
+
+    def _storage_config(self) -> Optional[dict]:
+        """Read the blob storage settings out of the portal's JS bundle.
+
+        The container is not anonymously readable — without the SAS token
+        every blob answers `404 BlobNotFound` — and the token is public only
+        in the sense that the portal hands it to every visitor. It carries no
+        expiry of its own but is bound to a stored access policy, so the
+        operator can rotate or revoke it server-side at any time. Hardcoding
+        it would work right up until it silently stopped, so it is read from
+        the bundle on each run. The bundle name carries a build hash that
+        changes on every deploy, so that too is discovered from the page.
+
+        A fetch failure propagates; the caller has no fallback for a
+        missing token. A page that loads but no longer matches the regexes
+        returns None, and the caller raises on that too.
+        """
+        shell = self.fetcher.fetch_with_requests(self.base_url)
+        bundle_match = self.BUNDLE_REGEX.search(shell)
+        if not bundle_match:
+            self.logger.error("Could not find the DocAssembler JS bundle")
+            return None
+
+        # The portal is an Angular app served with <base href="/">, so its
+        # relative script tags resolve against the site root, not the
+        # council path. Getting this wrong is quiet rather than loud:
+        # unknown paths return the app shell with a 200 instead of a 404.
+        base_href = self.BASE_HREF_REGEX.search(shell)
+        base_url = urllib.parse.urljoin(
+            self.base_url, base_href.group(1) if base_href else "/"
+        )
+
+        bundle = self.fetcher.fetch_with_requests(
+            urllib.parse.urljoin(base_url, bundle_match.group(1))
+        )
+        config_match = self.BLOB_CONFIG_REGEX.search(bundle)
+        if not config_match:
+            self.logger.error("Could not find the storage settings in the bundle")
+            return None
+
+        return config_match.groupdict()
+
+    def _stored_names(self, storage: dict, tenant_key: str) -> Optional[dict]:
+        """List the council's blobs, as `{folder: [filename, ...]}`.
+
+        Returns None when the listing cannot be read, which the caller treats
+        as "trust the API" rather than "emit nothing": a listing failure
+        should cost the handful of misnamed documents, not the whole council.
+        """
+        names: dict[str, list[str]] = {}
+        marker = ""
+
+        try:
+            while True:
+                query = urllib.parse.urlencode(
+                    {
+                        "restype": "container",
+                        "comp": "list",
+                        "prefix": f"{tenant_key}/",
+                        "maxresults": self.LISTING_PAGE_SIZE,
+                        **({"marker": marker} if marker else {}),
+                    }
+                )
+                body = self.fetcher.fetch_with_requests(
+                    f"{storage['base']}/{storage['container']}{storage['sas']}&{query}"
+                )
+                listing = ElementTree.fromstring(body)
+
+                for element in listing.iter("Name"):
+                    # "<tenant>/<folder>/<file>". Deeper paths are the
+                    # per-agenda-item PDFs, which we do not link.
+                    parts = (element.text or "").split("/")
+                    if len(parts) == 3:
+                        names.setdefault(parts[1], []).append(parts[2])
+
+                marker = (listing.findtext("NextMarker") or "").strip()
+                if not marker:
+                    return names
+        except Exception as e:
+            self.logger.warning(
+                f"Could not list DocAssembler storage for {self.council_name}; "
+                f"falling back to the filenames the API reports: {e}"
+            )
+            return None
+
+    @staticmethod
+    def _collapse(name: str) -> str:
+        return re.sub(r"\s+", " ", name)
+
+    def _document_url(
+        self,
+        storage: dict,
+        tenant_key: str,
+        stored: Optional[dict],
+        folder_name: Optional[str],
+        file_path: Optional[str],
+    ) -> Optional[str]:
+        """Build the storage URL for one document, mirroring the portal."""
+        if not folder_name or not file_path:
+            return None
+
+        if stored is None:
+            # No listing to check against, so the API's name is all we have.
+            name = file_path
+        else:
+            in_folder = stored.get(folder_name, ())
+            if file_path in in_folder:
+                name = file_path
+            else:
+                collapsed = self._collapse(file_path)
+                candidates = [n for n in in_folder if self._collapse(n) == collapsed]
+                if len(candidates) == 1:
+                    name = candidates[0]
+                    self.logger.debug(
+                        f"Blob name differs from the API's: {file_path!r} -> {name!r}"
+                    )
+                else:
+                    # Either the document was never uploaded, or two blobs
+                    # differ only in whitespace and there is no telling which
+                    # the API meant. A URL we know 404s is worse than none.
+                    near = f" ({len(candidates)} near matches)" if candidates else ""
+                    self.logger.info(
+                        f"No stored blob for {folder_name}/{file_path!r}{near}"
+                    )
+                    return None
+
+        quoted = "/".join(
+            urllib.parse.quote(part, safe="")
+            for part in (tenant_key, folder_name, name)
+        )
+        return f"{storage['base']}/{storage['container']}/{quoted}{storage['sas']}"
 
 
 SCRAPER_REGISTRY: dict[str, BaseScraper] = {}

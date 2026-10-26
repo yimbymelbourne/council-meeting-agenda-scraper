@@ -1,13 +1,37 @@
 [
   {
     "name": "Ordinary meeting",
+    "date": "05 October 2026",
+    "time": "07:00 PM",
+    "location": "Council Chambers @ Ivanhoe Library and Cultural Hub, 275 Upper Heidelberg Road, Ivanhoe, 3079",
+    "webpage_url": "https://www.banyule.vic.gov.au/About-us/Councillors-and-Council-meetings/Council-meetings/Council-meeting-agendas-and-minutes",
+    "download_url": "https://www.banyule.vic.gov.au/files/assets/public/v/1/about-us/meetings/2026/agendas/2026-10-05-ordinary-council-meeting-agenda.pdf",
+    "agenda_url": "https://www.banyule.vic.gov.au/files/assets/public/v/1/about-us/meetings/2026/agendas/2026-10-05-ordinary-council-meeting-agenda.pdf",
+    "minutes_url": "https://www.banyule.vic.gov.au/files/assets/public/v/2/about-us/meetings/2026/minutes/2026-10-05-ordinary-council-meeting-minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Special meeting",
+    "date": "28 September 2026",
+    "time": "06:45 PM",
+    "location": "Online only",
+    "webpage_url": "https://www.banyule.vic.gov.au/About-us/Councillors-and-Council-meetings/Council-meetings/Council-meeting-agendas-and-minutes",
+    "download_url": "https://www.banyule.vic.gov.au/files/assets/public/v/1/about-us/meetings/2026/agendas/2026-09-28-special-council-meeting-agenda.pdf",
+    "agenda_url": "https://www.banyule.vic.gov.au/files/assets/public/v/1/about-us/meetings/2026/agendas/2026-09-28-special-council-meeting-agenda.pdf",
+    "minutes_url": "https://www.banyule.vic.gov.au/files/assets/public/v/1/about-us/meetings/2026/minutes/2026-09-28-special-council-meeting-minutes.pdf",
+    "agenda_html_url": null,
+    "minutes_html_url": null
+  },
+  {
+    "name": "Ordinary meeting",
     "date": "24 August 2026",
     "time": "07:00 PM",
     "location": "Council Chambers @ Ivanhoe Library and Cultural Hub, 275 Upper Heidelberg Road, Ivanhoe, 3079",
     "webpage_url": "https://www.banyule.vic.gov.au/About-us/Councillors-and-Council-meetings/Council-meetings/Council-meeting-agendas-and-minutes",
     "download_url": "https://www.banyule.vic.gov.au/files/assets/public/v/1/about-us/meetings/2026/agendas/2026-08-24-ordinary-council-meeting-agenda.pdf",
     "agenda_url": "https://www.banyule.vic.gov.au/files/assets/public/v/1/about-us/meetings/2026/agendas/2026-08-24-ordinary-council-meeting-agenda.pdf",
-    "minutes_url": null,
+    "minutes_url": "https://www.banyule.vic.gov.au/files/assets/public/v/2/about-us/meetings/2026/minutes/2026-08-24-ordinary-council-meeting-minutes.pdf",
     "agenda_html_url": null,
     "minutes_html_url": null
   },
